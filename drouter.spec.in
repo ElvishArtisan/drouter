@@ -1,0 +1,184 @@
+## glassnet.spec.in
+##
+##    Network Stream Player Control Framework
+##
+##    Copyright (C) 2016 Fred Gleason <fredg@paravelsystems.com>
+##
+##    This program is free software; you can redistribute it and/or modify
+##    it under the terms of version 2 of the GNU General Public License as
+##    published by the Free Software Foundation;
+##
+##    This program is distributed in the hope that it will be useful,
+##    but WITHOUT ANY WARRANTY; without even the implied warranty of
+##    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+##    GNU General Public License for more details.
+##
+##    You should have received a copy of the GNU General Public License
+##    along with this program; if not, write to the Free Software
+##    Foundation, Inc., 59 Temple Place, Suite 330, 
+##    Boston, MA  02111-1307  USA
+##
+
+Summary: Network Stream Player Control Framework
+Name: glassnet
+Version: @VERSION@
+Release: @RPM_RELEASE@%{?dist}
+License: GPLv2
+Packager: Fred Gleason <fredg@paravelsystems.com>
+Group: Productivity/Multimedia/Other
+Source: %{name}-@VERSION@.tar.gz
+Requires: qt-mysql
+BuildRequires: qt-devel openssl-devel
+BuildRoot: /var/tmp/%{name}-@VERSION@
+
+
+%description
+GlassNet is a management framework for controlling a dispersed fleet of
+audio stream players.  It consists of three sections: a GUI-base management
+application (provided by this package), a central service daemon (provided
+by the 'glassnet-server' package) and client software for the audio stream
+players (provided by the 'glassnet-client' package).
+
+
+%package client
+Summary: Client control daemon for GlassNet
+Group: Productivity/Multimedia/Other
+Requires: glassplayer libmad fdk-aac
+
+
+%description client
+This provides the control daemon for the distributed player clients.
+It actually executes the schedules uploaded by the centralized management
+database.
+
+
+%package server
+Summary: Central service daemon for GlassNet
+Group: Productivity/Multimedia/Other
+Requires: qt-mysql
+
+
+%description server
+This provides the central service daemon for GlassNet. It is intended to
+reside in a data center and provides connectivity between
+the player clients and a centralized management database.
+
+
+%prep
+
+
+%setup
+
+
+%build
+%configure
+make
+
+
+%install
+rm -rf $RPM_BUILD_ROOT
+make install DESTDIR=$RPM_BUILD_ROOT
+
+
+%post
+if test "@DISTRO@" = "suse" ; then
+  PACKAGE_DOC_DIR=%_docdir/%{name}
+fi
+if test "@DISTRO@" = "redhat" ; then
+  PACKAGE_DOC_DIR=%_docdir/%{name}-@VERSION@
+fi
+if test ! -f /etc/gncd.conf ; then
+    cp $PACKAGE_DOC_DIR/glassnet-sample.conf /etc/glassnet.conf
+fi
+
+
+%post client
+if test "@DISTRO@" = "suse" ; then
+  PACKAGE_DOC_DIR=%_docdir/%{name}-client
+fi
+if test "@DISTRO@" = "redhat" ; then
+  PACKAGE_DOC_DIR=%_docdir/%{name}-client-@VERSION@
+fi
+if test ! -f /etc/gncd.conf ; then
+    cp $PACKAGE_DOC_DIR/gncd-sample.conf /etc/gncd.conf
+fi
+if [ -x %{_bindir}/systemctl ] ; then
+  systemctl daemon-reload
+fi
+
+
+%post server
+if test "@DISTRO@" = "suse" ; then
+  PACKAGE_DOC_DIR=%_docdir/%{name}-server
+fi
+if test "@DISTRO@" = "redhat" ; then
+  PACKAGE_DOC_DIR=%_docdir/%{name}-server-@VERSION@
+fi
+if test ! -f /etc/gncd.conf ; then
+    cp $PACKAGE_DOC_DIR/glassnet-sample.conf /etc/glassnet.conf
+fi
+if [ -x %{_bindir}/systemctl ] ; then
+  systemctl daemon-reload
+fi
+
+
+%preun server
+if [ -x %{_bindir}/systemctl ] ; then
+  systemctl stop gnmd
+fi
+
+
+%postun client
+if [ -x %{_bindir}/systemctl ] ; then
+  systemctl daemon-reload
+fi
+
+
+%postun server
+if [ -x %{_bindir}/systemctl ] ; then
+  systemctl daemon-reload
+fi
+
+
+%clean
+rm -rf $RPM_BUILD_ROOT
+
+
+%files
+%defattr(-,root,root)
+%{_bindir}/gnmc
+%{_datadir}/applications/gnmc.desktop
+%doc AUTHORS
+%doc ChangeLog
+%doc COPYING 
+%doc NEWS 
+%doc README 
+%doc conf/glassnet-sample.conf
+
+
+%files client
+%{_sbindir}/gncd
+/usr/lib/systemd/system/gncd.service
+%dir /var/gncd
+%doc AUTHORS
+%doc ChangeLog
+%doc COPYING 
+%doc NEWS 
+%doc README 
+%doc conf/gncd-sample.conf
+
+
+%files server
+%{_sbindir}/gnmd
+/usr/lib/systemd/system/gnmd.service
+%doc AUTHORS
+%doc ChangeLog
+%doc COPYING 
+%doc NEWS 
+%doc README 
+%doc conf/glassnet-sample.conf
+
+
+%changelog
+* Thu Oct 27 2016 Fred Gleason <fredg@paravelsystems.com>
+-- Initial RPM creation.
