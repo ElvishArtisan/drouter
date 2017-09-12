@@ -55,18 +55,42 @@ MainObject::MainObject(QObject *parent)
 	  this,SLOT(nodeAddedData(const QHostAddress &)));
   connect(main_drouter,SIGNAL(nodeRemoved(const QHostAddress &)),
 	  this,SLOT(nodeRemovedData(const QHostAddress &)));
+  connect(main_drouter,SIGNAL(srcChanged(const SyNode &,int,const SySource &)),
+	  this,SLOT(srcChangedData(const SyNode &,int,const SySource &)));
+  connect(main_drouter,
+	  SIGNAL(dstChanged(const SyNode &,int,const SyDestination &)),
+	  this,
+	  SLOT(dstChangedData(const SyNode &,int,const SyDestination &)));
 }
 
 
 void MainObject::nodeAddedData(const QHostAddress &hostaddr)
 {
   printf("Added node at %s\n",(const char *)hostaddr.toString().toUtf8());
+  printf("%s\n",(const char *)main_drouter->node(hostaddr)->node()->dump().toUtf8());
 }
 
 
 void MainObject::nodeRemovedData(const QHostAddress &hostaddr)
 {
   printf("Removed node at %s\n",(const char *)hostaddr.toString().toUtf8());
+}
+
+
+void MainObject::srcChangedData(const SyNode &node,int slot,const SySource &src)
+{
+  printf("SOURCE %s:%d changed\n",
+	 (const char *)node.hostAddress().toString().toUtf8(),slot);
+  printf("%s\n",(const char *)src.dump().toUtf8());
+}
+
+
+void MainObject::dstChangedData(const SyNode &node,int slot,
+				const SyDestination &dst)
+{
+  printf("DEST %s:%d changed\n",
+	 (const char *)node.hostAddress().toString().toUtf8(),slot);
+  printf("%s\n",(const char *)dst.dump().toUtf8());
 }
 
 

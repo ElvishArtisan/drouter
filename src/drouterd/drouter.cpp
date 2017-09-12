@@ -48,6 +48,18 @@ DRouter::DRouter(QObject *parent)
 }
 
 
+QList<QHostAddress> DRouter::nodes() const
+{
+  QList<QHostAddress> addrs;
+
+  for(QMap<unsigned,SyLwrpClient *>::const_iterator it=drouter_nodes.constBegin();
+      it!=drouter_nodes.constEnd();it++) {
+    addrs.push_back(it.value()->hostAddress());
+  }
+  return addrs;
+}
+
+
 SyLwrpClient *DRouter::node(const QHostAddress &hostaddr)
 {
   try {
@@ -56,6 +68,75 @@ SyLwrpClient *DRouter::node(const QHostAddress &hostaddr)
   catch(...) {
     return NULL;
   }
+}
+
+
+SySource *DRouter::src(int srcnum) const
+{
+  for(QMap<unsigned,SyLwrpClient *>::const_iterator it=drouter_nodes.constBegin();
+      it!=drouter_nodes.constEnd();it++) {
+    for(unsigned i=0;i<it.value()->srcSlots();i++) {
+      if(it.value()->srcNumber(i)==srcnum) {
+	return it.value()->src(i);
+      }
+    }
+  }
+  return NULL;
+}
+
+
+SySource *DRouter::src(const QHostAddress &hostaddr,int slot) const
+{
+  SyLwrpClient *lwrp=drouter_nodes.value(hostaddr.toIPv4Address());
+  if(lwrp!=NULL) {
+    if(slot<(int)lwrp->srcSlots()) {
+      return lwrp->src(slot);
+    }
+  }
+  return NULL;
+}
+
+
+SyDestination *DRouter::dst(const QHostAddress &hostaddr,int slot) const
+{
+  SyLwrpClient *lwrp=drouter_nodes.value(hostaddr.toIPv4Address());
+  if(lwrp!=NULL) {
+    if(slot<(int)lwrp->dstSlots()) {
+      return lwrp->dst(slot);
+    }
+  }
+  return NULL;
+}
+
+
+bool DRouter::setCrosspoint(const QHostAddress &dst_hostaddr,int dst_slot,
+			    const QHostAddress &src_hostaddr,int src_slot)
+{
+  SyLwrpClient *lwrp=NULL;
+
+  //
+  // Get the source
+  //
+  if((lwrp=drouter_nodes.value(src_hostaddr.toIPv4Address()))==NULL) {
+    return false;
+  }
+  if(src_slot>=(int)lwrp->srcSlots()) {
+    return false;
+  }
+  QHostAddress addr=lwrp->srcAddress(src_slot);
+
+  //
+  // Get the destination
+  //
+  if((lwrp=drouter_nodes.value(dst_hostaddr.toIPv4Address()))==NULL) {
+    return false;
+  }
+  if(dst_slot>=(int)lwrp->dstSlots()) {
+    return false;
+  }
+  lwrp->setDstAddress(dst_slot,addr);
+
+  return true;
 }
 
 
@@ -81,6 +162,20 @@ void DRouter::nodeConnectedData(unsigned id,bool state)
 }
 
 
+void DRouter::sourceChangedData(unsigned id,int slotnum,const SyNode &node,
+				const SySource &src)
+{
+  emit srcChanged(node,slotnum,src);
+}
+
+
+void DRouter::destinationChangedData(unsigned id,int slotnum,const SyNode &node,
+				     const SyDestination &dst)
+{
+  emit dstChanged(node,slotnum,dst);
+}
+
+
 void DRouter::advtReadyReadData()
 {
   QHostAddress addr;
@@ -92,6 +187,15 @@ void DRouter::advtReadyReadData()
       SyLwrpClient *node=new SyLwrpClient(addr.toIPv4Address(),this);
       connect(node,SIGNAL(connected(unsigned,bool)),
 	      this,SLOT(nodeConnectedData(unsigned,bool)));
+      connect(node,
+	      SIGNAL(sourceChanged(unsigned,int,const SyNode,const SySource &)),
+	      this,SLOT(sourceChangedData(unsigned,int,const SyNode,
+					  const SySource &)));
+      connect(node,SIGNAL(destinationChanged(unsigned,int,const SyNode &,
+					     const SyDestination &)),
+	      this,SLOT(destinationChangedData(unsigned,int,const SyNode &,
+					       const SyDestination &)));
+
       drouter_nodes[addr.toIPv4Address()]=node;
       node->connectToHost(addr,SWITCHYARD_LWRP_PORT,"",false);
     }

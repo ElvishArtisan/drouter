@@ -21,6 +21,8 @@
 #ifndef DROUTER_H
 #define DROUTER_H
 
+#include <QList>
+#include <QMap>
 #include <QObject>
 
 #include <sy/sylwrp_client.h>
@@ -34,14 +36,28 @@ class DRouter : public QObject
  Q_OBJECT;
  public:
   DRouter(QObject *parent=0);
+  QList<QHostAddress> nodes() const;
   SyLwrpClient *node(const QHostAddress &hostaddr);
+  SySource *src(int srcnum) const;
+  SySource *src(const QHostAddress &hostaddr,int slot) const;
+  SyDestination *dst(const QHostAddress &hostaddr,int slot) const;
+
+ public slots:
+  bool setCrosspoint(const QHostAddress &dst_hostaddr,int dst_slot,
+		     const QHostAddress &src_hostaddr,int src_slot);
 
  signals:
   void nodeAdded(const QHostAddress &hostaddr);
   void nodeRemoved(const QHostAddress &hostaddr);
+  void srcChanged(const SyNode &node,int slot,const SySource &src);
+  void dstChanged(const SyNode &node,int slot,const SyDestination &dst);
 
  private slots:
   void nodeConnectedData(unsigned id,bool state);
+  void sourceChangedData(unsigned id,int slotnum,const SyNode &node,
+			 const SySource &src);
+  void destinationChangedData(unsigned id,int slotnum,const SyNode &node,
+			      const SyDestination &dst);
   void advtReadyReadData();
 
  private:

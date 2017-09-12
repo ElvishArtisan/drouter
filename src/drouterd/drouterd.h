@@ -39,6 +39,8 @@ class MainObject : public QObject
  private slots:
   void nodeAddedData(const QHostAddress &hostaddr);
   void nodeRemovedData(const QHostAddress &hostaddr);
+  void srcChangedData(const SyNode &node,int slot,const SySource &src);
+  void dstChangedData(const SyNode &node,int slot,const SyDestination &dst);
 
  private:
   DRouter *main_drouter;
