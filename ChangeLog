@@ -4,3 +4,8 @@
 	* Added drouterd(8) service.
 2019-09-13 Fred Gleason <fredg@paravelsystems.com>
 	* Documented 'Protocol D' in 'docs/protocol_d.xml'.
+2019-09-13 Fred Gleason <fredg@paravelsystems.com>
+	* Replaced the 'DRouter::nodeAdded(const QHostAddress &)' signal with
+	'DRouter::nodeAdded(const SyNode &node)'.
+	* Replaced the 'DRouter::nodeRemoved(const QHostAddress &)' signal with
+	'DRouter::nodeAboutToBeRemoved(const SyNode &node)'.

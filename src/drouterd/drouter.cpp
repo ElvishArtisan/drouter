@@ -147,7 +147,7 @@ void DRouter::nodeConnectedData(unsigned id,bool state)
       fprintf(stderr,"DRouter::nodeConnectedData() - received connect signal from unknown node\n");
       exit(256);
     }
-    emit nodeAdded(QHostAddress(id));
+    emit nodeAdded(*(node(QHostAddress(id))->node()));
   }
   else {
     SyLwrpClient *lwrp=node(QHostAddress(id));
@@ -155,9 +155,9 @@ void DRouter::nodeConnectedData(unsigned id,bool state)
       fprintf(stderr,"DRouter::nodeConnectedData() - received disconnect signal from unknown node\n");
       exit(256);
     }
+    emit nodeAboutToBeRemoved(*(lwrp->node()));
     drouter_nodes.erase(drouter_nodes.find(id));
     delete lwrp;
-    emit nodeRemoved(QHostAddress(id));
   }
 }
 

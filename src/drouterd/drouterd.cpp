@@ -51,10 +51,10 @@ MainObject::MainObject(QObject *parent)
   // DRouter
   //
   main_drouter=new DRouter(this);
-  connect(main_drouter,SIGNAL(nodeAdded(const QHostAddress &)),
-	  this,SLOT(nodeAddedData(const QHostAddress &)));
-  connect(main_drouter,SIGNAL(nodeRemoved(const QHostAddress &)),
-	  this,SLOT(nodeRemovedData(const QHostAddress &)));
+  connect(main_drouter,SIGNAL(nodeAdded(const SyNode &)),
+	  this,SLOT(nodeAddedData(const SyNode &)));
+  connect(main_drouter,SIGNAL(nodeAboutToBeRemoved(const SyNode &)),
+	  this,SLOT(nodeAboutToBeRemovedData(const SyNode &)));
   connect(main_drouter,SIGNAL(srcChanged(const SyNode &,int,const SySource &)),
 	  this,SLOT(srcChangedData(const SyNode &,int,const SySource &)));
   connect(main_drouter,
@@ -64,16 +64,18 @@ MainObject::MainObject(QObject *parent)
 }
 
 
-void MainObject::nodeAddedData(const QHostAddress &hostaddr)
+void MainObject::nodeAddedData(const SyNode &node)
 {
-  printf("Added node at %s\n",(const char *)hostaddr.toString().toUtf8());
-  printf("%s\n",(const char *)main_drouter->node(hostaddr)->node()->dump().toUtf8());
+  printf("Added node at %s\n",
+	 (const char *)node.hostAddress().toString().toUtf8());
+  printf("%s\n",(const char *)node.dump().toUtf8());
 }
 
 
-void MainObject::nodeRemovedData(const QHostAddress &hostaddr)
+void MainObject::nodeAboutToBeRemovedData(const SyNode &node)
 {
-  printf("Removed node at %s\n",(const char *)hostaddr.toString().toUtf8());
+  printf("Removed node at %s\n",
+	 (const char *)node.hostAddress().toString().toUtf8());
 }
 
 

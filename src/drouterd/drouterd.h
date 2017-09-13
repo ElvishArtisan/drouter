@@ -37,8 +37,8 @@ class MainObject : public QObject
   MainObject(QObject *parent=0);
 
  private slots:
-  void nodeAddedData(const QHostAddress &hostaddr);
-  void nodeRemovedData(const QHostAddress &hostaddr);
+  void nodeAddedData(const SyNode &node);
+  void nodeAboutToBeRemovedData(const SyNode &node);
   void srcChangedData(const SyNode &node,int slot,const SySource &src);
   void dstChangedData(const SyNode &node,int slot,const SyDestination &dst);
 

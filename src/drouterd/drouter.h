@@ -47,8 +47,8 @@ class DRouter : public QObject
 		     const QHostAddress &src_hostaddr,int src_slot);
 
  signals:
-  void nodeAdded(const QHostAddress &hostaddr);
-  void nodeRemoved(const QHostAddress &hostaddr);
+  void nodeAdded(const SyNode &node);
+  void nodeAboutToBeRemoved(const SyNode &node);
   void srcChanged(const SyNode &node,int slot,const SySource &src);
   void dstChanged(const SyNode &node,int slot,const SyDestination &dst);
 
