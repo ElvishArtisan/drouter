@@ -1,0 +1,655 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<article xmlns="http://docbook.org/ns/docbook" version="5.0">
+<info>
+  <title>Protocol &quot;D&quot;</title>
+  <subtitle>TCP/IP Protocol for controlling the dynamic routing engine</subtitle>
+  <edition>0.0.0</edition>
+  <author>
+    <personname>
+      <firstname>Fred</firstname>
+      <surname>Gleason</surname>
+      <email>fredg@paravelsystems.com</email>
+    </personname>
+  </author>
+</info>
+
+<sect1>
+  <title>Overview</title>
+  <para>
+    Messages to the DRouter dynamic routing service are by means of a
+    TCP SOCK_STREAM connection to TCP port 23883 on the host server.
+  </para>
+  <para>
+    Messages have the following general syntax:
+  </para>
+  <para>
+    <replaceable>cmd-code</replaceable> [<replaceable>arg</replaceable>] [<replaceable>...</replaceable>]<userinput>CR/LF</userinput>
+  </para>
+  <variablelist>
+    <varlistentry>
+      <term>
+	<replaceable>cmd-code</replaceable>
+      </term>
+      <listitem>
+	<para>
+	  A single word, containing no whitespace, case-insensitive.
+	</para>
+      </listitem>
+    </varlistentry>
+    <varlistentry>
+      <term>
+	<replaceable>arg</replaceable>
+      </term>
+      <listitem>
+	<para>
+	  Zero or more arguments, delimited by a <userinput>TAB</userinput>
+	  character (ASCII 9).
+	</para>
+      </listitem>
+    </varlistentry>
+    <varlistentry>
+      <term>
+	<userinput>CR/LF</userinput>
+      </term>
+      <listitem>
+	<para>
+	  The ASCII character <userinput>CR</userinput> (13) followed by
+	  <userinput>LF</userinput> (10).
+	</para>
+      </listitem>
+    </varlistentry>
+  </variablelist>
+</sect1>
+
+<sect1>
+  <title>Connection Management</title>
+  <para>
+    Messages for managing connections to the service.
+  </para>
+  <sect2>
+    <title>Exit</title>
+    <para>
+      <command>Exit</command>
+    </para>
+    <para>
+      Drop the TCP connection and end the session.
+    </para>
+  </sect2>
+</sect1>
+
+<sect1>
+  <title>Information</title>
+  <para>
+    Messages for enumerating resources and getting system information.
+  </para>
+  <sect2>
+    <title>List Destinations</title>
+    <para>
+      <command>ListDestinations</command>
+    </para>
+    <para>
+      Return a list of records delinieating the currently available
+      destinations, terminated by <computeroutput>CR/LF</computeroutput>.
+      Each record contains the following fields, delimited by
+      <computeroutput>TAB</computeroutput> (ASCII 9):
+    </para>
+    <variablelist>
+      <varlistentry>
+	<term>
+	  <computeroutput>DST</computeroutput>
+	</term>
+	<listitem>
+	  <para>
+	    The string <computeroutput>DST</computeroutput>.
+	  </para>
+	</listitem>
+      </varlistentry>
+      <varlistentry>
+	<term>
+	  <replaceable>host-name</replaceable>
+	</term>
+	<listitem>
+	  <para>
+	    The host name of the parent node. Depending upon system
+	    configuration, this could be the name as programmed in the node or
+	    the name as reported via a DNS PTR lookup.
+	  </para>
+	</listitem>
+      </varlistentry>
+      <varlistentry>
+	<term>
+	  <replaceable>host-addr</replaceable>
+	</term>
+	<listitem>
+	  <para>
+	    The IPv4 address of the parent node, in dotted-quad notation.
+	  </para>
+	</listitem>
+      </varlistentry>
+      <varlistentry>
+	<term>
+	  <replaceable>slot</replaceable>
+	</term>
+	<listitem>
+	  <para>
+	    The slot position number of the destination on the parent node
+	    (zero-based).
+	  </para>
+	</listitem>
+      </varlistentry>
+      <varlistentry>
+	<term>
+	  <replaceable>stream-addr</replaceable>
+	</term>
+	<listitem>
+	  <para>
+	    The IPv4 address of the stream configured to be received,
+	    in dotted-quad notation.
+	  </para>
+	</listitem>
+      </varlistentry>
+      <varlistentry>
+	<term>
+	  <replaceable>dest-name</replaceable>
+	</term>
+	<listitem>
+	  <para>
+	    The name of the destination.
+	  </para>
+	</listitem>
+      </varlistentry>
+      <varlistentry>
+	<term>
+	  <replaceable>channels</replaceable>
+	</term>
+	<listitem>
+	  <para>
+	    The number of channels capable of being received by this
+	    destination. Possible values
+	    include <computeroutput>1</computeroutput>,
+	    <computeroutput>2</computeroutput> or
+	    <computeroutput>8</computeroutput>.
+	  </para>
+	</listitem>
+      </varlistentry>
+    </variablelist>
+  </sect2>
+
+
+  <sect2>
+    <title>List Nodes</title>
+    <para>
+      <command>ListNodes</command>
+    </para>
+    <para>
+      Return a list of records delinieating the currently available
+      nodes, terminated by <computeroutput>CR/LF</computeroutput>.
+      Each record contains the following fields, delimited by
+      <computeroutput>TAB</computeroutput> (ASCII 9):
+    </para>
+    <variablelist>
+      <varlistentry>
+	<term>
+	  <computeroutput>NODE</computeroutput>
+	</term>
+	<listitem>
+	  <para>
+	    The string <computeroutput>NODE</computeroutput>.
+	  </para>
+	</listitem>
+      </varlistentry>
+      <varlistentry>
+	<term>
+	  <replaceable>host-addr</replaceable>
+	</term>
+	<listitem>
+	  <para>
+	    The IPv4 address of the node, in dotted-quad notation.
+	  </para>
+	</listitem>
+      </varlistentry>
+      <varlistentry>
+	<term>
+	  <replaceable>dev-name</replaceable>
+	</term>
+	<listitem>
+	  <para>
+	    The LWRP device name.
+	  </para>
+	</listitem>
+      </varlistentry>
+      <varlistentry>
+	<term>
+	  <replaceable>host-name</replaceable>
+	</term>
+	<listitem>
+	  <para>
+	    The host name of the node. Depending upon system
+	    configuration, this could be the name as programmed in the node or
+	    the name as reported via a DNS PTR lookup.
+	  </para>
+	</listitem>
+      </varlistentry>
+      <varlistentry>
+	<term>
+	  <replaceable>product-name</replaceable>
+	</term>
+	<listitem>
+	  <para>
+	    The product name of the node. Not all nodes provide a product
+	    name, in which case this field will be empty.
+	  </para>
+	</listitem>
+      </varlistentry>
+      <varlistentry>
+	<term>
+	  <replaceable>model-name</replaceable>
+	</term>
+	<listitem>
+	  <para>
+	    The model name of the node. Not all nodes provide a model
+	    name, in which case this field will be empty.
+	  </para>
+	</listitem>
+      </varlistentry>
+      <varlistentry>
+	<term>
+	  <replaceable>src-slots</replaceable>
+	</term>
+	<listitem>
+	  <para>
+	    The number of source slot positions.
+	  </para>
+	</listitem>
+      </varlistentry>
+      <varlistentry>
+	<term>
+	  <replaceable>dst-slots</replaceable>
+	</term>
+	<listitem>
+	  <para>
+	    The number of destination slot positions.
+	  </para>
+	</listitem>
+      </varlistentry>
+      <varlistentry>
+	<term>
+	  <replaceable>gpi-slots</replaceable>
+	</term>
+	<listitem>
+	  <para>
+	    The number of GPI slot positions.
+	  </para>
+	</listitem>
+      </varlistentry>
+      <varlistentry>
+	<term>
+	  <replaceable>gpo-slots</replaceable>
+	</term>
+	<listitem>
+	  <para>
+	    The number of GPO slot positions.
+	  </para>
+	</listitem>
+      </varlistentry>
+      <varlistentry>
+	<term>
+	  <replaceable>soft-ver</replaceable>
+	</term>
+	<listitem>
+	  <para>
+	    The software version reported by the node.
+	  </para>
+	</listitem>
+      </varlistentry>
+      <varlistentry>
+	<term>
+	  <replaceable>lwrp-ver</replaceable>
+	</term>
+	<listitem>
+	  <para>
+	    The LWRP version reported by the node.
+	  </para>
+	</listitem>
+      </varlistentry>
+    </variablelist>
+  </sect2>
+
+
+  <sect2>
+    <title>List Sources</title>
+    <para>
+      <command>ListSources</command>
+    </para>
+    <para>
+      Return a list of <computeroutput>SRC</computeroutput> records,
+      delinieating the currently available sources,
+      terminated by <computeroutput>CR/LF</computeroutput>. Each record
+      contains the following fields, delimited by
+      <computeroutput>TAB</computeroutput> (ASCII 9):
+    </para>
+    <variablelist>
+      <varlistentry>
+	<term>
+	  <computeroutput>SRC</computeroutput>
+	</term>
+	<listitem>
+	  <para>
+	    The string <computeroutput>SRC</computeroutput>.
+	  </para>
+	</listitem>
+      </varlistentry>
+      <varlistentry>
+	<term>
+	  <replaceable>host-addr</replaceable>
+	</term>
+	<listitem>
+	  <para>
+	    The IPv4 address of the parent node, in dotted-quad notation.
+	  </para>
+	</listitem>
+      </varlistentry>
+      <varlistentry>
+	<term>
+	  <replaceable>slot</replaceable>
+	</term>
+	<listitem>
+	  <para>
+	    The slot position number of the source on the parent node
+	    (zero-based).
+	  </para>
+	</listitem>
+      </varlistentry>
+      <varlistentry>
+	<term>
+	  <replaceable>host-name</replaceable>
+	</term>
+	<listitem>
+	  <para>
+	    The host name of the parent node. Depending upon system
+	    configuration, this could be the name as programmed in the node or
+	    the name as reported via a DNS PTR lookup.
+	  </para>
+	</listitem>
+      </varlistentry>
+      <varlistentry>
+	<term>
+	  <replaceable>stream-addr</replaceable>
+	</term>
+	<listitem>
+	  <para>
+	    The IPv4 stream address in dotted-quad notation.
+	  </para>
+	</listitem>
+      </varlistentry>
+      <varlistentry>
+	<term>
+	  <replaceable>stream-name</replaceable>
+	</term>
+	<listitem>
+	  <para>
+	    The name of the stream.
+	  </para>
+	</listitem>
+      </varlistentry>
+      <varlistentry>
+	<term>
+	  <replaceable>stream-enabled</replaceable>
+	</term>
+	<listitem>
+	  <para>
+	    The current state of the stream. <computeroutput>1</computeroutput>
+	    if enabled or <computeroutput>0</computeroutput> if disabled.
+	  </para>
+	</listitem>
+      </varlistentry>
+      <varlistentry>
+	<term>
+	  <replaceable>channels</replaceable>
+	</term>
+	<listitem>
+	  <para>
+	    The number of channels being carried by the stream. Possible values
+	    include <computeroutput>1</computeroutput>,
+	    <computeroutput>2</computeroutput> or
+	    <computeroutput>8</computeroutput>.
+	  </para>
+	</listitem>
+      </varlistentry>
+      <varlistentry>
+	<term>
+	  <replaceable>block-size</replaceable>
+	</term>
+	<listitem>
+	  <para>
+	    The number of PCM24 frames carried by each RTP packet. Possible
+	    values include <computeroutput>12</computeroutput> (Live Stereo),
+	    <computeroutput>60</computeroutput> (8 Channel Surround) and
+	    <computeroutput>240</computeroutput> (Standard Stereo/Mono).
+	  </para>
+	</listitem>
+      </varlistentry>
+    </variablelist>
+  </sect2>
+
+  <sect2>
+    <title>Subscribe Destinations</title>
+    <para>
+      <command>SubscribeDestinations</command>
+    </para>
+    <para>
+      Return a list of <computeroutput>DSTADD</computeroutput> records
+      delinieating the currently available destinations, each record
+      terminated by <computeroutput>CR/LF</computeroutput> (see the
+      description of the <computeroutput>DST</computeroutput> message in the 
+      <command>ListDestinations</command> command for a breakdown of the
+      supplied fields). Whenever a new destination is added, a corresponding
+      <computeroutput>DSTADD</computeroutput>
+      record will be sent, whiles changes to an existing destination will
+      cause a <computeroutput>DST</computeroutput> record to be sent.
+      When a destination is removed from the system, a
+      corresponding <computeroutput>DSTDEL</computeroutput> record will be
+      sent, consisting of the following fields, delimited by
+      <computeroutput>TAB</computeroutput> (ASCII 9):
+    </para>
+    <variablelist>
+      <varlistentry>
+	<term>
+	  <computeroutput>DSTDEL</computeroutput>
+	</term>
+	<listitem>
+	  <para>
+	    The string <computeroutput>DSTDEL</computeroutput>.
+	  </para>
+	</listitem>
+      </varlistentry>
+      <varlistentry>
+	<term>
+	  <replaceable>host-addr</replaceable>
+	</term>
+	<listitem>
+	  <para>
+	    The IPv4 address of the parent node, in dotted-quad notation.
+	  </para>
+	</listitem>
+      </varlistentry>
+      <varlistentry>
+	<term>
+	  <replaceable>slot</replaceable>
+	</term>
+	<listitem>
+	  <para>
+	    The slot position number of the destination on the parent node
+	    (zero-based).
+	  </para>
+	</listitem>
+      </varlistentry>
+    </variablelist>
+  </sect2>
+
+  <sect2>
+    <title>Subscribe Nodes</title>
+    <para>
+      <command>SubscribeNodes</command>
+    </para>
+    <para>
+      Return a list of <computeroutput>NODEADD</computeroutput> records
+      delinieating the currently available nodes, each record
+      terminated by <computeroutput>CR/LF</computeroutput> (see the
+      description of the <computeroutput>NODE</computeroutput> message in the 
+      <command>ListNodes</command> command for a breakdown of the
+      supplied fields). Whenever a new node is added, a corresponding
+      <computeroutput>NODEADD</computeroutput>
+      record will be sent, whiles changes to an existing node will
+      cause a <computeroutput>NODE</computeroutput> record to be sent.
+      When a node is removed from the system, a
+      corresponding <computeroutput>NODEDEL</computeroutput> record will be
+      sent, consisting of the following fields, delimited by
+      <computeroutput>TAB</computeroutput> (ASCII 9):
+    </para>
+    <variablelist>
+      <varlistentry>
+	<term>
+	  <computeroutput>NODEDEL</computeroutput>
+	</term>
+	<listitem>
+	  <para>
+	    The string <computeroutput>NODEDEL</computeroutput>.
+	  </para>
+	</listitem>
+      </varlistentry>
+      <varlistentry>
+	<term>
+	  <replaceable>host-addr</replaceable>
+	</term>
+	<listitem>
+	  <para>
+	    The IPv4 address of the parent node, in dotted-quad notation.
+	  </para>
+	</listitem>
+      </varlistentry>
+    </variablelist>
+  </sect2>
+
+  <sect2>
+    <title>Subscribe Sources</title>
+    <para>
+      <command>SubscribeSources</command>
+    </para>
+    <para>
+      Return a list of <computeroutput>SRCADD</computeroutput> records
+      delinieating the currently available sources, each record
+      terminated by <computeroutput>CR/LF</computeroutput> (see the
+      description of the <computeroutput>SRC</computeroutput> message in the 
+      <command>ListSources</command> command for a breakdown of the
+      supplied fields). Whenever a new source is added, a corresponding
+      <computeroutput>SRCADD</computeroutput>
+      record will be sent, whiles changes to an existing source will
+      cause a <computeroutput>SRC</computeroutput> record to be sent.
+      When a source is removed from the system, a
+      corresponding <computeroutput>SRCDEL</computeroutput> record will be
+      sent, consisting of the following fields, delimited by
+      <computeroutput>TAB</computeroutput> (ASCII 9):
+    </para>
+    <variablelist>
+      <varlistentry>
+	<term>
+	  <computeroutput>SRCDEL</computeroutput>
+	</term>
+	<listitem>
+	  <para>
+	    The string <computeroutput>SRCDEL</computeroutput>.
+	  </para>
+	</listitem>
+      </varlistentry>
+      <varlistentry>
+	<term>
+	  <replaceable>host-addr</replaceable>
+	</term>
+	<listitem>
+	  <para>
+	    The IPv4 address of the parent node, in dotted-quad notation.
+	  </para>
+	</listitem>
+      </varlistentry>
+      <varlistentry>
+	<term>
+	  <replaceable>slot</replaceable>
+	</term>
+	<listitem>
+	  <para>
+	    The slot position number of the source on the parent node
+	    (zero-based).
+	  </para>
+	</listitem>
+      </varlistentry>
+    </variablelist>
+  </sect2>
+</sect1>
+
+<sect1>
+  <title>Commands</title>
+  <para>
+    Messages for changing the state of managed resources.
+  </para>
+  <sect2>
+    <title>Set Crosspoint</title>
+    <para>
+      <command>SetCrosspoint 
+      <replaceable>dst-host-addr</replaceable>
+      <replaceable>dst-slot</replaceable>
+      <replaceable>src-host-addr</replaceable>
+      <replaceable>src-slot</replaceable>
+      </command>
+    </para>
+    <para>
+      Set the source to be received by a destination.
+    </para>
+    <variablelist>
+      <varlistentry>
+	<term>
+	  <replaceable>dst-host-addr</replaceable>
+	</term>
+	<listitem>
+	  <para>
+	    The IPv4 address of the destination node, in dotted-quad notation.
+	  </para>
+	</listitem>
+      </varlistentry>
+      <varlistentry>
+	<term>
+	  <replaceable>dst-slot</replaceable>
+	</term>
+	<listitem>
+	  <para>
+	    The slot position number of the destination on the parent node
+	    (zero-based).
+	  </para>
+	</listitem>
+      </varlistentry>
+      <varlistentry>
+	<term>
+	  <replaceable>src-host-addr</replaceable>
+	</term>
+	<listitem>
+	  <para>
+	    The IPv4 address of the source node, in dotted-quad notation.
+	  </para>
+	</listitem>
+      </varlistentry>
+      <varlistentry>
+	<term>
+	  <replaceable>src-slot</replaceable>
+	</term>
+	<listitem>
+	  <para>
+	    The slot position number of the source on the parent node
+	    (zero-based).
+	  </para>
+	</listitem>
+      </varlistentry>
+    </variablelist>
+  </sect2>
+</sect1>
+
+</article>

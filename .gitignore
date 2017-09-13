@@ -1,4 +1,10 @@
+*.1
+*.5
+*.7
+*.8
+*.html
 *.o
+*.pdf
 *.rpm
 *.service
 *.spec

@@ -2,3 +2,5 @@
 	* Initial package creation.
 2019-09-12 Fred Gleason <fredg@paravelsystems.com>
 	* Added drouterd(8) service.
+2019-09-13 Fred Gleason <fredg@paravelsystems.com>
+	* Documented 'Protocol D' in 'docs/protocol_d.xml'.

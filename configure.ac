@@ -100,6 +100,7 @@ else
 fi 
 
 AC_CONFIG_FILES([ \
+    docs/Makefile \
     src/Makefile \
     src/drouterd/Makefile \
     drouter.spec \
