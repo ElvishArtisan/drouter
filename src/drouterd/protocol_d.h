@@ -37,6 +37,8 @@ class ProtocolD : public Protocol
   void processSubscribeDestinationsD(int id);
   void processSubscribeNodesD(int id);
   void processSubscribeSourcesD(int id);
+  void processClearCrosspointD(int id,
+			       const QHostAddress &dst_hostaddr,int dst_slot);
   void processSetCrosspointD(int id,
 			     const QHostAddress &dst_hostaddr,int dst_slot,
 			     const QHostAddress &src_hostaddr,int src_slot);

@@ -43,6 +43,7 @@ class DRouter : public QObject
   SyDestination *dst(const QHostAddress &hostaddr,int slot) const;
 
  public slots:
+  bool clearCrosspoint(const QHostAddress &dst_hostaddr,int dst_slot);
   bool setCrosspoint(const QHostAddress &dst_hostaddr,int dst_slot,
 		     const QHostAddress &src_hostaddr,int src_slot);
 

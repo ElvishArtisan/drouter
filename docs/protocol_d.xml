@@ -559,6 +559,43 @@
     Messages for changing the state of managed resources.
   </para>
   <sect2>
+    <title>Clear Crosspoint</title>
+    <para>
+      <command>ClearCrosspoint 
+      <replaceable>dst-host-addr</replaceable>
+      <replaceable>dst-slot</replaceable>
+      </command>
+    </para>
+    <para>
+      Clear the source to be received by a destination --i.e. mute the
+      destination.
+    </para>
+    <variablelist>
+      <varlistentry>
+	<term>
+	  <replaceable>dst-host-addr</replaceable>
+	</term>
+	<listitem>
+	  <para>
+	    The IPv4 address of the destination node, in dotted-quad notation.
+	  </para>
+	</listitem>
+      </varlistentry>
+      <varlistentry>
+	<term>
+	  <replaceable>dst-slot</replaceable>
+	</term>
+	<listitem>
+	  <para>
+	    The slot position number of the destination on the parent node
+	    (zero-based).
+	  </para>
+	</listitem>
+      </varlistentry>
+    </variablelist>
+  </sect2>
+
+  <sect2>
     <title>Set Crosspoint</title>
     <para>
       <command>SetCrosspoint 

@@ -121,6 +121,18 @@ void ServerD::processCommand(int id,const SyAString &cmd)
   if(cmds.at(0).toLower()=="subscribesources") {
     emit processSubscribeSources(id);
   }
+  if(cmds.at(0).toLower()=="clearcrosspoint") {
+    if(cmds.size()==3) {
+      bool ok=false;
+      QHostAddress dst_hostaddr(cmds.at(1));
+      if(!dst_hostaddr.isNull()) {
+	int dst_slot=cmds.at(2).toInt(&ok);
+	if(ok&&(dst_slot>=0)) {
+	  emit processClearCrosspoint(id,dst_hostaddr,dst_slot);
+	}
+      }
+    }
+  }
   if(cmds.at(0).toLower()=="setcrosspoint") {
     if(cmds.size()==5) {
       bool ok=false;

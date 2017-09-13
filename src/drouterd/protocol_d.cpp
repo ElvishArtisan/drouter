@@ -38,6 +38,8 @@ ProtocolD::ProtocolD(DRouter *router,QObject *parent)
 	  this,SLOT(processSubscribeNodesD(int)));
   connect(d_server,SIGNAL(processSubscribeSources(int)),
 	  this,SLOT(processSubscribeSourcesD(int)));
+  connect(d_server,SIGNAL(processClearCrosspoint(int,const QHostAddress &,int)),
+	  this,SLOT(processClearCrosspointD(int,const QHostAddress &,int)));
   connect(d_server,SIGNAL(processSetCrosspoint(int,const QHostAddress &,int,
 					       const QHostAddress &,int)),
 	  this,SLOT(processSetCrosspointD(int,const QHostAddress &,int,
@@ -151,11 +153,20 @@ void ProtocolD::processSubscribeSourcesD(int id)
 }
 
 
+void ProtocolD::processClearCrosspointD(int id,
+					const QHostAddress &dst_hostaddr,
+					int dst_slot)
+{
+  router()->clearCrosspoint(dst_hostaddr,dst_slot);
+}
+
+
 void ProtocolD::processSetCrosspointD(int id,const QHostAddress &dst_hostaddr,
 				      int dst_slot,
 				      const QHostAddress &src_hostaddr,
 				      int src_slot)
 {
+  router()->setCrosspoint(dst_hostaddr,dst_slot,src_hostaddr,src_slot);
 }
 
 

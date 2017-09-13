@@ -16,3 +16,6 @@
 	* Implemented the 'SubscribeDestinations' Protocol "D" command.
 	* Implemented the 'SubscribeNodes' Protocol "D" command.
 	* Implemented the 'SubscribeSources' Protocol "D" command.
+2019-09-13 Fred Gleason <fredg@paravelsystems.com>
+	* Implemented the 'ClearCrosspoint' Protocol "D" command.
+	* Implemented the 'SetCrosspoint' Protocol "D" command.

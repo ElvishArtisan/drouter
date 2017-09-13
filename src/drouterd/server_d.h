@@ -61,6 +61,8 @@ class ServerD : public ServerNet
   void processSubscribeDestinations(int id);
   void processSubscribeNodes(int id);
   void processSubscribeSources(int id);
+  void processClearCrosspoint(int id,
+			      const QHostAddress &dst_hostaddr,int dst_slot);
   void processSetCrosspoint(int id,
 			    const QHostAddress &dst_hostaddr,int dst_slot,
 			    const QHostAddress &src_hostaddr,int src_slot);

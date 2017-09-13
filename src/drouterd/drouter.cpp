@@ -109,6 +109,25 @@ SyDestination *DRouter::dst(const QHostAddress &hostaddr,int slot) const
 }
 
 
+bool DRouter::clearCrosspoint(const QHostAddress &dst_hostaddr,int dst_slot)
+{
+  SyLwrpClient *lwrp=NULL;
+
+  //
+  // Get the destination
+  //
+  if((lwrp=drouter_nodes.value(dst_hostaddr.toIPv4Address()))==NULL) {
+    return false;
+  }
+  if(dst_slot>=(int)lwrp->dstSlots()) {
+    return false;
+  }
+  lwrp->setDstAddress(dst_slot,0);
+
+  return true;
+}
+
+
 bool DRouter::setCrosspoint(const QHostAddress &dst_hostaddr,int dst_slot,
 			    const QHostAddress &src_hostaddr,int src_slot)
 {
