@@ -28,6 +28,7 @@
 #include <sy/sycmdswitch.h>
 
 #include "drouterd.h"
+#include "protocolfactory.h"
 
 MainObject::MainObject(QObject *parent)
   : QObject(parent)
@@ -51,48 +52,12 @@ MainObject::MainObject(QObject *parent)
   // DRouter
   //
   main_drouter=new DRouter(this);
-  connect(main_drouter,SIGNAL(nodeAdded(const SyNode &)),
-	  this,SLOT(nodeAddedData(const SyNode &)));
-  connect(main_drouter,SIGNAL(nodeAboutToBeRemoved(const SyNode &)),
-	  this,SLOT(nodeAboutToBeRemovedData(const SyNode &)));
-  connect(main_drouter,SIGNAL(srcChanged(const SyNode &,int,const SySource &)),
-	  this,SLOT(srcChangedData(const SyNode &,int,const SySource &)));
-  connect(main_drouter,
-	  SIGNAL(dstChanged(const SyNode &,int,const SyDestination &)),
-	  this,
-	  SLOT(dstChangedData(const SyNode &,int,const SyDestination &)));
-}
 
-
-void MainObject::nodeAddedData(const SyNode &node)
-{
-  printf("Added node at %s\n",
-	 (const char *)node.hostAddress().toString().toUtf8());
-  printf("%s\n",(const char *)node.dump().toUtf8());
-}
-
-
-void MainObject::nodeAboutToBeRemovedData(const SyNode &node)
-{
-  printf("Removed node at %s\n",
-	 (const char *)node.hostAddress().toString().toUtf8());
-}
-
-
-void MainObject::srcChangedData(const SyNode &node,int slot,const SySource &src)
-{
-  printf("SOURCE %s:%d changed\n",
-	 (const char *)node.hostAddress().toString().toUtf8(),slot);
-  printf("%s\n",(const char *)src.dump().toUtf8());
-}
-
-
-void MainObject::dstChangedData(const SyNode &node,int slot,
-				const SyDestination &dst)
-{
-  printf("DEST %s:%d changed\n",
-	 (const char *)node.hostAddress().toString().toUtf8(),slot);
-  printf("%s\n",(const char *)dst.dump().toUtf8());
+  //
+  // Protocols
+  //
+  main_protocols.
+    push_back(ProtocolFactory(main_drouter,Protocol::ProtocolD,this));
 }
 
 

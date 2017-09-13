@@ -9,3 +9,10 @@
 	'DRouter::nodeAdded(const SyNode &node)'.
 	* Replaced the 'DRouter::nodeRemoved(const QHostAddress &)' signal with
 	'DRouter::nodeAboutToBeRemoved(const SyNode &node)'.
+2019-09-13 Fred Gleason <fredg@paravelsystems.com>
+	* Implemented the 'ListDestinations' Protocol "D" command.
+	* Implemented the 'ListNodes' Protocol "D" command.
+	* Implemented the 'ListSources' Protocol "D" command.
+	* Implemented the 'SubscribeDestinations' Protocol "D" command.
+	* Implemented the 'SubscribeNodes' Protocol "D" command.
+	* Implemented the 'SubscribeSources' Protocol "D" command.

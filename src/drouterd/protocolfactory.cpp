@@ -1,6 +1,6 @@
-// drouterd.h
+// protocolfactory.cpp
 //
-// Dynamic router service for Livewire networks
+// Create a protocol instance.
 //
 //   (C) Copyright 2017 Fred Gleason <fredg@paravelsystems.com>
 //
@@ -18,29 +18,18 @@
 //   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
 //
 
-#ifndef DROUTERD_H
-#define DROUTERD_H
+#include "protocol_d.h"
+#include "protocolfactory.h"
 
-#include <QList>
-#include <QObject>
-
-#include <sy/synode.h>
-
-#include "drouter.h"
-#include "protocol.h"
-
-#define DROUTERD_USAGE "[options]\n"
-
-class MainObject : public QObject
+Protocol *ProtocolFactory(DRouter *router,Protocol::Type type,QObject *parent)
 {
- Q_OBJECT;
- public:
-  MainObject(QObject *parent=0);
+  Protocol *p=NULL;
 
- private:
-  QList<Protocol *> main_protocols;
-  DRouter *main_drouter;
-};
+  switch(type) {
+  case Protocol::ProtocolD:
+    p=new ProtocolD(router,parent);
+    break;
+  }
 
-
-#endif  // DROUTERD_H
+  return p;
+}

@@ -31,10 +31,19 @@ moc_%.cpp:	%.h
 sbin_PROGRAMS = drouterd
 
 dist_drouterd_SOURCES = drouter.cpp drouter.h\
-                        drouterd.cpp drouterd.h
+                        drouterd.cpp drouterd.h\
+                        protocol.cpp protocol.h\
+                        protocol_d.cpp protocol_d.h\
+                        protocolfactory.cpp protocolfactory.h\
+                        server_d.cpp server_d.h\
+                        server_net.cpp server_net.h
 
 nodist_drouterd_SOURCES = moc_drouter.cpp\
-                          moc_drouterd.cpp
+                          moc_drouterd.cpp\
+                          moc_protocol.cpp\
+                          moc_protocol_d.cpp\
+                          moc_server_d.cpp\
+                          moc_server_net.cpp
 
 drouterd_LDADD = @QT4CLI_LIBS@ @SWITCHYARD_LIBS@
 

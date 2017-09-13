@@ -106,18 +106,6 @@
       </varlistentry>
       <varlistentry>
 	<term>
-	  <replaceable>host-name</replaceable>
-	</term>
-	<listitem>
-	  <para>
-	    The host name of the parent node. Depending upon system
-	    configuration, this could be the name as programmed in the node or
-	    the name as reported via a DNS PTR lookup.
-	  </para>
-	</listitem>
-      </varlistentry>
-      <varlistentry>
-	<term>
 	  <replaceable>host-addr</replaceable>
 	</term>
 	<listitem>
@@ -134,6 +122,18 @@
 	  <para>
 	    The slot position number of the destination on the parent node
 	    (zero-based).
+	  </para>
+	</listitem>
+      </varlistentry>
+      <varlistentry>
+	<term>
+	  <replaceable>host-name</replaceable>
+	</term>
+	<listitem>
+	  <para>
+	    The host name of the parent node. Depending upon system
+	    configuration, this could be the name as programmed in the node or
+	    the name as reported via a DNS PTR lookup.
 	  </para>
 	</listitem>
       </varlistentry>
@@ -210,16 +210,6 @@
       </varlistentry>
       <varlistentry>
 	<term>
-	  <replaceable>dev-name</replaceable>
-	</term>
-	<listitem>
-	  <para>
-	    The LWRP device name.
-	  </para>
-	</listitem>
-      </varlistentry>
-      <varlistentry>
-	<term>
 	  <replaceable>host-name</replaceable>
 	</term>
 	<listitem>
@@ -232,23 +222,11 @@
       </varlistentry>
       <varlistentry>
 	<term>
-	  <replaceable>product-name</replaceable>
+	  <replaceable>dev-name</replaceable>
 	</term>
 	<listitem>
 	  <para>
-	    The product name of the node. Not all nodes provide a product
-	    name, in which case this field will be empty.
-	  </para>
-	</listitem>
-      </varlistentry>
-      <varlistentry>
-	<term>
-	  <replaceable>model-name</replaceable>
-	</term>
-	<listitem>
-	  <para>
-	    The model name of the node. Not all nodes provide a model
-	    name, in which case this field will be empty.
+	    The LWRP device name.
 	  </para>
 	</listitem>
       </varlistentry>
@@ -289,26 +267,6 @@
 	<listitem>
 	  <para>
 	    The number of GPO slot positions.
-	  </para>
-	</listitem>
-      </varlistentry>
-      <varlistentry>
-	<term>
-	  <replaceable>soft-ver</replaceable>
-	</term>
-	<listitem>
-	  <para>
-	    The software version reported by the node.
-	  </para>
-	</listitem>
-      </varlistentry>
-      <varlistentry>
-	<term>
-	  <replaceable>lwrp-ver</replaceable>
-	</term>
-	<listitem>
-	  <para>
-	    The LWRP version reported by the node.
 	  </para>
 	</listitem>
       </varlistentry>
@@ -445,12 +403,11 @@
       <command>ListDestinations</command> command for a breakdown of the
       supplied fields). Whenever a new destination is added, a corresponding
       <computeroutput>DSTADD</computeroutput>
-      record will be sent, whiles changes to an existing destination will
+      record will be sent, while changes to an existing destination will
       cause a <computeroutput>DST</computeroutput> record to be sent.
-      When a destination is removed from the system, a
-      corresponding <computeroutput>DSTDEL</computeroutput> record will be
-      sent, consisting of the following fields, delimited by
-      <computeroutput>TAB</computeroutput> (ASCII 9):
+      Removal of a destination from the system will generate a
+      corresponding <computeroutput>DSTDEL</computeroutput> record, containing
+      the following fields:
     </para>
     <variablelist>
       <varlistentry>
@@ -500,12 +457,11 @@
       <command>ListNodes</command> command for a breakdown of the
       supplied fields). Whenever a new node is added, a corresponding
       <computeroutput>NODEADD</computeroutput>
-      record will be sent, whiles changes to an existing node will
+      record will be sent, while changes to an existing node will
       cause a <computeroutput>NODE</computeroutput> record to be sent.
-      When a node is removed from the system, a
-      corresponding <computeroutput>NODEDEL</computeroutput> record will be
-      sent, consisting of the following fields, delimited by
-      <computeroutput>TAB</computeroutput> (ASCII 9):
+      Removal of a node from the system will generate a
+      corresponding <computeroutput>NODEDEL</computeroutput> record, containing
+      the following fields:
     </para>
     <variablelist>
       <varlistentry>
@@ -528,6 +484,17 @@
 	  </para>
 	</listitem>
       </varlistentry>
+      <varlistentry>
+	<term>
+	  <replaceable>slot</replaceable>
+	</term>
+	<listitem>
+	  <para>
+	    The slot position number of the node on the parent node
+	    (zero-based).
+	  </para>
+	</listitem>
+      </varlistentry>
     </variablelist>
   </sect2>
 
@@ -544,12 +511,11 @@
       <command>ListSources</command> command for a breakdown of the
       supplied fields). Whenever a new source is added, a corresponding
       <computeroutput>SRCADD</computeroutput>
-      record will be sent, whiles changes to an existing source will
+      record will be sent, while changes to an existing source will
       cause a <computeroutput>SRC</computeroutput> record to be sent.
-      When a source is removed from the system, a
-      corresponding <computeroutput>SRCDEL</computeroutput> record will be
-      sent, consisting of the following fields, delimited by
-      <computeroutput>TAB</computeroutput> (ASCII 9):
+      Removal of a source from the system will generate a
+      corresponding <computeroutput>SRCDEL</computeroutput> record, containing
+      the following fields:
     </para>
     <variablelist>
       <varlistentry>

@@ -48,7 +48,7 @@ DRouter::DRouter(QObject *parent)
 }
 
 
-QList<QHostAddress> DRouter::nodes() const
+QList<QHostAddress> DRouter::nodeHostAddresses() const
 {
   QList<QHostAddress> addrs;
 
