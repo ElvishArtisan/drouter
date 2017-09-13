@@ -99,27 +99,44 @@ void ServerD::processCommand(int id,const SyAString &cmd)
 
   QStringList cmds=cmd.split(" ");
 
+  if(cmds.at(0).isEmpty()) {
+    return;
+  }
   if(cmds.at(0).toLower()=="exit") {
     closeConnection(id);
+    send("ok\r\n",id);
+    return;
   }
 
   if(cmds.at(0).toLower()=="listdestinations") {
     emit processListDestinations(id);
+    send("ok\r\n",id);
+    return;
   }
   if(cmds.at(0).toLower()=="listnodes") {
     emit processListNodes(id);
+    send("ok\r\n",id);
+    return;
   }
   if(cmds.at(0).toLower()=="listsources") {
     emit processListSources(id);
+    send("ok\r\n",id);
+    return;
   }
   if(cmds.at(0).toLower()=="subscribedestinations") {
     emit processSubscribeDestinations(id);
+    send("ok\r\n",id);
+    return;
   }
   if(cmds.at(0).toLower()=="subscribenodes") {
     emit processSubscribeNodes(id);
+    send("ok\r\n",id);
+    return;
   }
   if(cmds.at(0).toLower()=="subscribesources") {
     emit processSubscribeSources(id);
+    send("ok\r\n",id);
+    return;
   }
   if(cmds.at(0).toLower()=="clearcrosspoint") {
     if(cmds.size()==3) {
@@ -129,6 +146,8 @@ void ServerD::processCommand(int id,const SyAString &cmd)
 	int dst_slot=cmds.at(2).toInt(&ok);
 	if(ok&&(dst_slot>=0)) {
 	  emit processClearCrosspoint(id,dst_hostaddr,dst_slot);
+	  send("ok\r\n",id);
+	  return;
 	}
       }
     }
@@ -146,10 +165,13 @@ void ServerD::processCommand(int id,const SyAString &cmd)
 	    if(ok&&(src_slot>=0)) {
 	      emit processSetCrosspoint(id,dst_hostaddr,dst_slot,
 					src_hostaddr,src_slot);
+	      send("ok\r\n",id);
+	      return;
 	    }
 	  }
 	}
       }      
     }
   }
+  send("error\r\n",id);
 }
