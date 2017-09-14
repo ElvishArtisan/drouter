@@ -1,6 +1,6 @@
 ## automake.am
 ##
-## docs/Makefile.am
+## Makefile for the dmap(8) map generation utility
 ##
 ## (C) Copyright 2017 Fred Gleason <fredg@paravelsystems.com>
 ##
@@ -17,39 +17,32 @@
 ##   License along with this program; if not, write to the Free Software
 ##   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
 ##
+##
 ## Use automake to process this into a Makefile.in
 
-##
-## Build Dependencies
-##
-%.html:	%.xml
-	xsltproc -o $@ $(DOCBOOK_STYLESHEETS)/xhtml/docbook.xsl $<
-%.pdf:	%.xml
-	xsltproc $(DOCBOOK_STYLESHEETS)/fo/docbook.xsl $< | fop - -pdf $@
-%.1:	%.xml
-	xsltproc $(DOCBOOK_STYLESHEETS)/manpages/docbook.xsl $<
-%.8:	%.xml
-	xsltproc $(DOCBOOK_STYLESHEETS)/manpages/docbook.xsl $<
+AM_CPPFLAGS = -Wall -DPREFIX=\"$(prefix)\" -Wno-strict-aliasing @QT4CLI_CFLAGS@ @SWITCHYARD_CFLAGS@
+MOC = @QT4_MOC@
 
-all-local:	dmap.8\
-                dmap.xml\
-                protocol_d.html\
-                protocol_d.pdf
+# The dependency for qt's Meta Object Compiler (moc)
+moc_%.cpp:	%.h
+	@MOC@ $< -o $@
 
-EXTRA_DIST = dmap.8\
-             dmap.xml\
-             protocol_d.html\
-             protocol_d.pdf\
-             protocol_d.xml
 
-man_MANS = dmap.8
+sbin_PROGRAMS = dmap
 
-CLEANFILES = *~
+dist_dmap_SOURCES = dmap.cpp dmap.h
+
+nodist_dmap_SOURCES = endpointmap.cpp endpointmap.h\
+                      moc_dmap.cpp
+
+dmap_LDADD = @QT4CLI_LIBS@ @SWITCHYARD_LIBS@
+
+CLEANFILES = *~\
+             moc_*\
+             *.obj\
+             *.idb\
+             *.pdb\
+             *ilk
+DISTCLEANFILES = endpointmap.cpp endpointmap.h
 MAINTAINERCLEANFILES = *~\
-                       *.1\
-                       *.8\
-                       *.html\
-                       *.pdf\
-                       aclocal.m4\
-                       configure\
                        Makefile.in

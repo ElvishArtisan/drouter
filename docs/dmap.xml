@@ -1,0 +1,282 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<refentry id="stdin" xmlns="http://docbook.org/ns/docbook" version="5.0">
+  <!--
+      Header
+  -->
+  <refmeta>
+    <refentrytitle>dmap</refentrytitle>
+    <manvolnum>8</manvolnum>
+    <refmiscinfo class='source'>December 2015</refmiscinfo>
+    <refmiscinfo class='manual'>Linux Audio Manual</refmiscinfo>
+  </refmeta>
+  <refnamediv>
+    <refname>dmap</refname>
+    <refpurpose>Command for generating matrix maps for 
+    <command>drouterd</command><manvolnum>8</manvolnum></refpurpose>
+  </refnamediv>
+  <info>
+    <author>
+      <personname>
+	<firstname>Fred</firstname>
+	<surname>Gleason</surname>
+	<email>fredg@paravelsystems.com</email>
+      </personname>
+      <contrib>Application Author</contrib>
+    </author>
+  </info>
+
+  <!--
+      Body
+  -->
+  <refsynopsisdiv id='synopsis'>
+    <cmdsynopsis>
+      <command>dmap</command>    <arg choice='opt'><replaceable>OPTIONS</replaceable></arg>
+      <sbr/>
+    </cmdsynopsis>
+  </refsynopsisdiv>
+
+  <refsect1 id='description'><title>Description</title>
+  <para>
+    <command>dmap</command><manvolnum>8</manvolnum> is a utility for
+    automatically generating Livewire matrix maps for use by
+    <command>drouterd</command><manvolnum>8</manvolnum>.  It works by
+    monitoring the network for Livewire advertisement multicast messages
+    and then using LWRP to enumerate each identified node's capabilities.
+  </para>
+  </refsect1>
+
+  <refsect1 id='options'><title>Options</title>
+  <variablelist remap='TP'>
+    <varlistentry>
+      <term>
+	<option>--help</option>
+      </term>
+      <listitem>
+	<para>
+	  Print a short usage message and then exit.
+	</para>
+      </listitem>
+    </varlistentry>
+  </variablelist>
+
+  <variablelist remap='TP'>
+    <varlistentry>
+      <term>
+	<option>--max-nodes=</option><replaceable>num</replaceable>
+      </term>
+      <listitem>
+	<para>
+	  Stop the scan and proceed to the enumeration phase after detecting
+	  <replaceable>num</replaceable> nodes.  Useful mostly for debugging.
+	</para>
+      </listitem>
+    </varlistentry>
+  </variablelist>
+
+  <variablelist remap='TP'>
+    <varlistentry>
+      <term>
+	<option>--node-password=</option><replaceable>passwd</replaceable>
+      </term>
+      <listitem>
+	<para>
+	  Use <replaceable>passwd</replaceable> when connecting to nodes
+	  via LWRP.  This option is seldom required.
+	</para>
+      </listitem>
+    </varlistentry>
+  </variablelist>
+
+  <variablelist remap='TP'>
+    <varlistentry>
+      <term>
+	<option>--no-off-source</option>
+      </term>
+      <listitem>
+	<para>
+	  Do not generate an 'OFF' psuedo-source as input '1' when generating
+	  the map.
+	</para>
+      </listitem>
+    </varlistentry>
+  </variablelist>
+
+  <variablelist remap='TP'>
+    <varlistentry>
+      <term>
+	<option>--output-map=</option><replaceable>filename</replaceable>
+      </term>
+      <listitem>
+	<para>
+	  Write the finished map to <replaceable>filename</replaceable>.
+	  Default is to write the map to standard output.
+	</para>
+      </listitem>
+    </varlistentry>
+  </variablelist>
+
+  <variablelist remap='TP'>
+    <varlistentry>
+      <term>
+	<option>--router-name=</option><replaceable>name</replaceable>
+      </term>
+      <listitem>
+	<para>
+	  The name of the router for which to generate a map.
+	  Default value is <userinput>Livewire</userinput>.
+	</para>
+      </listitem>
+    </varlistentry>
+  </variablelist>
+
+  <variablelist remap='TP'>
+    <varlistentry>
+      <term>
+	<option>--router-number=</option><replaceable>num</replaceable>
+      </term>
+      <listitem>
+	<para>
+	  The ID number of the router for which to generate a map.
+	  Default value is <userinput>1</userinput>.
+	</para>
+      </listitem>
+    </varlistentry>
+  </variablelist>
+
+  <variablelist remap='TP'>
+    <varlistentry>
+      <term>
+	<option>--scan-duration=</option><replaceable>secs</replaceable>
+      </term>
+      <listitem>
+	<para>
+	  Scan for nodes for <replaceable>secs</replaceable> seconds before
+	  proceeding to the enumeration phase. Default value is 25 seconds.
+	</para>
+      </listitem>
+    </varlistentry>
+  </variablelist>
+
+  <variablelist remap='TP'>
+    <varlistentry>
+      <term>
+	<option>--scan-only</option>
+      </term>
+      <listitem>
+	<para>
+	  Perform the node scan, then print a sorted list of nodes
+	  detected to stdout and exit.
+	</para>
+      </listitem>
+    </varlistentry>
+  </variablelist>
+
+  <variablelist remap='TP'>
+    <varlistentry>
+      <term>
+	<option>--skip-node=</option><replaceable>ip-addr</replaceable>
+      </term>
+      <listitem>
+	<para>
+	  Do not attempt to enumerate the node located at
+	  <replaceable>ip-addr</replaceable>, even if it has been detected
+	  during a scan.  This can be useful for avoiding timeout delays
+	  when working with devices (such as Telos VSets) that send Livewire
+	  multicast advertisements but fail to implement LWRP.  This option
+	  can be specified multiple times.
+	</para>
+      </listitem>
+    </varlistentry>
+  </variablelist>
+
+  <variablelist remap='TP'>
+    <varlistentry>
+      <term>
+	<option>--skip-node-list=</option><replaceable>filename</replaceable>
+      </term>
+      <listitem>
+	<para>
+	  Get a list of <option>--skip-node</option> values from
+	  <replaceable>filename</replaceable> (one IP address per line).
+	  This option can be specified multiple times.
+	</para>
+      </listitem>
+    </varlistentry>
+  </variablelist>
+
+  <variablelist remap='TP'>
+    <varlistentry>
+      <term>
+	<option>--use-node=</option><replaceable>ip-addr</replaceable>
+      </term>
+      <listitem>
+	<para>
+	  Skip the scan phase and attempt to enumerate the node at
+	  <replaceable>ip-addr</replaceable>.  Useful mostly for debugging.
+	  This option can be specified multiple times.
+	</para>
+      </listitem>
+    </varlistentry>
+  </variablelist>
+
+  <variablelist remap='TP'>
+    <varlistentry>
+      <term>
+	<option>--use-node-list=</option><replaceable>filename</replaceable>
+      </term>
+      <listitem>
+	<para>
+	  Get a list of <option>--use-node</option> values from
+	  <replaceable>filename</replaceable> (one IP address per line).
+	  Useful mostly for debugging. This option can be specified
+	  multiple times.
+	</para>
+      </listitem>
+    </varlistentry>
+  </variablelist>
+
+  <variablelist remap='TP'>
+    <varlistentry>
+      <term>
+	<option>--verbose</option>
+      </term>
+      <listitem>
+	<para>
+	  Print debugging information to stderr.
+	</para>
+      </listitem>
+    </varlistentry>
+  </variablelist>
+
+  <variablelist remap='TP'>
+    <varlistentry>
+      <term>
+	<option>--version</option>
+      </term>
+      <listitem>
+	<para>
+	  Print the version string and then exit.
+	</para>
+      </listitem>
+    </varlistentry>
+  </variablelist>
+
+  </refsect1>
+
+  <refsect1 id='bugs'><title>Bugs</title>
+  <para>
+    It may be possible to obtain node capabilities more efficiently
+    by reading the contents of received multicast advertisement packets,
+    rather than having to connect to each one via LWRP.
+  </para>
+  </refsect1>
+
+  <refsect1 id='see_also'><title>See Also</title>
+  <para>
+  <citerefentry>
+    <refentrytitle>drouterd</refentrytitle><manvolnum>8</manvolnum>
+  </citerefentry>
+  </para>
+  </refsect1>
+</refentry>
+

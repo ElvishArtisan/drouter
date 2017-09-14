@@ -19,6 +19,7 @@
 //
 
 #include "protocol_d.h"
+#include "protocol_sa.h"
 #include "protocolfactory.h"
 
 Protocol *ProtocolFactory(DRouter *router,Protocol::Type type,QObject *parent)
@@ -28,6 +29,10 @@ Protocol *ProtocolFactory(DRouter *router,Protocol::Type type,QObject *parent)
   switch(type) {
   case Protocol::ProtocolD:
     p=new ProtocolD(router,parent);
+    break;
+
+  case Protocol::ProtocolSa:
+    p=new ProtocolSa(router,parent);
     break;
   }
 

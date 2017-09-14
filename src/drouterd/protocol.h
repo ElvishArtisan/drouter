@@ -29,7 +29,7 @@ class Protocol : public QObject
 {
  Q_OBJECT;
  public:
-  enum Type {ProtocolD=0};
+ enum Type {ProtocolD=0,ProtocolSa=1};
   Protocol(DRouter *router,Type type,QObject *parent=0);
   Type type() const;
 

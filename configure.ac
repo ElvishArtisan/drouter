@@ -102,10 +102,18 @@ fi
 AC_CONFIG_FILES([ \
     docs/Makefile \
     src/Makefile \
+    src/common/Makefile \
+    src/dmap/Makefile \
     src/drouterd/Makefile \
     drouter.spec \
     Makefile ])
 AC_OUTPUT()
+
+#
+# Link Common Elements
+#
+./link_common.sh dmap
+./link_common.sh drouterd
 
 AC_MSG_NOTICE()
 AC_MSG_NOTICE(Now enter 'make' to build the software.)

@@ -37,6 +37,7 @@ rpm:	dist
 EXTRA_DIST = autogen.sh\
              get_distro.sh\
              get_target.sh\
+             link_common.sh\
              PACKAGE_VERSION
 
 CLEANFILES = *~\

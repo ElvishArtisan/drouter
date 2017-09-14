@@ -38,6 +38,7 @@ class DRouter : public QObject
   DRouter(QObject *parent=0);
   QList<QHostAddress> nodeHostAddresses() const;
   SyLwrpClient *node(const QHostAddress &hostaddr);
+  SyLwrpClient *nodeBySrcStream(const QHostAddress &strmaddress,int *slot);
   SySource *src(int srcnum) const;
   SySource *src(const QHostAddress &hostaddr,int slot) const;
   SyDestination *dst(const QHostAddress &hostaddr,int slot) const;

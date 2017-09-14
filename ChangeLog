@@ -21,3 +21,7 @@
 	* Implemented the 'SetCrosspoint' Protocol "D" command.
 2019-09-13 Fred Gleason <fredg@paravelsystems.com>
 	* Added client command feedback for Protocol "D".
+2019-09-14 Fred Gleason <fredg@paravelsystems.com>
+	* Added dmap(8) in 'src/dmap/'.
+2019-09-14 Fred Gleason <fredg@paravelsystems.com>
+	* Implemented support for SoftwareAuthority protocol.

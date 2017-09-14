@@ -58,6 +58,8 @@ MainObject::MainObject(QObject *parent)
   //
   main_protocols.
     push_back(ProtocolFactory(main_drouter,Protocol::ProtocolD,this));
+  main_protocols.
+    push_back(ProtocolFactory(main_drouter,Protocol::ProtocolSa,this));
 }
 
 

@@ -21,4 +21,9 @@ depcomp
 install-sh
 missing
 moc_*
+src/dmap/dmap
+src/dmap/endpointmap.cpp
+src/dmap/endpointmap.h
 src/drouterd/drouterd
+src/drouterd/endpointmap.cpp
+src/drouterd/endpointmap.h
