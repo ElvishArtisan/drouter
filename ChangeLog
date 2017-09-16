@@ -25,3 +25,7 @@
 	* Added dmap(8) in 'src/dmap/'.
 2019-09-14 Fred Gleason <fredg@paravelsystems.com>
 	* Implemented support for SoftwareAuthority protocol.
+2019-09-15 Fred Gleason <fredg@paravelsystems.com>
+	* Fixed a bug in 'src/drouterd/drouter.cpp' and
+	'src/drouterd/drouter.h' that could cause reception of multicast
+	messages to fail on systems with multiple network interfaces.

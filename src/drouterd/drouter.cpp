@@ -24,8 +24,10 @@
 #include <syslog.h>
 
 #include <QHostAddress>
+#include <QSignalMapper>
 
 #include <sy/sycmdswitch.h>
+#include <sy/syinterfaces.h>
 #include <sy/symcastsocket.h>
 
 #include "drouter.h"
@@ -34,17 +36,31 @@ DRouter::DRouter(QObject *parent)
   : QObject(parent)
 {
   //
-  // Livewire Advertisement Socket
+  // Livewire Advertisement Sockets
   //
-  drouter_advt_socket=new SyMcastSocket(SyMcastSocket::ReadOnly,this);
-  if(!drouter_advt_socket->bind(SWITCHYARD_ADVERTS_PORT)) {
-    fprintf(stderr,"drouterd: unable to bind port %d\n",
-	    SWITCHYARD_ADVERTS_PORT);
+  QSignalMapper *mapper=new QSignalMapper(this);
+  connect(mapper,SIGNAL(mapped(int)),this,SLOT(advtReadyReadData(int)));
+  SyInterfaces *ifaces=new SyInterfaces();
+  if(!ifaces->update()) {
+    fprintf(stderr,"drouterd: unable to get network interface information\n");
     exit(1);
   }
-  drouter_advt_socket->subscribe(SWITCHYARD_ADVERTS_ADDRESS);
-  connect(drouter_advt_socket,SIGNAL(readyRead()),
-	  this,SLOT(advtReadyReadData()));
+  for(int i=0;i<ifaces->quantity();i++) {
+    drouter_advt_sockets.
+      push_back(new SyMcastSocket(SyMcastSocket::ReadOnly,this));
+    if(!drouter_advt_sockets.back()->
+       bind(ifaces->ipv4Address(i),SWITCHYARD_ADVERTS_PORT)) {
+      fprintf(stderr,"drouterd: unable to bind %s:%d\n",
+	      (const char *)ifaces->ipv4Address(i).toString().toUtf8(),
+	      SWITCHYARD_ADVERTS_PORT);
+      exit(1);
+    }
+    drouter_advt_sockets.back()->subscribe(SWITCHYARD_ADVERTS_ADDRESS);
+    mapper->setMapping(drouter_advt_sockets.back(),
+		       drouter_advt_sockets.size()-1);
+    connect(drouter_advt_sockets.back(),SIGNAL(readyRead()),
+	    mapper,SLOT(map()));
+  }
 }
 
 
@@ -211,13 +227,13 @@ void DRouter::destinationChangedData(unsigned id,int slotnum,const SyNode &node,
 }
 
 
-void DRouter::advtReadyReadData()
+void DRouter::advtReadyReadData(int ifnum)
 {
   QHostAddress addr;
   char data[1501];
   int n;
 
-  while((n=drouter_advt_socket->readDatagram(data,1500,&addr))>0) {
+  while((n=drouter_advt_sockets.at(ifnum)->readDatagram(data,1500,&addr))>0) {
     if(node(addr)==NULL) {
       SyLwrpClient *node=new SyLwrpClient(addr.toIPv4Address(),this);
       connect(node,SIGNAL(connected(unsigned,bool)),

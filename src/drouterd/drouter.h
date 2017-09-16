@@ -60,11 +60,11 @@ class DRouter : public QObject
 			 const SySource &src);
   void destinationChangedData(unsigned id,int slotnum,const SyNode &node,
 			      const SyDestination &dst);
-  void advtReadyReadData();
+  void advtReadyReadData(int ifnum);
 
  private:
   QMap<unsigned,SyLwrpClient *> drouter_nodes;
-  SyMcastSocket *drouter_advt_socket;
+  QList<SyMcastSocket *> drouter_advt_sockets;
 };
 
 
