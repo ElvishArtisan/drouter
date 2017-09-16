@@ -23,9 +23,11 @@
 #include <stdlib.h>
 
 #include <QCoreApplication>
+#include <QSignalMapper>
 
 #include <sy/sycmdswitch.h>
 #include <sy/syconfig.h>
+#include <sy/syinterfaces.h>
 #include <sy/syprofile.h>
 
 #include "dmap.h"
@@ -157,10 +159,21 @@ MainObject::MainObject(QObject *parent)
   map_map->setRouterNumber(map_router_number);
 
   //
-  // Advertising Socket
+  // Advertising Sockets
   //
-  map_advert_socket=new SyMcastSocket(SyMcastSocket::ReadOnly,this);
-  connect(map_advert_socket,SIGNAL(readyRead()),this,SLOT(readyReadData()));
+  SyInterfaces *ifaces=new SyInterfaces();
+  if(!ifaces->update()) {
+    fprintf(stderr,"dmap: unable to get network interface information\n");
+    exit(1);
+  }
+  QSignalMapper *mapper=new QSignalMapper(this);
+  connect(mapper,SIGNAL(mapped(int)),this,SLOT(advtReadyReadData(int)));
+  for(int i=0;i<ifaces->quantity();i++) {
+    map_advert_sockets.
+      push_back(new SyMcastSocket(SyMcastSocket::ReadOnly,this));
+    connect(map_advert_sockets.back(),SIGNAL(readyRead()),mapper,SLOT(map()));
+    mapper->setMapping(map_advert_sockets.back(),map_advert_sockets.size()-1);
+  }
 
   //
   // Timers
@@ -186,8 +199,11 @@ MainObject::MainObject(QObject *parent)
     startNodeProcessing();
   }
   else {
-    map_advert_socket->bind(SWITCHYARD_ADVERTS_PORT);
-    map_advert_socket->subscribe(SWITCHYARD_ADVERTS_ADDRESS);
+    for(int i=0;i<map_advert_sockets.size();i++) {
+      map_advert_sockets.at(i)->
+	bind(ifaces->ipv4Address(i),SWITCHYARD_ADVERTS_PORT);
+      map_advert_sockets.at(i)->subscribe(SWITCHYARD_ADVERTS_ADDRESS);
+    }
     map_scan_timer->start(map_scan_duration);
     Verbose("Scanning for nodes...\n");
   }
@@ -222,14 +238,14 @@ void MainObject::startNodeProcessing()
 }
 
 
-void MainObject::readyReadData()
+void MainObject::advtReadyReadData(int ifnum)
 {
   QHostAddress addr;
   char data[1500];
   int n;
 
-  if(map_advert_socket!=NULL) {
-    while((n=map_advert_socket->readDatagram(data,1500,&addr))>0) {
+  if(map_advert_sockets.at(ifnum)!=NULL) {
+    while((n=map_advert_sockets.at(ifnum)->readDatagram(data,1500,&addr))>0) {
       uint32_t addr_int=addr.toIPv4Address();
       bool found=false;
       for(int i=0;i<map_node_addresses.size();i++) {
@@ -239,7 +255,8 @@ void MainObject::readyReadData()
 	Verbose("  detected node at: "+addr.toString()+"\n");
 	if((map_max_nodes==0)||((int)map_node_addresses.size()<map_max_nodes)) {
 	  map_node_addresses.push_back(addr_int);
-	  if((map_max_nodes>0)&&((int)map_node_addresses.size()==map_max_nodes)) {
+	  if((map_max_nodes>0)&&
+	     ((int)map_node_addresses.size()==map_max_nodes)) {
 	    map_scan_timer->stop();
 	    map_scan_timer->start(0);
 	  }
@@ -252,8 +269,10 @@ void MainObject::readyReadData()
 
 void MainObject::scanTimeoutData()
 {
-  delete map_advert_socket;
-  map_advert_socket=NULL;
+  for(int i=0;i<map_advert_sockets.size();i++) {
+    delete map_advert_sockets[i];
+  }
+  map_advert_sockets.clear();
   Verbose("Scan phase complete.\n");
   startNodeProcessing();
 }

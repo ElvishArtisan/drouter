@@ -44,7 +44,7 @@ class MainObject : public QObject
   void startNodeProcessing();
 
  private slots:
-  void readyReadData();
+  void advtReadyReadData(int ifnum);
   void scanTimeoutData();
   void garbageTimeoutData();
   void connectionTimeoutData();
@@ -66,7 +66,7 @@ class MainObject : public QObject
   bool map_no_off_source;
   bool map_scan_only;
   int map_scan_duration;
-  SyMcastSocket *map_advert_socket;
+  QList<SyMcastSocket *> map_advert_sockets;
   QTimer *map_scan_timer;
   QTimer *map_garbage_timer;
   QTimer *map_connection_timer;

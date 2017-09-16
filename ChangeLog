@@ -31,3 +31,7 @@
 	messages to fail on systems with multiple network interfaces.
 2019-09-15 Fred Gleason <fredg@paravelsystems.com>
 	* Replaced 'std::vector' class with 'QList' in dmap(8).
+2019-09-16 Fred Gleason <fredg@paravelsystems.com>
+	* Fixed a bug in 'src/dmap/dmap.cpp' and 'src/dmap/dmap.h' that
+	could cause reception of multicast messages to fail on systems
+	with multiple network interfaces.
