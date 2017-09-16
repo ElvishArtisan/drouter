@@ -23,9 +23,7 @@
 
 #include <stdint.h>
 
-#include <map>
-#include <vector>
-
+#include <QList>
 #include <QObject>
 #include <QTimer>
 
@@ -58,7 +56,7 @@ class MainObject : public QObject
   int ProcessSkipNodeList(const QString &filename);
   void PurgeSkippedNodes();
   void DumpNodeList();
-  void SortAddresses(std::vector<uint32_t> &addrs);
+  void SortAddresses(QList<uint32_t> &addrs);
   //  void LoadMatrix(int mtxnum);
   void Verbose(const QString &msg);
   bool map_verbose;
@@ -73,8 +71,8 @@ class MainObject : public QObject
   QTimer *map_garbage_timer;
   QTimer *map_connection_timer;
   SyLwrpClient *map_lwrp;
-  std::vector<uint32_t> map_node_addresses;
-  std::vector<uint32_t> map_skip_node_addresses;
+  QList<uint32_t> map_node_addresses;
+  QList<uint32_t> map_skip_node_addresses;
   EndPointMap *map_map;
   int map_router_number;
   QString map_router_name;

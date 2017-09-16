@@ -232,7 +232,7 @@ void MainObject::readyReadData()
     while((n=map_advert_socket->readDatagram(data,1500,&addr))>0) {
       uint32_t addr_int=addr.toIPv4Address();
       bool found=false;
-      for(unsigned i=0;i<map_node_addresses.size();i++) {
+      for(int i=0;i<map_node_addresses.size();i++) {
 	found=found||(addr_int==map_node_addresses[i]);
       }
       if(!found) {
@@ -264,7 +264,7 @@ void MainObject::garbageTimeoutData()
   QString err_text;
 
   delete map_lwrp;
-  if(map_current_id<map_node_addresses.size()) {  // Next Node
+  if(map_current_id<(unsigned)map_node_addresses.size()) {  // Next Node
     map_connection_timer->start(0);
   }
   else {  // Done, dump the map and exit
@@ -442,7 +442,7 @@ int MainObject::ProcessSkipNodeList(const QString &filename)
 void MainObject::PurgeSkippedNodes()
 {
   for(int i=(int)map_node_addresses.size()-1;i>=0;i--) {
-    for(unsigned j=0;j<map_skip_node_addresses.size();j++) {
+    for(int j=0;j<map_skip_node_addresses.size();j++) {
       if(map_node_addresses[i]==map_skip_node_addresses[j]) {
 	map_node_addresses.erase(map_node_addresses.begin()+i);
       }
@@ -453,14 +453,14 @@ void MainObject::PurgeSkippedNodes()
 
 void MainObject::DumpNodeList()
 {
-  for(unsigned i=0;i<map_node_addresses.size();i++) {
+  for(int i=0;i<map_node_addresses.size();i++) {
     printf("%s\n",(const char *)QHostAddress(map_node_addresses[i]).
 	   toString().toUtf8());
   }
 }
 
 
-void MainObject::SortAddresses(std::vector<uint32_t> &addrs)
+void MainObject::SortAddresses(QList<uint32_t> &addrs)
 {
   uint32_t addr;
   bool changed=true;
@@ -468,7 +468,7 @@ void MainObject::SortAddresses(std::vector<uint32_t> &addrs)
   if(addrs.size()>1) {
     while(changed) {
       changed=false;
-      for(unsigned i=0;i<(addrs.size()-1);i++) {
+      for(int i=0;i<(addrs.size()-1);i++) {
 	if((addrs[i])>(addrs[i+1])) {
 	  addr=addrs[i];
 	  addrs[i]=addrs[i+1];

@@ -29,3 +29,5 @@
 	* Fixed a bug in 'src/drouterd/drouter.cpp' and
 	'src/drouterd/drouter.h' that could cause reception of multicast
 	messages to fail on systems with multiple network interfaces.
+2019-09-15 Fred Gleason <fredg@paravelsystems.com>
+	* Replaced 'std::vector' class with 'QList' in dmap(8).
