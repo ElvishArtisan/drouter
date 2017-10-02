@@ -70,7 +70,9 @@ QList<QHostAddress> DRouter::nodeHostAddresses() const
 
   for(QMap<unsigned,SyLwrpClient *>::const_iterator it=drouter_nodes.constBegin();
       it!=drouter_nodes.constEnd();it++) {
-    addrs.push_back(it.value()->hostAddress());
+    if(it.value()->isConnected()) {
+      addrs.push_back(it.value()->hostAddress());
+    }
   }
   return addrs;
 }

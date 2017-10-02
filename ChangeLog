@@ -37,3 +37,6 @@
 	with multiple network interfaces.
 2019-10-02 Fred Gleason <fredg@paravelsystems.com>
 	* Fixed a use-after-delete bug in drouterd(8).
+2019-10-02 Fred Gleason <fredg@paravelsystems.com>
+	* Fixed a bug in the 'ListNode' Protocol D command that caused
+	'phantom' nodes to appear in the node list.
