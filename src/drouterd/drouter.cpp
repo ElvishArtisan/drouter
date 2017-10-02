@@ -208,7 +208,6 @@ void DRouter::nodeConnectedData(unsigned id,bool state)
     }
     emit nodeAboutToBeRemoved(*(lwrp->node()));
     drouter_nodes.erase(drouter_nodes.find(id));
-    delete lwrp;
   }
 }
 

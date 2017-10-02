@@ -35,3 +35,5 @@
 	* Fixed a bug in 'src/dmap/dmap.cpp' and 'src/dmap/dmap.h' that
 	could cause reception of multicast messages to fail on systems
 	with multiple network interfaces.
+2019-10-02 Fred Gleason <fredg@paravelsystems.com>
+	* Fixed a use-after-delete bug in drouterd(8).
