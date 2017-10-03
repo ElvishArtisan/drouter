@@ -74,7 +74,7 @@ void ProtocolD::processListNodesD(int id)
   QList<QHostAddress> addrs=router()->nodeHostAddresses();
   for(int i=0;i<addrs.size();i++) {
     if((lwrp=router()->node(addrs.at(i)))!=NULL) {
-      d_server->send(NodeRecord("NODE",lwrp));
+      d_server->send(NodeRecord("NODE",lwrp),id);
     }
   }
 }
@@ -125,7 +125,7 @@ void ProtocolD::processSubscribeNodesD(int id)
   QList<QHostAddress> addrs=router()->nodeHostAddresses();
   for(int i=0;i<addrs.size();i++) {
     if((lwrp=router()->node(addrs.at(i)))!=NULL) {
-      d_server->send(NodeRecord("NODEADD",lwrp));
+      d_server->send(NodeRecord("NODEADD",lwrp),id);
     }
   }
   ServerDConnection *conn=(ServerDConnection *)(d_server->connection(id)->priv);
@@ -176,22 +176,22 @@ void ProtocolD::processAddedNode(const SyNode &node)
 
   QList<NetConnection *> conns=d_server->connections();
   for(int i=0;i<conns.size();i++) {
-    ServerDConnection *conn=(ServerDConnection *)(conns.at(i)->priv);
-    if(conn!=NULL) {
+    if(conns.at(i)!=NULL) {
+      ServerDConnection *conn=(ServerDConnection *)(conns.at(i)->priv);
       if(conn->nodesSubscribed()) {
-	d_server->send(NodeRecord("NODEADD",node));
+	d_server->send(NodeRecord("NODEADD",node),i);
       }
       if(conn->dstsSubscribed()) {
 	for(unsigned j=0;j<node.dstSlotQuantity();j++) {
 	  if((lwrp=router()->node(node.hostAddress()))!=NULL) {
-	    d_server->send(DestinationRecord("DSTADD",lwrp,j,lwrp->dst(j)));
+	    d_server->send(DestinationRecord("DSTADD",lwrp,j,lwrp->dst(j)),i);
 	  }
 	}
       }
       if(conn->srcsSubscribed()) {
 	for(unsigned j=0;j<node.srcSlotQuantity();j++) {
 	  if((lwrp=router()->node(node.hostAddress()))!=NULL) {
-	    d_server->send(SourceRecord("SRCADD",lwrp,j,lwrp->src(j)));
+	    d_server->send(SourceRecord("SRCADD",lwrp,j,lwrp->src(j)),i);
 	  }
 	}
       }
@@ -204,21 +204,21 @@ void ProtocolD::processAboutToBeRemovedNode(const SyNode &node)
 {
   QList<NetConnection *> conns=d_server->connections();
   for(int i=0;i<conns.size();i++) {
-    ServerDConnection *conn=(ServerDConnection *)(conns.at(i)->priv);
-    if(conn!=NULL) {
+    if(conns.at(i)!=NULL) {
+      ServerDConnection *conn=(ServerDConnection *)(conns.at(i)->priv);
       if(conn->nodesSubscribed()) {
 	d_server->send("NODEDEL\t"+node.hostAddress().toString()+"\r\n",i);
       }
       if(conn->dstsSubscribed()) {
 	for(unsigned j=0;j<node.dstSlotQuantity();j++) {
 	  d_server->send("DSTDEL\t"+node.hostAddress().toString()+"\t"+
-			 QString().sprintf("%u",j)+"\r\n");
+			 QString().sprintf("%u",j)+"\r\n",i);
 	}
       }
       if(conn->srcsSubscribed()) {
 	for(unsigned j=0;j<node.srcSlotQuantity();j++) {
 	  d_server->send("SRCDEL\t"+node.hostAddress().toString()+"\t"+
-			 QString().sprintf("%u",j)+"\r\n");	  
+			 QString().sprintf("%u",j)+"\r\n",i);	  
 	}
       }
 
@@ -232,10 +232,10 @@ void ProtocolD::processChangedSource(const SyNode &node,int slot,
 {
   QList<NetConnection *> conns=d_server->connections();
   for(int i=0;i<conns.size();i++) {
-    ServerDConnection *conn=(ServerDConnection *)(conns.at(i)->priv);
-    if(conn!=NULL) {
+    if(conns.at(i)!=NULL) {
+      ServerDConnection *conn=(ServerDConnection *)(conns.at(i)->priv);
       if(conn->srcsSubscribed()) {
-	d_server->send(SourceRecord("SRC",node,slot,src));
+	d_server->send(SourceRecord("SRC",node,slot,src),i);
       }
     }
   }
@@ -247,10 +247,10 @@ void ProtocolD::processChangedDestination(const SyNode &node,int slot,
 {
   QList<NetConnection *> conns=d_server->connections();
   for(int i=0;i<conns.size();i++) {
-    ServerDConnection *conn=(ServerDConnection *)(conns.at(i)->priv);
-    if(conn!=NULL) {
+    if(conns.at(i)!=NULL) {
+      ServerDConnection *conn=(ServerDConnection *)(conns.at(i)->priv);
       if(conn->dstsSubscribed()) {
-	d_server->send(DestinationRecord("DST",node,slot,dst));
+	d_server->send(DestinationRecord("DST",node,slot,dst),i);
       }
     }
   }
