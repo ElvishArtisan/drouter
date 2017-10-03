@@ -207,10 +207,7 @@ void ProtocolD::processAboutToBeRemovedNode(const SyNode &node)
     ServerDConnection *conn=(ServerDConnection *)(conns.at(i)->priv);
     if(conn!=NULL) {
       if(conn->nodesSubscribed()) {
-	d_server->send(NodeRecord("NODEDEL",node));
-      }
-      if(conn->nodesSubscribed()) {
-	d_server->send("NODEDEL\t"+node.hostAddress().toString()+"\r\n");
+	d_server->send("NODEDEL\t"+node.hostAddress().toString()+"\r\n",i);
       }
       if(conn->dstsSubscribed()) {
 	for(unsigned j=0;j<node.dstSlotQuantity();j++) {

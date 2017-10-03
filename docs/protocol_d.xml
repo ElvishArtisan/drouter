@@ -451,17 +451,15 @@
     </para>
     <para>
       Return a list of <computeroutput>NODEADD</computeroutput> records
-      delinieating the currently available nodes, each record
-      terminated by <computeroutput>CR/LF</computeroutput> (see the
-      description of the <computeroutput>NODE</computeroutput> message in the 
-      <command>ListNodes</command> command for a breakdown of the
-      supplied fields). Whenever a new node is added, a corresponding
+      delineating the currently available nodes, each record
+      terminated by <computeroutput>CR/LF</computeroutput>.
+      Subsequently, for each newly detected node, a corresponding
       <computeroutput>NODEADD</computeroutput>
       record will be sent, while changes to an existing node will
       cause a <computeroutput>NODE</computeroutput> record to be sent.
       Removal of a node from the system will generate a
-      corresponding <computeroutput>NODEDEL</computeroutput> record, containing
-      the following fields:
+      corresponding <computeroutput>NODEDEL</computeroutput> record with the
+      following fields:
     </para>
     <variablelist>
       <varlistentry>
@@ -480,23 +478,12 @@
 	</term>
 	<listitem>
 	  <para>
-	    The IPv4 address of the parent node, in dotted-quad notation.
-	  </para>
-	</listitem>
-      </varlistentry>
-      <varlistentry>
-	<term>
-	  <replaceable>slot</replaceable>
-	</term>
-	<listitem>
-	  <para>
-	    The slot position number of the node on the parent node
-	    (zero-based).
+	    The IPv4 address of the node, in dotted-quad notation.
 	  </para>
 	</listitem>
       </varlistentry>
     </variablelist>
-  </sect2>
+   </sect2>
 
   <sect2>
     <title>Subscribe Sources</title>
