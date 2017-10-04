@@ -27,6 +27,8 @@
 ServerDConnection::ServerDConnection()
 {
   dsts_subscribed=false;
+  gpis_subscribed=false;
+  gpos_subscribed=false;
   nodes_subscribed=false;
   srcs_subscribed=false;
 }
@@ -41,6 +43,30 @@ bool ServerDConnection::dstsSubscribed() const
 void ServerDConnection::setDstsSubscribed(bool state)
 {
   dsts_subscribed=state;
+}
+
+
+bool ServerDConnection::gpisSubscribed() const
+{
+  return gpis_subscribed;
+}
+
+
+void ServerDConnection::setGpisSubscribed(bool state)
+{
+  gpis_subscribed=state;
+}
+
+
+bool ServerDConnection::gposSubscribed() const
+{
+  return gpos_subscribed;
+}
+
+
+void ServerDConnection::setGposSubscribed(bool state)
+{
+  gpos_subscribed=state;
 }
 
 
@@ -118,6 +144,16 @@ void ServerD::processCommand(int id,const SyAString &cmd)
     send("ok\r\n",id);
     return;
   }
+  if(cmds.at(0).toLower()=="listgpis") {
+    emit processListGpis(id);
+    send("ok\r\n",id);
+    return;
+  }
+  if(cmds.at(0).toLower()=="listgpos") {
+    emit processListGpos(id);
+    send("ok\r\n",id);
+    return;
+  }
   if(cmds.at(0).toLower()=="listsources") {
     emit processListSources(id);
     send("ok\r\n",id);
@@ -129,6 +165,16 @@ void ServerD::processCommand(int id,const SyAString &cmd)
   }
   if(cmds.at(0).toLower()=="subscribedestinations") {
     emit processSubscribeDestinations(id);
+    send("ok\r\n",id);
+    return;
+  }
+  if(cmds.at(0).toLower()=="subscribegpis") {
+    emit processSubscribeGpis(id);
+    send("ok\r\n",id);
+    return;
+  }
+  if(cmds.at(0).toLower()=="subscribegpos") {
+    emit processSubscribeGpos(id);
     send("ok\r\n",id);
     return;
   }

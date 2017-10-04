@@ -143,6 +143,30 @@ SyDestination *DRouter::dst(const QHostAddress &hostaddr,int slot) const
 }
 
 
+SyGpioBundle *DRouter::gpi(const QHostAddress &hostaddr,int slot) const
+{
+  SyLwrpClient *lwrp=drouter_nodes.value(hostaddr.toIPv4Address());
+  if(lwrp!=NULL) {
+    if(slot<(int)lwrp->gpis()) {
+      return lwrp->gpiBundle(slot);
+    }
+  }
+  return NULL;
+}
+
+
+SyGpo *DRouter::gpo(const QHostAddress &hostaddr,int slot) const
+{
+  SyLwrpClient *lwrp=drouter_nodes.value(hostaddr.toIPv4Address());
+  if(lwrp!=NULL) {
+    if(slot<(int)lwrp->gpos()) {
+      return lwrp->gpo(slot);
+    }
+  }
+  return NULL;
+}
+
+
 bool DRouter::clearCrosspoint(const QHostAddress &dst_hostaddr,int dst_slot)
 {
   SyLwrpClient *lwrp=NULL;
@@ -228,6 +252,20 @@ void DRouter::destinationChangedData(unsigned id,int slotnum,const SyNode &node,
 }
 
 
+void DRouter::gpiChangedData(unsigned id,int slotnum,const SyNode &node,
+			     const SyGpioBundle &gpi)
+{
+  emit gpiChanged(node,slotnum,gpi);
+}
+
+
+void DRouter::gpoChangedData(unsigned id,int slotnum,const SyNode &node,
+			     const SyGpo &gpo)
+{
+  emit gpoChanged(node,slotnum,gpo);
+}
+
+
 void DRouter::advtReadyReadData(int ifnum)
 {
   QHostAddress addr;
@@ -247,7 +285,14 @@ void DRouter::advtReadyReadData(int ifnum)
 					     const SyDestination &)),
 	      this,SLOT(destinationChangedData(unsigned,int,const SyNode &,
 					       const SyDestination &)));
-
+      connect(node,SIGNAL(gpiChanged(unsigned,int,const SyNode &,
+				     const SyGpioBundle &)),
+	      this,SLOT(gpiChangedData(unsigned,int,const SyNode &,
+				       const SyGpioBundle &)));
+      connect(node,
+	      SIGNAL(gpoChanged(unsigned,int,const SyNode &,const SyGpo &)),
+	      this,
+	      SLOT(gpoChangedData(unsigned,int,const SyNode &,const SyGpo &)));
       drouter_nodes[addr.toIPv4Address()]=node;
       node->connectToHost(addr,SWITCHYARD_LWRP_PORT,"",false);
     }

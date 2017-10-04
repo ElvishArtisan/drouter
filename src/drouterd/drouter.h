@@ -42,6 +42,8 @@ class DRouter : public QObject
   SySource *src(int srcnum) const;
   SySource *src(const QHostAddress &hostaddr,int slot) const;
   SyDestination *dst(const QHostAddress &hostaddr,int slot) const;
+  SyGpioBundle *gpi(const QHostAddress &hostaddr,int slot) const;
+  SyGpo *gpo(const QHostAddress &hostaddr,int slot) const;
 
  public slots:
   bool clearCrosspoint(const QHostAddress &dst_hostaddr,int dst_slot);
@@ -53,6 +55,8 @@ class DRouter : public QObject
   void nodeAboutToBeRemoved(const SyNode &node);
   void srcChanged(const SyNode &node,int slot,const SySource &src);
   void dstChanged(const SyNode &node,int slot,const SyDestination &dst);
+  void gpiChanged(const SyNode &node,int slot,const SyGpioBundle &gpi);
+  void gpoChanged(const SyNode &node,int slot,const SyGpo &gpo);
 
  private slots:
   void nodeConnectedData(unsigned id,bool state);
@@ -60,6 +64,10 @@ class DRouter : public QObject
 			 const SySource &src);
   void destinationChangedData(unsigned id,int slotnum,const SyNode &node,
 			      const SyDestination &dst);
+  void gpiChangedData(unsigned id,int slotnum,const SyNode &node,
+		      const SyGpioBundle &gpi);
+  void gpoChangedData(unsigned id,int slotnum,const SyNode &node,
+		      const SyGpo &gpo);
   void advtReadyReadData(int ifnum);
 
  private:

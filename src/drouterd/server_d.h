@@ -33,6 +33,10 @@ class ServerDConnection
   ServerDConnection();
   bool dstsSubscribed() const;
   void setDstsSubscribed(bool state);
+  bool gpisSubscribed() const;
+  void setGpisSubscribed(bool state);
+  bool gposSubscribed() const;
+  void setGposSubscribed(bool state);
   bool nodesSubscribed() const;
   void setNodesSubscribed(bool state);
   bool srcsSubscribed() const;
@@ -40,6 +44,8 @@ class ServerDConnection
 
  private:
   bool dsts_subscribed;
+  bool gpis_subscribed;
+  bool gpos_subscribed;
   bool nodes_subscribed;
   bool srcs_subscribed;
 };
@@ -56,9 +62,13 @@ class ServerD : public ServerNet
 
  signals:
   void processListDestinations(int id);
+  void processListGpis(int id);
+  void processListGpos(int id);
   void processListNodes(int id);
   void processListSources(int id);
   void processSubscribeDestinations(int id);
+  void processSubscribeGpis(int id);
+  void processSubscribeGpos(int id);
   void processSubscribeNodes(int id);
   void processSubscribeSources(int id);
   void processClearCrosspoint(int id,

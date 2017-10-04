@@ -185,6 +185,175 @@
     </variablelist>
   </sect2>
 
+  <sect2>
+    <title>List GPIs</title>
+    <para>
+      <command>ListGpis</command>
+    </para>
+    <para>
+      Return a list of records delinieating the currently available
+      GPIs, terminated by <computeroutput>CR/LF</computeroutput>.
+      Each record contains the following fields, delimited by
+      <computeroutput>TAB</computeroutput> (ASCII 9):
+    </para>
+    <variablelist>
+      <varlistentry>
+	<term>
+	  <computeroutput>GPI</computeroutput>
+	</term>
+	<listitem>
+	  <para>
+	    The string <computeroutput>GPI</computeroutput>.
+	  </para>
+	</listitem>
+      </varlistentry>
+      <varlistentry>
+	<term>
+	  <replaceable>host-addr</replaceable>
+	</term>
+	<listitem>
+	  <para>
+	    The IPv4 address of the parent node, in dotted-quad notation.
+	  </para>
+	</listitem>
+      </varlistentry>
+      <varlistentry>
+	<term>
+	  <replaceable>slot</replaceable>
+	</term>
+	<listitem>
+	  <para>
+	    The slot position number of the GPI on the parent node
+	    (zero-based).
+	  </para>
+	</listitem>
+      </varlistentry>
+      <varlistentry>
+	<term>
+	  <replaceable>host-name</replaceable>
+	</term>
+	<listitem>
+	  <para>
+	    The host name of the parent node. Depending upon system
+	    configuration, this could be the name as programmed in the node or
+	    the name as reported via a DNS PTR lookup.
+	  </para>
+	</listitem>
+      </varlistentry>
+      <varlistentry>
+	<term>
+	  <replaceable>state</replaceable>
+	</term>
+	<listitem>
+	  <para>
+	    The state of the GPI lines, in the format
+	    <computeroutput>xxxxx</computeroutput>.
+	  </para>
+	</listitem>
+      </varlistentry>
+    </variablelist>
+  </sect2>
+
+  <sect2>
+    <title>List GPOs</title>
+    <para>
+      <command>ListGpos</command>
+    </para>
+    <para>
+      Return a list of records delinieating the currently available
+      GPOs, terminated by <computeroutput>CR/LF</computeroutput>.
+      Each record contains the following fields, delimited by
+      <computeroutput>TAB</computeroutput> (ASCII 9):
+    </para>
+    <variablelist>
+      <varlistentry>
+	<term>
+	  <computeroutput>GPO</computeroutput>
+	</term>
+	<listitem>
+	  <para>
+	    The string <computeroutput>GPO</computeroutput>.
+	  </para>
+	</listitem>
+      </varlistentry>
+      <varlistentry>
+	<term>
+	  <replaceable>host-addr</replaceable>
+	</term>
+	<listitem>
+	  <para>
+	    The IPv4 address of the parent node, in dotted-quad notation.
+	  </para>
+	</listitem>
+      </varlistentry>
+      <varlistentry>
+	<term>
+	  <replaceable>slot</replaceable>
+	</term>
+	<listitem>
+	  <para>
+	    The slot position number of the GPO on the parent node
+	    (zero-based).
+	  </para>
+	</listitem>
+      </varlistentry>
+      <varlistentry>
+	<term>
+	  <replaceable>host-name</replaceable>
+	</term>
+	<listitem>
+	  <para>
+	    The host name of the parent node. Depending upon system
+	    configuration, this could be the name as programmed in the node or
+	    the name as reported via a DNS PTR lookup.
+	  </para>
+	</listitem>
+      </varlistentry>
+      <varlistentry>
+	<term>
+	  <replaceable>state</replaceable>
+	</term>
+	<listitem>
+	  <para>
+	    The state of the GPO lines, in the format
+	    <computeroutput>xxxxx</computeroutput>.
+	  </para>
+	</listitem>
+      </varlistentry>
+      <varlistentry>
+	<term>
+	  <replaceable>name</replaceable>
+	</term>
+	<listitem>
+	  <para>
+	    The name of the GPO entry.
+	  </para>
+	</listitem>
+      </varlistentry>
+      <varlistentry>
+	<term>
+	  <replaceable>src-host-addr</replaceable>
+	</term>
+	<listitem>
+	  <para>
+	    The IPv4 address of the source GPI node, in dotted-quad notation.
+	  </para>
+	</listitem>
+      </varlistentry>
+      <varlistentry>
+	<term>
+	  <replaceable>src-slot</replaceable>
+	</term>
+	<listitem>
+	  <para>
+	    The slot position number of the source GPI on the source node
+	    (zero-based).
+	  </para>
+	</listitem>
+      </varlistentry>
+    </variablelist>
+  </sect2>
+
 
   <sect2>
     <title>List Nodes</title>
@@ -447,6 +616,114 @@
 	<listitem>
 	  <para>
 	    The slot position number of the destination on the parent node
+	    (zero-based).
+	  </para>
+	</listitem>
+      </varlistentry>
+    </variablelist>
+  </sect2>
+
+  <sect2>
+    <title>Subscribe GPIs</title>
+    <para>
+      <command>SubscribeGpis</command>
+    </para>
+    <para>
+      Return a list of <computeroutput>GPIADD</computeroutput> records
+      delinieating the currently available GPIs, each record
+      terminated by <computeroutput>CR/LF</computeroutput> (see the
+      description of the <computeroutput>GPI</computeroutput> message in the 
+      <command>ListGpis</command> command for a breakdown of the
+      supplied fields). Whenever a new GPI is added, a corresponding
+      <computeroutput>GPIADD</computeroutput>
+      record will be sent, while changes to an existing GPI will
+      cause a <computeroutput>GPI</computeroutput> record to be sent.
+      Removal of a GPI from the system will generate a
+      corresponding <computeroutput>GPIDEL</computeroutput> record, containing
+      the following fields:
+    </para>
+    <variablelist>
+      <varlistentry>
+	<term>
+	  <computeroutput>GPIDEL</computeroutput>
+	</term>
+	<listitem>
+	  <para>
+	    The string <computeroutput>GPIDEL</computeroutput>.
+	  </para>
+	</listitem>
+      </varlistentry>
+      <varlistentry>
+	<term>
+	  <replaceable>host-addr</replaceable>
+	</term>
+	<listitem>
+	  <para>
+	    The IPv4 address of the parent node, in dotted-quad notation.
+	  </para>
+	</listitem>
+      </varlistentry>
+      <varlistentry>
+	<term>
+	  <replaceable>slot</replaceable>
+	</term>
+	<listitem>
+	  <para>
+	    The slot position number of the GPI on the parent node
+	    (zero-based).
+	  </para>
+	</listitem>
+      </varlistentry>
+    </variablelist>
+  </sect2>
+
+  <sect2>
+    <title>Subscribe GPOs</title>
+    <para>
+      <command>SubscribeGpos</command>
+    </para>
+    <para>
+      Return a list of <computeroutput>GPOADD</computeroutput> records
+      delinieating the currently available GPOs, each record
+      terminated by <computeroutput>CR/LF</computeroutput> (see the
+      description of the <computeroutput>GPO</computeroutput> message in the 
+      <command>ListGpos</command> command for a breakdown of the
+      supplied fields). Whenever a new GPO is added, a corresponding
+      <computeroutput>GPOADD</computeroutput>
+      record will be sent, while changes to an existing GPO will
+      cause a <computeroutput>GPO</computeroutput> record to be sent.
+      Removal of a GPO from the system will generate a
+      corresponding <computeroutput>GPODEL</computeroutput> record, containing
+      the following fields:
+    </para>
+    <variablelist>
+      <varlistentry>
+	<term>
+	  <computeroutput>GPODEL</computeroutput>
+	</term>
+	<listitem>
+	  <para>
+	    The string <computeroutput>GPODEL</computeroutput>.
+	  </para>
+	</listitem>
+      </varlistentry>
+      <varlistentry>
+	<term>
+	  <replaceable>host-addr</replaceable>
+	</term>
+	<listitem>
+	  <para>
+	    The IPv4 address of the parent node, in dotted-quad notation.
+	  </para>
+	</listitem>
+      </varlistentry>
+      <varlistentry>
+	<term>
+	  <replaceable>slot</replaceable>
+	</term>
+	<listitem>
+	  <para>
+	    The slot position number of the GPO on the parent node
 	    (zero-based).
 	  </para>
 	</listitem>

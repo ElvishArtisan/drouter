@@ -38,6 +38,8 @@ class Protocol : public QObject
   void nodeAboutToBeRemovedData(const SyNode &node);
   void srcChangedData(const SyNode &node,int slot,const SySource &src);
   void dstChangedData(const SyNode &node,int slot,const SyDestination &dst);
+  void gpiChangedData(const SyNode &node,int slot,const SyGpioBundle &gpi);
+  void gpoChangedData(const SyNode &node,int slot,const SyGpo &gpo);
 
  protected:
   virtual void processAddedNode(const SyNode &node);
@@ -46,6 +48,9 @@ class Protocol : public QObject
 				    const SySource &src);
   virtual void processChangedDestination(const SyNode &node,int slot,
 					 const SyDestination &dst);
+  virtual void processChangedGpi(const SyNode &node,int slot,
+				 const SyGpioBundle &gpi);
+  virtual void processChangedGpo(const SyNode &node,int slot,const SyGpo &gpo);
   DRouter *router() const;
 
  private:

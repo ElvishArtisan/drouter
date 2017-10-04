@@ -32,9 +32,13 @@ class ProtocolD : public Protocol
 
  private slots:
   void processListDestinationsD(int id);
+  void processListGpisD(int id);
+  void processListGposD(int id);
   void processListNodesD(int id);
   void processListSourcesD(int id);
   void processSubscribeDestinationsD(int id);
+  void processSubscribeGpisD(int id);
+  void processSubscribeGposD(int id);
   void processSubscribeNodesD(int id);
   void processSubscribeSourcesD(int id);
   void processClearCrosspointD(int id,
@@ -49,12 +53,22 @@ class ProtocolD : public Protocol
   void processChangedSource(const SyNode &node,int slot,const SySource &src);
   void processChangedDestination(const SyNode &node,int slot,
 				 const SyDestination &dst);
+  void processChangedGpi(const SyNode &node,int slot,const SyGpioBundle &gpi);
+  void processChangedGpo(const SyNode &node,int slot,const SyGpo &gpo);
 
  private:
   QString DestinationRecord(const QString &keyword,SyLwrpClient *lwrp,int slot,
 			    SyDestination *dst) const;
   QString DestinationRecord(const QString &keyword,const SyNode &node,int slot,
 			    const SyDestination &dst) const;
+  QString GpiRecord(const QString &keyword,SyLwrpClient *lwrp,int slot,
+		    SyGpioBundle *gpi);
+  QString GpiRecord(const QString &keyword,const SyNode &node,int slot,
+		    const SyGpioBundle &gpi);
+  QString GpoRecord(const QString &keyword,SyLwrpClient *lwrp,int slot,
+		    SyGpo *gpo);
+  QString GpoRecord(const QString &keyword,const SyNode &node,int slot,
+		    const SyGpo &gpo);
   QString NodeRecord(const QString &keyword,SyLwrpClient *lwrp) const;
   QString NodeRecord(const QString &keyword,const SyNode &node) const;
   QString SourceRecord(const QString &keyword,SyLwrpClient *lwrp,int slot,

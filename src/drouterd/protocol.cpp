@@ -30,10 +30,14 @@ Protocol::Protocol(DRouter *router,Protocol::Type type,QObject *parent)
 	  this,SLOT(nodeAddedData(const SyNode &)));
   connect(router,SIGNAL(nodeAboutToBeRemoved(const SyNode &)),
 	  this,SLOT(nodeAboutToBeRemovedData(const SyNode &)));
-  connect(router,SIGNAL(srcChanged(const SyNode,int,const SySource &)),
-	  this,SLOT(srcChangedData(const SyNode,int,const SySource &)));
-  connect(router,SIGNAL(dstChanged(const SyNode,int,const SyDestination &)),
-	  this,SLOT(dstChangedData(const SyNode,int,const SyDestination &)));
+  connect(router,SIGNAL(srcChanged(const SyNode &,int,const SySource &)),
+	  this,SLOT(srcChangedData(const SyNode &,int,const SySource &)));
+  connect(router,SIGNAL(dstChanged(const SyNode &,int,const SyDestination &)),
+	  this,SLOT(dstChangedData(const SyNode &,int,const SyDestination &)));
+  connect(router,SIGNAL(gpiChanged(const SyNode &,int,const SyGpioBundle &)),
+	  this,SLOT(gpiChangedData(const SyNode &,int,const SyGpioBundle &)));
+  connect(router,SIGNAL(gpoChanged(const SyNode &,int,const SyGpo &)),
+	  this,SLOT(gpoChangedData(const SyNode &,int,const SyGpo &)));
 }
 
 
@@ -68,6 +72,19 @@ void Protocol::dstChangedData(const SyNode &node,int slot,
 }
 
 
+void Protocol::gpiChangedData(const SyNode &node,int slot,
+			      const SyGpioBundle &gpi)
+{
+  processChangedGpi(node,slot,gpi);
+}
+
+
+void Protocol::gpoChangedData(const SyNode &node,int slot,const SyGpo &gpo)
+{
+  processChangedGpo(node,slot,gpo);
+}
+
+
 void Protocol::processAddedNode(const SyNode &node)
 {
 }
@@ -86,6 +103,17 @@ void Protocol::processChangedSource(const SyNode &node,int slot,
 
 void Protocol::processChangedDestination(const SyNode &node,int slot,
 					 const SyDestination &dst)
+{
+}
+
+
+void Protocol::processChangedGpi(const SyNode &node,int slot,
+				 const SyGpioBundle &gpi)
+{
+}
+
+
+void Protocol::processChangedGpo(const SyNode &node,int slot,const SyGpo &gpo)
 {
 }
 

@@ -53,3 +53,6 @@
 	* Refactored dmap(1) to use drouterd(8) to enumerate node resources.
 2019-10-04 Fred Gleason <fredg@paravelsystems.com>
 	* Implemented a connection watchdog in DParser.
+2019-10-04 Fred Gleason <fredg@paravelsystems.com>
+	* Added 'ListGpis', 'ListGpos', 'SubscribeGpis' and 'SubscribeGpos'
+	commands to ProtocolD.
