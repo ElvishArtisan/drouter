@@ -132,11 +132,50 @@ void ProtocolSa::processChangedDestination(const SyNode &node,int slot,
 }
 
 
+void ProtocolSa::processChangedGpi(const SyNode &node,int slot,
+				   const SyGpioBundle &gpi)
+{
+  int input;
+
+  if(gpi.code().contains("L")||gpi.code().contains("H")) {
+    for(QMap<int,EndPointMap *>::const_iterator it=sa_maps.begin();
+	it!=sa_maps.end();it++) {
+      EndPointMap *map=it.value();
+      if((input=map->endPoint(EndPointMap::Input,node.hostAddress(),slot))>=0) {
+	sa_server->send(QString().
+			sprintf("GPIStat %u %d ",map->routerNumber()+1,input+1)+
+			gpi.code().toLower()+"\r\n");
+      }
+    }
+  }
+}
+
+
 void ProtocolSa::processChangedGpo(const SyNode &node,int slot,const SyGpo &gpo)
 {
   int input;
   int output;
 
+  //
+  // Process GPO State
+  //
+  if(gpo.bundle()->code().contains("L")||gpo.bundle()->code().contains("H")) {
+    for(QMap<int,EndPointMap *>::const_iterator it=sa_maps.begin();
+	it!=sa_maps.end();it++) {
+      EndPointMap *map=it.value();
+      if((output=map->endPoint(EndPointMap::Output,node.hostAddress(),slot))>=
+	 0) {
+	sa_server->send(QString().
+			sprintf("GPOStat %u %d ",
+				map->routerNumber()+1,output+1)+
+			gpo.bundle()->code().toLower()+"\r\n");
+      }
+    }
+  }
+
+  //
+  // Process GPIO Route Change
+  //
   for(QMap<int,EndPointMap *>::const_iterator it=sa_maps.begin();
       it!=sa_maps.end();it++) {
     EndPointMap *map=it.value();
@@ -441,81 +480,117 @@ void ProtocolSa::sendRouteInfoSa(int id,unsigned mid,unsigned output)
 }
 
 
-void ProtocolSa::sendGpiInfoSa(int id,unsigned cardnum,int input)
+void ProtocolSa::sendGpiInfoSa(int id,unsigned mid,int input)
 {
-  /*
-  Matrix *mtx=NULL;
+  SyGpioBundle *gpi;
+  EndPointMap *map;
 
-  if((mtx=matrix(cardnum))==NULL) {
+  if((map=sa_maps.value(mid))==NULL) {
     sa_server->send("Error - Router Does Not exist.\r\n",id);
-  }
-  else {
     sa_server->send(">>",id);
-    if(input<0) {
-      for(unsigned i=0;i<mtx->gpiQuantity(cardnum);i++) {
-	sa_server->send(QString().sprintf("GPIStat %u %d ",cardnum+1,i+1)+
-			 mtx->gpiCode(cardnum,i).toLower()+"\r\n",id);
+    return;
+  }
+  if(map->routerType()!=EndPointMap::GpioRouter) {
+    sa_server->send(">>",id);
+    return;
+  }
+  sa_server->send(">>",id);
+  if(input<0) {
+    for(int i=0;i<map->quantity(EndPointMap::Input);i++) {
+      if((gpi=router()->gpi(map->hostAddress(EndPointMap::Input,i),
+			    map->slot(EndPointMap::Input,i)))!=NULL) {
+	sa_server->send(QString().sprintf("GPIStat %u %d ",mid+1,i+1)+
+			gpi->code().toLower()+"\r\n",id);
       }
     }
-    else {
-      sa_server->send(QString().sprintf("GPIStat %u %d ",cardnum+1,input)+
-		       mtx->gpiCode(cardnum,input-1).toLower()+"\r\n",id);
+  }
+  else {
+    if((gpi=router()->gpi(map->hostAddress(EndPointMap::Input,input-1),
+			  map->slot(EndPointMap::Input,input-1)))!=NULL) {
+      sa_server->send(QString().sprintf("GPIStat %u %d ",mid+1,input)+
+		      gpi->code().toLower()+"\r\n",id);
     }
   }
-  */
 }
 
 
-void ProtocolSa::sendGpoInfoSa(int id,unsigned cardnum,int output)
+void ProtocolSa::sendGpoInfoSa(int id,unsigned mid,int output)
 {
-  /*
-  Matrix *mtx=NULL;
+  SyGpo *gpo;
+  EndPointMap *map;
 
-  if((mtx=matrix(cardnum))==NULL) {
+  if((map=sa_maps.value(mid))==NULL) {
     sa_server->send("Error - Router Does Not exist.\r\n",id);
-  }
-  else {
     sa_server->send(">>",id);
-    if(output<0) {
-      for(unsigned i=0;i<mtx->gpoQuantity(cardnum);i++) {
-	sa_server->send(QString().sprintf("GPOStat %u %d ",cardnum+1,i+1)+
-			 mtx->gpoCode(cardnum,i).toLower()+"\r\n",id);
+    return;
+  }
+  if(map->routerType()!=EndPointMap::GpioRouter) {
+    sa_server->send(">>",id);
+    return;
+  }
+  sa_server->send(">>",id);
+  if(output<0) {
+    for(int i=0;i<map->quantity(EndPointMap::Output);i++) {
+      if((gpo=router()->gpo(map->hostAddress(EndPointMap::Output,i),
+			    map->slot(EndPointMap::Output,i)))!=NULL) {
+	sa_server->send(QString().sprintf("GPOStat %u %d ",mid+1,i+1)+
+			gpo->bundle()->code().toLower()+"\r\n",id);
       }
     }
-    else {
-      sa_server->send(QString().sprintf("GPOStat %u %d ",cardnum+1,output)+
-		       mtx->gpoCode(cardnum,output-1).toLower()+"\r\n",id);
+  }
+  else {
+    if((gpo=router()->gpo(map->hostAddress(EndPointMap::Output,output-1),
+			  map->slot(EndPointMap::Output,output-1)))!=NULL) {
+      sa_server->send(QString().sprintf("GPOStat %u %d ",mid+1,output)+
+		      gpo->bundle()->code().toLower()+"\r\n",id);
     }
   }
-  */
 }
 
 
 void ProtocolSa::setGpiStateSa(int id,unsigned mid,unsigned input,
 				     int msecs,const QString &code)
 {
-  /*
-  Matrix *mtx=NULL;
+  SyLwrpClient *gpi_lwrp;
+  EndPointMap *map;
 
-  if((mtx=matrix(mid))!=NULL) {
+  if((map=sa_maps.value(mid))==NULL) {
+    sa_server->send("Error - Router Does Not exist.\r\n",id);
     sa_server->send(">>",id);
-    mtx->setGpiCode(mid,input,msecs,code);
+    return;
   }
-  */
+  if(map->routerType()!=EndPointMap::GpioRouter) {
+    sa_server->send(">>",id);
+    return;
+  }
+  if((gpi_lwrp=router()->node(map->hostAddress(EndPointMap::Input,input)))!=
+     NULL) {
+    sa_server->send(">>",id);
+    gpi_lwrp->setGpiCode(map->slot(EndPointMap::Input,input),code);
+  }
 }
 
 
 void ProtocolSa::setGpoStateSa(int id,unsigned mid,unsigned output,
 				     int msecs,const QString &code)
 {
-  /*
-  Matrix *mtx=NULL;
+  SyLwrpClient *gpo_lwrp;
+  EndPointMap *map;
 
-  if((mtx=matrix(mid))!=NULL) {
+  if((map=sa_maps.value(mid))==NULL) {
+    sa_server->send("Error - Router Does Not exist.\r\n",id);
     sa_server->send(">>",id);
-    mtx->setGpoCode(mid,output,msecs,code);
+    return;
   }
-  */
+  if(map->routerType()!=EndPointMap::GpioRouter) {
+    sa_server->send(">>",id);
+    return;
+  }
+  if((gpo_lwrp=router()->node(map->hostAddress(EndPointMap::Output,output)))!=
+     NULL) {
+    sa_server->send(">>",id);
+    gpo_lwrp->setGpoCode(map->slot(EndPointMap::Output,output),code);
+  }
 }
 
 

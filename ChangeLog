@@ -65,3 +65,6 @@
 	* Added a '--router-type=' switch to dmap(1).
 	* Implemented SA protocol support for 'RouteStat' and 'ActivateRoute'
 	for GPIO routers.
+2019-10-04 Fred Gleason <fredg@paravelsystems.com>
+	* Implemented SA protocol support for 'TriggerGPI' and 'TriggerGPO'
+	for GPIO routers.
