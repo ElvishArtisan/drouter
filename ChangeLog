@@ -68,3 +68,6 @@
 2019-10-04 Fred Gleason <fredg@paravelsystems.com>
 	* Implemented SA protocol support for 'TriggerGPI' and 'TriggerGPO'
 	for GPIO routers.
+2019-10-04 Fred Gleason <fredg@paravelsystems.com>
+	* Fixed a bug in SA protocol that caused duplicate 'RouteStat' updates
+	to be generated when processing GPO state changes.

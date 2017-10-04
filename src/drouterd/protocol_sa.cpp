@@ -171,6 +171,7 @@ void ProtocolSa::processChangedGpo(const SyNode &node,int slot,const SyGpo &gpo)
 			gpo.bundle()->code().toLower()+"\r\n");
       }
     }
+    return;
   }
 
   //
