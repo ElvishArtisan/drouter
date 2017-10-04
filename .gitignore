@@ -22,8 +22,17 @@ install-sh
 missing
 moc_*
 src/dmap/dmap
+src/dmap/dparser.cpp
+src/dmap/dparser.h
 src/dmap/endpointmap.cpp
 src/dmap/endpointmap.h
+src/drouterd/dparser.cpp
+src/drouterd/dparser.h
 src/drouterd/drouterd
 src/drouterd/endpointmap.cpp
 src/drouterd/endpointmap.h
+src/tests/dparser.cpp
+src/tests/dparser.h
+src/tests/dparsertest
+src/tests/endpointmap.cpp
+src/tests/endpointmap.h

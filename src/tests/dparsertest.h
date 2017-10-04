@@ -1,6 +1,6 @@
-// dmap.h
+// dparsertest.h
 //
-// dmap(8) map utility
+// Test utility for DParser
 //
 //   (C) Copyright 2017 Fred Gleason <fredg@paravelsystems.com>
 //
@@ -18,8 +18,8 @@
 //   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
 //
 
-#ifndef DMAP_H
-#define DMAP_H
+#ifndef DPARSERTEST_H
+#define DPARSERTEST_H
 
 #include <stdint.h>
 
@@ -33,9 +33,7 @@
 #include "dparser.h"
 #include "endpointmap.h"
 
-#define DMAP_USAGE "[options]\n"
-#define DMAP_DEFAULT_SCAN_DURATION 25000
-#define DMAP_CONNECTION_RETRY_LIMIT 2
+#define DPARSERTEST_USAGE "--hostname=<host-name>\n"
 
 class MainObject : public QObject
 {
@@ -46,20 +44,23 @@ class MainObject : public QObject
  private slots:
   void connectedData(bool state);
   void errorData(QAbstractSocket::SocketError err,const QString &err_msg);
+  void destinationChangedData(const QHostAddress &addr,int slot,
+			      SyDestination *dst);
+  void destinationAddedData(const QHostAddress &addr,int slot);
+  void destinationRemovedData(const QHostAddress &addr,int slot);
+  void nodeAddedData(const QHostAddress &addr);
+  void nodeRemovedData(const QHostAddress &addr);
+  void sourceChangedData(const QHostAddress &addr,int slot,SySource *src);
+  void sourceAddedData(const QHostAddress &addr,int slot);
+  void sourceRemovedData(const QHostAddress &addr,int slot);
+  void crosspointChangedData(const QHostAddress &daddr,int dslot,
+			     const QHostAddress &saddr,int sslot);
+  void crosspointClearedData(const QHostAddress &daddr,int dslot);
  
  private:
-  int ProcessUseNodeList(const QString &filename);
-  int ProcessSkipNodeList(const QString &filename);
-  DParser *map_parser;
-  QString map_output_map;
-  bool map_no_off_source;
-  EndPointMap *map_map;
-  int map_router_number;
-  QString map_router_name;
-  int map_max_nodes;
-  QList<QHostAddress> map_node_addresses;
-  QList<QHostAddress> map_skip_node_addresses;
+  DParser *test_parser;
+  QString test_hostname;
 };
 
 
-#endif  // DMAP_H
+#endif  // DPARSERTEST_H

@@ -123,6 +123,10 @@ void ServerD::processCommand(int id,const SyAString &cmd)
     send("ok\r\n",id);
     return;
   }
+  if(cmds.at(0).toLower()=="ping") {
+    send("pong\r\n",id);
+    return;
+  }
   if(cmds.at(0).toLower()=="subscribedestinations") {
     emit processSubscribeDestinations(id);
     send("ok\r\n",id);

@@ -28,12 +28,14 @@ moc_%.cpp:	%.h
 	@MOC@ $< -o $@
 
 
-sbin_PROGRAMS = dmap
+bin_PROGRAMS = dmap
 
 dist_dmap_SOURCES = dmap.cpp dmap.h
 
-nodist_dmap_SOURCES = endpointmap.cpp endpointmap.h\
-                      moc_dmap.cpp
+nodist_dmap_SOURCES = dparser.cpp dparser.h\
+                      endpointmap.cpp endpointmap.h\
+                      moc_dmap.cpp\
+                      moc_dparser.cpp
 
 dmap_LDADD = @QT4CLI_LIBS@ @SWITCHYARD_LIBS@
 
@@ -43,6 +45,7 @@ CLEANFILES = *~\
              *.idb\
              *.pdb\
              *ilk
-DISTCLEANFILES = endpointmap.cpp endpointmap.h
+DISTCLEANFILES = dparser.cpp dparser.h\
+                 endpointmap.cpp endpointmap.h
 MAINTAINERCLEANFILES = *~\
                        Makefile.in

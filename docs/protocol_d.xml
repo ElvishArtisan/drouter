@@ -75,6 +75,16 @@
       Drop the TCP connection and end the session.
     </para>
   </sect2>
+  <sect2>
+    <title>Ping</title>
+    <para>
+      <command>Ping</command>
+    </para>
+    <para>
+      Causes the remote end to return a <computeroutput>PONG</computeroutput>
+      message.
+    </para>
+  </sect2>
 </sect1>
 
 <sect1>

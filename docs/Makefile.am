@@ -31,18 +31,18 @@
 %.8:	%.xml
 	xsltproc $(DOCBOOK_STYLESHEETS)/manpages/docbook.xsl $<
 
-all-local:	dmap.8\
+all-local:	dmap.1\
                 dmap.xml\
                 protocol_d.html\
                 protocol_d.pdf
 
-EXTRA_DIST = dmap.8\
+EXTRA_DIST = dmap.1\
              dmap.xml\
              protocol_d.html\
              protocol_d.pdf\
              protocol_d.xml
 
-man_MANS = dmap.8
+man_MANS = dmap.1
 
 CLEANFILES = *~
 MAINTAINERCLEANFILES = *~\

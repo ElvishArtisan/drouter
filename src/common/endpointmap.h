@@ -21,6 +21,8 @@
 #ifndef ENDPOINTMAP_H
 #define ENDPOINTMAP_H
 
+#include <stdio.h>
+
 #include <QHostAddress>
 #include <QList>
 #include <QString>
@@ -47,6 +49,7 @@ class EndPointMap
   void erase(Type type,int n);
   bool load(const QString &filename);
   bool save(const QString &filename) const;
+  void save(FILE *f) const;
   static QString typeString(Type type);
 
  private:

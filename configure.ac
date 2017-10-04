@@ -105,6 +105,7 @@ AC_CONFIG_FILES([ \
     src/common/Makefile \
     src/dmap/Makefile \
     src/drouterd/Makefile \
+    src/tests/Makefile \
     drouter.spec \
     Makefile ])
 AC_OUTPUT()
@@ -114,6 +115,7 @@ AC_OUTPUT()
 #
 ./link_common.sh dmap
 ./link_common.sh drouterd
+./link_common.sh tests
 
 AC_MSG_NOTICE()
 AC_MSG_NOTICE(Now enter 'make' to build the software.)

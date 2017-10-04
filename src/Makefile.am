@@ -22,7 +22,8 @@
 
 SUBDIRS = common\
           dmap\
-          drouterd
+          drouterd\
+          tests
 
 CLEANFILES = *~\
              *.idb\

@@ -1,6 +1,6 @@
 ## automake.am
 ##
-## Makefile for the drouterd(8) routing service
+## Makefile for test utilities
 ##
 ## (C) Copyright 2017 Fred Gleason <fredg@paravelsystems.com>
 ##
@@ -28,29 +28,15 @@ moc_%.cpp:	%.h
 	@MOC@ $< -o $@
 
 
-sbin_PROGRAMS = drouterd
+noinst_PROGRAMS = dparsertest
 
-dist_drouterd_SOURCES = drouter.cpp drouter.h\
-                        drouterd.cpp drouterd.h\
-                        protocol.cpp protocol.h\
-                        protocol_d.cpp protocol_d.h\
-                        protocol_sa.cpp protocol_sa.h\
-                        protocolfactory.cpp protocolfactory.h\
-                        server_d.cpp server_d.h\
-                        server_sa.cpp server_sa.h\
-                        server_net.cpp server_net.h
+dist_dparsertest_SOURCES = dparsertest.cpp dparsertest.h
 
-nodist_drouterd_SOURCES = endpointmap.cpp endpointmap.h\
-                          moc_drouter.cpp\
-                          moc_drouterd.cpp\
-                          moc_protocol.cpp\
-                          moc_protocol_d.cpp\
-                          moc_protocol_sa.cpp\
-                          moc_server_d.cpp\
-                          moc_server_sa.cpp\
-                          moc_server_net.cpp
+nodist_dparsertest_SOURCES = dparser.cpp dparser.h\
+                             moc_dparsertest.cpp\
+                             moc_dparser.cpp
 
-drouterd_LDADD = @QT4CLI_LIBS@ @SWITCHYARD_LIBS@
+dparsertest_LDADD = @QT4CLI_LIBS@ @SWITCHYARD_LIBS@
 
 CLEANFILES = *~\
              moc_*\

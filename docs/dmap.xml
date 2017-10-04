@@ -5,14 +5,14 @@
   -->
   <refmeta>
     <refentrytitle>dmap</refentrytitle>
-    <manvolnum>8</manvolnum>
+    <manvolnum>1</manvolnum>
     <refmiscinfo class='source'>December 2015</refmiscinfo>
     <refmiscinfo class='manual'>Linux Audio Manual</refmiscinfo>
   </refmeta>
   <refnamediv>
     <refname>dmap</refname>
     <refpurpose>Command for generating matrix maps for 
-    <command>drouterd</command><manvolnum>8</manvolnum></refpurpose>
+    <command>drouterd</command><manvolnum>1</manvolnum></refpurpose>
   </refnamediv>
   <info>
     <author>
@@ -37,11 +37,11 @@
 
   <refsect1 id='description'><title>Description</title>
   <para>
-    <command>dmap</command><manvolnum>8</manvolnum> is a utility for
+    <command>dmap</command><manvolnum>1</manvolnum> is a utility for
     automatically generating Livewire matrix maps for use by
-    <command>drouterd</command><manvolnum>8</manvolnum>.  It works by
-    monitoring the network for Livewire advertisement multicast messages
-    and then using LWRP to enumerate each identified node's capabilities.
+    <command>drouterd</command><manvolnum>1</manvolnum>.  It works by
+    connecting to a local drouterd instance and enumerating the reported
+    resources.
   </para>
   </refsect1>
 
@@ -54,34 +54,6 @@
       <listitem>
 	<para>
 	  Print a short usage message and then exit.
-	</para>
-      </listitem>
-    </varlistentry>
-  </variablelist>
-
-  <variablelist remap='TP'>
-    <varlistentry>
-      <term>
-	<option>--max-nodes=</option><replaceable>num</replaceable>
-      </term>
-      <listitem>
-	<para>
-	  Stop the scan and proceed to the enumeration phase after detecting
-	  <replaceable>num</replaceable> nodes.  Useful mostly for debugging.
-	</para>
-      </listitem>
-    </varlistentry>
-  </variablelist>
-
-  <variablelist remap='TP'>
-    <varlistentry>
-      <term>
-	<option>--node-password=</option><replaceable>passwd</replaceable>
-      </term>
-      <listitem>
-	<para>
-	  Use <replaceable>passwd</replaceable> when connecting to nodes
-	  via LWRP.  This option is seldom required.
 	</para>
       </listitem>
     </varlistentry>
@@ -138,34 +110,6 @@
 	<para>
 	  The ID number of the router for which to generate a map.
 	  Default value is <userinput>1</userinput>.
-	</para>
-      </listitem>
-    </varlistentry>
-  </variablelist>
-
-  <variablelist remap='TP'>
-    <varlistentry>
-      <term>
-	<option>--scan-duration=</option><replaceable>secs</replaceable>
-      </term>
-      <listitem>
-	<para>
-	  Scan for nodes for <replaceable>secs</replaceable> seconds before
-	  proceeding to the enumeration phase. Default value is 25 seconds.
-	</para>
-      </listitem>
-    </varlistentry>
-  </variablelist>
-
-  <variablelist remap='TP'>
-    <varlistentry>
-      <term>
-	<option>--scan-only</option>
-      </term>
-      <listitem>
-	<para>
-	  Perform the node scan, then print a sorted list of nodes
-	  detected to stdout and exit.
 	</para>
       </listitem>
     </varlistentry>
@@ -238,19 +182,6 @@
   <variablelist remap='TP'>
     <varlistentry>
       <term>
-	<option>--verbose</option>
-      </term>
-      <listitem>
-	<para>
-	  Print debugging information to stderr.
-	</para>
-      </listitem>
-    </varlistentry>
-  </variablelist>
-
-  <variablelist remap='TP'>
-    <varlistentry>
-      <term>
 	<option>--version</option>
       </term>
       <listitem>
@@ -261,14 +192,6 @@
     </varlistentry>
   </variablelist>
 
-  </refsect1>
-
-  <refsect1 id='bugs'><title>Bugs</title>
-  <para>
-    It may be possible to obtain node capabilities more efficiently
-    by reading the contents of received multicast advertisement packets,
-    rather than having to connect to each one via LWRP.
-  </para>
   </refsect1>
 
   <refsect1 id='see_also'><title>See Also</title>

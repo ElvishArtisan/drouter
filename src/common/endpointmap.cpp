@@ -171,15 +171,22 @@ bool EndPointMap::save(const QString &filename) const
   QString tempname=filename+"-temp";
   FILE *f=NULL;
 
-  if(filename.isEmpty()) {
-    f=stdout;
+  if((f=fopen(tempname.toUtf8(),"w"))==NULL) {
+    return false;
   }
-  else {
-    if((f=fopen(tempname.toUtf8(),"w"))==NULL) {
-      return false;
-    }
+  save(f);
+  fclose(f);
+  if(rename(tempname.toUtf8(),filename.toUtf8())!=0) {
+    unlink(tempname.toUtf8());
+    return false;
   }
 
+  return true;
+}
+
+
+void EndPointMap::save(FILE *f) const
+{
   fprintf(f,"[Global]\n");
   fprintf(f,"RouterName=%s\n",(const char *)map_router_name.toUtf8());
   fprintf(f,"RouterNumber=%d\n",map_router_number+1);
@@ -200,15 +207,6 @@ bool EndPointMap::save(const QString &filename) const
       fprintf(f,"\n");
     }
   }
-  if(!filename.isEmpty()) {
-    fclose(f);
-    if(rename(tempname.toUtf8(),filename.toUtf8())!=0) {
-      unlink(tempname.toUtf8());
-      return false;
-    }
-  }
-
-  return true;
 }
 
 

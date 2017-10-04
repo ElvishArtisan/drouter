@@ -22,6 +22,11 @@
 
 DESTDIR=$1
 
+rm -f src/$DESTDIR/dparser.cpp
+ln -s ../../src/common/dparser.cpp src/$DESTDIR/dparser.cpp
+rm -f src/$DESTDIR/dparser.h
+ln -s ../../src/common/dparser.h src/$DESTDIR/dparser.h
+
 rm -f src/$DESTDIR/endpointmap.cpp
 ln -s ../../src/common/endpointmap.cpp src/$DESTDIR/endpointmap.cpp
 rm -f src/$DESTDIR/endpointmap.h
