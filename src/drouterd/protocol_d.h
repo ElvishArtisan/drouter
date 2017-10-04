@@ -43,9 +43,14 @@ class ProtocolD : public Protocol
   void processSubscribeSourcesD(int id);
   void processClearCrosspointD(int id,
 			       const QHostAddress &dst_hostaddr,int dst_slot);
+  void processClearGpioCrosspointD(int id,const QHostAddress &gpo_hostaddr,
+				   int gpo_slot);
   void processSetCrosspointD(int id,
 			     const QHostAddress &dst_hostaddr,int dst_slot,
 			     const QHostAddress &src_hostaddr,int src_slot);
+  void processSetGpioCrosspointD(int id,
+				 const QHostAddress &gpo_hostaddr,int gpo_slot,
+				 const QHostAddress &gpi_hostaddr,int gpi_slot);
 
  protected:
   void processAddedNode(const SyNode &node);

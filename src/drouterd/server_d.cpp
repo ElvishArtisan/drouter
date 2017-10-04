@@ -202,6 +202,20 @@ void ServerD::processCommand(int id,const SyAString &cmd)
       }
     }
   }
+  if(cmds.at(0).toLower()=="cleargpiocrosspoint") {
+    if(cmds.size()==3) {
+      bool ok=false;
+      QHostAddress gpo_hostaddr(cmds.at(1));
+      if(!gpo_hostaddr.isNull()) {
+	int gpo_slot=cmds.at(2).toInt(&ok);
+	if(ok&&(gpo_slot>=0)) {
+	  emit processClearGpioCrosspoint(id,gpo_hostaddr,gpo_slot);
+	  send("ok\r\n",id);
+	  return;
+	}
+      }
+    }
+  }
   if(cmds.at(0).toLower()=="setcrosspoint") {
     if(cmds.size()==5) {
       bool ok=false;
@@ -215,6 +229,27 @@ void ServerD::processCommand(int id,const SyAString &cmd)
 	    if(ok&&(src_slot>=0)) {
 	      emit processSetCrosspoint(id,dst_hostaddr,dst_slot,
 					src_hostaddr,src_slot);
+	      send("ok\r\n",id);
+	      return;
+	    }
+	  }
+	}
+      }      
+    }
+  }
+  if(cmds.at(0).toLower()=="setgpiocrosspoint") {
+    if(cmds.size()==5) {
+      bool ok=false;
+      QHostAddress gpo_hostaddr(cmds.at(1));
+      if(!gpo_hostaddr.isNull()) {
+	int gpo_slot=cmds.at(2).toInt(&ok);
+	if(ok&&(gpo_slot>=0)) {
+	  QHostAddress gpi_hostaddr(cmds.at(3));
+	  if(!gpi_hostaddr.isNull()) {
+	    int gpi_slot=cmds.at(4).toInt(&ok);
+	    if(ok&&(gpi_slot>=0)) {
+	      emit processSetGpioCrosspoint(id,gpo_hostaddr,gpo_slot,
+					    gpi_hostaddr,gpi_slot);
 	      send("ok\r\n",id);
 	      return;
 	    }

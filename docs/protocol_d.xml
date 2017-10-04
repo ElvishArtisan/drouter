@@ -833,7 +833,7 @@
     Messages for changing the state of managed resources.
   </para>
   <sect2>
-    <title>Clear Crosspoint</title>
+    <title>Clear Audio Crosspoint</title>
     <para>
       <command>ClearCrosspoint 
       <replaceable>dst-host-addr</replaceable>
@@ -841,7 +841,7 @@
       </command>
     </para>
     <para>
-      Clear the source to be received by a destination --i.e. mute the
+      Clear the source to be received by an audio destination --i.e. mute the
       destination.
     </para>
     <variablelist>
@@ -870,7 +870,43 @@
   </sect2>
 
   <sect2>
-    <title>Set Crosspoint</title>
+    <title>Clear GPIO Crosspoint</title>
+    <para>
+      <command>ClearGpioCrosspoint 
+      <replaceable>gpo-host-addr</replaceable>
+      <replaceable>gpo-slot</replaceable>
+      </command>
+    </para>
+    <para>
+      Clear the source to be received by a GPO.
+    </para>
+    <variablelist>
+      <varlistentry>
+	<term>
+	  <replaceable>gpo-host-addr</replaceable>
+	</term>
+	<listitem>
+	  <para>
+	    The IPv4 address of the GPO node, in dotted-quad notation.
+	  </para>
+	</listitem>
+      </varlistentry>
+      <varlistentry>
+	<term>
+	  <replaceable>gpo-slot</replaceable>
+	</term>
+	<listitem>
+	  <para>
+	    The slot position number of the GPO on the parent node
+	    (zero-based).
+	  </para>
+	</listitem>
+      </varlistentry>
+    </variablelist>
+  </sect2>
+
+  <sect2>
+    <title>Set Audio Crosspoint</title>
     <para>
       <command>SetCrosspoint 
       <replaceable>dst-host-addr</replaceable>
@@ -880,7 +916,7 @@
       </command>
     </para>
     <para>
-      Set the source to be received by a destination.
+      Set the source to be received by an audio destination.
     </para>
     <variablelist>
       <varlistentry>
@@ -921,6 +957,65 @@
 	<listitem>
 	  <para>
 	    The slot position number of the source on the parent node
+	    (zero-based).
+	  </para>
+	</listitem>
+      </varlistentry>
+    </variablelist>
+  </sect2>
+
+  <sect2>
+    <title>Set GPIO Crosspoint</title>
+    <para>
+      <command>SetGpioCrosspoint 
+      <replaceable>gpo-host-addr</replaceable>
+      <replaceable>gpo-slot</replaceable>
+      <replaceable>gpi-host-addr</replaceable>
+      <replaceable>gpi-slot</replaceable>
+      </command>
+    </para>
+    <para>
+      Set the source to be received by a GPO.
+    </para>
+    <variablelist>
+      <varlistentry>
+	<term>
+	  <replaceable>gpo-host-addr</replaceable>
+	</term>
+	<listitem>
+	  <para>
+	    The IPv4 address of the GPO node, in dotted-quad notation.
+	  </para>
+	</listitem>
+      </varlistentry>
+      <varlistentry>
+	<term>
+	  <replaceable>gpo-slot</replaceable>
+	</term>
+	<listitem>
+	  <para>
+	    The slot position number of the GPO on the parent node
+	    (zero-based).
+	  </para>
+	</listitem>
+      </varlistentry>
+      <varlistentry>
+	<term>
+	  <replaceable>gpi-host-addr</replaceable>
+	</term>
+	<listitem>
+	  <para>
+	    The IPv4 address of the GPI node, in dotted-quad notation.
+	  </para>
+	</listitem>
+      </varlistentry>
+      <varlistentry>
+	<term>
+	  <replaceable>gpi-slot</replaceable>
+	</term>
+	<listitem>
+	  <para>
+	    The slot position number of the GPI on the parent node
 	    (zero-based).
 	  </para>
 	</listitem>

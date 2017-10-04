@@ -217,6 +217,55 @@ bool DRouter::setCrosspoint(const QHostAddress &dst_hostaddr,int dst_slot,
 }
 
 
+bool DRouter::clearGpioCrosspoint(const QHostAddress &gpo_hostaddr,int gpo_slot)
+{
+  SyLwrpClient *lwrp=NULL;
+
+  //
+  // Get the GPO
+  //
+  if((lwrp=drouter_nodes.value(gpo_hostaddr.toIPv4Address()))==NULL) {
+    return false;
+  }
+  if(gpo_slot>=(int)lwrp->gpos()) {
+    return false;
+  }
+  lwrp->setGpoSourceAddress(gpo_slot,QHostAddress(),-1);
+
+  return true;
+}
+
+
+bool DRouter::setGpioCrosspoint(const QHostAddress &gpo_hostaddr,int gpo_slot,
+				const QHostAddress &gpi_hostaddr,int gpi_slot)
+{
+  SyLwrpClient *lwrp=NULL;
+
+  //
+  // Get the GPI
+  //
+  if((lwrp=drouter_nodes.value(gpi_hostaddr.toIPv4Address()))==NULL) {
+    return false;
+  }
+  if(gpi_slot>=(int)lwrp->gpis()) {
+    return false;
+  }
+
+  //
+  // Get the GPO
+  //
+  if((lwrp=drouter_nodes.value(gpo_hostaddr.toIPv4Address()))==NULL) {
+    return false;
+  }
+  if(gpo_slot>=(int)lwrp->gpos()) {
+    return false;
+  }
+  lwrp->setGpoSourceAddress(gpo_slot,gpi_hostaddr,gpi_slot);
+
+  return true;
+}
+
+
 void DRouter::nodeConnectedData(unsigned id,bool state)
 {
   if(state) {

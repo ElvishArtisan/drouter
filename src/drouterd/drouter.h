@@ -49,6 +49,9 @@ class DRouter : public QObject
   bool clearCrosspoint(const QHostAddress &dst_hostaddr,int dst_slot);
   bool setCrosspoint(const QHostAddress &dst_hostaddr,int dst_slot,
 		     const QHostAddress &src_hostaddr,int src_slot);
+  bool clearGpioCrosspoint(const QHostAddress &gpo_hostaddr,int gpo_slot);
+  bool setGpioCrosspoint(const QHostAddress &gpo_hostaddr,int gpo_slot,
+			 const QHostAddress &gpi_hostaddr,int gpi_slot);
 
  signals:
   void nodeAdded(const SyNode &node);

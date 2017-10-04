@@ -73,9 +73,14 @@ class ServerD : public ServerNet
   void processSubscribeSources(int id);
   void processClearCrosspoint(int id,
 			      const QHostAddress &dst_hostaddr,int dst_slot);
+  void processClearGpioCrosspoint(int id,const QHostAddress &gpo_hostaddr,
+				  int gpo_slot);
   void processSetCrosspoint(int id,
 			    const QHostAddress &dst_hostaddr,int dst_slot,
 			    const QHostAddress &src_hostaddr,int src_slot);
+  void processSetGpioCrosspoint(int id,
+				const QHostAddress &gpo_hostaddr,int gpo_slot,
+				const QHostAddress &gpi_hostaddr,int gpi_slot);
 
  protected:
   void newConnection(int id,NetConnection *conn);

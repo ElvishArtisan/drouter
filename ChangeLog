@@ -56,3 +56,6 @@
 2019-10-04 Fred Gleason <fredg@paravelsystems.com>
 	* Added 'ListGpis', 'ListGpos', 'SubscribeGpis' and 'SubscribeGpos'
 	commands to ProtocolD.
+2019-10-04 Fred Gleason <fredg@paravelsystems.com>
+	* Added 'ClearGpioCrosspoint' and 'SetGpioCrosspoint' commands to
+	ProtocolD.
