@@ -59,3 +59,9 @@
 2019-10-04 Fred Gleason <fredg@paravelsystems.com>
 	* Added 'ClearGpioCrosspoint' and 'SetGpioCrosspoint' commands to
 	ProtocolD.
+2019-10-04 Fred Gleason <fredg@paravelsystems.com>
+	* Changed the endpoint label 'Source' to 'Input'.
+	* Changed the endpoint label 'Destination' to 'Output'.
+	* Added a '--router-type=' switch to dmap(1).
+	* Implemented SA protocol support for 'RouteStat' and 'ActivateRoute'
+	for GPIO routers.

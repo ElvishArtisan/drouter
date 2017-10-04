@@ -42,6 +42,7 @@ class ProtocolSa : public Protocol
  protected:
   void processChangedDestination(const SyNode &node,int slot,
 				 const SyDestination &dst);
+  void processChangedGpo(const SyNode &node,int slot,const SyGpo &gpo);
 
  private slots:
   void sendMatrixNamesSa(int id);

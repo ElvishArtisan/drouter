@@ -27,8 +27,21 @@
 
 EndPointMap::EndPointMap()
 {
+  map_router_type=EndPointMap::AudioRouter;
   map_router_name="Livewire";
   map_router_number=0;
+}
+
+
+EndPointMap::RouterType EndPointMap::routerType() const
+{
+  return map_router_type;
+}
+
+
+void EndPointMap::setRouterType(EndPointMap::RouterType type)
+{
+  map_router_type=type;
 }
 
 
@@ -147,6 +160,14 @@ bool EndPointMap::load(const QString &filename)
     map_host_addresses[type].clear();
     map_slots[type].clear();
 
+    QString name=p->stringValue("Global","RouterType").toLower();
+    map_router_type=EndPointMap::AudioRouter;
+    for(int i=0;i<EndPointMap::LastRouter;i++) {
+      EndPointMap::RouterType rtype=(EndPointMap::RouterType)i;
+      if(EndPointMap::routerTypeString(rtype).toLower()==name) {
+	map_router_type=rtype;
+      }
+    }
     map_router_name=p->stringValue("Global","RouterName","Livewire");
     map_router_number=p->intValue("Global","RouterNumber",1)-1;
 
@@ -188,6 +209,8 @@ bool EndPointMap::save(const QString &filename) const
 void EndPointMap::save(FILE *f) const
 {
   fprintf(f,"[Global]\n");
+  fprintf(f,"RouterType=%s\n",
+	 (const char *)EndPointMap::routerTypeString(map_router_type).toUtf8());
   fprintf(f,"RouterName=%s\n",(const char *)map_router_name.toUtf8());
   fprintf(f,"RouterNumber=%d\n",map_router_number+1);
   fprintf(f,"\n");
@@ -210,17 +233,38 @@ void EndPointMap::save(FILE *f) const
 }
 
 
+QString EndPointMap::routerTypeString(EndPointMap::RouterType type)
+{
+  QString ret="Unknown";
+
+  switch(type) {
+  case EndPointMap::AudioRouter:
+    ret="Audio";
+    break;
+
+  case EndPointMap::GpioRouter:
+    ret="GPIO";
+    break;
+
+  case EndPointMap::LastRouter:
+    break;
+  }
+
+  return ret;
+}
+
+
 QString EndPointMap::typeString(Type type)
 {
   QString ret="Unknown";
 
   switch(type) {
-  case EndPointMap::Src:
-    ret="Source";
+  case EndPointMap::Input:
+    ret="Input";
     break;
 
-  case EndPointMap::Dst:
-    ret="Destination";
+  case EndPointMap::Output:
+    ret="Output";
     break;
 
   case EndPointMap::LastType:

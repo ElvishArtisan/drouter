@@ -30,8 +30,11 @@
 class EndPointMap
 {
  public:
-  enum Type {Src=0,Dst=1,LastType=2};
+  enum RouterType {AudioRouter=0,GpioRouter=1,LastRouter=2};
+  enum Type {Input=0,Output=1,LastType=3};
   EndPointMap();
+  RouterType routerType() const;
+  void setRouterType(RouterType type);
   QString routerName() const;
   void setRouterName(const QString &str);
   int routerNumber() const;
@@ -50,11 +53,13 @@ class EndPointMap
   bool load(const QString &filename);
   bool save(const QString &filename) const;
   void save(FILE *f) const;
+  static QString routerTypeString(RouterType type);
   static QString typeString(Type type);
 
  private:
   QString map_router_name;
   int map_router_number;
+  RouterType map_router_type;
   QList<QHostAddress> map_host_addresses[EndPointMap::LastType];
   QList<int> map_slots[EndPointMap::LastType];
 };

@@ -53,6 +53,7 @@ class MainObject : public QObject
   DParser *map_parser;
   QString map_output_map;
   bool map_no_off_source;
+  EndPointMap::RouterType map_router_type;
   EndPointMap *map_map;
   int map_router_number;
   QString map_router_name;

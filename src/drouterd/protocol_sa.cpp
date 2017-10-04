@@ -112,13 +112,13 @@ void ProtocolSa::processChangedDestination(const SyNode &node,int slot,
   for(QMap<int,EndPointMap *>::const_iterator it=sa_maps.begin();
       it!=sa_maps.end();it++) {
     EndPointMap *map=it.value();
-    if((output=map->endPoint(EndPointMap::Dst,node.hostAddress(),slot))>=0) {
+    if((output=map->endPoint(EndPointMap::Output,node.hostAddress(),slot))>=0) {
       if((src_lwrp=router()->
 	  nodeBySrcStream(dst.streamAddress(),&src_slot))!=NULL) {
 	if(src_slot<0) {  // Crosspoint is OFF
 	}
 	else {
-	  if((input=map->endPoint(EndPointMap::Src,src_lwrp->hostAddress(),src_slot))<0) {
+	  if((input=map->endPoint(EndPointMap::Input,src_lwrp->hostAddress(),src_slot))<0) {
 	  }
 	  else {
 	    sa_server->
@@ -126,6 +126,31 @@ void ProtocolSa::processChangedDestination(const SyNode &node,int slot,
 				     map->routerNumber()+1,output+1,input+1));
 	  }
 	}
+      }
+    }
+  }
+}
+
+
+void ProtocolSa::processChangedGpo(const SyNode &node,int slot,const SyGpo &gpo)
+{
+  int input;
+  int output;
+
+  for(QMap<int,EndPointMap *>::const_iterator it=sa_maps.begin();
+      it!=sa_maps.end();it++) {
+    EndPointMap *map=it.value();
+    if((output=map->endPoint(EndPointMap::Output,node.hostAddress(),slot))>=0) {
+      if((input=map->endPoint(EndPointMap::Input,gpo.sourceAddress(),
+			      gpo.sourceSlot()))>=0) {
+	sa_server->
+	  send(QString().sprintf("RouteStat %u %u %u False\r\n",
+				 map->routerNumber()+1,output+1,input+1));
+      }
+      else {
+	sa_server->
+	  send(QString().sprintf("RouteStat %u %u 0 False\r\n",
+				 map->routerNumber()+1,output+1));
       }
     }
   }
@@ -156,26 +181,45 @@ void ProtocolSa::sendInputNamesSa(int id,unsigned mid)
     return;
   }
   sa_server->send(QString().sprintf("Begin SourceNames - %u\r\n",mid+1),id);
-  for(int i=0;i<map->quantity(EndPointMap::Src);i++) {
+  for(int i=0;i<map->quantity(EndPointMap::Input);i++) {
     bool online=false;
-    if((lwrp=router()->node(map->hostAddress(EndPointMap::Src,i)))!=NULL) {
-      int slot=map->slot(EndPointMap::Src,i);
-      if(slot<(int)lwrp->srcSlots()) {
-	QString name=lwrp->srcName(slot);
-	if(name.isEmpty()) {
-	  name=QString().sprintf("SRC %u",slot+1);
+    if((lwrp=router()->node(map->hostAddress(EndPointMap::Input,i)))!=NULL) {
+      int slot=map->slot(EndPointMap::Input,i);
+      if(sa_maps[mid]->routerType()==EndPointMap::AudioRouter) {
+	if(slot<(int)lwrp->srcSlots()) {
+	  QString name=lwrp->srcName(slot);
+	  if(name.isEmpty()) {
+	    name=QString().sprintf("SRC %u",slot+1);
+	  }
+	  sa_server->
+	    send(QString().sprintf("    %u",i+1)+
+		 "\t"+name+
+		 "\t"+name+" ON "+lwrp->hostName()+
+		 "\t"+lwrp->hostAddress().toString()+
+		 "\t"+lwrp->hostName()+
+		 "\t"+QString().sprintf("%u",slot+1)+
+		 "\t"+QString().sprintf("%d",lwrp->srcNumber(slot))+
+		 "\t"+lwrp->srcAddress(slot).toString()+
+		 "\r\n",id);
+	  online=true;
 	}
-	sa_server->
-	  send(QString().sprintf("    %u",i+1)+
-	       "\t"+name+
-	       "\t"+name+" ON "+lwrp->hostName()+
-	       "\t"+lwrp->hostAddress().toString()+
-	       "\t"+lwrp->hostName()+
-	       "\t"+QString().sprintf("%u",slot+1)+
-	       "\t"+QString().sprintf("%d",lwrp->srcNumber(slot))+
-	       "\t"+lwrp->srcAddress(slot).toString()+
-	       "\r\n",id);
-	online=true;
+      }
+      if(sa_maps[mid]->routerType()==EndPointMap::GpioRouter) {
+	if(slot<(int)lwrp->gpis()) {
+	  QString name=QString().sprintf("GPI %u",slot+1);
+	  sa_server->
+	    send(QString().sprintf("    %u",i+1)+
+		 "\t"+name+
+		 "\t"+name+" ON "+lwrp->hostName()+
+		 "\t"+lwrp->hostAddress().toString()+
+		 "\t"+lwrp->hostName()+
+		 "\t"+QString().sprintf("%u",slot+1)+
+		 "\t"+lwrp->hostAddress().toString()+
+		 QString().sprintf("/%d",slot+1)+
+		 "\t0"+
+		 "\r\n",id);
+	  online=true;
+	}
       }
     }
     if(!online) {
@@ -183,9 +227,9 @@ void ProtocolSa::sendInputNamesSa(int id,unsigned mid)
 	send(QString().sprintf("    %u",i+1)+
 	     "\t[unavailable]"+
 	     "\t[unavailable]"+
-	     "\t"+map->hostAddress(EndPointMap::Src,i).toString()+
+	     "\t"+map->hostAddress(EndPointMap::Input,i).toString()+
 	     "\t[unavailable]"+
-	     "\t"+QString().sprintf("%u",map->slot(EndPointMap::Src,i)+1)+
+	     "\t"+QString().sprintf("%u",map->slot(EndPointMap::Input,i)+1)+
 	     "\t0"+
 	     "\t0.0.0.0"+
 	     "\r\n",id);
@@ -207,24 +251,43 @@ void ProtocolSa::sendOutputNamesSa(int id,unsigned mid)
     return;
   }
   sa_server->send(QString().sprintf("Begin DestNames - %u\r\n",mid+1),id);
-  for(int i=0;i<map->quantity(EndPointMap::Dst);i++) {
+  for(int i=0;i<map->quantity(EndPointMap::Output);i++) {
     bool online=false;
-    if((lwrp=router()->node(map->hostAddress(EndPointMap::Dst,i)))!=NULL) {
-      int slot=map->slot(EndPointMap::Dst,i);
-      if(slot<(int)lwrp->dstSlots()) {
-	QString name=lwrp->dstName(slot);
-	if(name.isEmpty()) {
-	  name=QString().sprintf("DST %u",slot+1);
+    if((lwrp=router()->node(map->hostAddress(EndPointMap::Output,i)))!=NULL) {
+      int slot=map->slot(EndPointMap::Output,i);
+      if(sa_maps[mid]->routerType()==EndPointMap::AudioRouter) {
+	if(slot<(int)lwrp->dstSlots()) {
+	  QString name=lwrp->dstName(slot);
+	  if(name.isEmpty()) {
+	    name=QString().sprintf("DST %u",slot+1);
+	  }
+	  sa_server->
+	    send(QString().sprintf("    %u",i+1)+
+		 "\t"+name+
+		 "\t"+name+" ON "+lwrp->hostName()+
+		 "\t"+lwrp->hostAddress().toString()+
+		 "\t"+lwrp->hostName()+
+		 "\t"+QString().sprintf("%d",slot+1)+
+		 "\r\n",id);
+	  online=true;
 	}
-	sa_server->
-	  send(QString().sprintf("    %u",i+1)+
-	       "\t"+name+
-	       "\t"+name+" ON "+lwrp->hostName()+
-	       "\t"+lwrp->hostAddress().toString()+
-	       "\t"+lwrp->hostName()+
-	       "\t"+QString().sprintf("%d",slot+1)+
-	       "\r\n",id);
-	online=true;
+      }
+      if(sa_maps[mid]->routerType()==EndPointMap::GpioRouter) {
+	if(slot<(int)lwrp->gpos()) {
+	  QString name=lwrp->gpo(slot)->name();
+	  if(name.isEmpty()) {
+	    name=QString().sprintf("GPO %u",slot+1);
+	  }
+	  sa_server->
+	    send(QString().sprintf("    %u",i+1)+
+		 "\t"+name+
+		 "\t"+name+" ON "+lwrp->hostName()+
+		 "\t"+lwrp->hostAddress().toString()+
+		 "\t"+lwrp->hostName()+
+		 "\t"+QString().sprintf("%d",slot+1)+
+		 "\r\n",id);
+	  online=true;
+	}
       }
     }
     if(!online) {
@@ -232,9 +295,9 @@ void ProtocolSa::sendOutputNamesSa(int id,unsigned mid)
 	send(QString().sprintf("    %u",i+1)+
 	     "\t[unavailable]"+
 	     "\t[unavailable]"+
-	     "\t"+map->hostAddress(EndPointMap::Dst,i).toString()+
+	     "\t"+map->hostAddress(EndPointMap::Output,i).toString()+
 	     "\t[unavailable]"+
-	     "\t"+QString().sprintf("%u",map->slot(EndPointMap::Dst,i)+1)+
+	     "\t"+QString().sprintf("%u",map->slot(EndPointMap::Output,i)+1)+
 	     "\r\n",id);
     }
   }
@@ -259,47 +322,86 @@ void ProtocolSa::setRouteSa(int id,unsigned mid,unsigned input,
     sa_server->send(">>",id);
     return;
   }
-  if(output>=(unsigned)map->quantity(EndPointMap::Dst)) {
+  if(output>=(unsigned)map->quantity(EndPointMap::Output)) {
     sa_server->send("Error - Output Does Not exist.\r\n",id);
     return;
   }
-  if(input>(unsigned)map->quantity(EndPointMap::Src)) {
+  if(input>(unsigned)map->quantity(EndPointMap::Input)) {
     sa_server->send("Error - Input Does Not exist.\r\n",id);
     return;
   }
 
-  //
-  // Get the destination
-  //
-  QHostAddress dst_hostaddr=map->hostAddress(EndPointMap::Dst,output);
-  int dst_slot=map->slot(EndPointMap::Dst,output);
-  SyLwrpClient *dst_lwrp=router()->node(dst_hostaddr);
-  if((dst_lwrp==NULL)||(dst_slot<0)||(dst_slot>=(int)dst_lwrp->dstSlots())) {
-    sa_server->send("Error - Output Does Not exist.\r\n",id);
-    return;
-  }
-
-  //
-  // Get the source
-  //
-  if(input==0) {
-    if(router()->clearCrosspoint(dst_hostaddr,dst_slot)) {
-      sa_server->send("Route Change Initiated\r\n",id);
+  if(map->routerType()==EndPointMap::AudioRouter) {
+    //
+    // Get the destination
+    //
+    QHostAddress dst_hostaddr=map->hostAddress(EndPointMap::Output,output);
+    int dst_slot=map->slot(EndPointMap::Output,output);
+    SyLwrpClient *dst_lwrp=router()->node(dst_hostaddr);
+    if((dst_lwrp==NULL)||(dst_slot<0)||(dst_slot>=(int)dst_lwrp->dstSlots())) {
+      sa_server->send("Error - Output Does Not exist.\r\n",id);
+      return;
     }
-    return;
-  }
-  else {
-    QHostAddress src_hostaddr=map->hostAddress(EndPointMap::Src,input-1);
-    int src_slot=map->slot(EndPointMap::Src,input-1);
-    SyLwrpClient *src_lwrp=router()->node(src_hostaddr);
-    if((src_lwrp==NULL)||(src_slot<0)||(src_slot>=(int)src_lwrp->srcSlots())) {
+
+    //
+    // Get the source
+    //
+    if(input==0) {
       if(router()->clearCrosspoint(dst_hostaddr,dst_slot)) {
 	sa_server->send("Route Change Initiated\r\n",id);
-	return;
+      }
+      return;
+    }
+    else {
+      QHostAddress src_hostaddr=map->hostAddress(EndPointMap::Input,input-1);
+      int src_slot=map->slot(EndPointMap::Input,input-1);
+      SyLwrpClient *src_lwrp=router()->node(src_hostaddr);
+      if((src_lwrp==NULL)||(src_slot<0)||(src_slot>=(int)src_lwrp->srcSlots())) {
+	if(router()->clearCrosspoint(dst_hostaddr,dst_slot)) {
+	  sa_server->send("Route Change Initiated\r\n",id);
+	  return;
+	}
+      }
+      if(router()->setCrosspoint(dst_hostaddr,dst_slot,src_hostaddr,src_slot)) {
+	sa_server->send("Route Change Initiated\r\n",id);
       }
     }
-    if(router()->setCrosspoint(dst_hostaddr,dst_slot,src_hostaddr,src_slot)) {
-      sa_server->send("Route Change Initiated\r\n",id);
+  }
+  if(map->routerType()==EndPointMap::GpioRouter) {
+    //
+    // Get the GPO
+    //
+    QHostAddress gpo_hostaddr=map->hostAddress(EndPointMap::Output,output);
+    int gpo_slot=map->slot(EndPointMap::Output,output);
+    SyLwrpClient *gpo_lwrp=router()->node(gpo_hostaddr);
+    if((gpo_lwrp==NULL)||(gpo_slot<0)||(gpo_slot>=(int)gpo_lwrp->gpos())) {
+      sa_server->send("Error - Output Does Not exist.\r\n",id);
+      return;
+    }
+
+    //
+    // Get the source
+    //
+    if(input==0) {
+      if(router()->clearGpioCrosspoint(gpo_hostaddr,gpo_slot)) {
+	sa_server->send("Route Change Initiated\r\n",id);
+      }
+      return;
+    }
+    else {
+      QHostAddress gpi_hostaddr=map->hostAddress(EndPointMap::Input,input-1);
+      int gpi_slot=map->slot(EndPointMap::Input,input-1);
+      SyLwrpClient *gpi_lwrp=router()->node(gpi_hostaddr);
+      if((gpi_lwrp==NULL)||(gpi_slot<0)||(gpi_slot>=(int)gpi_lwrp->gpis())) {
+	if(router()->clearGpioCrosspoint(gpi_hostaddr,gpi_slot)) {
+	  sa_server->send("Route Change Initiated\r\n",id);
+	  return;
+	}
+      }
+      if(router()->setGpioCrosspoint(gpo_hostaddr,gpo_slot,
+				     gpi_hostaddr,gpi_slot)) {
+	sa_server->send("Route Change Initiated\r\n",id);
+      }
     }
   }
 }
@@ -320,13 +422,13 @@ void ProtocolSa::sendRouteInfoSa(int id,unsigned mid,unsigned output)
     sa_server->send(">>",id);
     return;
   }
-  if(output>(unsigned)map->quantity(EndPointMap::Dst)) {
+  if(output>(unsigned)map->quantity(EndPointMap::Output)) {
     sa_server->send("Error - Output Does Not exist.\r\n",id);
     return;
   }
 
   if(output==0) {
-    for(int i=0;i<map->quantity(EndPointMap::Dst);i++) {
+    for(int i=0;i<map->quantity(EndPointMap::Output);i++) {
       sa_server->
 	send(QString().sprintf("RouteStat %u %u %u False\r\n",
 			       mid+1,i+1,GetCrosspointInput(map,i)+1),id);
@@ -454,29 +556,48 @@ void ProtocolSa::LoadMaps()
 int ProtocolSa::GetCrosspointInput(EndPointMap *map,int output) const
 {
   SyLwrpClient *src_lwrp=NULL;
+  SyGpo *gpo=NULL;
 
-  //
-  // Get the destination
-  //
-  QHostAddress dst_hostaddr=map->hostAddress(EndPointMap::Dst,output);
-  int dst_slot=map->slot(EndPointMap::Dst,output);
-  SyLwrpClient *dst_lwrp=router()->node(dst_hostaddr);
-  if((dst_lwrp==NULL)||(dst_slot<0)||(dst_slot>=(int)dst_lwrp->dstSlots())) {
-    return -1;
-  }
+  if(map->routerType()==EndPointMap::AudioRouter) {
+    //
+    // Get the destination
+    //
+    QHostAddress dst_hostaddr=map->hostAddress(EndPointMap::Output,output);
+    int dst_slot=map->slot(EndPointMap::Output,output);
+    SyLwrpClient *dst_lwrp=router()->node(dst_hostaddr);
+    if((dst_lwrp==NULL)||(dst_slot<0)||(dst_slot>=(int)dst_lwrp->dstSlots())) {
+      return -1;
+    }
 
-  //
-  // Get the source
-  //
-  int src_slot=0;
-  QHostAddress src_strmaddr=dst_lwrp->dstAddress(dst_slot);
-  if(src_strmaddr.isNull()) {  // OFF
-    return -1;
+    //
+    // Get the source
+    //
+    int src_slot=0;
+    QHostAddress src_strmaddr=dst_lwrp->dstAddress(dst_slot);
+    if(src_strmaddr.isNull()) {  // OFF
+      return -1;
+    }
+    else {
+      if((src_lwrp=router()->nodeBySrcStream(src_strmaddr,&src_slot))==NULL) {
+	return -1;  // OFF-LINE
+      }
+    }
+    return map->endPoint(EndPointMap::Input,src_lwrp->hostAddress(),src_slot);
   }
-  else {
-    if((src_lwrp=router()->nodeBySrcStream(src_strmaddr,&src_slot))==NULL) {
-      return -1;  // OFF-LINE
+  if(map->routerType()==EndPointMap::GpioRouter) {
+    //
+    // Get the destination
+    //
+    QHostAddress gpo_hostaddr=map->hostAddress(EndPointMap::Output,output);
+    int gpo_slot=map->slot(EndPointMap::Output,output);
+    SyLwrpClient *gpo_lwrp=router()->node(gpo_hostaddr);
+    if((gpo_lwrp==NULL)||(gpo_slot<0)||(gpo_slot>=(int)gpo_lwrp->gpos())) {
+      return -1;
+    }
+    if((gpo=gpo_lwrp->gpo(gpo_slot))!=NULL) {
+      return map->
+	endPoint(EndPointMap::Input,gpo->sourceAddress(),gpo->sourceSlot());
     }
   }
-  return map->endPoint(EndPointMap::Src,src_lwrp->hostAddress(),src_slot);
+  return -1;
 }

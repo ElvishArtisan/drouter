@@ -118,6 +118,41 @@
   <variablelist remap='TP'>
     <varlistentry>
       <term>
+	<option>--router-type=</option><replaceable>type</replaceable>
+      </term>
+      <listitem>
+	<para>
+	  The type of router for which to generate the map. The following
+	  types are recognized:
+	</para>
+	<variablelist>
+	  <varlistentry>
+	    <term><userinput>Audio</userinput></term>
+	    <listitem>
+	      <para>
+		Audio endpoints (sources and destinations).
+	      </para>
+	    </listitem>
+	  </varlistentry>
+	  <varlistentry>
+	    <term><userinput>GPIO</userinput></term>
+	    <listitem>
+	      <para>
+		GPIO endpoints (GPIs and GPOs).
+	      </para>
+	    </listitem>
+	  </varlistentry>
+	</variablelist>
+	<para>
+	  The default value is <userinput>Audio</userinput>.
+	</para>
+      </listitem>
+    </varlistentry>
+  </variablelist>
+
+  <variablelist remap='TP'>
+    <varlistentry>
+      <term>
 	<option>--skip-node=</option><replaceable>ip-addr</replaceable>
       </term>
       <listitem>

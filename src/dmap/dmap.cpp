@@ -41,6 +41,7 @@ MainObject::MainObject(QObject *parent)
   map_no_off_source=false;
   map_router_number=0;
   map_router_name="Livewire";
+  map_router_type=EndPointMap::AudioRouter;
 
   SyCmdSwitch *cmd=
     new SyCmdSwitch(qApp->argc(),qApp->argv(),"dmap",VERSION,DMAP_USAGE);
@@ -62,6 +63,23 @@ MainObject::MainObject(QObject *parent)
       if((!ok)||(map_router_number<=0)) {
 	fprintf(stderr,"dmap: invalid matrix number\n");
 	exit(256);
+      }
+      cmd->setProcessed(i,true);
+    }
+    if(cmd->key(i)=="--router-type") {
+      bool found=false;
+      for(int j=0;j<EndPointMap::LastRouter;j++) {
+	EndPointMap::RouterType rtype=(EndPointMap::RouterType)j;
+	if(cmd->value(i).toLower()==
+	   EndPointMap::routerTypeString(rtype).toLower()) {
+	  map_router_type=rtype;
+	  found=true;
+	}
+      }
+      if(!found) {
+	fprintf(stderr,"dmap: unknown router type \"%s\"\n",
+		(const char *)cmd->value(i).toUtf8());
+	exit(1);
       }
       cmd->setProcessed(i,true);
     }
@@ -120,8 +138,9 @@ MainObject::MainObject(QObject *parent)
   // Create Map
   //
   map_map=new EndPointMap();
+  map_map->setRouterType(map_router_type);
   map_map->setRouterName(map_router_name);
-  map_map->setRouterNumber(map_router_number);
+  map_map->setRouterNumber(map_router_number-1);
 
   //
   // Connect to DRouter
@@ -175,25 +194,54 @@ void MainObject::connectedData(bool state)
     }
   }
 
-  //
-  // Sources
-  //
-  for(int i=0;i<hosts.size();i++) {
-    SyNode *node=map_parser->node(hosts.at(i));
-    for(unsigned j=0;j<node->srcSlotQuantity();j++) {
-      map_map->insert(EndPointMap::Src,map_map->quantity(EndPointMap::Src),
-		      node->hostAddress(),j);
+  if(map_router_type==EndPointMap::AudioRouter) {
+    //
+    // Sources
+    //
+    for(int i=0;i<hosts.size();i++) {
+      SyNode *node=map_parser->node(hosts.at(i));
+      for(unsigned j=0;j<node->srcSlotQuantity();j++) {
+	map_map->
+	  insert(EndPointMap::Input,map_map->quantity(EndPointMap::Input),
+		 node->hostAddress(),j);
+      }
+    }
+
+    //
+    // Destinations
+    //
+    for(int i=0;i<hosts.size();i++) {
+      SyNode *node=map_parser->node(hosts.at(i));
+      for(unsigned j=0;j<node->dstSlotQuantity();j++) {
+	map_map->
+	  insert(EndPointMap::Output,map_map->quantity(EndPointMap::Output),
+		 node->hostAddress(),j);
+      }
     }
   }
+  if(map_router_type==EndPointMap::GpioRouter) {
+    //
+    // GPIs
+    //
+    for(int i=0;i<hosts.size();i++) {
+      SyNode *node=map_parser->node(hosts.at(i));
+      for(unsigned j=0;j<node->gpiSlotQuantity();j++) {
+	map_map->
+	  insert(EndPointMap::Input,map_map->quantity(EndPointMap::Input),
+		 node->hostAddress(),j);
+      }
+    }
 
-  //
-  // Destinations
-  //
-  for(int i=0;i<hosts.size();i++) {
-    SyNode *node=map_parser->node(hosts.at(i));
-    for(unsigned j=0;j<node->dstSlotQuantity();j++) {
-      map_map->insert(EndPointMap::Dst,map_map->quantity(EndPointMap::Dst),
-		      node->hostAddress(),j);
+    //
+    // GPOs
+    //
+    for(int i=0;i<hosts.size();i++) {
+      SyNode *node=map_parser->node(hosts.at(i));
+      for(unsigned j=0;j<node->gpoSlotQuantity();j++) {
+	map_map->
+	  insert(EndPointMap::Output,map_map->quantity(EndPointMap::Output),
+		 node->hostAddress(),j);
+      }
     }
   }
 
