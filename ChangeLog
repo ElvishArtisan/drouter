@@ -51,3 +51,5 @@
 	* Added dparsertest(1).
 	* Moved dmap(8) to dmap(1).
 	* Refactored dmap(1) to use drouterd(8) to enumerate node resources.
+2019-10-04 Fred Gleason <fredg@paravelsystems.com>
+	* Implemented a connection watchdog in DParser.

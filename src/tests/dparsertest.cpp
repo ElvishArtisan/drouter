@@ -94,7 +94,6 @@ void MainObject::errorData(QAbstractSocket::SocketError err,
 			   const QString &err_msg)
 {
   fprintf(stderr,"dparsertest: %s\n",(const char *)err_msg.toUtf8());
-  //  exit(1);
 }
 
 

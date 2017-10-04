@@ -85,7 +85,6 @@ SyDestination *DParser::dst(const QHostAddress &hostaddr,int slot) const
 
 void DParser::connectToHost(const QString &hostname,uint16_t port)
 {
-  printf("connectToHost(%s,%u)\n",(const char *)hostname.toUtf8(),0xFFFF&port);
   d_hostname=hostname;
   d_port=port;
 
@@ -100,7 +99,6 @@ void DParser::connectToHost(const QString &hostname,uint16_t port)
 
 void DParser::connectedData()
 {
-  printf("connectedData()\n");
   SendCommand("SubscribeDestinations");
   SendCommand("SubscribeNodes");
   SendCommand("SubscribeSources");
@@ -135,7 +133,6 @@ void DParser::readyReadData()
 
 void DParser::errorData(QAbstractSocket::SocketError err)
 {
-  printf("errorData(%d)\n",err);
   QString err_msg=tr("Socket Error")+QString().sprintf(" %u",err);
 
   switch(err) {
@@ -170,7 +167,7 @@ void DParser::errorData(QAbstractSocket::SocketError err)
   emit error(err,err_msg);
 
   d_watchdog_timer->stop();
-  watchdogTimerData();
+  d_watchdog_timer->start(1);
 }
 
 
@@ -182,6 +179,25 @@ void DParser::pollTimerData()
 
 void DParser::watchdogTimerData()
 {
+  for(QMap<uint64_t,SyDestination *>::const_iterator it=d_destinations.begin();
+      it!=d_destinations.end();it++) {
+    emit destinationRemoved(ToAddress(it.key()),ToSlot(it.key()));
+    delete it.value();
+  }
+  d_destinations.clear();
+  for(QMap<uint64_t,SySource *>::const_iterator it=d_sources.begin();
+      it!=d_sources.end();it++) {
+    emit sourceRemoved(ToAddress(it.key()),ToSlot(it.key()));
+    delete it.value();
+  }
+  d_sources.clear();
+  for(QMap<unsigned,SyNode *>::const_iterator it=d_nodes.begin();
+      it!=d_nodes.end();it++) {
+    emit nodeRemoved(QHostAddress(it.key()));
+    delete it.value();
+  }
+  d_nodes.clear();
+
   delete d_socket;
   d_socket=NULL;
   if(d_connected) {
