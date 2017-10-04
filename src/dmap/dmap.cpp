@@ -194,6 +194,13 @@ void MainObject::connectedData(bool state)
     }
   }
 
+  //
+  // OFF Input
+  //
+  if(!map_no_off_source) {
+    map_map->insert(EndPointMap::Input,0,QHostAddress(),-1);
+  }
+
   if(map_router_type==EndPointMap::AudioRouter) {
     //
     // Sources

@@ -263,12 +263,16 @@ void ProtocolSa::sendInputNamesSa(int id,unsigned mid)
       }
     }
     if(!online) {
+      QString name=tr("[unavailable]");
+      if(map->hostAddress(EndPointMap::Input,i).toString()=="0.0.0.0") {
+	name="--- "+tr("OFF")+" ---";
+      }
       sa_server->
 	send(QString().sprintf("    %u",i+1)+
-	     "\t[unavailable]"+
-	     "\t[unavailable]"+
+	     "\t"+name+
+	     "\t"+name+
 	     "\t"+map->hostAddress(EndPointMap::Input,i).toString()+
-	     "\t[unavailable]"+
+	     "\t"+name+
 	     "\t"+QString().sprintf("%u",map->slot(EndPointMap::Input,i)+1)+
 	     "\t0"+
 	     "\t0.0.0.0"+
@@ -386,7 +390,8 @@ void ProtocolSa::setRouteSa(int id,unsigned mid,unsigned input,
     //
     // Get the source
     //
-    if(input==0) {
+    if((input==0)||
+       (map->hostAddress(EndPointMap::Input,input-1).toString()=="0.0.0.0")) {
       if(router()->clearCrosspoint(dst_hostaddr,dst_slot)) {
 	sa_server->send("Route Change Initiated\r\n",id);
       }
@@ -422,7 +427,8 @@ void ProtocolSa::setRouteSa(int id,unsigned mid,unsigned input,
     //
     // Get the source
     //
-    if(input==0) {
+    if((input==0)||
+       (map->hostAddress(EndPointMap::Input,input-1).toString()=="0.0.0.0")) {
       if(router()->clearGpioCrosspoint(gpo_hostaddr,gpo_slot)) {
 	sa_server->send("Route Change Initiated\r\n",id);
       }
