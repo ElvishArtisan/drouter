@@ -38,17 +38,18 @@ NetConnection::~NetConnection()
 
 
 
-ServerNet::ServerNet(uint16_t port,QObject *parent)
+ServerNet::ServerNet(int sock,uint16_t port,QObject *parent)
   : QObject(parent)
 {
-  Initialize(port);
+  Initialize(sock,port);
   net_udp_socket=NULL;
 }
 
 
-ServerNet::ServerNet(uint16_t port,const QHostAddress &m_addr,QObject *parent)
+ServerNet::ServerNet(int sock,uint16_t port,const QHostAddress &m_addr,
+		     QObject *parent)
 {
-  Initialize(port);
+  Initialize(sock,port);
   net_multicast_address=m_addr;
   net_udp_socket=new QUdpSocket(this);
   net_udp_socket->bind(port);
@@ -207,7 +208,7 @@ void ServerNet::garbageData()
 }
 
 
-void ServerNet::Initialize(uint16_t port)
+void ServerNet::Initialize(int sock,uint16_t port)
 {
   net_ready=false;
   net_port=port;
@@ -216,11 +217,16 @@ void ServerNet::Initialize(uint16_t port)
   // TCP Server
   //
   net_tcp_server=new QTcpServer(this);
+  if(sock<0) {
+    if(!net_tcp_server->listen(QHostAddress::Any,port)) {
+      syslog(LOG_WARNING,"unable to bind ProtocolD port %u",port);
+    }
+  }
+  else {
+    net_tcp_server->setSocketDescriptor(sock);
+  }
   connect(net_tcp_server,SIGNAL(newConnection()),
 	  this,SLOT(newConnectionData()));
-  if(!net_tcp_server->listen(QHostAddress::Any,port)) {
-    syslog(LOG_WARNING,"unable to bind LWCP port %u",port);
-  }
 
   //
   // Connection Mappers

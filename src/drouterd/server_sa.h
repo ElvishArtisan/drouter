@@ -32,7 +32,7 @@ class ServerSa : public ServerNet
 {
  Q_OBJECT;
  public:
-  ServerSa(QObject *parent=0);
+  ServerSa(int sock,QObject *parent=0);
   ~ServerSa();
 
  signals:

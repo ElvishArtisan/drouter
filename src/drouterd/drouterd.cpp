@@ -27,12 +27,18 @@
 
 #include <sy/sycmdswitch.h>
 
+#ifdef LIBSYSTEMD
+#include <systemd/sd-daemon.h>
+#endif  // LIBSYSTEMD
+
 #include "drouterd.h"
 #include "protocolfactory.h"
 
 MainObject::MainObject(QObject *parent)
   : QObject(parent)
 {
+  int socks[2]={-1,-1};
+  int n;
   QString err_msg;
   SyCmdSwitch *cmd=
     new SyCmdSwitch(qApp->argc(),qApp->argv(),"drouterd",VERSION,DROUTERD_USAGE);
@@ -53,13 +59,27 @@ MainObject::MainObject(QObject *parent)
   //
   main_drouter=new DRouter(this);
 
+#ifdef LIBSYSTEMD
+  //
+  // Get sockets from SystemD
+  //
+  if((n=sd_listen_fds(0))==2) {
+    socks[0]=SD_LISTEN_FDS_START+0;
+    socks[1]=SD_LISTEN_FDS_START+1;
+  }
+  else {
+    fprintf(stderr,"drouterd: error receiving sockets from SystemD\n");
+    exit(1);
+  }
+#endif  // LIBSYSTEMD
+
   //
   // Protocols
   //
   main_protocols.
-    push_back(ProtocolFactory(main_drouter,Protocol::ProtocolD,this));
+    push_back(ProtocolFactory(main_drouter,Protocol::ProtocolD,socks[0],this));
   main_protocols.
-    push_back(ProtocolFactory(main_drouter,Protocol::ProtocolSa,this));
+    push_back(ProtocolFactory(main_drouter,Protocol::ProtocolSa,socks[1],this));
 }
 
 

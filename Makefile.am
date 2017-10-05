@@ -24,7 +24,8 @@ if DOCBOOK_AM
   DOCBOOK_AM_OPT = docs
 endif
 
-SUBDIRS = $(DOCBOOK_AM_OPT) src
+SUBDIRS = $(DOCBOOK_AM_OPT) src\
+          systemd
 
 rpm:	dist
 	cp drouter-$(VERSION).tar.gz $(HOME)/rpmbuild/SOURCES/
@@ -48,7 +49,8 @@ CLEANFILES = *~\
              *.tgz\
              *.zip
 
-DISTCLEANFILES = *.spec\
+DISTCLEANFILES = *.service\
+                 *.spec\
                  config.guess\
                  config.sub\
                  ltmain.sh

@@ -96,8 +96,8 @@ void ServerDConnection::setSrcsSubscribed(bool state)
 
 
 
-ServerD::ServerD(QObject *parent)
-  : ServerNet(SERVER_D_PORT,parent)
+ServerD::ServerD(int sock,QObject *parent)
+  : ServerNet(sock,SERVER_D_PORT,parent)
 {
 }
 

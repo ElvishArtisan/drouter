@@ -62,6 +62,14 @@ AC_SUBST(MOC,$MOC_NAME)
 PKG_CHECK_MODULES(SWITCHYARD,switchyard,[],[AC_MSG_ERROR([*** Switchyard not found ***])])
 
 #
+# Check for SystemD (Optional)
+#
+PKG_CHECK_MODULES(LIBSYSTEMD,libsystemd,[LIBSYSTEMD_FOUND=yes],[])
+if test $LIBSYSTEMD_FOUND ; then
+  AC_DEFINE(LIBSYSTEMD)
+fi
+
+#
 # Check for DocBook Toolchain
 #
 if test -z $DOCBOOK_DISABLED ; then
@@ -106,6 +114,8 @@ AC_CONFIG_FILES([ \
     src/dmap/Makefile \
     src/drouterd/Makefile \
     src/tests/Makefile \
+    systemd/Makefile \
+    systemd/drouter.service \
     drouter.spec \
     Makefile ])
 AC_OUTPUT()

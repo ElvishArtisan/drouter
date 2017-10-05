@@ -26,7 +26,7 @@
 #include "drouter.h"
 #include "protocol.h"
 
-Protocol *ProtocolFactory(DRouter *router,Protocol::Type type,
+Protocol *ProtocolFactory(DRouter *router,Protocol::Type type,int sock,
 			  QObject *parent=0);
 
 

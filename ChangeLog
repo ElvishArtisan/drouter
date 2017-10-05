@@ -73,3 +73,6 @@
 	to be generated when processing GPO state changes.
 2019-10-04 Fred Gleason <fredg@paravelsystems.com>
 	* Added support for an OFF input in SA protocol.
+2019-10-05 Fred Gleason <fredg@paravelsystems.com>
+	* Implemented SystemD socket activation for drouterd(8).
+	* Added a SystemD service definition for drouterd(8).

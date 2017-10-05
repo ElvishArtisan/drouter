@@ -20,7 +20,7 @@
 ##
 ## Use automake to process this into a Makefile.in
 
-AM_CPPFLAGS = -Wall -DPREFIX=\"$(prefix)\" -Wno-strict-aliasing @QT4CLI_CFLAGS@ @SWITCHYARD_CFLAGS@
+AM_CPPFLAGS = -Wall -DPREFIX=\"$(prefix)\" -Wno-strict-aliasing @QT4CLI_CFLAGS@ @SWITCHYARD_CFLAGS@ @LIBSYSTEMD_CFLAGS@
 MOC = @QT4_MOC@
 
 # The dependency for qt's Meta Object Compiler (moc)
@@ -50,7 +50,7 @@ nodist_drouterd_SOURCES = endpointmap.cpp endpointmap.h\
                           moc_server_sa.cpp\
                           moc_server_net.cpp
 
-drouterd_LDADD = @QT4CLI_LIBS@ @SWITCHYARD_LIBS@
+drouterd_LDADD = @QT4CLI_LIBS@ @SWITCHYARD_LIBS@ @LIBSYSTEMD_LIBS@
 
 CLEANFILES = *~\
              moc_*\

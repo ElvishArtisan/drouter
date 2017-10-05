@@ -57,7 +57,7 @@ class ServerD : public ServerNet
 {
  Q_OBJECT;
  public:
-  ServerD(QObject *parent=0);
+  ServerD(int sock,QObject *parent=0);
   ~ServerD();
 
  signals:

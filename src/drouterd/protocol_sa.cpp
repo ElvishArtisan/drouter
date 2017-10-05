@@ -26,12 +26,12 @@
 
 #include "protocol_sa.h"
 
-ProtocolSa::ProtocolSa(DRouter *router,QObject *parent)
+ProtocolSa::ProtocolSa(DRouter *router,int sock,QObject *parent)
   : Protocol(router,Protocol::ProtocolSa,parent)
 {
   LoadMaps();
 
-  sa_server=new ServerSa(this);
+  sa_server=new ServerSa(sock,this);
   connect(sa_server,SIGNAL(sendMatrixNames(int)),
 	  this,SLOT(sendMatrixNamesSa(int)));
   connect(sa_server,SIGNAL(sendInputNames(int,unsigned)),

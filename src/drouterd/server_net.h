@@ -50,8 +50,8 @@ class ServerNet : public QObject
 {
  Q_OBJECT;
  public:
-  ServerNet(uint16_t port,QObject *parent=0);
-  ServerNet(uint16_t port,const QHostAddress &m_addr,QObject *parent=0);
+ ServerNet(int sock,uint16_t port,QObject *parent=0);
+ ServerNet(int sock,uint16_t port,const QHostAddress &m_addr,QObject *parent=0);
   ~ServerNet();
   void setReady(bool state);
   NetConnection *connection(int id) const;
@@ -74,7 +74,7 @@ class ServerNet : public QObject
   void garbageData();
 
  private:
-  void Initialize(uint16_t port);
+  void Initialize(int sock,uint16_t port);
   unsigned NewConnectionId();
   QList<NetConnection *> net_connections;
   QTcpServer *net_tcp_server;

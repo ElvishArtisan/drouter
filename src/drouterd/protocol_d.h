@@ -28,7 +28,7 @@ class ProtocolD : public Protocol
 {
  Q_OBJECT;
  public:
-  ProtocolD(DRouter *router,QObject *parent=0);
+  ProtocolD(DRouter *router,int sock,QObject *parent=0);
 
  private slots:
   void processListDestinationsD(int id);

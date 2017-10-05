@@ -29,7 +29,7 @@ class ProtocolSa : public Protocol
 {
  Q_OBJECT;
  public:
- ProtocolSa(DRouter *router,QObject *parent=0);
+ ProtocolSa(DRouter *router,int sock,QObject *parent=0);
 
  public slots:
   void setReady(bool state);

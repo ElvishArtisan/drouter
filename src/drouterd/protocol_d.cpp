@@ -22,10 +22,10 @@
 
 #include "protocol_d.h"
 
-ProtocolD::ProtocolD(DRouter *router,QObject *parent)
+ProtocolD::ProtocolD(DRouter *router,int sock,QObject *parent)
   : Protocol(router,Protocol::ProtocolD)
 {
-  d_server=new ServerD(this);
+  d_server=new ServerD(sock,this);
   connect(d_server,SIGNAL(processListDestinations(int)),
 	  this,SLOT(processListDestinationsD(int)));
   connect(d_server,SIGNAL(processListGpis(int)),

@@ -25,8 +25,8 @@
 
 #include "server_sa.h"
 
-ServerSa::ServerSa(QObject *parent)
-  : ServerNet(SERVER_SA_PORT,parent)
+ServerSa::ServerSa(int sock,QObject *parent)
+  : ServerNet(sock,SERVER_SA_PORT,parent)
 {
   LoadHelp();
 }
