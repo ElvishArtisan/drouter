@@ -78,3 +78,5 @@
 	* Added a SystemD service definition for drouterd(8).
 2019-10-05 Fred Gleason <fredg@paravelsystems.com>
 	* Implemented the 'make rpm' target.
+2019-10-05 Fred Gleason <fredg@paravelsystems.com>
+	* Fixed a bug in drouterd(8) that broke startup on non-SystemD systems.

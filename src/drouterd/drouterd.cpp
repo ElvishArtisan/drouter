@@ -63,13 +63,16 @@ MainObject::MainObject(QObject *parent)
   //
   // Get sockets from SystemD
   //
-  if((n=sd_listen_fds(0))==2) {
-    socks[0]=SD_LISTEN_FDS_START+0;
-    socks[1]=SD_LISTEN_FDS_START+1;
-  }
-  else {
-    fprintf(stderr,"drouterd: error receiving sockets from SystemD\n");
-    exit(1);
+  n=sd_listen_fds(0);
+  if(n>0) {
+    if(n==2) {
+      socks[0]=SD_LISTEN_FDS_START+0;
+      socks[1]=SD_LISTEN_FDS_START+1;
+    }
+    else {
+      fprintf(stderr,"drouterd: error receiving sockets from SystemD\n");
+      exit(1);
+    }
   }
 #endif  // LIBSYSTEMD
 
