@@ -76,3 +76,5 @@
 2019-10-05 Fred Gleason <fredg@paravelsystems.com>
 	* Implemented SystemD socket activation for drouterd(8).
 	* Added a SystemD service definition for drouterd(8).
+2019-10-05 Fred Gleason <fredg@paravelsystems.com>
+	* Implemented the 'make rpm' target.

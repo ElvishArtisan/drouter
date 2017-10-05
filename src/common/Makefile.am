@@ -20,8 +20,8 @@
 ##
 ## Use automake to process this into a Makefile.in
 
-EXTRA_DISTS = dparser.cpp dparser.h\
-              endpointmap.cpp endpointmap.h
+EXTRA_DIST = dparser.cpp dparser.h\
+             endpointmap.cpp endpointmap.h
 
 CLEANFILES = *~\
              moc_*\
