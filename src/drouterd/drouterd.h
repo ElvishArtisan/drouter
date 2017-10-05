@@ -37,9 +37,13 @@ class MainObject : public QObject
  public:
   MainObject(QObject *parent=0);
 
+ private slots:
+  void signalData();
+
  private:
   QList<Protocol *> main_protocols;
   DRouter *main_drouter;
+  QTimer *main_signal_timer;
 };
 
 

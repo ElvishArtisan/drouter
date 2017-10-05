@@ -18,6 +18,7 @@
 //   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
 //
 
+#include <signal.h>
 #include <stdio.h>
 #include <stdlib.h>
 #include <syslog.h>
@@ -33,6 +34,18 @@
 
 #include "drouterd.h"
 #include "protocolfactory.h"
+
+bool global_reload=false;
+
+void SigHandler(int signo)
+{
+  switch(signo) {
+  case SIGHUP:
+    global_reload=true;
+    break;
+  }
+}
+
 
 MainObject::MainObject(QObject *parent)
   : QObject(parent)
@@ -83,6 +96,26 @@ MainObject::MainObject(QObject *parent)
     push_back(ProtocolFactory(main_drouter,Protocol::ProtocolD,socks[0],this));
   main_protocols.
     push_back(ProtocolFactory(main_drouter,Protocol::ProtocolSa,socks[1],this));
+
+  //
+  // Set Signals
+  //
+  main_signal_timer=new QTimer(this);
+  connect(main_signal_timer,SIGNAL(timeout()),this,SLOT(signalData()));
+  main_signal_timer->start(500);
+  signal(SIGHUP,SigHandler);
+}
+
+
+void MainObject::signalData()
+{
+  if(global_reload) {
+    for(int i=0;i<main_protocols.size();i++) {
+      main_protocols.at(i)->reload();
+    }
+    syslog(LOG_INFO,"reloaded configuration");
+    global_reload=false;
+  }
 }
 
 

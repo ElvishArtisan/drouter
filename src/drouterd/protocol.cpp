@@ -47,6 +47,11 @@ Protocol::Type Protocol::type() const
 }
 
 
+void Protocol::reload()
+{
+}
+
+
 void Protocol::nodeAddedData(const SyNode &node)
 {
   processAddedNode(node);

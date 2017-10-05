@@ -56,6 +56,7 @@ class ServerNet : public QObject
   void setReady(bool state);
   NetConnection *connection(int id) const;
   QList<NetConnection *> connections() const;
+  virtual void reload();
 
  public slots:
   void send(const QString &cmd,int id=-1);

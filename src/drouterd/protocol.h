@@ -32,6 +32,7 @@ class Protocol : public QObject
  enum Type {ProtocolD=0,ProtocolSa=1};
   Protocol(DRouter *router,Type type,QObject *parent=0);
   Type type() const;
+  virtual void reload();
 
  private slots:
   void nodeAddedData(const SyNode &node);

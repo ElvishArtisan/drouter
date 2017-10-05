@@ -87,6 +87,11 @@ QList<NetConnection *> ServerNet::connections() const
 }
 
 
+void ServerNet::reload()
+{
+}
+
+
 void ServerNet::send(const QString &cmd,int id)
 {
   if(id<0) {
