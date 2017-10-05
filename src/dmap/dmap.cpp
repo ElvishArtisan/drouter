@@ -38,7 +38,6 @@ MainObject::MainObject(QObject *parent)
   bool ok=false;
 
   map_output_map="";
-  map_no_off_source=false;
   map_router_number=0;
   map_router_name="Livewire";
   map_router_type=EndPointMap::AudioRouter;
@@ -46,10 +45,6 @@ MainObject::MainObject(QObject *parent)
   SyCmdSwitch *cmd=
     new SyCmdSwitch(qApp->argc(),qApp->argv(),"dmap",VERSION,DMAP_USAGE);
   for(unsigned i=0;i<cmd->keys();i++) {
-    if(cmd->key(i)=="--no-off-source") {
-      map_no_off_source=true;
-      cmd->setProcessed(i,true);
-    }
     if(cmd->key(i)=="--output-map") {
       map_output_map=cmd->value(i);
       cmd->setProcessed(i,true);
@@ -192,13 +187,6 @@ void MainObject::connectedData(bool state)
 	changed=true;
       }
     }
-  }
-
-  //
-  // OFF Input
-  //
-  if(!map_no_off_source) {
-    map_map->insert(EndPointMap::Input,0,QHostAddress(),-1);
   }
 
   if(map_router_type==EndPointMap::AudioRouter) {

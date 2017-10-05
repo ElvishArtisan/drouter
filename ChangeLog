@@ -80,3 +80,5 @@
 	* Implemented the 'make rpm' target.
 2019-10-05 Fred Gleason <fredg@paravelsystems.com>
 	* Fixed a bug in drouterd(8) that broke startup on non-SystemD systems.
+2019-10-05 Fred Gleason <fredg@paravelsystems.com>
+	* Removed the '--no-off-source=' switch from dmap(1).
