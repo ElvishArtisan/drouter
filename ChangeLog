@@ -93,3 +93,6 @@
 	drouterd(8).
 	* Implemented the SystemD 'reload' command for the 'drouter'
 	service.
+2019-10-06 Fred Gleason <fredg@paravelsystems.com>
+	* Fixed an SA bug in drouterd(8) that caused the response to a
+	'RouterNames' command to be sent to all connected clients.

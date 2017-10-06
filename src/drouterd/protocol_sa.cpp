@@ -245,13 +245,13 @@ void ProtocolSa::processChangedGpo(const SyNode &node,int slot,const SyGpo &gpo)
 
 void ProtocolSa::sendMatrixNamesSa(int id)
 {
-  sa_server->send("Begin RouterNames\r\n");
+  sa_server->send("Begin RouterNames\r\n",id);
   for(QMap<int,EndPointMap *>::const_iterator it=sa_maps.begin();
       it!=sa_maps.end();it++) {
     sa_server->send(QString().sprintf("    %d ",it.value()->routerNumber()+1)+
-		    it.value()->routerName()+"\r\n");
+		    it.value()->routerName()+"\r\n",id);
   }
-  sa_server->send("End RouterNames\r\n");
+  sa_server->send("End RouterNames\r\n",id);
   sa_server->send(">>",id);
 }
 
