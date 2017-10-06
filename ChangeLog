@@ -88,3 +88,8 @@
 2019-10-06 Fred Gleason <fredg@paravelsystems.com>
 	* Fixed a bug in 'configure.ac' that broke when attempting to configure
 	without SystemD support.
+2019-10-06 Fred Gleason <fredg@paravelsystems.com>
+	* Implemented reload of SA maps upon reception of SIGHUP by
+	drouterd(8).
+	* Implemented the SystemD 'reload' command for the 'drouter'
+	service.

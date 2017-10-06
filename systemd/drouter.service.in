@@ -6,6 +6,7 @@ Documentation=man:dmap(1)
 [Service]
 Type=simple
 ExecStart=@prefix@/sbin/drouterd
+ExecReload=/bin/kill -s SIGHUP $MAINPID
 PrivateTmp=true
 Restart=always
 

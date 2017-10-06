@@ -30,6 +30,7 @@ class ProtocolSa : public Protocol
  Q_OBJECT;
  public:
  ProtocolSa(DRouter *router,int sock,QObject *parent=0);
+ void reload();
 
  public slots:
   void setReady(bool state);
@@ -60,7 +61,6 @@ class ProtocolSa : public Protocol
 
  private:
   int GetCrosspointInput(EndPointMap *map,int output) const;
-  void LoadMaps();
   ServerSa *sa_server;
   QMap<int,EndPointMap *> sa_maps;
 };

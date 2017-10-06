@@ -29,7 +29,7 @@
 ProtocolSa::ProtocolSa(DRouter *router,int sock,QObject *parent)
   : Protocol(router,Protocol::ProtocolSa,parent)
 {
-  LoadMaps();
+  reload();
 
   sa_server=new ServerSa(sock,this);
   connect(sa_server,SIGNAL(sendMatrixNames(int)),
@@ -62,6 +62,52 @@ ProtocolSa::ProtocolSa(DRouter *router,int sock,QObject *parent)
 void ProtocolSa::setReady(bool state)
 {
   sa_server->setReady(state);
+}
+
+
+void ProtocolSa::reload()
+{
+  //
+  // Clear Old Maps
+  //
+  for(QMap<int,EndPointMap *>::const_iterator it=sa_maps.begin();
+      it!=sa_maps.end();it++) {
+    delete it.value();
+  }
+  sa_maps.clear();
+
+  //
+  // Load New Maps
+  //
+  QDir dir(SERVER_SA_CONFIG_DIR);
+
+  QStringList filter;
+  filter.push_back("*.conf");
+  QStringList mapfiles=
+    dir.entryList(filter,QDir::Files|QDir::Readable,QDir::Name);
+  for(int i=0;i<mapfiles.size();i++) {
+    EndPointMap *map=new EndPointMap();
+    if(map->load(dir.path()+"/"+mapfiles.at(i))) {
+      for(QMap<int,EndPointMap *>::const_iterator it=sa_maps.begin();
+	  it!=sa_maps.end();it++) {
+	if(it.key()==map->routerNumber()) {
+	  fprintf(stderr,"drouterd: duplicate SA router number\n");
+	  exit(1);
+	}
+	if(it.value()->routerName()==map->routerName()) {
+	  fprintf(stderr,"drouterd: duplicate SA router name\n");
+	  exit(1);
+	}
+      }
+      sa_maps[map->routerNumber()]=map;
+      syslog(LOG_DEBUG,"loaded SA map from \"%s/%s\" [%d:%s]",
+	     (const char *)dir.path().toUtf8(),
+	     (const char *)mapfiles.at(i).toUtf8(),
+	     map->routerNumber()+1,
+	     (const char *)map->routerName().toUtf8());
+    }
+  }
+  syslog(LOG_INFO,"loaded %d SA map(s)",sa_maps.size());
 }
 
 
@@ -598,40 +644,6 @@ void ProtocolSa::setGpoStateSa(int id,unsigned mid,unsigned output,
     sa_server->send(">>",id);
     gpo_lwrp->setGpoCode(map->slot(EndPointMap::Output,output),code);
   }
-}
-
-
-void ProtocolSa::LoadMaps()
-{
-  QDir dir(SERVER_SA_CONFIG_DIR);
-
-  QStringList filter;
-  filter.push_back("*.conf");
-  QStringList mapfiles=
-    dir.entryList(filter,QDir::Files|QDir::Readable,QDir::Name);
-  for(int i=0;i<mapfiles.size();i++) {
-    EndPointMap *map=new EndPointMap();
-    if(map->load(dir.path()+"/"+mapfiles.at(i))) {
-      for(QMap<int,EndPointMap *>::const_iterator it=sa_maps.begin();
-	  it!=sa_maps.end();it++) {
-	if(it.key()==map->routerNumber()) {
-	  fprintf(stderr,"drouterd: duplicate SA router number\n");
-	  exit(1);
-	}
-	if(it.value()->routerName()==map->routerName()) {
-	  fprintf(stderr,"drouterd: duplicate SA router name\n");
-	  exit(1);
-	}
-      }
-      sa_maps[map->routerNumber()]=map;
-      syslog(LOG_DEBUG,"loaded SA map from \"%s/%s\" [%d:%s]",
-	     (const char *)dir.path().toUtf8(),
-	     (const char *)mapfiles.at(i).toUtf8(),
-	     map->routerNumber()+1,
-	     (const char *)map->routerName().toUtf8());
-    }
-  }
-  syslog(LOG_INFO,"loaded %d SA map(s)",sa_maps.size());
 }
 
 
