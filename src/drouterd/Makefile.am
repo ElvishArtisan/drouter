@@ -58,7 +58,11 @@ CLEANFILES = *~\
              *.idb\
              *.pdb\
              *ilk
-DISTCLEANFILES = dparser.cpp dparser.h\
-                 endpointmap.cpp endpointmap.h
+
+DISTCLEANFILES = combobox.cpp combobox.h\
+                 dparser.cpp dparser.h\
+                 endpointmap.cpp endpointmap.h\
+                 saparser.cpp saparser.h
+
 MAINTAINERCLEANFILES = *~\
                        Makefile.in

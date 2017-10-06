@@ -20,8 +20,10 @@
 ##
 ## Use automake to process this into a Makefile.in
 
-EXTRA_DIST = dparser.cpp dparser.h\
-             endpointmap.cpp endpointmap.h
+EXTRA_DIST = combobox.cpp combobox.h\
+             dparser.cpp dparser.h\
+             endpointmap.cpp endpointmap.h\
+             saparser.cpp saparser.h
 
 CLEANFILES = *~\
              moc_*\

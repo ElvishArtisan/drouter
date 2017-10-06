@@ -114,6 +114,7 @@ AC_CONFIG_FILES([ \
     src/dmap/Makefile \
     src/drouterd/Makefile \
     src/tests/Makefile \
+    src/xypanel/Makefile \
     systemd/Makefile \
     systemd/drouter.service \
     drouter.spec \
@@ -126,6 +127,7 @@ AC_OUTPUT()
 ./link_common.sh dmap
 ./link_common.sh drouterd
 ./link_common.sh tests
+./link_common.sh xypanel
 
 AC_MSG_NOTICE()
 AC_MSG_NOTICE(Now enter 'make' to build the software.)

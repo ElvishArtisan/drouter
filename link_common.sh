@@ -22,6 +22,11 @@
 
 DESTDIR=$1
 
+rm -f src/$DESTDIR/combobox.cpp
+ln -s ../../src/common/combobox.cpp src/$DESTDIR/combobox.cpp
+rm -f src/$DESTDIR/combobox.h
+ln -s ../../src/common/combobox.h src/$DESTDIR/combobox.h
+
 rm -f src/$DESTDIR/dparser.cpp
 ln -s ../../src/common/dparser.cpp src/$DESTDIR/dparser.cpp
 rm -f src/$DESTDIR/dparser.h
@@ -31,6 +36,11 @@ rm -f src/$DESTDIR/endpointmap.cpp
 ln -s ../../src/common/endpointmap.cpp src/$DESTDIR/endpointmap.cpp
 rm -f src/$DESTDIR/endpointmap.h
 ln -s ../../src/common/endpointmap.h src/$DESTDIR/endpointmap.h
+
+rm -f src/$DESTDIR/saparser.cpp
+ln -s ../../src/common/saparser.cpp src/$DESTDIR/saparser.cpp
+rm -f src/$DESTDIR/saparser.h
+ln -s ../../src/common/saparser.h src/$DESTDIR/saparser.h
 
 
 # End of link_common.sh

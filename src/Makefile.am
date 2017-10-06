@@ -23,7 +23,8 @@
 SUBDIRS = common\
           dmap\
           drouterd\
-          tests
+          tests\
+          xypanel
 
 CLEANFILES = *~\
              *.idb\
