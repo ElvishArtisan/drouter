@@ -85,3 +85,6 @@
 2019-10-05 Fred Gleason <fredg@paravelsystems.com>
 	* Implemented configuration reload upon reception of SIGHUP
 	for drouterd(8).
+2019-10-06 Fred Gleason <fredg@paravelsystems.com>
+	* Fixed a bug in 'configure.ac' that broke when attempting to configure
+	without SystemD support.

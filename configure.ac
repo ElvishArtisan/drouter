@@ -64,7 +64,7 @@ PKG_CHECK_MODULES(SWITCHYARD,switchyard,[],[AC_MSG_ERROR([*** Switchyard not fou
 #
 # Check for SystemD (Optional)
 #
-PKG_CHECK_MODULES(LIBSYSTEMD,libsystemd,[LIBSYSTEMD_FOUND=yes],[])
+PKG_CHECK_MODULES(LIBSYSTEMD,libsystemd,[LIBSYSTEMD_FOUND=yes],[LIBSYSTEMD_FAILED=yes])
 if test $LIBSYSTEMD_FOUND ; then
   AC_DEFINE(LIBSYSTEMD)
 fi
