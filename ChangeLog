@@ -83,5 +83,5 @@
 2019-10-05 Fred Gleason <fredg@paravelsystems.com>
 	* Removed the '--no-off-source=' switch from dmap(1).
 2019-10-05 Fred Gleason <fredg@paravelsystems.com>
-	* Imnplemented configuration reload upon reception of SIGHUP
+	* Implemented configuration reload upon reception of SIGHUP
 	for drouterd(8).
