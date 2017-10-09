@@ -30,6 +30,7 @@
 #include <QSettings>
 
 #include <sy/sycmdswitch.h>
+#include <sy/symcastsocket.h>
 
 #include "xypanel.h"
 
@@ -49,8 +50,7 @@ MainWidget::MainWidget(QWidget *parent)
   //
   // Initialize Variables
   //
-  QString hostname;
-  //  QString conffile=PANEL_CONF_FILE;
+  QString hostname="localhost";
   setWindowTitle("XYPanel");
 
   //
@@ -59,18 +59,13 @@ MainWidget::MainWidget(QWidget *parent)
   SyCmdSwitch *cmd=
     new SyCmdSwitch(qApp->argc(),qApp->argv(),"xypanel",VERSION,
 		    XYPANEL_USAGE);
-  for(unsigned i=0;i<cmd->keys();i++) {
-    /*
-    if(cmd->key(i)=="--configfile") {
-      conffile=cmd->value(i);
-      cmd->setProcessed(i,true);
-    }
-    */
-    if(!cmd->processed(i)) {
-      QMessageBox::warning(this,"XYPanel - "+tr("Error"),
-			   tr("Unknown option")+": "+cmd->key(i)+"!");
-      exit(256);
-    }
+  if(cmd->keys()>1) {
+    QMessageBox::warning(this,"XYPanel - "+tr("Error"),
+			 tr("Unknown argument!"));
+    exit(1);
+  }
+  if(cmd->keys()==1) {
+    hostname=cmd->key(0);
   }
 
   //
@@ -78,18 +73,6 @@ MainWidget::MainWidget(QWidget *parent)
   //
   //  setWindowIcon(QIcon(lwpath_16x16_xpm));
 
-  //
-  // Panel Configuration
-  //
-  /*
-  panel_config=new PanelConfig();
-  if(!panel_config->load(conffile)) {
-    QMessageBox::warning(this,"LWPanel - "+tr("Error"),
-			 tr("Unable to open configuration file at")+
-			 " \""+conffile+"\"!");
-    exit(256);
-  }
-  */
   //
   // Fonts
   //
@@ -160,21 +143,15 @@ MainWidget::MainWidget(QWidget *parent)
   setMaximumHeight(sizeHint().height());
 
   //
-  // The SAP Connection
+  // The SA Connection
   //
-  panel_connect=new SaParser(this);
-  connect(panel_connect,SIGNAL(connected(bool)),this,SLOT(connectedData(bool)));
-  connect(panel_connect,SIGNAL(outputCrosspointChanged(unsigned,unsigned)),
-	  this,SLOT(outputCrosspointChangedData(unsigned,unsigned)));
-  QList<unsigned> outputs;
-  panel_connect->connectToHost(1,"localhost",9500,"","");
-  /*
-  panel_connect->connectToHost(panel_config->matrixNumber(),
-			       panel_config->serverHostname(),
-			       panel_config->serverPort(),
-			       panel_config->serverUsername(),
-			       panel_config->serverPassword());
-  */
+  panel_parser=new SaParser(this);
+  connect(panel_parser,SIGNAL(connected(bool)),this,SLOT(connectedData(bool)));
+  connect(panel_parser,SIGNAL(error(QAbstractSocket::SocketError)),
+	  this,SLOT(errorData(QAbstractSocket::SocketError)));
+  connect(panel_parser,SIGNAL(outputCrosspointChanged(int,int,int)),
+	  this,SLOT(outputCrosspointChangedData(int,int,int)));
+  panel_parser->connectToHost(hostname,9500,"","");
   delete cmd;
 }
 
@@ -198,19 +175,39 @@ QSizePolicy MainWidget::sizePolicy() const
 
 void MainWidget::routerBoxActivatedData(int n)
 {
+  int router=panel_router_box->itemData(n).toInt();
+  panel_output_box->clear();
+  for(int i=0;i<panel_parser->outputQuantity(router);i++) {
+    panel_output_box->insertItem(i,QString().sprintf("%u - ",i+1)+
+				 panel_parser->outputLongName(router,i),i+1);
+  }
+  panel_input_box->clear();
+  for(int i=0;i<panel_parser->inputQuantity(router);i++) {
+    panel_input_box->insertItem(i,QString().sprintf("%u - ",i+1)+
+				panel_parser->inputLongName(router,i),i+1);
+  }
+  panel_input_box->
+    insertItem(panel_parser->inputQuantity(router),tr("*** UNKNOWN ***"),0);
+  int output=panel_output_box->currentItemData().toInt();
+  outputCrosspointChangedData(router,output,
+			      panel_parser->outputCrosspoint(router,output));
+  SetArmedState(false);
 }
 
 
 void MainWidget::outputBoxActivatedData(int n)
 {
-  outputCrosspointChangedData(panel_output_box->currentItemData().toUInt(),
-			      panel_connect->outputCrosspoint(n+1));
+  int router=panel_router_box->currentItemData().toInt();
+  outputCrosspointChangedData(router,
+			      panel_output_box->currentItemData().toInt(),
+			      panel_parser->outputCrosspoint(router,n+1));
 }
 
 
 void MainWidget::inputBoxActivatedData(int n)
 {
-  if(n<panel_connect->inputQuantity()) {
+  int router=panel_router_box->currentItemData().toInt();
+  if(n<panel_parser->inputQuantity(router)) {
     SetArmedState(panel_current_input!=(n+1));
   }
 }
@@ -218,9 +215,11 @@ void MainWidget::inputBoxActivatedData(int n)
 
 void MainWidget::takeData()
 {
-  panel_connect->
-    setOutputCrosspoint(panel_output_box->currentItemData().toUInt(),
-			panel_input_box->currentItemData().toUInt());
+  int router=panel_router_box->currentItemData().toInt();
+  panel_parser->
+    setOutputCrosspoint(router,
+			panel_output_box->currentItemData().toInt(),
+			panel_input_box->currentItemData().toInt());
 }
 
 
@@ -234,32 +233,15 @@ void MainWidget::cancelData()
 void MainWidget::connectedData(bool state)
 {
   if(state) {
+    QMap<int,QString> routers=panel_parser->routers();
     panel_router_box->clear();
-    for(int i=0;i<panel_connect->routerQuantity();i++) {
-      panel_router_box->insertItem(i,QString().sprintf("%u - ",i+1)+
-				   panel_connect->routerName(i),i+1);
+    for(QMap<int,QString>::const_iterator it=routers.begin();it!=routers.end();
+	it++) {
+      panel_router_box->
+	insertItem(panel_router_box->count(),it.value(),it.key());
     }
-    panel_output_box->clear();
-    for(int i=0;i<panel_connect->outputQuantity();i++) {
-      panel_output_box->insertItem(i,QString().sprintf("%u - ",i+1)+
-				   panel_connect->outputLongName(i),i+1);
-    }
-    panel_input_box->clear();
-    for(int i=0;i<panel_connect->inputQuantity();i++) {
-      /*
-      if(panel_connect->inputName(i)==tr(LWPATH_OFF_LABEL)) {
-	panel_input_box->insertItem(i,QString().sprintf("%u - ",i+1)+
-				    tr(LWPATH_OFF_LABEL));
-      }
-      else {
-      */
-	panel_input_box->insertItem(i,QString().sprintf("%u - ",i+1)+
-				    panel_connect->inputLongName(i),i+1);
-	//      }
-    }
-    panel_input_box->
-      insertItem(panel_connect->inputQuantity(),tr("*** UNKNOWN ***"),0);
-    //    outputCrosspointChangedData(1,panel_connect->outputCrosspoint(1));
+    panel_router_box->setCurrentIndex(0);
+    routerBoxActivatedData(panel_router_box->currentIndex());
   }
   else {
     panel_output_label->setDisabled(true);
@@ -267,22 +249,32 @@ void MainWidget::connectedData(bool state)
     panel_input_label->setDisabled(true);
     panel_input_box->setDisabled(true);
   }
-  SetArmedState(false);
 }
 
 
-void MainWidget::outputCrosspointChangedData(unsigned output,unsigned input)
+void MainWidget::errorData(QAbstractSocket::SocketError err)
 {
-  if(output==panel_output_box->currentItemData()) {
-    if(!panel_input_box->setCurrentItemData(input)) {
-      panel_input_box->setCurrentItemData(0);
+  QMessageBox::warning(this,"XYPanel - "+tr("Error"),
+		       tr("Network Error")+": "+
+		       SyMcastSocket::socketErrorText(err));
+  exit(1);
+}
+
+
+void MainWidget::outputCrosspointChangedData(int router,int output,int input)
+{
+  if(router==panel_router_box->currentItemData().toInt()) {
+    if(output==panel_output_box->currentItemData()) {
+      if(!panel_input_box->setCurrentItemData(input)) {
+	panel_input_box->setCurrentItemData(0);
+      }
+      panel_current_input=input;
+      SetArmedState(false);
+      panel_output_label->setEnabled(true);
+      panel_output_box->setEnabled(true);
+      panel_input_label->setEnabled(true);
+      panel_input_box->setEnabled(true);
     }
-    panel_current_input=input;
-    SetArmedState(false);
-    panel_output_label->setEnabled(true);
-    panel_output_box->setEnabled(true);
-    panel_input_label->setEnabled(true);
-    panel_input_box->setEnabled(true);
   }
 }
 
@@ -310,18 +302,16 @@ void MainWidget::resizeEvent(QResizeEvent *e)
   panel_router_label->setGeometry(15,8,60,20);
   panel_router_box->setGeometry(80,8,200,20);
 
-  panel_output_label->setGeometry(15,38,3*size().width()/8-25,20);
-  panel_output_box->setGeometry(10,60,3*size().width()/8-20,20);
+  panel_output_label->setGeometry(15,38,100,20);
+  panel_output_box->setGeometry(10,60,size().width()/2-15,20);
 
-  panel_input_label->
-    setGeometry(3*size().width()/8+15,38,3*size().width()/8-25,20);
-  panel_input_box->
-    setGeometry(3*size().width()/8+10,60,3*size().width()/8-20,20);
+  panel_input_label->setGeometry(size().width()/2+10,38,100,20);
+  panel_input_box->setGeometry(size().width()/2+5,60,size().width()/2-15,20);
 
   panel_take_button->
-    setGeometry(6*size().width()/8+20,40,size().width()/8-30,40);
+    setGeometry(6*size().width()/8+20,10,size().width()/8-30,40);
   panel_cancel_button->
-    setGeometry(7*size().width()/8+20,40,size().width()/8-30,40);
+    setGeometry(7*size().width()/8+20,10,size().width()/8-30,40);
 }
 
 

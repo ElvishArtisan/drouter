@@ -28,6 +28,7 @@
 #include <vector>
 
 #include <QList>
+#include <QMap>
 #include <QObject>
 #include <QStringList>
 #include <QTcpSocket>
@@ -41,28 +42,25 @@ class SaParser : public QObject
  public:
   SaParser(QObject *parent=0);
   ~SaParser();
-  int routerQuantity() const;
-  QString routerName(int router) const;
-  int inputQuantity() const;
-  QString inputName(int input);
-  QString inputLongName(int input);
-  int outputQuantity() const;
-  QString outputName(int output);
-  QString outputLongName(int output);
-  int outputCrosspoint(int output);
-  void setOutputCrosspoint(int output,int input);
-  void connectToHost(unsigned matrix_num,const QString &hostname,uint16_t port,
+  QMap<int,QString> routers() const;
+  int inputQuantity(int router) const;
+  QString inputName(int router,int input);
+  QString inputLongName(int router,int input);
+  int outputQuantity(int router) const;
+  QString outputName(int router,int output);
+  QString outputLongName(int router,int output);
+  int outputCrosspoint(int router,int output);
+  void setOutputCrosspoint(int router,int output,int input);
+  void connectToHost(const QString &hostname,uint16_t port,
 		     const QString &username,const QString &passwd);
-  void connectToHost(unsigned matrix_num,const QString &hostname,uint16_t port,
-		     const QString &username,const QString &passwd,
-		     const QList<unsigned> &outputs);
 
  signals:
   void connected(bool state);
+  void error(QAbstractSocket::SocketError err);
   void routerListChanged();
   void inputListChanged();
   void outputListChanged();
-  void outputCrosspointChanged(unsigned output,unsigned input);
+  void outputCrosspointChanged(int router,int output,int input);
 
  private slots:
   void connectedData();
@@ -85,18 +83,19 @@ class SaParser : public QObject
   uint16_t sa_port;
   QString sa_username;
   QString sa_password;
-  unsigned sa_matrix_number;
   QString sa_accum;
   bool sa_reading_routers;
   bool sa_reading_sources;
   bool sa_reading_dests;
-  QStringList sa_router_names;
-  QStringList sa_input_names;
-  QStringList sa_input_long_names;
-  QStringList sa_output_names;
-  QStringList sa_output_long_names;
-  std::map<unsigned,unsigned> sa_output_xpoints;
-  QList<unsigned> sa_active_outputs;
+  QMap<int,QString> sa_router_names;
+  int sa_current_router;
+  int sa_last_router;
+  QMap<int,QStringList> sa_input_names;
+  QMap<int,QStringList> sa_input_long_names;
+  QMap<int,QStringList> sa_output_names;
+  QMap<int,QStringList> sa_output_long_names;
+  QMap<int,QMap<int,int> > sa_output_xpoints;
+  //  QMap<int,QList<unsigned> > sa_active_outputs;
   QTimer *sa_holdoff_timer;
 };
 

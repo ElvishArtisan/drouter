@@ -50,7 +50,8 @@ class MainWidget : public QWidget
   void takeData();
   void cancelData();
   void connectedData(bool state);
-  void outputCrosspointChangedData(unsigned output,unsigned input);
+  void errorData(QAbstractSocket::SocketError err);
+  void outputCrosspointChangedData(int router,int output,int input);
   void clockData();
 
  protected:
@@ -67,8 +68,7 @@ class MainWidget : public QWidget
   QPushButton *panel_take_button;
   QPushButton *panel_cancel_button;
   ComboBox *panel_output_box;
-  SaParser *panel_connect;
-  //  PanelConfig *panel_config;
+  SaParser *panel_parser;
   QTimer *panel_clock_timer;
   bool panel_clock_state;
 };

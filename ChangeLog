@@ -99,3 +99,5 @@
 2019-10-06 Fred Gleason <fredg@paravelsystems.com>
 	* Added an 'SaParser' class.
 	* Added xypanel(1).
+2019-10-09 Fred Gleason <fredg@paravelsystems.com>
+	* Refactored 'SaParser' to monitor all available routers.
