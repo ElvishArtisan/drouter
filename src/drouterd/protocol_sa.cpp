@@ -160,25 +160,29 @@ void ProtocolSa::processChangedDestination(const SyNode &node,int slot,
   for(QMap<int,EndPointMap *>::const_iterator it=sa_maps.begin();
       it!=sa_maps.end();it++) {
     EndPointMap *map=it.value();
-    if((output=map->endPoint(EndPointMap::Output,node.hostAddress(),slot))>=0) {
-      if((src_lwrp=router()->
-	  nodeBySrcStream(dst.streamAddress(),&src_slot))!=NULL) {
-	if(src_slot>=0) {  // Crosspoint is OFF
-	  if((input=map->endPoint(EndPointMap::Input,src_lwrp->hostAddress(),src_slot))>=0) {
-	    sa_server->
-	      send(QString().sprintf("RouteStat %u %u %u False\r\n",
-				     map->routerNumber()+1,output+1,input+1));
+    if(map->routerType()==EndPointMap::AudioRouter) {
+      if((output=map->endPoint(EndPointMap::Output,node.hostAddress(),slot))>=
+	 0) {
+	if((src_lwrp=router()->
+	    nodeBySrcStream(dst.streamAddress(),&src_slot))!=NULL) {
+	  if(src_slot>=0) {  // Crosspoint is OFF
+	    if((input=map->endPoint(EndPointMap::Input,src_lwrp->hostAddress(),
+				    src_slot))>=0) {
+	      sa_server->
+		send(QString().sprintf("RouteStat %u %u %u False\r\n",
+				       map->routerNumber()+1,output+1,input+1));
+	    }
 	  }
 	}
-      }
-      else {
-	if((0xFFFF&dst.streamAddress().toIPv4Address())==0) {
-	  sa_server->send(QString().sprintf("RouteStat %u %u 0 False\r\n",
-					    map->routerNumber()+1,output+1));
-	}
 	else {
-	  sa_server->send(QString().sprintf("RouteStat %u %u -3 False\r\n",
-					    map->routerNumber()+1,output+1));
+	  if((0xFFFF&dst.streamAddress().toIPv4Address())==0) {
+	    sa_server->send(QString().sprintf("RouteStat %u %u 0 False\r\n",
+					      map->routerNumber()+1,output+1));
+	  }
+	  else {
+	    sa_server->send(QString().sprintf("RouteStat %u %u -3 False\r\n",
+					      map->routerNumber()+1,output+1));
+	  }
 	}
       }
     }
@@ -195,10 +199,13 @@ void ProtocolSa::processChangedGpi(const SyNode &node,int slot,
     for(QMap<int,EndPointMap *>::const_iterator it=sa_maps.begin();
 	it!=sa_maps.end();it++) {
       EndPointMap *map=it.value();
-      if((input=map->endPoint(EndPointMap::Input,node.hostAddress(),slot))>=0) {
-	sa_server->send(QString().
-			sprintf("GPIStat %u %d ",map->routerNumber()+1,input+1)+
-			gpi.code().toLower()+"\r\n");
+      if(map->routerType()==EndPointMap::GpioRouter) {
+	if((input=map->endPoint(EndPointMap::Input,node.hostAddress(),slot))>=
+	   0) {
+	  sa_server->send(QString().sprintf("GPIStat %u %d ",
+					    map->routerNumber()+1,input+1)+
+			  gpi.code().toLower()+"\r\n");
+	}
       }
     }
   }
@@ -234,17 +241,20 @@ void ProtocolSa::processChangedGpo(const SyNode &node,int slot,const SyGpo &gpo)
   for(QMap<int,EndPointMap *>::const_iterator it=sa_maps.begin();
       it!=sa_maps.end();it++) {
     EndPointMap *map=it.value();
-    if((output=map->endPoint(EndPointMap::Output,node.hostAddress(),slot))>=0) {
-      if((input=map->endPoint(EndPointMap::Input,gpo.sourceAddress(),
-			      gpo.sourceSlot()))>=0) {
-	sa_server->
-	  send(QString().sprintf("RouteStat %u %u %u False\r\n",
-				 map->routerNumber()+1,output+1,input+1));
-      }
-      else {
-	sa_server->
-	  send(QString().sprintf("RouteStat %u %u 0 False\r\n",
-				 map->routerNumber()+1,output+1));
+    if(map->routerType()==EndPointMap::GpioRouter) {
+      if((output=map->endPoint(EndPointMap::Output,node.hostAddress(),slot))>=
+	 0) {
+	if((input=map->endPoint(EndPointMap::Input,gpo.sourceAddress(),
+				gpo.sourceSlot()))>=0) {
+	  sa_server->
+	    send(QString().sprintf("RouteStat %u %u %u False\r\n",
+				   map->routerNumber()+1,output+1,input+1));
+	}
+	else {
+	  sa_server->
+	    send(QString().sprintf("RouteStat %u %u 0 False\r\n",
+				   map->routerNumber()+1,output+1));
+	}
       }
     }
   }

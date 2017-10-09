@@ -115,3 +115,7 @@
 2019-10-09 Fred Gleason <fredg@paravelsystems.com>
 	* Fixed a bug in xypanel(1) that prevented setting an output being
 	set to 'OFF'.
+2019-10-09 Fred Gleason <fredg@paravelsystems.com>
+	* Fixed a bug in drouterd(8) that caused spurious RouteStat updates
+	to be generated when switching routes on nodes that contained both
+	audio and GPIO resources.
