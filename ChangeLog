@@ -101,3 +101,8 @@
 	* Added xypanel(1).
 2019-10-09 Fred Gleason <fredg@paravelsystems.com>
 	* Refactored 'SaParser' to monitor all available routers.
+2019-10-09 Fred Gleason <fredg@paravelsystems.com>
+	* Implemented a thirty second delay before allowing SA connections
+	in dourterd(8).
+	* Added support for indicating initial connection errors to
+	xypanel(1).

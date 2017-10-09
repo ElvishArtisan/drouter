@@ -46,12 +46,12 @@ MainWidget::MainWidget(QWidget *parent)
   QString config_filename;
   panel_clock_state=false;
   panel_current_input=0;
+  panel_initial_connected=false;
 
   //
   // Initialize Variables
   //
   QString hostname="localhost";
-  setWindowTitle("XYPanel");
 
   //
   // Read Command Options
@@ -94,7 +94,9 @@ MainWidget::MainWidget(QWidget *parent)
   panel_router_label=new QLabel(tr("Router")+":",this);
   panel_router_label->setAlignment(Qt::AlignRight|Qt::AlignVCenter);
   panel_router_label->setFont(button_font);
+  panel_router_label->setDisabled(true);
   panel_router_box=new ComboBox(this);
+  panel_router_box->setDisabled(true);
   connect(panel_router_box,SIGNAL(activated(int)),
 	  this,SLOT(routerBoxActivatedData(int)));
 
@@ -153,6 +155,8 @@ MainWidget::MainWidget(QWidget *parent)
 	  this,SLOT(outputCrosspointChangedData(int,int,int)));
   panel_parser->connectToHost(hostname,9500,"","");
   delete cmd;
+
+  setWindowTitle("XYPanel ["+tr("Server")+": "+hostname+"]");
 }
 
 
@@ -242,8 +246,11 @@ void MainWidget::connectedData(bool state)
     }
     panel_router_box->setCurrentIndex(0);
     routerBoxActivatedData(panel_router_box->currentIndex());
+    panel_initial_connected=true;
   }
   else {
+    panel_router_label->setDisabled(true);
+    panel_router_box->setDisabled(true);
     panel_output_label->setDisabled(true);
     panel_output_box->setDisabled(true);
     panel_input_label->setDisabled(true);
@@ -254,10 +261,12 @@ void MainWidget::connectedData(bool state)
 
 void MainWidget::errorData(QAbstractSocket::SocketError err)
 {
-  QMessageBox::warning(this,"XYPanel - "+tr("Error"),
-		       tr("Network Error")+": "+
-		       SyMcastSocket::socketErrorText(err));
-  exit(1);
+  if(!panel_initial_connected) {
+    QMessageBox::warning(this,"XYPanel - "+tr("Error"),
+			 tr("Network Error")+": "+
+			 SyMcastSocket::socketErrorText(err));
+    exit(1);
+  }
 }
 
 
@@ -270,6 +279,8 @@ void MainWidget::outputCrosspointChangedData(int router,int output,int input)
       }
       panel_current_input=input;
       SetArmedState(false);
+      panel_router_label->setEnabled(true);
+      panel_router_box->setEnabled(true);
       panel_output_label->setEnabled(true);
       panel_output_box->setEnabled(true);
       panel_input_label->setEnabled(true);

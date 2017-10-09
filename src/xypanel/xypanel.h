@@ -71,6 +71,7 @@ class MainWidget : public QWidget
   SaParser *panel_parser;
   QTimer *panel_clock_timer;
   bool panel_clock_state;
+  bool panel_initial_connected;
 };
 
 

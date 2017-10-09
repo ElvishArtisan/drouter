@@ -53,13 +53,14 @@ class ServerNet : public QObject
  ServerNet(int sock,uint16_t port,QObject *parent=0);
  ServerNet(int sock,uint16_t port,const QHostAddress &m_addr,QObject *parent=0);
   ~ServerNet();
-  void setReady(bool state);
   NetConnection *connection(int id) const;
   QList<NetConnection *> connections() const;
 
  public slots:
+  void setReady();
   void send(const QString &cmd,int id=-1);
   void closeConnection(int id);
+  void closeAll();
 
  protected:
   virtual void newConnection(int id,NetConnection *conn);

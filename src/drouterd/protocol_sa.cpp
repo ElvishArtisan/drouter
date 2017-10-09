@@ -29,8 +29,6 @@
 ProtocolSa::ProtocolSa(DRouter *router,int sock,QObject *parent)
   : Protocol(router,Protocol::ProtocolSa,parent)
 {
-  reload();
-
   sa_server=new ServerSa(sock,this);
   connect(sa_server,SIGNAL(sendMatrixNames(int)),
 	  this,SLOT(sendMatrixNamesSa(int)));
@@ -55,18 +53,22 @@ ProtocolSa::ProtocolSa(DRouter *router,int sock,QObject *parent)
 	  this,SLOT(setGpoStateSa(int,unsigned,unsigned,int,
 				       const QString &)));
 
-  sa_server->setReady(true);
-}
+  reload();
 
-
-void ProtocolSa::setReady(bool state)
-{
-  sa_server->setReady(state);
+  sa_ready_timer=new QTimer(this);
+  sa_ready_timer->setSingleShot(true);
+  connect(sa_ready_timer,SIGNAL(timeout()),sa_server,SLOT(setReady()));
+  sa_ready_timer->start(30000);
 }
 
 
 void ProtocolSa::reload()
 {
+  //
+  // Close Client Connections
+  //
+  sa_server->closeAll();
+
   //
   // Clear Old Maps
   //

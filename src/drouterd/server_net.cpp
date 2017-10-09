@@ -69,12 +69,6 @@ ServerNet::~ServerNet()
 }
 
 
-void ServerNet::setReady(bool state)
-{
-  net_ready=state;
-}
-
-
 NetConnection *ServerNet::connection(int id) const
 {
   return net_connections[id];
@@ -84,6 +78,12 @@ NetConnection *ServerNet::connection(int id) const
 QList<NetConnection *> ServerNet::connections() const
 {
   return net_connections;
+}
+
+
+void ServerNet::setReady()
+{
+  net_ready=true;
 }
 
 
@@ -109,6 +109,16 @@ void ServerNet::send(const QString &cmd,int id)
 void ServerNet::closeConnection(int id)
 {
   net_connections[id]->socket->close();
+}
+
+
+void ServerNet::closeAll()
+{
+  for(int i=0;i<net_connections.size();i++) {
+    if((net_connections.at(i)!=NULL)&&(!net_connections.at(i)->zombie)) {
+      net_connections.at(i)->socket->close();
+    }
+  }
 }
 
 

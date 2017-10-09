@@ -60,7 +60,7 @@ ProtocolD::ProtocolD(DRouter *router,int sock,QObject *parent)
 	  this,SLOT(processSetGpioCrosspointD(int,const QHostAddress &,int,
 					      const QHostAddress &,int)));
 
-  d_server->setReady(true);
+  d_server->setReady();
 }
 
 

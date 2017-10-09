@@ -33,7 +33,6 @@ class ProtocolSa : public Protocol
  void reload();
 
  public slots:
-  void setReady(bool state);
   void inputNameChanged(int mid,unsigned input,const QString &name);
   void gpiChanged(int mid,unsigned input,const QString &code);
   void outputNameChanged(int mid,unsigned output,const QString &name);
@@ -63,6 +62,7 @@ class ProtocolSa : public Protocol
   int GetCrosspointInput(EndPointMap *map,int output) const;
   ServerSa *sa_server;
   QMap<int,EndPointMap *> sa_maps;
+  QTimer *sa_ready_timer;
 };
 
 
