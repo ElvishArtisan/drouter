@@ -92,6 +92,9 @@ SyLwrpClient *DRouter::node(const QHostAddress &hostaddr)
 SyLwrpClient *DRouter::nodeBySrcStream(const QHostAddress &strmaddress,
 				       int *slot)
 {
+  if((0xFFFF&strmaddress.toIPv4Address())==0) {
+    return NULL;
+  }
   for(QMap<unsigned,SyLwrpClient *>::const_iterator it=drouter_nodes.begin();
       it!=drouter_nodes.end();it++) {
     for(unsigned i=0;i<it.value()->srcSlots();i++) {

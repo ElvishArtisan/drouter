@@ -108,3 +108,7 @@
 	xypanel(1).
 2019-10-09 Fred Gleason <fredg@paravelsystems.com>
 	* Added a login dialog to xypanel(1).
+2019-10-09 Fred Gleason <fredg@paravelsystems.com>
+	* Implemented returning a '-3' for the crosspoint input for an
+	output that is connected to a source that is outside of the
+	configured space in SA protocol.

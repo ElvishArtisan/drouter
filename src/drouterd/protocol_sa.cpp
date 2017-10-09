@@ -163,16 +163,22 @@ void ProtocolSa::processChangedDestination(const SyNode &node,int slot,
     if((output=map->endPoint(EndPointMap::Output,node.hostAddress(),slot))>=0) {
       if((src_lwrp=router()->
 	  nodeBySrcStream(dst.streamAddress(),&src_slot))!=NULL) {
-	if(src_slot<0) {  // Crosspoint is OFF
-	}
-	else {
-	  if((input=map->endPoint(EndPointMap::Input,src_lwrp->hostAddress(),src_slot))<0) {
-	  }
-	  else {
+	if(src_slot>=0) {  // Crosspoint is OFF
+	  if((input=map->endPoint(EndPointMap::Input,src_lwrp->hostAddress(),src_slot))>=0) {
 	    sa_server->
 	      send(QString().sprintf("RouteStat %u %u %u False\r\n",
 				     map->routerNumber()+1,output+1,input+1));
 	  }
+	}
+      }
+      else {
+	if((0xFFFF&dst.streamAddress().toIPv4Address())==0) {
+	  sa_server->send(QString().sprintf("RouteStat %u %u 0 False\r\n",
+					    map->routerNumber()+1,output+1));
+	}
+	else {
+	  sa_server->send(QString().sprintf("RouteStat %u %u -3 False\r\n",
+					    map->routerNumber()+1,output+1));
 	}
       }
     }
@@ -524,12 +530,12 @@ void ProtocolSa::sendRouteInfoSa(int id,unsigned mid,unsigned output)
   if(output==0) {
     for(int i=0;i<map->quantity(EndPointMap::Output);i++) {
       sa_server->
-	send(QString().sprintf("RouteStat %u %u %u False\r\n",
+	send(QString().sprintf("RouteStat %d %d %d False\r\n",
 			       mid+1,i+1,GetCrosspointInput(map,i)+1),id);
     }
   }
   else {
-    sa_server->send(QString().sprintf("RouteStat %u %u %u False\r\n",
+    sa_server->send(QString().sprintf("RouteStat %d %d %d False\r\n",
 		    mid+1,output,GetCrosspointInput(map,output-1)+1),id);
   }
 }
@@ -670,12 +676,12 @@ int ProtocolSa::GetCrosspointInput(EndPointMap *map,int output) const
     //
     int src_slot=0;
     QHostAddress src_strmaddr=dst_lwrp->dstAddress(dst_slot);
-    if(src_strmaddr.isNull()) {  // OFF
+    if((0xFFFF&src_strmaddr.toIPv4Address())==0) {  // OFF
       return -1;
     }
     else {
       if((src_lwrp=router()->nodeBySrcStream(src_strmaddr,&src_slot))==NULL) {
-	return -1;  // OFF-LINE
+	return -4;  // Off-line or External
       }
     }
     return map->endPoint(EndPointMap::Input,src_lwrp->hostAddress(),src_slot);
