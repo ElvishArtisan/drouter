@@ -30,6 +30,7 @@
 #include <QWidget>
 
 #include "combobox.h"
+#include "logindialog.h"
 #include "saparser.h"
 
 #define XYPANEL_USAGE "[options]\n"
@@ -49,7 +50,7 @@ class MainWidget : public QWidget
   void inputBoxActivatedData(int n);
   void takeData();
   void cancelData();
-  void connectedData(bool state);
+  void connectedData(bool state,SaParser::ConnectionState cstate);
   void errorData(QAbstractSocket::SocketError err);
   void outputCrosspointChangedData(int router,int output,int input);
   void clockData();
@@ -58,6 +59,10 @@ class MainWidget : public QWidget
   void resizeEvent(QResizeEvent *e);
 
  private:
+  LoginDialog *panel_login_dialog;
+  QString panel_hostname;
+  QString panel_username;
+  QString panel_password;
   void SetArmedState(bool state);
   QLabel *panel_router_label;
   ComboBox *panel_router_box;

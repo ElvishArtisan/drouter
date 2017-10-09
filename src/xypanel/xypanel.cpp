@@ -51,7 +51,9 @@ MainWidget::MainWidget(QWidget *parent)
   //
   // Initialize Variables
   //
-  QString hostname="localhost";
+  panel_hostname="localhost";
+  panel_username="admin";
+  panel_password="";
 
   //
   // Read Command Options
@@ -59,13 +61,24 @@ MainWidget::MainWidget(QWidget *parent)
   SyCmdSwitch *cmd=
     new SyCmdSwitch(qApp->argc(),qApp->argv(),"xypanel",VERSION,
 		    XYPANEL_USAGE);
-  if(cmd->keys()>1) {
-    QMessageBox::warning(this,"XYPanel - "+tr("Error"),
-			 tr("Unknown argument!"));
-    exit(1);
-  }
-  if(cmd->keys()==1) {
-    hostname=cmd->key(0);
+  for(unsigned i=0;i<cmd->keys();i++) {
+    if(cmd->key(i)=="--hostname") {
+      panel_hostname=cmd->value(i);
+      cmd->setProcessed(i,true);
+    }
+    if(cmd->key(i)=="--username") {
+      panel_username=cmd->value(i);
+      cmd->setProcessed(i,true);
+    }
+    if(cmd->key(i)=="--password") {
+      panel_password=cmd->value(i);
+      cmd->setProcessed(i,true);
+    }
+    if(!cmd->processed(i)) {
+      QMessageBox::warning(this,"XYPanel - "+tr("Error"),
+			   tr("Unknown argument")+" \""+cmd->key(i)+"\".");
+      exit(1);
+    }
   }
 
   //
@@ -87,6 +100,11 @@ MainWidget::MainWidget(QWidget *parent)
   panel_clock_timer=new QTimer(this);
   panel_clock_timer->setSingleShot(false);
   connect(panel_clock_timer,SIGNAL(timeout()),this,SLOT(clockData()));
+
+  //
+  // Dialogs
+  //
+  panel_login_dialog=new LoginDialog("XYPanel",this);
 
   //
   // Router Control
@@ -148,15 +166,22 @@ MainWidget::MainWidget(QWidget *parent)
   // The SA Connection
   //
   panel_parser=new SaParser(this);
-  connect(panel_parser,SIGNAL(connected(bool)),this,SLOT(connectedData(bool)));
+  connect(panel_parser,SIGNAL(connected(bool,SaParser::ConnectionState)),
+	  this,SLOT(connectedData(bool,SaParser::ConnectionState)));
   connect(panel_parser,SIGNAL(error(QAbstractSocket::SocketError)),
 	  this,SLOT(errorData(QAbstractSocket::SocketError)));
   connect(panel_parser,SIGNAL(outputCrosspointChanged(int,int,int)),
 	  this,SLOT(outputCrosspointChangedData(int,int,int)));
-  panel_parser->connectToHost(hostname,9500,"","");
-  delete cmd;
 
-  setWindowTitle("XYPanel ["+tr("Server")+": "+hostname+"]");
+  setWindowTitle("XYPanel ["+tr("Server")+": "+panel_hostname+"]");
+
+  if(panel_password.isEmpty()) {
+    if(!panel_login_dialog->exec(&panel_username,&panel_password)) {
+      exit(1);
+    }
+  }
+  panel_parser->
+    connectToHost(panel_hostname,9500,panel_username,panel_password);
 }
 
 
@@ -191,7 +216,9 @@ void MainWidget::routerBoxActivatedData(int n)
 				panel_parser->inputLongName(router,i),i+1);
   }
   panel_input_box->
-    insertItem(panel_parser->inputQuantity(router),tr("*** UNKNOWN ***"),0);
+    insertItem(panel_parser->inputQuantity(router),tr("--- OFF ---"),0);
+  panel_input_box->
+    insertItem(panel_parser->inputQuantity(router),tr("*** UNKNOWN ***"),-3);
   int output=panel_output_box->currentItemData().toInt();
   outputCrosspointChangedData(router,output,
 			      panel_parser->outputCrosspoint(router,output));
@@ -234,7 +261,7 @@ void MainWidget::cancelData()
 }
 
 
-void MainWidget::connectedData(bool state)
+void MainWidget::connectedData(bool state,SaParser::ConnectionState cstate)
 {
   if(state) {
     QMap<int,QString> routers=panel_parser->routers();
@@ -249,6 +276,12 @@ void MainWidget::connectedData(bool state)
     panel_initial_connected=true;
   }
   else {
+    if(cstate!=SaParser::WatchdogActive) {
+      QMessageBox::warning(this,"XYPanel - "+tr("Error"),
+			   tr("Login error")+": "+
+			   SaParser::connectionStateString(cstate));
+      exit(1);
+    }
     panel_router_label->setDisabled(true);
     panel_router_box->setDisabled(true);
     panel_output_label->setDisabled(true);

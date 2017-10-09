@@ -106,3 +106,5 @@
 	in dourterd(8).
 	* Added support for indicating initial connection errors to
 	xypanel(1).
+2019-10-09 Fred Gleason <fredg@paravelsystems.com>
+	* Added a login dialog to xypanel(1).

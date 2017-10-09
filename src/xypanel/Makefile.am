@@ -33,8 +33,10 @@ bin_PROGRAMS = xypanel
 dist_xypanel_SOURCES = xypanel.cpp xypanel.h
 
 nodist_xypanel_SOURCES = combobox.cpp combobox.h\
+                         logindialog.cpp logindialog.h\
                          saparser.cpp saparser.h\
                          moc_combobox.cpp\
+                         moc_logindialog.cpp\
                          moc_saparser.cpp\
                          moc_xypanel.cpp
 
@@ -50,6 +52,7 @@ CLEANFILES = *~\
 DISTCLEANFILES = combobox.cpp combobox.h\
                  dparser.cpp dparser.h\
                  endpointmap.cpp endpointmap.h\
+                 logindialog.cpp logindialog.h\
                  saparser.cpp saparser.h
 
 MAINTAINERCLEANFILES = *~\

@@ -36,7 +36,6 @@ SaParser::SaParser(QObject *parent)
   // The Socket
   //
   sa_socket=NULL;
-  MakeSocket();
 
   //
   // Watchdog Timers
@@ -122,11 +121,34 @@ void SaParser::setOutputCrosspoint(int router,int output,int input)
 void SaParser::connectToHost(const QString &hostname,uint16_t port,
 			     const QString &username,const QString &passwd)
 {
+  MakeSocket();
   sa_hostname=hostname;
   sa_port=port;
   sa_username=username;
   sa_password=passwd;
   sa_socket->connectToHost(hostname,port);
+}
+
+
+QString SaParser::connectionStateString(ConnectionState cstate)
+{
+  QString ret=tr("Unknown")+QString().sprintf(" [%d]",cstate);
+
+  switch(cstate) {
+  case SaParser::Ok:
+    ret=tr("OK");
+    break;
+
+  case SaParser::InvalidLogin:
+    ret=tr("Invalid login");
+    break;
+
+  case SaParser::WatchdogActive:
+    ret=tr("Watchdog active");
+    break;
+  }
+
+  return ret;
 }
 
 
@@ -138,7 +160,7 @@ void SaParser::connectedData()
 
 void SaParser::connectionClosedData()
 {
-  emit connected(false);
+  emit connected(false,SaParser::WatchdogActive);
   sa_holdoff_timer->start(SAPARSER_HOLDOFF_INTERVAL);
 }
 
@@ -200,7 +222,9 @@ void SaParser::DispatchCommand(const QString &cmd)
       SendCommand("routernames");
     }
     else {
-      emit connected(false);
+      sa_socket->deleteLater();
+      sa_socket=NULL;
+      emit connected(false,SaParser::InvalidLogin);
     }
     return;
   }
@@ -262,7 +286,7 @@ void SaParser::DispatchCommand(const QString &cmd)
 	    SendCommand(QString().sprintf("RouteStat %u\r\n",it.key()));
 	  }
 	  sa_reading_dests=false;
-	  emit connected(true);
+	  emit connected(true,SaParser::Ok);
 	}
       }
     }
@@ -323,16 +347,20 @@ void SaParser::ReadSourceName(const QString &cmd)
 {
   QStringList f0=cmd.split("\t");
   bool ok=false;
-
+  int srcnum=0;
+  
+  //
+  // This blows up if the names are enumerated out of order!
+  //
   if(f0.size()==8) {
-    //
-    // This blows up if the names are enumerated out of order!
-    //
+    srcnum=f0[6].toInt(&ok);
+  }
+  if(f0.size()>=3) {
     sa_input_names[sa_current_router].push_back(f0[1]);
-    int srcnum=f0[6].toInt(&ok);
     if(ok) {
       if(srcnum<=0) {
-	sa_input_long_names[sa_current_router].push_back(f0[2]+" ["+tr("inactive")+"]");
+	sa_input_long_names[sa_current_router].
+	  push_back(f0[2]+" ["+tr("inactive")+"]");
       }
       else {
 	sa_input_long_names[sa_current_router].push_back(f0[2]+" ["+f0[6]+"]");
@@ -349,7 +377,7 @@ void SaParser::ReadDestName(const QString &cmd)
 {
   QStringList f0=cmd.split("\t");
 
-  if(f0.size()==6) {
+  if(f0.size()>=3) {
     //
     // This blows up if the names are enumerated out of order!
     //

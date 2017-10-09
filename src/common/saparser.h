@@ -40,6 +40,7 @@ class SaParser : public QObject
 {
  Q_OBJECT
  public:
+  enum ConnectionState {Ok=0,InvalidLogin=1,WatchdogActive=2};
   SaParser(QObject *parent=0);
   ~SaParser();
   QMap<int,QString> routers() const;
@@ -53,9 +54,10 @@ class SaParser : public QObject
   void setOutputCrosspoint(int router,int output,int input);
   void connectToHost(const QString &hostname,uint16_t port,
 		     const QString &username,const QString &passwd);
+  static QString connectionStateString(ConnectionState cstate);
 
  signals:
-  void connected(bool state);
+  void connected(bool state,SaParser::ConnectionState code);
   void error(QAbstractSocket::SocketError err);
   void routerListChanged();
   void inputListChanged();

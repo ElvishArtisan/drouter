@@ -23,6 +23,7 @@
 EXTRA_DIST = combobox.cpp combobox.h\
              dparser.cpp dparser.h\
              endpointmap.cpp endpointmap.h\
+             logindialog.cpp logindialog.h\
              saparser.cpp saparser.h
 
 CLEANFILES = *~\
