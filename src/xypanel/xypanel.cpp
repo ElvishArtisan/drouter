@@ -237,8 +237,7 @@ void MainWidget::outputBoxActivatedData(int n)
 
 void MainWidget::inputBoxActivatedData(int n)
 {
-  int router=panel_router_box->currentItemData().toInt();
-  if(n<panel_parser->inputQuantity(router)) {
+  if(panel_input_box->currentItemData().toInt()>=0) {
     SetArmedState(panel_current_input!=(n+1));
   }
 }
