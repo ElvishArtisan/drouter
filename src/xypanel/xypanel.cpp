@@ -204,21 +204,36 @@ QSizePolicy MainWidget::sizePolicy() const
 
 void MainWidget::routerBoxActivatedData(int n)
 {
+  QString name;
+  int count;
+  int endpt;
   int router=panel_router_box->itemData(n).toInt();
   panel_output_box->clear();
-  for(int i=0;i<panel_parser->outputQuantity(router);i++) {
-    panel_output_box->insertItem(i,QString().sprintf("%u - ",i+1)+
-				 panel_parser->outputLongName(router,i),i+1);
+  count=0;
+  endpt=0;
+  while(count<panel_parser->outputQuantity(router)) {
+    name=panel_parser->outputLongName(router,endpt+1);
+    if(!name.isEmpty()) {
+      panel_output_box->
+	insertItem(endpt,QString().sprintf("%u - ",endpt+1)+name,endpt+1);
+      count++;
+    }
+    endpt++;
   }
   panel_input_box->clear();
-  for(int i=0;i<panel_parser->inputQuantity(router);i++) {
-    panel_input_box->insertItem(i,QString().sprintf("%u - ",i+1)+
-				panel_parser->inputLongName(router,i),i+1);
+  count=0;
+  endpt=0;
+  while(count<panel_parser->inputQuantity(router)) {
+    name=panel_parser->inputLongName(router,endpt+1);
+    if(!name.isEmpty()) {
+      panel_input_box->
+	insertItem(count,QString().sprintf("%u - ",endpt+1)+name,endpt+1);
+      count++;
+    }
+    endpt++;
   }
   panel_input_box->
     insertItem(panel_parser->inputQuantity(router),tr("--- OFF ---"),0);
-  panel_input_box->
-    insertItem(panel_parser->inputQuantity(router),tr("*** UNKNOWN ***"),-3);
   int output=panel_output_box->currentItemData().toInt();
   outputCrosspointChangedData(router,output,
 			      panel_parser->outputCrosspoint(router,output));
@@ -307,7 +322,9 @@ void MainWidget::outputCrosspointChangedData(int router,int output,int input)
   if(router==panel_router_box->currentItemData().toInt()) {
     if(output==panel_output_box->currentItemData()) {
       if(!panel_input_box->setCurrentItemData(input)) {
-	panel_input_box->setCurrentItemData(0);
+	panel_input_box->
+	  insertItem(panel_input_box->count(),tr("** UNKNOWN **"),-3);
+	panel_input_box->setCurrentItemData(-3);
       }
       panel_current_input=input;
       SetArmedState(false);
@@ -317,6 +334,13 @@ void MainWidget::outputCrosspointChangedData(int router,int output,int input)
       panel_output_box->setEnabled(true);
       panel_input_label->setEnabled(true);
       panel_input_box->setEnabled(true);
+    }
+    if(input>=0) {
+      for(int i=0;i<panel_input_box->count();i++) {
+	if(panel_input_box->itemData(i).toInt()<0) {
+	  panel_input_box->removeItem(i);
+	}
+      }
     }
   }
 }
