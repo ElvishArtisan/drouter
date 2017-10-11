@@ -119,3 +119,5 @@
 	* Fixed a bug in drouterd(8) that caused spurious RouteStat updates
 	to be generated when switching routes on nodes that contained both
 	audio and GPIO resources.
+2019-10-11 Fred Gleason <fredg@paravelsystems.com>
+	* Added outputpanel(1).

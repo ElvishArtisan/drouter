@@ -43,6 +43,17 @@ src/drouterd/logindialog.cpp
 src/drouterd/logindialog.h
 src/drouterd/saparser.cpp
 src/drouterd/saparser.h
+src/outputpanel/combobox.cpp
+src/outputpanel/combobox.h
+src/outputpanel/dparser.cpp
+src/outputpanel/dparser.h
+src/outputpanel/endpointmap.cpp
+src/outputpanel/endpointmap.h
+src/outputpanel/logindialog.cpp
+src/outputpanel/logindialog.h
+src/outputpanel/outputpanel
+src/outputpanel/saparser.cpp
+src/outputpanel/saparser.h
 src/tests/combobox.cpp
 src/tests/combobox.h
 src/tests/dparser.cpp

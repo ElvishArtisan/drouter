@@ -92,12 +92,11 @@ class SaParser : public QObject
   QMap<int,QString> sa_router_names;
   int sa_current_router;
   int sa_last_router;
-  QMap<int,QStringList> sa_input_names;
-  QMap<int,QStringList> sa_input_long_names;
-  QMap<int,QStringList> sa_output_names;
-  QMap<int,QStringList> sa_output_long_names;
+  QMap<int,QMap<int,QString> > sa_input_names;
+  QMap<int,QMap<int,QString> > sa_input_long_names;
+  QMap<int,QMap<int,QString> > sa_output_names;
+  QMap<int,QMap<int,QString> > sa_output_long_names;
   QMap<int,QMap<int,int> > sa_output_xpoints;
-  //  QMap<int,QList<unsigned> > sa_active_outputs;
   QTimer *sa_holdoff_timer;
 };
 

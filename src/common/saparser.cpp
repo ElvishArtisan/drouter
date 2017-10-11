@@ -66,19 +66,13 @@ int SaParser::inputQuantity(int router) const
 
 QString SaParser::inputName(int router,int input)
 {
-  if(input>=sa_input_names[router].size()) {
-    return QString();
-  }
-  return sa_input_names[router].at(input);
+  return sa_input_names[router][input];
 }
 
 
 QString SaParser::inputLongName(int router,int input)
 {
-  if(input>=sa_input_long_names[router].size()) {
-    return QString();
-  }
-  return sa_input_long_names[router].at(input);
+  return sa_input_long_names[router][input];
 }
 
 
@@ -90,19 +84,13 @@ int SaParser::outputQuantity(int router) const
 
 QString SaParser::outputName(int router,int output)
 {
-  if(output>=sa_output_names[router].size()) {
-    return QString();
-  }
-  return sa_output_names[router].at(output);
+  return sa_output_names[router][output];
 }
 
 
 QString SaParser::outputLongName(int router,int output)
 {
-  if(output>=sa_output_long_names[router].size()) {
-    return QString();
-  }
-  return sa_output_long_names[router].at(output);
+  return sa_output_long_names[router][output];
 }
 
 
@@ -348,26 +336,26 @@ void SaParser::ReadSourceName(const QString &cmd)
   QStringList f0=cmd.split("\t");
   bool ok=false;
   int srcnum=0;
-  
-  //
-  // This blows up if the names are enumerated out of order!
-  //
-  if(f0.size()==8) {
-    srcnum=f0[6].toInt(&ok);
-  }
-  if(f0.size()>=3) {
-    sa_input_names[sa_current_router].push_back(f0[1]);
-    if(ok) {
-      if(srcnum<=0) {
-	sa_input_long_names[sa_current_router].
-	  push_back(f0[2]+" ["+tr("inactive")+"]");
+  int input=f0.at(0).toInt(&ok);
+
+  if(ok) {
+    if(f0.size()==8) {
+      srcnum=f0[6].toInt(&ok);
+    }
+    if(f0.size()>=3) {
+      sa_input_names[sa_current_router][input]=f0[1];
+      if(ok) {
+	if(srcnum<=0) {
+	  sa_input_long_names[sa_current_router][input]=
+	    f0[2]+" ["+tr("inactive")+"]";
+	}
+	else {
+	  sa_input_long_names[sa_current_router][input]=f0[2]+" ["+f0[6]+"]";
+	}
       }
       else {
-	sa_input_long_names[sa_current_router].push_back(f0[2]+" ["+f0[6]+"]");
+	sa_input_long_names[sa_current_router][input]=f0[2];
       }
-    }
-    else {
-      sa_input_long_names[sa_current_router].push_back(f0[2]);
     }
   }
 }
@@ -376,13 +364,14 @@ void SaParser::ReadSourceName(const QString &cmd)
 void SaParser::ReadDestName(const QString &cmd)
 {
   QStringList f0=cmd.split("\t");
+  bool ok=false;
+  int output=f0.at(0).toInt(&ok);
 
   if(f0.size()>=3) {
-    //
-    // This blows up if the names are enumerated out of order!
-    //
-    sa_output_names[sa_current_router].push_back(f0[1]);
-    sa_output_long_names[sa_current_router].push_back(f0[2]);
+    if(ok) {
+      sa_output_names[sa_current_router][output]=f0[1];
+      sa_output_long_names[sa_current_router][output]=f0[2];
+    }
   }
 }
 

@@ -113,6 +113,7 @@ AC_CONFIG_FILES([ \
     src/common/Makefile \
     src/dmap/Makefile \
     src/drouterd/Makefile \
+    src/outputpanel/Makefile \
     src/tests/Makefile \
     src/xypanel/Makefile \
     systemd/Makefile \
@@ -126,6 +127,7 @@ AC_OUTPUT()
 #
 ./link_common.sh dmap
 ./link_common.sh drouterd
+./link_common.sh outputpanel
 ./link_common.sh tests
 ./link_common.sh xypanel
 

@@ -23,6 +23,7 @@
 SUBDIRS = common\
           dmap\
           drouterd\
+          outputpanel\
           tests\
           xypanel
 
