@@ -29,10 +29,21 @@ BuildRequires: qt-devel systemd-devel
 BuildRoot: /var/tmp/%{name}-@VERSION@
 
 
+%package panels
+Summary: GUI control panels for DRouter
+Group: Productivity/Multimedia/Other
+
+
 %description
 DRouter is a dynamic router framework for controling a Livewire audio network.
 In addition to its own native ProtocolD, it also provides support for
 legacy PathFinder control clients by means of Software Authority protocol.
+
+
+%description panels
+GUI control panels for DRouter. Most of these actually use Software
+Authority protocol and so should work fine with the various PathFinder
+versions as well.
 
 
 %prep
@@ -103,6 +114,18 @@ rm -rf $RPM_BUILD_ROOT
 %doc docs/protocol_d.pdf
 
 
+%files panels
+%defattr(-,root,root)
+%{_bindir}/buttonpanel
+%{_bindir}/outputpanel
+%{_bindir}/xypanel
+%{_datadir}/man/man1/buttonpanel.1.gz
+%{_datadir}/man/man1/outputpanel.1.gz
+%{_datadir}/man/man1/xypanel.1.gz
+
+
 %changelog
+* Thu Oct 12 2017 Fred Gleason <fredg@paravelsystems.com>
+-- Added a 'panels' subpackage.
 * Thu Oct  5 2017 Fred Gleason <fredg@paravelsystems.com>
 -- Initial RPM creation.
