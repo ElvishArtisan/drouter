@@ -124,3 +124,5 @@
 2019-10-11 Fred Gleason <fredg@paravelsystems.com>
 	* Fixed bugs in xypanel(1) that caused incorrect Input and Output
 	names to be displayed when used with routers with sparse numbers.
+2019-10-12 Fred Gleason <fredg@paravelsystems.com>
+	* Added buttonpanel(1).

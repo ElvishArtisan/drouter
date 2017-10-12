@@ -102,7 +102,7 @@ MainWidget::MainWidget(QWidget *parent)
   //
   // Dialogs
   //
-  panel_login_dialog=new LoginDialog("XYPanel",this);
+  panel_login_dialog=new LoginDialog("OutputPanel",this);
 
   //
   // The Button Clock

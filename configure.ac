@@ -110,6 +110,7 @@ fi
 AC_CONFIG_FILES([ \
     docs/Makefile \
     src/Makefile \
+    src/buttonpanel/Makefile \
     src/common/Makefile \
     src/dmap/Makefile \
     src/drouterd/Makefile \
@@ -125,6 +126,7 @@ AC_OUTPUT()
 #
 # Link Common Elements
 #
+./link_common.sh buttonpanel
 ./link_common.sh dmap
 ./link_common.sh drouterd
 ./link_common.sh outputpanel
