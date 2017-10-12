@@ -128,3 +128,5 @@
 	* Added buttonpanel(1).
 2019-10-12 Fred Gleason <fredg@paravelsystems.com>
 	* Added resizing button text to buttonpanel(1).
+2019-10-12 Fred Gleason <fredg@paravelsystems.com>
+	* Added buttonpanel(1), outputpanel(1) and xypanel(1) man pages.
