@@ -162,7 +162,7 @@ void MainWidget::changeConnectionState(bool state,
 {
   //  printf("changeConnectionState(%d)\n",state);
   if(state) {
-    for(QMap<int,QPushButton *>::const_iterator it=panel_buttons.begin();
+    for(QMap<int,AutoPushButton *>::const_iterator it=panel_buttons.begin();
 	it!=panel_buttons.end();it++) {
       delete it.value();
     }
@@ -177,8 +177,8 @@ void MainWidget::changeConnectionState(bool state,
 		   tr("Switcher"));
     for(int i=0;i<panel_parser->inputQuantity(panel_router);i++) {
       if(!panel_parser->inputName(panel_router,i+1).isEmpty()) {
-	panel_buttons[i]=
-	  new QPushButton(panel_parser->inputName(panel_router,i+1),this);
+	panel_buttons[i]=new AutoPushButton(this);
+	panel_buttons[i]->setText(panel_parser->inputName(panel_router,i+1));
 	panel_buttons[i]->show();
 	connect(panel_buttons[i],SIGNAL(clicked()),
 		panel_button_mapper,SLOT(map()));
@@ -210,7 +210,7 @@ void MainWidget::changeOutputCrosspoint(int router,int output,int input)
 {
   //  printf("changeOutputCrosspoint(%d,%d,%d)\n",router,output,input);
   if((router==panel_router)&&((output-1)==panel_output)) {
-    for(QMap<int,QPushButton *>::const_iterator it=panel_buttons.begin();
+    for(QMap<int,AutoPushButton *>::const_iterator it=panel_buttons.begin();
 	it!=panel_buttons.end();it++) {
       if((input-1)==it.key()) {
 	it.value()->setStyleSheet(LWPANELBUTTON_ACTIVE_STYLESHEET);
@@ -238,14 +238,14 @@ void MainWidget::resizeEvent(QResizeEvent *e)
   }
 
   if(panel_columns==0) {
-    for(QMap<int,QPushButton *>::const_iterator it=panel_buttons.begin();
+    for(QMap<int,AutoPushButton *>::const_iterator it=panel_buttons.begin();
 	it!=panel_buttons.end();it++) {
       it.value()->setGeometry(10+cell_w*col,10,cell_w-10,cell_h);
       col++;
     }
   }
   else {
-    for(QMap<int,QPushButton *>::const_iterator it=panel_buttons.begin();
+    for(QMap<int,AutoPushButton *>::const_iterator it=panel_buttons.begin();
 	it!=panel_buttons.end();it++) {
       it.value()->setGeometry(10+cell_w*col,10+cell_h*(row),
 			      cell_w-10,cell_h);

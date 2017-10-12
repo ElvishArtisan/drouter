@@ -29,6 +29,7 @@
 #include <QSignalMapper>
 #include <QWidget>
 
+#include "autopushbutton.h"
 #include "logindialog.h"
 #include "saparser.h"
 
@@ -62,7 +63,7 @@ class MainWidget : public QWidget
   QPixmap *panel_saspanels_map;
   SaParser *panel_parser;
   QSignalMapper *panel_button_mapper;
-  QMap<int,QPushButton *> panel_buttons;
+  QMap<int,AutoPushButton *> panel_buttons;
   LoginDialog *panel_login_dialog;
 };
 

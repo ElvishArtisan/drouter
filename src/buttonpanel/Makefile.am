@@ -30,10 +30,12 @@ moc_%.cpp:	%.h
 
 bin_PROGRAMS = buttonpanel
 
-dist_buttonpanel_SOURCES = buttonpanel.cpp buttonpanel.h
+dist_buttonpanel_SOURCES = autopushbutton.cpp autopushbutton.h\
+                           buttonpanel.cpp buttonpanel.h
 
 nodist_buttonpanel_SOURCES = logindialog.cpp logindialog.h\
                              saparser.cpp saparser.h\
+                             moc_autopushbutton.cpp\
                              moc_logindialog.cpp\
                              moc_saparser.cpp\
                              moc_buttonpanel.cpp

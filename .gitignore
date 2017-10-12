@@ -21,6 +21,17 @@ depcomp
 install-sh
 missing
 moc_*
+src/buttonpanel/buttonpanel
+src/buttonpanel/combobox.cpp
+src/buttonpanel/combobox.h
+src/buttonpanel/dparser.cpp
+src/buttonpanel/dparser.h
+src/buttonpanel/endpointmap.cpp
+src/buttonpanel/endpointmap.h
+src/buttonpanel/logindialog.cpp
+src/buttonpanel/logindialog.h
+src/buttonpanel/saparser.cpp
+src/buttonpanel/saparser.h
 src/dmap/combobox.cpp
 src/dmap/combobox.h
 src/dmap/dmap
