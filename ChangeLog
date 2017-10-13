@@ -135,3 +135,5 @@
 2019-10-13 Fred Gleason <fredg@paravelsystems.com>
 	* Fixed a bug in buttonpanel(1) that caused a segfault at startup
 	when using a router with no sources.
+2019-10-13 Fred Gleason <fredg@paravelsystems.com>
+	* Incremented the package version to 0.5.0.
