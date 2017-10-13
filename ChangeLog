@@ -132,3 +132,6 @@
 	* Added buttonpanel(1), outputpanel(1) and xypanel(1) man pages.
 2019-10-12 Fred Gleason <fredg@paravelsystems.com>
 	* Added a 'panels' RPM subpackage.
+2019-10-13 Fred Gleason <fredg@paravelsystems.com>
+	* Fixed a bug in buttonpanel(1) that caused a segfault at startup
+	when using a router with no sources.

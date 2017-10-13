@@ -228,6 +228,9 @@ void MainWidget::resizeEvent(QResizeEvent *e)
   int col=0;
   int row=0;
   
+  if(panel_buttons.size()==0) {
+    return;
+  }
   int cell_w=(size().width()-20)/panel_buttons.size();
   if(panel_columns>0) {
     cell_w=(size().width()-10)/panel_columns;
