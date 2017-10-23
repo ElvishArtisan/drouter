@@ -26,6 +26,10 @@ ProtocolD::ProtocolD(DRouter *router,int sock,QObject *parent)
   : Protocol(router,Protocol::ProtocolD)
 {
   d_server=new ServerD(sock,this);
+  connect(d_server,SIGNAL(processListClips(int)),
+	  this,SLOT(processListClipsD(int)));
+  connect(d_server,SIGNAL(processListSilences(int)),
+	  this,SLOT(processListSilencesD(int)));
   connect(d_server,SIGNAL(processListDestinations(int)),
 	  this,SLOT(processListDestinationsD(int)));
   connect(d_server,SIGNAL(processListGpis(int)),
@@ -61,6 +65,50 @@ ProtocolD::ProtocolD(DRouter *router,int sock,QObject *parent)
 					      const QHostAddress &,int)));
 
   d_server->setReady();
+}
+
+
+void ProtocolD::processListClipsD(int id)
+{
+  SyLwrpClient *lwrp=NULL;
+
+  QList<QHostAddress> addrs=router()->nodeHostAddresses();
+  for(int i=0;i<addrs.size();i++) {
+    if((lwrp=router()->node(addrs.at(i)))!=NULL) {
+      for(unsigned j=0;j<lwrp->dstSlots();j++) {
+	for(int k=0;k<2;k++) {
+	  d_server->send(AlarmRecord("CLIP",lwrp->hostAddress(),j,
+				     SyLwrpClient::InputMeter,k,
+				     router()->clipAlarmActive(lwrp->hostAddress(),j,SyLwrpClient::InputMeter,k)),id);
+	  d_server->send(AlarmRecord("CLIP",lwrp->hostAddress(),j,
+				     SyLwrpClient::OutputMeter,k,
+				     router()->clipAlarmActive(lwrp->hostAddress(),j,SyLwrpClient::OutputMeter,k)),id);
+	}
+      }
+    }
+  }
+}
+
+
+void ProtocolD::processListSilencesD(int id)
+{
+  SyLwrpClient *lwrp=NULL;
+
+  QList<QHostAddress> addrs=router()->nodeHostAddresses();
+  for(int i=0;i<addrs.size();i++) {
+    if((lwrp=router()->node(addrs.at(i)))!=NULL) {
+      for(unsigned j=0;j<lwrp->dstSlots();j++) {
+	for(int k=0;k<2;k++) {
+	  d_server->send(AlarmRecord("SILENCE",lwrp->hostAddress(),j,
+				     SyLwrpClient::InputMeter,k,
+				     router()->silenceAlarmActive(lwrp->hostAddress(),j,SyLwrpClient::InputMeter,k)),id);
+	  d_server->send(AlarmRecord("SILENCE",lwrp->hostAddress(),j,
+				     SyLwrpClient::OutputMeter,k,
+				     router()->silenceAlarmActive(lwrp->hostAddress(),j,SyLwrpClient::OutputMeter,k)),id);
+	}
+      }
+    }
+  }
 }
 
 
@@ -417,6 +465,50 @@ void ProtocolD::processChangedGpo(const SyNode &node,int slot,const SyGpo &gpo)
       }
     }
   }
+}
+
+
+void ProtocolD::processClipAlarm(const SyNode &node,int slot,
+				 SyLwrpClient::MeterType type,int chan,
+				 bool state)
+{
+}
+
+
+void ProtocolD::processSilenceAlarm(const SyNode &node,int slot,
+				    SyLwrpClient::MeterType type,int chan,
+				    bool state)
+{
+}
+
+
+QString ProtocolD::AlarmRecord(const QString &keyword,
+			       const QHostAddress &hostaddr,
+			       int slot,SyLwrpClient::MeterType type,int chan,
+			       bool state)
+{
+  QString ret="";
+
+  ret+=keyword+"\t";
+  ret+=hostaddr.toString()+"\t";
+  ret+=QString().sprintf("%d\t",slot);
+  switch(type) {
+  case SyLwrpClient::InputMeter:
+    ret+="INPUT\t";
+    break;
+
+  case SyLwrpClient::OutputMeter:
+    ret+="OUTPUT\t";
+    break;
+
+  case SyLwrpClient::LastTypeMeter:
+    ret+="UNKNOWN\t";
+    break;
+  }
+  ret+=QString().sprintf("%d",state);
+  ret+="\r\n";
+
+  return ret;
 }
 
 

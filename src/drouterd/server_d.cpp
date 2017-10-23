@@ -134,6 +134,16 @@ void ServerD::processCommand(int id,const SyAString &cmd)
     return;
   }
 
+  if(cmds.at(0).toLower()=="listclips") {
+    emit processListClips(id);
+    send("ok\r\n",id);
+    return;
+  }
+  if(cmds.at(0).toLower()=="listsilences") {
+    emit processListSilences(id);
+    send("ok\r\n",id);
+    return;
+  }
   if(cmds.at(0).toLower()=="listdestinations") {
     emit processListDestinations(id);
     send("ok\r\n",id);

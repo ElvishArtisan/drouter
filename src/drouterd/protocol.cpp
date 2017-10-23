@@ -38,6 +38,14 @@ Protocol::Protocol(DRouter *router,Protocol::Type type,QObject *parent)
 	  this,SLOT(gpiChangedData(const SyNode &,int,const SyGpioBundle &)));
   connect(router,SIGNAL(gpoChanged(const SyNode &,int,const SyGpo &)),
 	  this,SLOT(gpoChangedData(const SyNode &,int,const SyGpo &)));
+  connect(router,SIGNAL(clipAlarmChanged(const SyNode &,int,
+					 SyLwrpClient::MeterType,int,bool)),
+	  this,SLOT(clipAlarmChangedData(const SyNode &,int,
+					 SyLwrpClient::MeterType,int,bool)));
+  connect(router,SIGNAL(silenceAlarmChanged(const SyNode &,int,
+					    SyLwrpClient::MeterType,int,bool)),
+	  this,SLOT(silenceAlarmChangedData(const SyNode &,int,
+					    SyLwrpClient::MeterType,int,bool)));
 }
 
 
@@ -90,6 +98,22 @@ void Protocol::gpoChangedData(const SyNode &node,int slot,const SyGpo &gpo)
 }
 
 
+void Protocol::clipAlarmChangedData(const SyNode &node,int slot,
+				    SyLwrpClient::MeterType type,int chan,
+				    bool state)
+{
+  processClipAlarm(node,slot,type,chan,state);
+}
+
+
+void Protocol::silenceAlarmChangedData(const SyNode &node,int slot,
+				       SyLwrpClient::MeterType type,int chan,
+				       bool state)
+{
+  processSilenceAlarm(node,slot,type,chan,state);
+}
+
+
 void Protocol::processAddedNode(const SyNode &node)
 {
 }
@@ -109,6 +133,30 @@ void Protocol::processChangedSource(const SyNode &node,int slot,
 void Protocol::processChangedDestination(const SyNode &node,int slot,
 					 const SyDestination &dst)
 {
+}
+
+
+void Protocol::processClipAlarm(const SyNode &node,
+				int slot,SyLwrpClient::MeterType type,
+				int chan,bool state)
+{
+  /*
+  printf("processClipAlarm(%s,%d,%d,%d,%d)\n",
+	 (const char *)node.hostAddress().toString().toUtf8(),
+	 slot,type,chan,state);
+  */
+}
+
+
+void Protocol::processSilenceAlarm(const SyNode &node,
+				   int slot,SyLwrpClient::MeterType type,
+				   int chan,bool state)
+{
+  /*
+  printf("processSilenceAlarm(%s,%d,%d,%d,%d)\n",
+	 (const char *)node.hostAddress().toString().toUtf8(),
+	 slot,type,chan,state);
+  */
 }
 
 

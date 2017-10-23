@@ -66,6 +66,8 @@ class ServerD : public ServerNet
   void processListGpos(int id);
   void processListNodes(int id);
   void processListSources(int id);
+  void processListClips(int id);
+  void processListSilences(int id);
   void processSubscribeDestinations(int id);
   void processSubscribeGpis(int id);
   void processSubscribeGpos(int id);

@@ -87,6 +87,147 @@
   </sect2>
 </sect1>
 
+<sect1 id="sect.alarms">
+  <title>Alarms</title>
+  <para>
+    Messages for receiving alarms and querying alarm states.
+  </para>
+  <sect2 id="sect.alarms.list_clips">
+    <title>List Clips</title>
+    <para>
+      <command>ListClips</command>
+    </para>
+    <para>
+      Return a list of records delineating the currently available CLIP
+      alarms, including current state.
+    </para>
+    <variablelist>
+      <varlistentry>
+	<term>
+	  <computeroutput>CLIP</computeroutput>
+	</term>
+	<listitem>
+	  <para>
+	    The string <computeroutput>CLIP</computeroutput>
+	  </para>
+	</listitem>
+      </varlistentry>
+      <varlistentry>
+	<term>
+	  <replaceable>host-addr</replaceable>
+	</term>
+	<listitem>
+	  <para>
+	    The IPv4 address of the parent node, in dotted-quad notation.
+	  </para>
+	</listitem>
+      </varlistentry>
+      <varlistentry>
+	<term>
+	  <replaceable>slot</replaceable>
+	</term>
+	<listitem>
+	  <para>
+	    The slot position number of the destination on the parent node
+	    (zero-based).
+	  </para>
+	</listitem>
+      </varlistentry>
+      <varlistentry>
+	<term>
+	  <replaceable>type</replaceable>
+	</term>
+	<listitem>
+	  <para>
+	    The type of signal. Valid types are
+	    <computeroutput>INPUT</computeroutput> or
+	    <computeroutput>OUTOUT</computeroutput>.
+	  </para>
+	</listitem>
+      </varlistentry>
+      <varlistentry>
+	<term>
+	  <replaceable>state</replaceable>
+	</term>
+	<listitem>
+	  <para>
+	    The alarm state. <computeroutput>1</computeroutput> means the
+	    alarm is active, whereas <computeroutput>0</computeroutput> means
+	    that it is inactive.
+	  </para>
+	</listitem>
+      </varlistentry>
+    </variablelist>
+  </sect2>
+  <sect2 id="sect.alarms.list_silences">
+    <title>List Silences</title>
+    <para>
+      <command>ListSilences</command>
+    </para>
+    <para>
+      Return a list of records delineating the currently available SILENCE
+      alarms, including current state.
+    </para>
+    <variablelist>
+      <varlistentry>
+	<term>
+	  <computeroutput>CLIP</computeroutput>
+	</term>
+	<listitem>
+	  <para>
+	    The string <computeroutput>CLIP</computeroutput>
+	  </para>
+	</listitem>
+      </varlistentry>
+      <varlistentry>
+	<term>
+	  <replaceable>host-addr</replaceable>
+	</term>
+	<listitem>
+	  <para>
+	    The IPv4 address of the parent node, in dotted-quad notation.
+	  </para>
+	</listitem>
+      </varlistentry>
+      <varlistentry>
+	<term>
+	  <replaceable>slot</replaceable>
+	</term>
+	<listitem>
+	  <para>
+	    The slot position number of the destination on the parent node
+	    (zero-based).
+	  </para>
+	</listitem>
+      </varlistentry>
+      <varlistentry>
+	<term>
+	  <replaceable>type</replaceable>
+	</term>
+	<listitem>
+	  <para>
+	    The type of signal. Valid types are
+	    <computeroutput>INPUT</computeroutput> or
+	    <computeroutput>OUTOUT</computeroutput>.
+	  </para>
+	</listitem>
+      </varlistentry>
+      <varlistentry>
+	<term>
+	  <replaceable>state</replaceable>
+	</term>
+	<listitem>
+	  <para>
+	    The alarm state. <computeroutput>1</computeroutput> means the
+	    alarm is active, whereas <computeroutput>0</computeroutput> means
+	    that it is inactive.
+	  </para>
+	</listitem>
+      </varlistentry>
+    </variablelist>
+  </sect2>
+</sect1>
+
 <sect1 id="sect.information">
   <title>Information</title>
   <para>

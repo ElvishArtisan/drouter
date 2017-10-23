@@ -31,6 +31,11 @@
 
 #include "drouter.h"
 
+#define DROUTER_CLIP_THRESHOLD -20
+#define DROUTER_CLIP_TIMEOUT 1000
+#define DROUTER_SILENCE_THRESHOLD -500
+#define DROUTER_SILENCE_TIMEOUT 10000
+
 class DRouter : public QObject
 {
  Q_OBJECT;
@@ -42,6 +47,10 @@ class DRouter : public QObject
   SySource *src(int srcnum) const;
   SySource *src(const QHostAddress &hostaddr,int slot) const;
   SyDestination *dst(const QHostAddress &hostaddr,int slot) const;
+  bool clipAlarmActive(const QHostAddress &hostaddr,int slot,
+		       SyLwrpClient::MeterType type,int chan) const;
+  bool silenceAlarmActive(const QHostAddress &hostaddr,int slot,
+			  SyLwrpClient::MeterType type,int chan) const;
   SyGpioBundle *gpi(const QHostAddress &hostaddr,int slot) const;
   SyGpo *gpo(const QHostAddress &hostaddr,int slot) const;
 
@@ -60,6 +69,10 @@ class DRouter : public QObject
   void dstChanged(const SyNode &node,int slot,const SyDestination &dst);
   void gpiChanged(const SyNode &node,int slot,const SyGpioBundle &gpi);
   void gpoChanged(const SyNode &node,int slot,const SyGpo &gpo);
+  void clipAlarmChanged(const SyNode &node,int slot,
+			SyLwrpClient::MeterType type,int chan,bool state);
+  void silenceAlarmChanged(const SyNode &node,int slot,
+			   SyLwrpClient::MeterType type,int chan,bool state);
 
  private slots:
   void nodeConnectedData(unsigned id,bool state);
@@ -71,6 +84,10 @@ class DRouter : public QObject
 		      const SyGpioBundle &gpi);
   void gpoChangedData(unsigned id,int slotnum,const SyNode &node,
 		      const SyGpo &gpo);
+  void audioClipAlarmData(unsigned id,SyLwrpClient::MeterType type,
+			  unsigned slotnum,int chan,bool state);
+  void audioSilenceAlarmData(unsigned id,SyLwrpClient::MeterType type,
+			     unsigned slotnum,int chan,bool state);
   void advtReadyReadData(int ifnum);
 
  private:

@@ -31,6 +31,8 @@ class ProtocolD : public Protocol
   ProtocolD(DRouter *router,int sock,QObject *parent=0);
 
  private slots:
+  void processListClipsD(int id);
+  void processListSilencesD(int id);
   void processListDestinationsD(int id);
   void processListGpisD(int id);
   void processListGposD(int id);
@@ -60,8 +62,15 @@ class ProtocolD : public Protocol
 				 const SyDestination &dst);
   void processChangedGpi(const SyNode &node,int slot,const SyGpioBundle &gpi);
   void processChangedGpo(const SyNode &node,int slot,const SyGpo &gpo);
+  void processClipAlarm(const SyNode &node,int slot,
+			SyLwrpClient::MeterType type,int chan,bool state);
+  void processSilenceAlarm(const SyNode &node,int slot,
+			   SyLwrpClient::MeterType type,int chan,bool state);
 
  private:
+  QString AlarmRecord(const QString &keyword,const QHostAddress &hostaddr,
+		      int slot,SyLwrpClient::MeterType type,int chan,
+		      bool state);
   QString DestinationRecord(const QString &keyword,SyLwrpClient *lwrp,int slot,
 			    SyDestination *dst) const;
   QString DestinationRecord(const QString &keyword,const SyNode &node,int slot,

@@ -41,6 +41,11 @@ class Protocol : public QObject
   void dstChangedData(const SyNode &node,int slot,const SyDestination &dst);
   void gpiChangedData(const SyNode &node,int slot,const SyGpioBundle &gpi);
   void gpoChangedData(const SyNode &node,int slot,const SyGpo &gpo);
+  void clipAlarmChangedData(const SyNode &node,int slot,
+			    SyLwrpClient::MeterType type,int chan,bool state);
+  void silenceAlarmChangedData(const SyNode &node,int slot,
+			       SyLwrpClient::MeterType type,int chan,
+			       bool state);
 
  protected:
   virtual void processAddedNode(const SyNode &node);
@@ -49,6 +54,12 @@ class Protocol : public QObject
 				    const SySource &src);
   virtual void processChangedDestination(const SyNode &node,int slot,
 					 const SyDestination &dst);
+  virtual void processClipAlarm(const SyNode &node,
+				int slot,SyLwrpClient::MeterType type,
+				int chan,bool state);
+  virtual void processSilenceAlarm(const SyNode &node,
+				   int slot,SyLwrpClient::MeterType type,
+				   int chan,bool state);
   virtual void processChangedGpi(const SyNode &node,int slot,
 				 const SyGpioBundle &gpi);
   virtual void processChangedGpo(const SyNode &node,int slot,const SyGpo &gpo);

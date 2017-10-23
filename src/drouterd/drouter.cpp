@@ -146,6 +146,28 @@ SyDestination *DRouter::dst(const QHostAddress &hostaddr,int slot) const
 }
 
 
+bool DRouter::clipAlarmActive(const QHostAddress &hostaddr,int slot,
+			      SyLwrpClient::MeterType type,int chan) const
+{
+  SyLwrpClient *lwrp=drouter_nodes.value(hostaddr.toIPv4Address());
+  if(lwrp!=NULL) {
+    return lwrp->clipAlarmActive(slot,type,chan);
+  }
+  return false;
+}
+
+
+bool DRouter::silenceAlarmActive(const QHostAddress &hostaddr,int slot,
+				 SyLwrpClient::MeterType type,int chan) const
+{
+  SyLwrpClient *lwrp=drouter_nodes.value(hostaddr.toIPv4Address());
+  if(lwrp!=NULL) {
+    return lwrp->silenceAlarmActive(slot,type,chan);
+  }
+  return false;
+}
+
+
 SyGpioBundle *DRouter::gpi(const QHostAddress &hostaddr,int slot) const
 {
   SyLwrpClient *lwrp=drouter_nodes.value(hostaddr.toIPv4Address());
@@ -276,7 +298,20 @@ void DRouter::nodeConnectedData(unsigned id,bool state)
       fprintf(stderr,"DRouter::nodeConnectedData() - received connect signal from unknown node\n");
       exit(256);
     }
-    emit nodeAdded(*(node(QHostAddress(id))->node()));
+    SyLwrpClient *lwrp=node(QHostAddress(id));
+    for(unsigned i=0;i<lwrp->srcSlots();i++) {
+      lwrp->setClipMonitor(i,SyLwrpClient::InputMeter,DROUTER_CLIP_THRESHOLD,
+			   DROUTER_CLIP_TIMEOUT);
+      lwrp->setSilenceMonitor(i,SyLwrpClient::InputMeter,
+			      DROUTER_SILENCE_THRESHOLD,
+			      DROUTER_SILENCE_TIMEOUT);
+      lwrp->setClipMonitor(i,SyLwrpClient::OutputMeter,DROUTER_CLIP_THRESHOLD,
+			   DROUTER_CLIP_TIMEOUT);
+      lwrp->setSilenceMonitor(i,SyLwrpClient::OutputMeter,
+			      DROUTER_SILENCE_THRESHOLD,
+			      DROUTER_SILENCE_TIMEOUT);
+    }
+    emit nodeAdded(*(lwrp->node()));
   }
   else {
     SyLwrpClient *lwrp=node(QHostAddress(id));
@@ -318,6 +353,28 @@ void DRouter::gpoChangedData(unsigned id,int slotnum,const SyNode &node,
 }
 
 
+void DRouter::audioClipAlarmData(unsigned id,SyLwrpClient::MeterType type,
+				 unsigned slotnum,int chan,bool state)
+{
+  SyLwrpClient *lwrp=NULL;
+
+  if((lwrp=drouter_nodes[id])!=NULL) {
+    emit clipAlarmChanged(*(lwrp->node()),(int)slotnum,type,chan,state);
+  }
+}
+
+
+void DRouter::audioSilenceAlarmData(unsigned id,SyLwrpClient::MeterType type,
+				    unsigned slotnum,int chan,bool state)
+{
+  SyLwrpClient *lwrp=NULL;
+
+  if((lwrp=drouter_nodes[id])!=NULL) {
+    emit silenceAlarmChanged(*(lwrp->node()),(int)slotnum,type,chan,state);
+  }
+}
+
+
 void DRouter::advtReadyReadData(int ifnum)
 {
   QHostAddress addr;
@@ -345,6 +402,14 @@ void DRouter::advtReadyReadData(int ifnum)
 	      SIGNAL(gpoChanged(unsigned,int,const SyNode &,const SyGpo &)),
 	      this,
 	      SLOT(gpoChangedData(unsigned,int,const SyNode &,const SyGpo &)));
+      connect(node,SIGNAL(audioClipAlarm(unsigned,SyLwrpClient::MeterType,
+					 unsigned,int,bool)),
+	      this,SLOT(audioClipAlarmData(unsigned,SyLwrpClient::MeterType,
+					   unsigned,int,bool)));
+      connect(node,SIGNAL(audioSilenceAlarm(unsigned,SyLwrpClient::MeterType,
+					    unsigned,int,bool)),
+	      this,SLOT(audioSilenceAlarmData(unsigned,SyLwrpClient::MeterType,
+					      unsigned,int,bool)));
       drouter_nodes[addr.toIPv4Address()]=node;
       node->connectToHost(addr,SWITCHYARD_LWRP_PORT,"",false);
     }
