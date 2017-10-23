@@ -13,7 +13,7 @@
   </author>
 </info>
 
-<sect1>
+<sect1 id="sect.overview">
   <title>Overview</title>
   <para>
     Messages to the DRouter dynamic routing service are by means of a
@@ -61,12 +61,12 @@
   </variablelist>
 </sect1>
 
-<sect1>
+<sect1 id="sect.connection_management">
   <title>Connection Management</title>
   <para>
     Messages for managing connections to the service.
   </para>
-  <sect2>
+  <sect2 id="sect.connection_management.exit">
     <title>Exit</title>
     <para>
       <command>Exit</command>
@@ -75,7 +75,7 @@
       Drop the TCP connection and end the session.
     </para>
   </sect2>
-  <sect2>
+  <sect2 id="sect.connection_management.ping">
     <title>Ping</title>
     <para>
       <command>Ping</command>
@@ -87,12 +87,12 @@
   </sect2>
 </sect1>
 
-<sect1>
+<sect1 id="sect.information">
   <title>Information</title>
   <para>
     Messages for enumerating resources and getting system information.
   </para>
-  <sect2>
+  <sect2 id="sect.information.list_destinations">
     <title>List Destinations</title>
     <para>
       <command>ListDestinations</command>
@@ -185,7 +185,7 @@
     </variablelist>
   </sect2>
 
-  <sect2>
+  <sect2 id="sect.information.list_gpis">
     <title>List GPIs</title>
     <para>
       <command>ListGpis</command>
@@ -254,7 +254,7 @@
     </variablelist>
   </sect2>
 
-  <sect2>
+  <sect2 id="sect.inormation.list_gpos">
     <title>List GPOs</title>
     <para>
       <command>ListGpos</command>
@@ -355,7 +355,7 @@
   </sect2>
 
 
-  <sect2>
+  <sect2 id="sect.information.list_nodes">
     <title>List Nodes</title>
     <para>
       <command>ListNodes</command>
@@ -453,7 +453,7 @@
   </sect2>
 
 
-  <sect2>
+  <sect2 id="sect.information.list_sources">
     <title>List Sources</title>
     <para>
       <command>ListSources</command>
@@ -569,7 +569,7 @@
     </variablelist>
   </sect2>
 
-  <sect2>
+  <sect2 id="sect.information.subscribe_destinations">
     <title>Subscribe Destinations</title>
     <para>
       <command>SubscribeDestinations</command>
@@ -623,7 +623,7 @@
     </variablelist>
   </sect2>
 
-  <sect2>
+  <sect2 id="sect.information.subscribe_gpis">
     <title>Subscribe GPIs</title>
     <para>
       <command>SubscribeGpis</command>
@@ -677,7 +677,7 @@
     </variablelist>
   </sect2>
 
-  <sect2>
+  <sect2 id="sect.information.subscribe_gpos">
     <title>Subscribe GPOs</title>
     <para>
       <command>SubscribeGpos</command>
@@ -731,7 +731,7 @@
     </variablelist>
   </sect2>
 
-  <sect2>
+  <sect2 id="sect.infromation.subscribe_nodes">
     <title>Subscribe Nodes</title>
     <para>
       <command>SubscribeNodes</command>
@@ -772,7 +772,7 @@
     </variablelist>
    </sect2>
 
-  <sect2>
+  <sect2 id="sect.information.subscribe_sources">
     <title>Subscribe Sources</title>
     <para>
       <command>SubscribeSources</command>
@@ -827,12 +827,12 @@
   </sect2>
 </sect1>
 
-<sect1>
+<sect1 id="sect.commands">
   <title>Commands</title>
   <para>
     Messages for changing the state of managed resources.
   </para>
-  <sect2>
+  <sect2 id="sect.commands.clear_audio_crosspoint">
     <title>Clear Audio Crosspoint</title>
     <para>
       <command>ClearCrosspoint 
@@ -869,7 +869,7 @@
     </variablelist>
   </sect2>
 
-  <sect2>
+  <sect2 id="sect.commands.clear_gpio_crosspoint">
     <title>Clear GPIO Crosspoint</title>
     <para>
       <command>ClearGpioCrosspoint 
@@ -905,7 +905,7 @@
     </variablelist>
   </sect2>
 
-  <sect2>
+  <sect2 id="sect.commands.set_audio_crosspoint">
     <title>Set Audio Crosspoint</title>
     <para>
       <command>SetCrosspoint 
@@ -964,7 +964,7 @@
     </variablelist>
   </sect2>
 
-  <sect2>
+  <sect2 id="sect.commands.set_gpio_crosspoint">
     <title>Set GPIO Crosspoint</title>
     <para>
       <command>SetGpioCrosspoint 
