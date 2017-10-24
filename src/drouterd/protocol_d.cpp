@@ -50,6 +50,10 @@ ProtocolD::ProtocolD(DRouter *router,int sock,QObject *parent)
 	  this,SLOT(processSubscribeNodesD(int)));
   connect(d_server,SIGNAL(processSubscribeSources(int)),
 	  this,SLOT(processSubscribeSourcesD(int)));
+  connect(d_server,SIGNAL(processSubscribeClips(int)),
+	  this,SLOT(processSubscribeClipsD(int)));
+  connect(d_server,SIGNAL(processSubscribeSilences(int)),
+	  this,SLOT(processSubscribeSilencesD(int)));
   connect(d_server,SIGNAL(processClearCrosspoint(int,const QHostAddress &,int)),
 	  this,SLOT(processClearCrosspointD(int,const QHostAddress &,int)));
   connect(d_server,
@@ -292,6 +296,66 @@ void ProtocolD::processSubscribeSourcesD(int id)
 }
 
 
+void ProtocolD::processSubscribeClipsD(int id)
+{
+  SyLwrpClient *lwrp=NULL;
+
+  QList<QHostAddress> addrs=router()->nodeHostAddresses();
+  for(int i=0;i<addrs.size();i++) {
+    if((lwrp=router()->node(addrs.at(i)))!=NULL) {
+      for(unsigned j=0;j<lwrp->srcSlots();j++) {
+	for(int k=0;k<2;k++) {
+	  d_server->send(AlarmRecord("CLIPADD",lwrp->hostAddress(),j,
+				     SyLwrpClient::InputMeter,k,
+		router()->clipAlarmActive(lwrp->hostAddress(),j,
+					     SyLwrpClient::InputMeter,k)),id);
+	}
+      }
+      for(unsigned j=0;j<lwrp->dstSlots();j++) {
+	for(int k=0;k<2;k++) {
+	  d_server->send(AlarmRecord("CLIPADD",lwrp->hostAddress(),j,
+				     SyLwrpClient::OutputMeter,k,
+		router()->clipAlarmActive(lwrp->hostAddress(),j,
+					     SyLwrpClient::OutputMeter,k)),id);
+	}
+      }
+    }
+  }
+  ServerDConnection *conn=(ServerDConnection *)(d_server->connection(id)->priv);
+  conn->setClipsSubscribed(true);
+}
+
+
+void ProtocolD::processSubscribeSilencesD(int id)
+{
+  SyLwrpClient *lwrp=NULL;
+
+  QList<QHostAddress> addrs=router()->nodeHostAddresses();
+  for(int i=0;i<addrs.size();i++) {
+    if((lwrp=router()->node(addrs.at(i)))!=NULL) {
+      for(unsigned j=0;j<lwrp->srcSlots();j++) {
+	for(int k=0;k<2;k++) {
+	  d_server->send(AlarmRecord("SILENCEADD",lwrp->hostAddress(),j,
+				     SyLwrpClient::InputMeter,k,
+		router()->silenceAlarmActive(lwrp->hostAddress(),j,
+					     SyLwrpClient::InputMeter,k)),id);
+	}
+      }
+      for(unsigned j=0;j<lwrp->dstSlots();j++) {
+	for(int k=0;k<2;k++) {
+	  d_server->send(AlarmRecord("SILENCEADD",lwrp->hostAddress(),j,
+				     SyLwrpClient::OutputMeter,k,
+		router()->silenceAlarmActive(lwrp->hostAddress(),j,
+					     SyLwrpClient::OutputMeter,k)),id);
+	}
+      }
+    }
+  }
+  ServerDConnection *conn=(ServerDConnection *)(d_server->connection(id)->priv);
+  conn->setSilencesSubscribed(true);
+}
+
+
 void ProtocolD::processClearCrosspointD(int id,
 					const QHostAddress &dst_hostaddr,
 					int dst_slot)
@@ -366,6 +430,45 @@ void ProtocolD::processAddedNode(const SyNode &node)
 	  }
 	}
       }
+      if(conn->clipsSubscribed()) {
+	for(unsigned j=0;j<node.srcSlotQuantity();j++) {
+	  for(int k=0;k<2;k++) {
+	    d_server->send(AlarmRecord("CLIPADD",node.hostAddress(),j,
+				       SyLwrpClient::InputMeter,k,
+			   router()->clipAlarmActive(node.hostAddress(),j,
+				       SyLwrpClient::InputMeter,k)));
+
+	  }
+	}
+	for(unsigned j=0;j<node.dstSlotQuantity();j++) {
+	  for(int k=0;k<2;k++) {
+	    d_server->send(AlarmRecord("CLIPADD",node.hostAddress(),j,
+				       SyLwrpClient::OutputMeter,k,
+			   router()->clipAlarmActive(node.hostAddress(),j,
+				       SyLwrpClient::OutputMeter,k)));
+
+	  }
+	}
+      }
+      if(conn->silencesSubscribed()) {
+	for(unsigned j=0;j<node.srcSlotQuantity();j++) {
+	  for(int k=0;k<2;k++) {
+	    d_server->send(AlarmRecord("SILENCEADD",node.hostAddress(),j,
+				       SyLwrpClient::InputMeter,k,
+			   router()->silenceAlarmActive(node.hostAddress(),j,
+				       SyLwrpClient::InputMeter,k)));
+	  }
+	}
+	for(unsigned j=0;j<node.dstSlotQuantity();j++) {
+	  for(int k=0;k<2;k++) {
+	    d_server->send(AlarmRecord("SILENCEADD",node.hostAddress(),j,
+				       SyLwrpClient::OutputMeter,k,
+			   router()->silenceAlarmActive(node.hostAddress(),j,
+				       SyLwrpClient::OutputMeter,k)));
+
+	  }
+	}
+      }
     }
   }
 }
@@ -390,6 +493,34 @@ void ProtocolD::processAboutToBeRemovedNode(const SyNode &node)
 	for(unsigned j=0;j<node.srcSlotQuantity();j++) {
 	  d_server->send("SRCDEL\t"+node.hostAddress().toString()+"\t"+
 			 QString().sprintf("%u",j)+"\r\n",i);	  
+	}
+      }
+      if(conn->clipsSubscribed()) {
+	for(unsigned j=0;j<node.srcSlotQuantity();j++) {
+	  for(int k=0;k<2;k++) {
+	    d_server->send("CLIPDEL\t"+node.hostAddress().toString()+"\t"+
+			   QString().sprintf("%u\tINPUT\t%d",j,k)+"\r\n",i);
+	  }
+	}
+	for(unsigned j=0;j<node.dstSlotQuantity();j++) {
+	  for(int k=0;k<2;k++) {
+	    d_server->send("CLIPDEL\t"+node.hostAddress().toString()+"\t"+
+			   QString().sprintf("%u\tOUTPUT\t%d",j,k)+"\r\n",i);
+	  }
+	}
+      }
+      if(conn->silencesSubscribed()) {
+	for(unsigned j=0;j<node.srcSlotQuantity();j++) {
+	  for(int k=0;k<2;k++) {
+	    d_server->send("SILENCEDEL\t"+node.hostAddress().toString()+"\t"+
+			   QString().sprintf("%u\tINPUT\t%d",j,k)+"\r\n",i);
+	  }
+	}
+	for(unsigned j=0;j<node.dstSlotQuantity();j++) {
+	  for(int k=0;k<2;k++) {
+	    d_server->send("SILENCEDEL\t"+node.hostAddress().toString()+"\t"+
+			   QString().sprintf("%u\tOUTPUT\t%d",j,k)+"\r\n",i);
+	  }
 	}
       }
       if(conn->gpisSubscribed()) {
@@ -472,6 +603,16 @@ void ProtocolD::processClipAlarm(const SyNode &node,int slot,
 				 SyLwrpClient::MeterType type,int chan,
 				 bool state)
 {
+  QList<NetConnection *> conns=d_server->connections();
+  for(int i=0;i<conns.size();i++) {
+    if(conns.at(i)!=NULL) {
+      ServerDConnection *conn=(ServerDConnection *)(conns.at(i)->priv);
+      if(conn->clipsSubscribed()) {
+	d_server->
+	 send(AlarmRecord("CLIP",node.hostAddress(),slot,type,chan,state),i);
+      }
+    }
+  }
 }
 
 
@@ -479,6 +620,16 @@ void ProtocolD::processSilenceAlarm(const SyNode &node,int slot,
 				    SyLwrpClient::MeterType type,int chan,
 				    bool state)
 {
+  QList<NetConnection *> conns=d_server->connections();
+  for(int i=0;i<conns.size();i++) {
+    if(conns.at(i)!=NULL) {
+      ServerDConnection *conn=(ServerDConnection *)(conns.at(i)->priv);
+      if(conn->silencesSubscribed()) {
+	d_server->
+	 send(AlarmRecord("SILENCE",node.hostAddress(),slot,type,chan,state),i);
+      }
+    }
+  }
 }
 
 
@@ -505,6 +656,7 @@ QString ProtocolD::AlarmRecord(const QString &keyword,
     ret+="UNKNOWN\t";
     break;
   }
+  ret+=QString().sprintf("%d\t",chan);
   ret+=QString().sprintf("%d",state);
   ret+="\r\n";
 

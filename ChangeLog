@@ -142,3 +142,6 @@
 2019-10-23 Fred Gleason <fredg@paravelsystems.com>
 	* Added a 'ListClips' command to ProtocolD.
 	* Added a 'ListSilences' command to ProtocolD.
+2019-10-24 Fred Gleason <fredg@paravelsystems.com>
+	* Added a 'SubscribeClips' command to ProtocolD.
+	* Added a 'SubscribeSilences' command to ProtocolD.

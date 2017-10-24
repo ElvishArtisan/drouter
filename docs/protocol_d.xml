@@ -147,6 +147,18 @@
       </varlistentry>
       <varlistentry>
 	<term>
+	  <replaceable>chan</replaceable>
+	</term>
+	<listitem>
+	  <para>
+	    The audio channel, where <computeroutput>0</computeroutput> means
+	    the left channel and <computeroutput>1</computeroutput> means
+	    the right channel.
+	  </para>
+	</listitem>
+      </varlistentry>
+      <varlistentry>
+	<term>
 	  <replaceable>state</replaceable>
 	</term>
 	<listitem>
@@ -175,7 +187,7 @@
 	</term>
 	<listitem>
 	  <para>
-	    The string <computeroutput>CLIP</computeroutput>
+	    The string <computeroutput>SILENCE</computeroutput>
 	  </para>
 	</listitem>
       </varlistentry>
@@ -214,6 +226,18 @@
       </varlistentry>
       <varlistentry>
 	<term>
+	  <replaceable>chan</replaceable>
+	</term>
+	<listitem>
+	  <para>
+	    The audio channel, where <computeroutput>0</computeroutput> means
+	    the left channel and <computeroutput>1</computeroutput> means
+	    the right channel.
+	  </para>
+	</listitem>
+      </varlistentry>
+      <varlistentry>
+	<term>
 	  <replaceable>state</replaceable>
 	</term>
 	<listitem>
@@ -221,6 +245,160 @@
 	    The alarm state. <computeroutput>1</computeroutput> means the
 	    alarm is active, whereas <computeroutput>0</computeroutput> means
 	    that it is inactive.
+	  </para>
+	</listitem>
+      </varlistentry>
+    </variablelist>
+  </sect2>
+  <sect2 id="sect.alarms.subscribe_clips">
+    <title>Subscribe Clips</title>
+    <para>
+      <command>SubscribeClips</command>
+    </para>
+    <para>
+      Return a list of <computeroutput>CLIPADD</computeroutput> records
+      delinieating the currently active clip alarms, each record
+      terminated by <computeroutput>CR/LF</computeroutput> (see the
+      description of the <computeroutput>CLIP</computeroutput> message in
+      <xref linkend="sect.alarms.list_clips"/> for a breakdown of the
+      supplied fields). Whenever a new clip alarm is added, a corresponding
+      <computeroutput>CLIPADD</computeroutput>
+      record will be sent, while changes to an existing clip alarm will
+      cause a <computeroutput>CLIP</computeroutput> record to be sent.
+      Removal of an alarm from the system will generate a
+      corresponding <computeroutput>CLIPDEL</computeroutput> record, containing
+      the following fields:
+    </para>
+    <variablelist>
+      <varlistentry>
+	<term>
+	  <computeroutput>CLIPDEL</computeroutput>
+	</term>
+	<listitem>
+	  <para>
+	    The string <computeroutput>CLIPDEL</computeroutput>.
+	  </para>
+	</listitem>
+      </varlistentry>
+      <varlistentry>
+	<term>
+	  <replaceable>host-addr</replaceable>
+	</term>
+	<listitem>
+	  <para>
+	    The IPv4 address of the parent node, in dotted-quad notation.
+	  </para>
+	</listitem>
+      </varlistentry>
+      <varlistentry>
+	<term>
+	  <replaceable>slot</replaceable>
+	</term>
+	<listitem>
+	  <para>
+	    The slot position number of the destination on the parent node
+	    (zero-based).
+	  </para>
+	</listitem>
+      </varlistentry>
+      <varlistentry>
+	<term>
+	  <replaceable>type</replaceable>
+	</term>
+	<listitem>
+	  <para>
+	    The type of signal. Valid types are
+	    <computeroutput>INPUT</computeroutput> or
+	    <computeroutput>OUTOUT</computeroutput>.
+	  </para>
+	</listitem>
+      </varlistentry>
+      <varlistentry>
+	<term>
+	  <replaceable>chan</replaceable>
+	</term>
+	<listitem>
+	  <para>
+	    The audio channel, where <computeroutput>0</computeroutput> means
+	    the left channel and <computeroutput>1</computeroutput> means
+	    the right channel.
+	  </para>
+	</listitem>
+      </varlistentry>
+    </variablelist>
+  </sect2>
+  <sect2 id="sect.alarms.subscribe_silences">
+    <title>Subscribe Silences</title>
+    <para>
+      <command>SubscribeSilences</command>
+    </para>
+    <para>
+      Return a list of <computeroutput>SILENCEADD</computeroutput> records
+      delinieating the currently active silence alarms, each record
+      terminated by <computeroutput>CR/LF</computeroutput> (see the
+      description of the <computeroutput>SILENCE</computeroutput> message in
+      <xref linkend="sect.alarms.list_silences"/> for a breakdown of the
+      supplied fields). Whenever a new silence alarm is added, a corresponding
+      <computeroutput>SILENCEADD</computeroutput>
+      record will be sent, while changes to an existing silence alarm will
+      cause a <computeroutput>SILENCE</computeroutput> record to be sent.
+      Removal of an alarm from the system will generate a
+      corresponding <computeroutput>SILENCEDEL</computeroutput> record, containing
+      the following fields:
+    </para>
+    <variablelist>
+      <varlistentry>
+	<term>
+	  <computeroutput>SILENCEDEL</computeroutput>
+	</term>
+	<listitem>
+	  <para>
+	    The string <computeroutput>SILENCEDEL</computeroutput>.
+	  </para>
+	</listitem>
+      </varlistentry>
+      <varlistentry>
+	<term>
+	  <replaceable>host-addr</replaceable>
+	</term>
+	<listitem>
+	  <para>
+	    The IPv4 address of the parent node, in dotted-quad notation.
+	  </para>
+	</listitem>
+      </varlistentry>
+      <varlistentry>
+	<term>
+	  <replaceable>slot</replaceable>
+	</term>
+	<listitem>
+	  <para>
+	    The slot position number of the destination on the parent node
+	    (zero-based).
+	  </para>
+	</listitem>
+      </varlistentry>
+      <varlistentry>
+	<term>
+	  <replaceable>type</replaceable>
+	</term>
+	<listitem>
+	  <para>
+	    The type of signal. Valid types are
+	    <computeroutput>INPUT</computeroutput> or
+	    <computeroutput>OUTOUT</computeroutput>.
+	  </para>
+	</listitem>
+      </varlistentry>
+      <varlistentry>
+	<term>
+	  <replaceable>chan</replaceable>
+	</term>
+	<listitem>
+	  <para>
+	    The audio channel, where <computeroutput>0</computeroutput> means
+	    the left channel and <computeroutput>1</computeroutput> means
+	    the right channel.
 	  </para>
 	</listitem>
       </varlistentry>
@@ -719,7 +897,7 @@
       Return a list of <computeroutput>DSTADD</computeroutput> records
       delinieating the currently available destinations, each record
       terminated by <computeroutput>CR/LF</computeroutput> (see the
-      description of the <computeroutput>DST</computeroutput> message in the 
+      description of the <computeroutput>DST</computeroutput> message in the
       <command>ListDestinations</command> command for a breakdown of the
       supplied fields). Whenever a new destination is added, a corresponding
       <computeroutput>DSTADD</computeroutput>

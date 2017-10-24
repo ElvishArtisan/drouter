@@ -31,6 +31,10 @@ class ServerDConnection
 {
  public:
   ServerDConnection();
+  bool clipsSubscribed() const;
+  void setClipsSubscribed(bool state);
+  bool silencesSubscribed() const;
+  void setSilencesSubscribed(bool state);
   bool dstsSubscribed() const;
   void setDstsSubscribed(bool state);
   bool gpisSubscribed() const;
@@ -43,6 +47,8 @@ class ServerDConnection
   void setSrcsSubscribed(bool state);
 
  private:
+  bool clips_subscribed;
+  bool silences_subscribed;
   bool dsts_subscribed;
   bool gpis_subscribed;
   bool gpos_subscribed;
@@ -73,6 +79,8 @@ class ServerD : public ServerNet
   void processSubscribeGpos(int id);
   void processSubscribeNodes(int id);
   void processSubscribeSources(int id);
+  void processSubscribeClips(int id);
+  void processSubscribeSilences(int id);
   void processClearCrosspoint(int id,
 			      const QHostAddress &dst_hostaddr,int dst_slot);
   void processClearGpioCrosspoint(int id,const QHostAddress &gpo_hostaddr,

@@ -43,6 +43,8 @@ class ProtocolD : public Protocol
   void processSubscribeGposD(int id);
   void processSubscribeNodesD(int id);
   void processSubscribeSourcesD(int id);
+  void processSubscribeClipsD(int id);
+  void processSubscribeSilencesD(int id);
   void processClearCrosspointD(int id,
 			       const QHostAddress &dst_hostaddr,int dst_slot);
   void processClearGpioCrosspointD(int id,const QHostAddress &gpo_hostaddr,

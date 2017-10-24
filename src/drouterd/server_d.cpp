@@ -26,11 +26,37 @@
 
 ServerDConnection::ServerDConnection()
 {
+  clips_subscribed=false;
+  silences_subscribed=false;
   dsts_subscribed=false;
   gpis_subscribed=false;
   gpos_subscribed=false;
   nodes_subscribed=false;
   srcs_subscribed=false;
+}
+
+
+bool ServerDConnection::clipsSubscribed() const
+{
+  return clips_subscribed;
+}
+
+
+void ServerDConnection::setClipsSubscribed(bool state)
+{
+  clips_subscribed=state;
+}
+
+
+bool ServerDConnection::silencesSubscribed() const
+{
+  return silences_subscribed;
+}
+
+
+void ServerDConnection::setSilencesSubscribed(bool state)
+{
+  silences_subscribed=state;
 }
 
 
@@ -195,6 +221,16 @@ void ServerD::processCommand(int id,const SyAString &cmd)
   }
   if(cmds.at(0).toLower()=="subscribesources") {
     emit processSubscribeSources(id);
+    send("ok\r\n",id);
+    return;
+  }
+  if(cmds.at(0).toLower()=="subscribeclips") {
+    emit processSubscribeClips(id);
+    send("ok\r\n",id);
+    return;
+  }
+  if(cmds.at(0).toLower()=="subscribesilences") {
+    emit processSubscribeSilences(id);
     send("ok\r\n",id);
     return;
   }
