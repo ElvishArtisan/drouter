@@ -187,11 +187,10 @@ void MainWidget::routerBoxActivatedData(int n)
   //
   // Clear Previous Crosspoints
   //
-  QList<QGraphicsItem *> items=panel_scene->items();
-  for(int i=0;i<items.size();i++) {
-    QGraphicsItem *item=items.at(i);
-    panel_scene->removeItem(item);
-  }
+  QGraphicsScene *scene=new QGraphicsScene(this);
+  panel_view->setScene(scene);
+  delete panel_scene;
+  panel_scene=scene;
   panel_output_list->clearEndpoints();
   panel_input_list->clearEndpoints();
   
