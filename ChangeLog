@@ -153,3 +153,6 @@
 	* Fixed resizing bugs in the crosspoint grid in xpointpanel(1).
 2019-10-26 Fred Gleason <fredg@paravelsystems.com>
 	* Optimized xpointpanel(1) to improve router load speed.
+2019-10-26 Fred Gleason <fredg@paravelsystems.com>
+	* Added router number to the name in the 'Router' dropdown in
+	xpointpanel(1).

@@ -104,8 +104,8 @@ MainWidget::MainWidget(QWidget *parent)
   //
   // Router Control
   //
-  panel_router_label=new QLabel(tr("Router")+":",this);
-  panel_router_label->setAlignment(Qt::AlignRight|Qt::AlignVCenter);
+  panel_router_label=new QLabel(tr("Router"),this);
+  panel_router_label->setAlignment(Qt::AlignLeft|Qt::AlignVCenter);
   panel_router_label->setFont(button_font);
   panel_router_label->setDisabled(true);
   panel_router_box=new ComboBox(this);
@@ -260,8 +260,10 @@ void MainWidget::connectedData(bool state,SaParser::ConnectionState cstate)
     for(QMap<int,QString>::const_iterator it=routers.begin();it!=routers.end();
 	it++) {
       panel_router_box->
-	insertItem(panel_router_box->count(),it.value(),it.key());
+	insertItem(panel_router_box->count(),
+		   QString().sprintf("%d - ",it.key())+it.value(),it.key());
     }
+    panel_router_label->setEnabled(true);
     panel_router_box->setEnabled(true);
     panel_router_box->setCurrentIndex(0);
     routerBoxActivatedData(panel_router_box->currentIndex());
@@ -335,10 +337,12 @@ void MainWidget::xpointDoubleClickedData(int output,int input)
 
 void MainWidget::resizeEvent(QResizeEvent *e)
 {
-  panel_router_label->setGeometry(15,8,60,20);
-  panel_router_box->setGeometry(80,8,200,20);
-  panel_input_list->setGeometry(10,panel_output_list->sizeHint().width()+35,panel_input_list->sizeHint().width()+1,size().height()-(panel_output_list->sizeHint().width()-45));
-  panel_output_list->setGeometry(panel_input_list->sizeHint().width()+10,35,size().width()-10,panel_output_list->sizeHint().width()+1);
+  panel_router_label->
+    setGeometry(15,10,panel_input_list->sizeHint().width()-10,20);
+  panel_router_box->
+    setGeometry(10,32,panel_input_list->sizeHint().width()-10,20);
+  panel_input_list->setGeometry(10,panel_output_list->sizeHint().width()+10,panel_input_list->sizeHint().width()+1,size().height()-(panel_output_list->sizeHint().width()-45));
+  panel_output_list->setGeometry(panel_input_list->sizeHint().width()+10,10,size().width()-10,panel_output_list->sizeHint().width()+1);
   
   int view_width=2+26*panel_output_list->endpointQuantity();
   int bar_width=0;
@@ -348,15 +352,15 @@ void MainWidget::resizeEvent(QResizeEvent *e)
       view_width=size().width()-(panel_input_list->sizeHint().width()+10);
     bar_height=15;
   }
-  if(view_height>(size().height()-(panel_output_list->sizeHint().width()+35))) {
-    view_height=size().height()-(panel_output_list->sizeHint().width()+35);
+  if(view_height>(size().height()-(panel_output_list->sizeHint().width()+15))) {
+    view_height=size().height()-(panel_output_list->sizeHint().width()+15);
     bar_width=15;
   }
   if((bar_width!=0)&&(bar_height!=0)) {
     bar_width=0;
     bar_height=0;
   }
-  panel_view->setGeometry(panel_input_list->sizeHint().width()+10,panel_output_list->sizeHint().width()+35,view_width+bar_width,view_height+bar_height);
+  panel_view->setGeometry(panel_input_list->sizeHint().width()+10,panel_output_list->sizeHint().width()+10,view_width+bar_width,view_height+bar_height);
 }
 
 
