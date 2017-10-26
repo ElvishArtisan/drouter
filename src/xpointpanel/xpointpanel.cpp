@@ -197,6 +197,7 @@ void MainWidget::routerBoxActivatedData(int n)
   //
   // Populate Inputs
   //
+  QMap<int,QString> endpts;
   while(count<panel_parser->inputQuantity(router)) {
     name=panel_parser->inputLongName(router,endpt+1);
     if(!name.isEmpty()) {
@@ -212,15 +213,17 @@ void MainWidget::routerBoxActivatedData(int n)
   //
   count=0;
   endpt=0;
+  endpts.clear();
   while(count<panel_parser->outputQuantity(router)) {
     name=panel_parser->outputLongName(router,endpt+1);
     if(!name.isEmpty()) {
-      panel_output_list->addEndpoint(endpt,QString().sprintf("%d - ",endpt+1)+
-				  panel_parser->outputLongName(router,endpt+1));
+      endpts[endpt]=QString().sprintf("%d - ",endpt+1)+
+	panel_parser->outputLongName(router,endpt+1);
       count++;
     }
     endpt++;
   }
+  panel_output_list->addEndpoints(endpts);
 
   //
   // Populate Crosspoints
@@ -334,26 +337,26 @@ void MainWidget::resizeEvent(QResizeEvent *e)
 {
   panel_router_label->setGeometry(15,8,60,20);
   panel_router_box->setGeometry(80,8,200,20);
-  panel_input_list->setGeometry(10,285,251,size().height()-295);
-  panel_output_list->setGeometry(260,35,size().width()-10,251);
+  panel_input_list->setGeometry(10,panel_output_list->sizeHint().width()+35,panel_input_list->sizeHint().width()+1,size().height()-(panel_output_list->sizeHint().width()-45));
+  panel_output_list->setGeometry(panel_input_list->sizeHint().width()+10,35,size().width()-10,panel_output_list->sizeHint().width()+1);
   
   int view_width=2+26*panel_output_list->endpointQuantity();
   int bar_width=0;
   int view_height=2+26*panel_input_list->endpointQuantity();
   int bar_height=0;
-  if(view_width>(size().width()-260)) {
-    view_width=size().width()-260;
+  if(view_width>(size().width()-(panel_input_list->sizeHint().width()+10))) {
+      view_width=size().width()-(panel_input_list->sizeHint().width()+10);
     bar_height=15;
   }
-  if(view_height>(size().height()-285)) {
-    view_height=size().height()-285;
+  if(view_height>(size().height()-(panel_output_list->sizeHint().width()+35))) {
+    view_height=size().height()-(panel_output_list->sizeHint().width()+35);
     bar_width=15;
   }
   if((bar_width!=0)&&(bar_height!=0)) {
     bar_width=0;
     bar_height=0;
   }
-  panel_view->setGeometry(260,285,view_width+bar_width,view_height+bar_height);
+  panel_view->setGeometry(panel_input_list->sizeHint().width()+10,panel_output_list->sizeHint().width()+35,view_width+bar_width,view_height+bar_height);
 }
 
 

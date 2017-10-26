@@ -36,6 +36,7 @@ class EndpointList : public QWidget
   QSizePolicy sizePolicy() const;
   QList<int> endpoints() const;
   void addEndpoint(int endpt,const QString &name);
+  void addEndpoints(const QMap<int,QString> &endpts);
   void clearEndpoints();
   int endpointQuantity() const;
 
@@ -49,6 +50,7 @@ class EndpointList : public QWidget
   QMap<int,QString> list_labels;
   int list_position;
   Orientation list_orientation;
+  int list_width;
 };
 
 
