@@ -108,26 +108,32 @@ void EndpointList::paintEvent(QPaintEvent *e)
     QMap<int,QString>::const_iterator it=list_labels.begin();
     for(int i=0;i<(26*endpointQuantity());i+=26) {
       if(it!=list_labels.end()) {
-	p->drawLine(0,w-(26+i)+list_position,0,w-i+list_position);
-	p->drawLine(250,w-(26+i)+list_position,250,w-i+list_position);
-	p->drawLine(0,w-i+list_position,250,w-i+list_position);
+	p->drawLine(0,w-(26+i)+list_position-260,
+		    0,w-i+list_position-260);
+	p->drawLine(0,w-i+list_position-260,
+		    250,w-i+list_position-260);
 	p->drawText((245-fm.width(it.value())),w-(text_y+i+250)+list_position,
 		    it.value());
 	it++;
       }
     }
+    p->drawLine(0,w-26*endpointQuantity()+list_position-260,
+		250,w-26*endpointQuantity()+list_position-260);
   }
   else {
     QMap<int,QString>::const_iterator it=list_labels.begin();
     for(int i=0;i<(26*endpointQuantity());i+=26) {
       if(it!=list_labels.end()) {
-	p->drawLine(0,26+i-list_position,0,i-list_position);
-	p->drawLine(0,i-list_position,250,i-list_position);
-	p->drawLine(250,26+i-list_position,250,i-list_position);
+	p->drawLine(0,26+i-list_position,
+		    0,i-list_position);
+	p->drawLine(0,i-list_position,
+		    250,i-list_position);
 	p->drawText(245-fm.width(it.value()),text_y+i-list_position,it.value());
 	it++;
       }
     }
+    p->drawLine(0,26*endpointQuantity()-list_position,
+		250,26*endpointQuantity()-list_position);
   }
   delete p;
 }
