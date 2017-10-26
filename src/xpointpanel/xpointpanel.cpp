@@ -135,7 +135,7 @@ MainWidget::MainWidget(QWidget *parent)
   //
   // Fix the Window Size
   //
-  setMinimumSize(sizeHint());
+  //  setMinimumSize(sizeHint());
 
   //
   // The SA Connection
@@ -246,6 +246,7 @@ void MainWidget::routerBoxActivatedData(int n)
       }
     }
   }
+  resizeEvent(NULL);
 }
 
 
@@ -337,7 +338,23 @@ void MainWidget::resizeEvent(QResizeEvent *e)
   panel_input_list->setGeometry(10,285,251,size().height()-295);
   panel_output_list->setGeometry(260,35,size().width()-10,251);
   
-  panel_view->setGeometry(260,285,size().width()-260,size().height()-285);
+  int view_width=2+26*panel_output_list->endpointQuantity();
+  int bar_width=0;
+  int view_height=2+26*panel_input_list->endpointQuantity();
+  int bar_height=0;
+  if(view_width>(size().width()-260)) {
+    view_width=size().width()-260;
+    bar_height=15;
+  }
+  if(view_height>(size().height()-285)) {
+    view_height=size().height()-285;
+    bar_width=15;
+  }
+  if((bar_width!=0)&&(bar_height!=0)) {
+    bar_width=0;
+    bar_height=0;
+  }
+  panel_view->setGeometry(260,285,view_width+bar_width,view_height+bar_height);
 }
 
 
