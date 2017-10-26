@@ -76,6 +76,17 @@ src/tests/logindialog.cpp
 src/tests/logindialog.h
 src/tests/saparser.cpp
 src/tests/saparser.h
+src/xpointpanel/combobox.cpp
+src/xpointpanel/combobox.h
+src/xpointpanel/dparser.cpp
+src/xpointpanel/dparser.h
+src/xpointpanel/endpointmap.cpp
+src/xpointpanel/endpointmap.h
+src/xpointpanel/logindialog.cpp
+src/xpointpanel/logindialog.h
+src/xpointpanel/saparser.cpp
+src/xpointpanel/saparser.h
+src/xpointpanel/xpointpanel
 src/xypanel/combobox.cpp
 src/xypanel/combobox.h
 src/xypanel/dparser.cpp
