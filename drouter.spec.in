@@ -118,10 +118,14 @@ rm -rf $RPM_BUILD_ROOT
 %defattr(-,root,root)
 %{_bindir}/buttonpanel
 %{_bindir}/outputpanel
+%{_bindir}/xpointpanel
 %{_bindir}/xypanel
 %{_datadir}/man/man1/buttonpanel.1.gz
 %{_datadir}/man/man1/outputpanel.1.gz
 %{_datadir}/man/man1/xypanel.1.gz
+%{_datadir}/icons/hicolor/16x16/apps/drouter.png
+%{_datadir}/icons/hicolor/32x32/apps/drouter.png
+%{_datadir}/icons/hicolor/48x48/apps/drouter.png
 
 
 %changelog

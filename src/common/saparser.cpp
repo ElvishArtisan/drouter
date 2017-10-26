@@ -31,6 +31,8 @@ SaParser::SaParser(QObject *parent)
   sa_reading_dests=false;
   sa_current_router=-1;
   sa_last_router=-1;
+  sa_last_xpoint_router=-1;
+  sa_last_xpoint_output=-1;
 
   //
   // The Socket
@@ -64,13 +66,19 @@ int SaParser::inputQuantity(int router) const
 }
 
 
-QString SaParser::inputName(int router,int input)
+QString SaParser::inputNodeName(int router,int input) const
+{
+  return sa_input_node_names[router][input];
+}
+
+
+QString SaParser::inputName(int router,int input) const
 {
   return sa_input_names[router][input];
 }
 
 
-QString SaParser::inputLongName(int router,int input)
+QString SaParser::inputLongName(int router,int input) const
 {
   return sa_input_long_names[router][input];
 }
@@ -82,19 +90,19 @@ int SaParser::outputQuantity(int router) const
 }
 
 
-QString SaParser::outputName(int router,int output)
+QString SaParser::outputName(int router,int output) const
 {
   return sa_output_names[router][output];
 }
 
 
-QString SaParser::outputLongName(int router,int output)
+QString SaParser::outputLongName(int router,int output) const
 {
   return sa_output_long_names[router][output];
 }
 
 
-int SaParser::outputCrosspoint(int router,int output)
+int SaParser::outputCrosspoint(int router,int output) const
 {
   return sa_output_xpoints[router][output];
 }
@@ -272,9 +280,15 @@ void SaParser::DispatchCommand(const QString &cmd)
 	  for(QMap<int,QString>::const_iterator it=sa_router_names.begin();
 	      it!=sa_router_names.end();it++) {
 	    SendCommand(QString().sprintf("RouteStat %u\r\n",it.key()));
+	    sa_last_xpoint_router=it.key();
+	    QMap<int,QString>::const_iterator it2=
+	      sa_output_names[it.key()].end();
+	    it2--;
+	    sa_last_xpoint_output=it2.key();
 	  }
 	  sa_reading_dests=false;
-	  emit connected(true,SaParser::Ok);
+	  sa_reading_xpoints=true;
+	  //	  emit connected(true,SaParser::Ok);
 	}
       }
     }
@@ -309,6 +323,11 @@ void SaParser::DispatchCommand(const QString &cmd)
 	if(ok) {
 	  sa_output_xpoints[router][output]=input;
 	  emit outputCrosspointChanged(router,output,input);
+	  if((router==sa_last_xpoint_router)&&(output==sa_last_xpoint_output)) {
+	    sa_last_xpoint_router=-1;
+	    sa_last_xpoint_output=-1;
+	    emit connected(true,SaParser::Ok);
+	  }
 	}
       }
     }
@@ -343,6 +362,8 @@ void SaParser::ReadSourceName(const QString &cmd)
       srcnum=f0[6].toInt(&ok);
     }
     if(f0.size()>=3) {
+      QStringList f1=f0.at(2).split("ON");
+      sa_input_node_names[sa_current_router][input]=f1.back();
       sa_input_names[sa_current_router][input]=f0[1];
       if(ok) {
 	if(srcnum<=0) {
@@ -369,6 +390,8 @@ void SaParser::ReadDestName(const QString &cmd)
 
   if(f0.size()>=3) {
     if(ok) {
+      QStringList f1=f0.at(2).split("ON");
+      sa_output_node_names[sa_current_router][output]=f1.back();
       sa_output_names[sa_current_router][output]=f0[1];
       sa_output_long_names[sa_current_router][output]=f0[2];
     }

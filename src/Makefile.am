@@ -26,6 +26,7 @@ SUBDIRS = buttonpanel\
           drouterd\
           outputpanel\
           tests\
+          xpointpanel\
           xypanel
 
 CLEANFILES = *~\

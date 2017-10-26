@@ -45,12 +45,13 @@ class SaParser : public QObject
   ~SaParser();
   QMap<int,QString> routers() const;
   int inputQuantity(int router) const;
-  QString inputName(int router,int input);
-  QString inputLongName(int router,int input);
+  QString inputNodeName(int router,int input) const;
+  QString inputName(int router,int input) const;
+  QString inputLongName(int router,int input) const;
   int outputQuantity(int router) const;
-  QString outputName(int router,int output);
-  QString outputLongName(int router,int output);
-  int outputCrosspoint(int router,int output);
+  QString outputName(int router,int output) const;
+  QString outputLongName(int router,int output) const;
+  int outputCrosspoint(int router,int output) const;
   void setOutputCrosspoint(int router,int output,int input);
   void connectToHost(const QString &hostname,uint16_t port,
 		     const QString &username,const QString &passwd);
@@ -89,11 +90,16 @@ class SaParser : public QObject
   bool sa_reading_routers;
   bool sa_reading_sources;
   bool sa_reading_dests;
+  bool sa_reading_xpoints;
+  int sa_last_xpoint_router;
+  int sa_last_xpoint_output;
   QMap<int,QString> sa_router_names;
   int sa_current_router;
   int sa_last_router;
+  QMap<int,QMap<int,QString> > sa_input_node_names;
   QMap<int,QMap<int,QString> > sa_input_names;
   QMap<int,QMap<int,QString> > sa_input_long_names;
+  QMap<int,QMap<int,QString> > sa_output_node_names;
   QMap<int,QMap<int,QString> > sa_output_names;
   QMap<int,QMap<int,QString> > sa_output_long_names;
   QMap<int,QMap<int,int> > sa_output_xpoints;

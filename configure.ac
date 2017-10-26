@@ -109,6 +109,7 @@ fi
 
 AC_CONFIG_FILES([ \
     docs/Makefile \
+    icons/Makefile \
     src/Makefile \
     src/buttonpanel/Makefile \
     src/common/Makefile \
@@ -116,6 +117,7 @@ AC_CONFIG_FILES([ \
     src/drouterd/Makefile \
     src/outputpanel/Makefile \
     src/tests/Makefile \
+    src/xpointpanel/Makefile \
     src/xypanel/Makefile \
     systemd/Makefile \
     systemd/drouter.service \
@@ -131,6 +133,7 @@ AC_OUTPUT()
 ./link_common.sh drouterd
 ./link_common.sh outputpanel
 ./link_common.sh tests
+./link_common.sh xpointpanel
 ./link_common.sh xypanel
 
 AC_MSG_NOTICE()

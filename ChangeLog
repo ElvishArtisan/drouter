@@ -145,3 +145,5 @@
 2019-10-24 Fred Gleason <fredg@paravelsystems.com>
 	* Added a 'SubscribeClips' command to ProtocolD.
 	* Added a 'SubscribeSilences' command to ProtocolD.
+2019-10-26 Fred Gleason <fredg@paravelsystems.com>
+	* Added xpointpanel(1).
