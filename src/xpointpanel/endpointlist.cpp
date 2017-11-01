@@ -52,6 +52,12 @@ QSizePolicy EndpointList::sizePolicy() const
 }
 
 
+int EndpointList::endpoint(int slot) const
+{
+  return (list_labels.begin()+slot-1).key();
+}
+
+
 QList<int> EndpointList::endpoints() const
 {
   QList<int> ret;
@@ -61,6 +67,21 @@ QList<int> EndpointList::endpoints() const
     ret.push_back(it.key());
   }
   return ret;
+}
+
+
+int EndpointList::slot(int endpt) const
+{
+  int ret=0;
+
+  for(QMap<int,QString>::const_iterator it=list_labels.begin();
+      it!=list_labels.end();it++) {
+    if((it.key()+1)==endpt) {
+      return ret;
+    }
+    ret++;
+  }
+  return -1;
 }
 
 

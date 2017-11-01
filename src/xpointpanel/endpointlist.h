@@ -34,7 +34,9 @@ class EndpointList : public QWidget
   ~EndpointList();
   QSize sizeHint() const;
   QSizePolicy sizePolicy() const;
+  int endpoint(int slot) const;
   QList<int> endpoints() const;
+  int slot(int endpt) const;
   void addEndpoint(int endpt,const QString &name);
   void addEndpoints(const QMap<int,QString> &endpts);
   void clearEndpoints();

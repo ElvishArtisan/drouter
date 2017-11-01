@@ -298,10 +298,15 @@ void MainWidget::outputCrosspointChangedData(int router,int output,int input)
   QGraphicsItem *item=NULL;
 
   if(router==panel_router_box->currentItemData().toInt()) {
+    int x_slot=1+panel_output_list->slot(output);
+    int y_slot=1+panel_input_list->slot(input);
+
     //
     // Clear Previous XPoint
     //
-    QList<QGraphicsItem *>items=panel_scene->items(1+(output-1)*25,0,(output*25)-1,panel_scene->height(),Qt::ContainsItemShape,Qt::AscendingOrder);
+    QList<QGraphicsItem *>items=
+      panel_scene->items((x_slot-1)*26,0,25,panel_scene->height(),
+			 Qt::ContainsItemShape,Qt::AscendingOrder);
     for(int i=0;i<items.size();i++) {
       item=items.at(i);
       panel_scene->removeItem(item);
@@ -313,15 +318,21 @@ void MainWidget::outputCrosspointChangedData(int router,int output,int input)
     //
     if(input>0) {
       item=panel_scene->addPixmap(*panel_greenx_map);
-      item->setPos(26*(output-1)+5,26*(input-1)+5);
+      item->setPos(26*(x_slot-1)+5,26*(y_slot-1)+5);
     }
   }
 }
 
 
-void MainWidget::xpointDoubleClickedData(int output,int input)
+void MainWidget::xpointDoubleClickedData(int x_slot,int y_slot)
 {
-  //  printf("output: %d  input: %d\n",output,input);
+  /*
+  printf("x_slot: %d  y_slot: %d\n",x_slot,y_slot);
+  printf("output: %d  input: %d\n",panel_output_list->endpoint(x_slot),
+	 panel_input_list->endpoint(y_slot));
+  */
+  int input=panel_input_list->endpoint(y_slot)+1;
+  int output=panel_output_list->endpoint(x_slot)+1;
   if(panel_parser->outputCrosspoint(panel_router_box->currentItemData().toInt(),
 				    output)==input) {  // Mute
     panel_parser->

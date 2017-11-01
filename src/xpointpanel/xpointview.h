@@ -32,7 +32,7 @@ class XPointView : public QGraphicsView
   XPointView(QGraphicsScene *scene,QWidget *parent=0);
 
  signals:
-  void doubleClicked(int output_num,int input_num);
+  void doubleClicked(int x_slot,int y_slot);
 
  protected:
   void mouseDoubleClickEvent(QMouseEvent *e);
