@@ -27,6 +27,26 @@
 #include <QList>
 #include <QString>
 
+class Snapshot
+{
+ public:
+  Snapshot(const QString &name);
+  QString name() const;
+  void setName(const QString &str);
+  int routeQuantity() const;
+  int routeInput(int n) const;
+  int routeOutput(int n) const;
+  void addRoute(int output,int input);
+
+ private:
+  QString snap_name;
+  QList<int> snap_inputs;
+  QList<int> snap_outputs;
+};
+
+
+
+
 class EndPointMap
 {
  public:
@@ -50,6 +70,9 @@ class EndPointMap
   void insert(Type type,int n,const QHostAddress &host_addr,int slot);
   void insert(Type type,int n,const QString &host_addr,int slot);
   void erase(Type type,int n);
+  int snapshotQuantity() const;
+  Snapshot *snapshot(int n) const;
+  Snapshot *snapshot(const QString &name);
   bool load(const QString &filename);
   bool save(const QString &filename) const;
   void save(FILE *f) const;
@@ -62,6 +85,7 @@ class EndPointMap
   RouterType map_router_type;
   QList<QHostAddress> map_host_addresses[EndPointMap::LastType];
   QList<int> map_slots[EndPointMap::LastType];
+  QList<Snapshot *> map_snapshots;
 };
 
 

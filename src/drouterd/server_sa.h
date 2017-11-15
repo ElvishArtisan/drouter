@@ -47,6 +47,8 @@ class ServerSa : public ServerNet
 		   const QString &code);
   void setGpoState(int id,unsigned cardnum,unsigned input,int msecs,
 		   const QString &code);
+  void sendSnapshotNames(int id,unsigned cardnum);
+  void activateSnapshot(int id,unsigned cartnum,const QString &snapshot);
 
  protected:
   void processCommand(int id,const SyAString &cmd);

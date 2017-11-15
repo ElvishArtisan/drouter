@@ -57,9 +57,12 @@ class ProtocolSa : public Protocol
 		     const QString &code);
   void setGpoStateSa(int id,unsigned cardnum,unsigned input,int msecs,
 		     const QString &code);
+  void sendSnapshotNamesSa(int id,unsigned cardnum);
+  void activateSnapshotSa(int id,unsigned cartnum,const QString &snapshot);
 
  private:
   int GetCrosspointInput(EndPointMap *map,int output) const;
+  void SetRoute(int id,EndPointMap *map,int output,int input);
   ServerSa *sa_server;
   QMap<int,EndPointMap *> sa_maps;
   QTimer *sa_ready_timer;

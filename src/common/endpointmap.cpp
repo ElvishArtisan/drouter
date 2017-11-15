@@ -25,6 +25,51 @@
 
 #include "endpointmap.h"
 
+Snapshot::Snapshot(const QString &name)
+{
+  snap_name=name;
+}
+
+
+QString Snapshot::name() const
+{
+  return snap_name;
+}
+
+
+void Snapshot::setName(const QString &str)
+{
+  snap_name=str;
+}
+
+
+int Snapshot::routeQuantity() const
+{
+  return snap_inputs.size();
+}
+
+
+int Snapshot::routeInput(int n) const
+{
+  return snap_inputs.at(n);
+}
+
+
+int Snapshot::routeOutput(int n) const
+{
+  return snap_outputs.at(n);
+}
+
+
+void Snapshot::addRoute(int output,int input)
+{
+  snap_outputs.push_back(output);
+  snap_inputs.push_back(input);
+}
+
+
+
+
 EndPointMap::EndPointMap()
 {
   map_router_type=EndPointMap::AudioRouter;
@@ -144,6 +189,29 @@ void EndPointMap::erase(EndPointMap::Type type,int n)
 }
 
 
+int EndPointMap::snapshotQuantity() const
+{
+  return map_snapshots.size();
+}
+
+
+Snapshot *EndPointMap::snapshot(int n) const
+{
+  return map_snapshots.at(n);
+}
+
+
+Snapshot *EndPointMap::snapshot(const QString &name)
+{
+  for(int i=0;i<map_snapshots.size();i++) {
+    if(map_snapshots.at(i)->name()==name) {
+      return map_snapshots.at(i);
+    }
+  }
+  return NULL;
+}
+
+
 bool EndPointMap::load(const QString &filename)
 {
   SyProfile *p=new SyProfile();
@@ -182,7 +250,40 @@ bool EndPointMap::load(const QString &filename)
 	       QString().sprintf("%d",count+1),"HostAddress",QHostAddress(),&ok);
     }
   }
+
+  //
+  // Snapshots
+  //
+  QString name;
+  int snap=0;
+  QString section=QString().sprintf("Snapshot%d",snap+1);
+  bool ok=false;
+
+  for(int i=0;i<map_snapshots.size();i++) {
+    delete map_snapshots.at(i);
+  }
+  map_snapshots.clear();
+
+  name=p->stringValue(section,"Name","",&ok);
+  while(ok) {
+    map_snapshots.push_back(new Snapshot(name));
+    int route=0;
+    int output=
+      p->intValue(section,QString().sprintf("Route%dOutput",route+1),0,&ok);
+    while(ok) {
+      map_snapshots.back()->addRoute(output,p->intValue(section,QString().sprintf("Route%dInput",route+1),0,&ok));
+      route++;
+      output=
+	p->intValue(section,QString().sprintf("Route%dOutput",route+1),0,&ok);
+    }
+
+    snap++;
+    section=QString().sprintf("Snapshot%d",snap+1);
+    name=p->stringValue(section,"Name","",&ok);
+  }
+
   delete p;
+
   return true;
 }
 
@@ -228,6 +329,18 @@ void EndPointMap::save(FILE *f) const
       }
       fprintf(f,"Slot=%d\n",map_slots[type].at(j)+1);
       fprintf(f,"\n");
+    }
+  }
+
+  //
+  // Snapshots
+  //
+  for(int i=0;i<map_snapshots.size();i++) {
+    fprintf(f,"[Snapshot%d]\n",i+1);
+    fprintf(f,"Name=%s\n",(const char *)map_snapshots.at(i)->name().toUtf8());
+    for(int j=0;j<map_snapshots.at(i)->routeQuantity();j++) {
+      fprintf(f,"Route%dOutput=%d\n",j+1,map_snapshots.at(i)->routeOutput(j));
+      fprintf(f,"Route%dInput=%d\n",j+1,map_snapshots.at(i)->routeInput(j));
     }
   }
 }

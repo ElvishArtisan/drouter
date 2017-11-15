@@ -222,12 +222,41 @@ void ServerSa::processCommand(int id,const SyAString &cmd)
       }
     }
   }
+
+  if((cmds[0].toLower()=="snapshots")&&(cmds.size()==2)) {
+    cardnum=cmds[1].toUInt(&ok);
+    if(ok) {
+      emit sendSnapshotNames(id,cardnum-1);
+    }
+    else {
+      send("Error - Bay Does Not exist.\r\n",id);
+      send(">>",id);
+    }
+  }
+
+  if(((cmds[0].toLower()=="activatescene")||
+      (cmds[0].toLower()=="activatesnap"))&&(cmds.size()>2)) {
+    cardnum=cmds[1].toUInt(&ok);
+    if(ok) {
+      QString snapshot="";
+      for(int i=2;i<cmds.size();i++) {
+	snapshot+=cmds.at(i)+" ";
+      }
+      emit activateSnapshot(id,cardnum-1,snapshot.trimmed());
+    }
+    else {
+      send("Error - Bay Does Not exist.\r\n",id);
+      send(">>",id);
+    }
+  }
 }
 
 
 void ServerSa::LoadHelp()
 {
   sa_help_strings[""]=QString("ActivateRoute")+
+    ", ActivateScene"+
+    ", ActivateSnap"+
     ", DestNames"+
     ", Exit"+
     ", GPIStat"+
@@ -235,11 +264,14 @@ void ServerSa::LoadHelp()
     ", Quit"+
     ", RouterNames"+
     ", RouteStat"+
+    ", SnapShots"+
     ", SourceNames"+
     ", TriggerGPI"+
     ", TriggerGPO"+
     "\r\n\r\nEnter \"Help\" or \"?\" followed by the name of the command.";
   sa_help_strings["activateroute"]="ActivateRoute <router> <output> <input>\r\n\r\nRoute <input> to <output> on <router>.";
+  sa_help_strings["activatescene"]="ActivateScene <router> <snapshot>\r\n\r\nActivate the specified snapshot.";
+  sa_help_strings["activatesnap"]="ActivateSnap <router> <snapshot>\r\n\r\nActivate the specified snapshot.";
   sa_help_strings["destnames"]="DestNames <router>\r\n\r\nReturn names of all outputs on the specified router.";
   sa_help_strings["exit"]="Exit\r\n\r\nClose TCP/IP connection.";
   sa_help_strings["gpistat"]="GPIStat <router> [<gpi-num>]\r\n\r\nQuery the state of one or more GPIs.\r\nIf <gpi-num> is not given, the entire set of GPIs for the specified\r\n<router> will be returned.";
@@ -250,4 +282,5 @@ void ServerSa::LoadHelp()
   sa_help_strings["sourcenames"]="SourceNames <router>\r\n\r\nReturn names of all inputs on the specified router.";
   sa_help_strings["triggergpi"]="TriggerGPI <router> <gpi-num> <state> [<duration>]\r\n\r\nSet the specified GPI to <state> for <duration> milliseconds.\r\n(Supported only by virtual GPI devices.)";
   sa_help_strings["triggergpo"]="TriggerGPO <router> <gpo-num> <state> [<duration>]\r\n\r\nSet the specified GPO to <state> for <duration> milliseconds.";
+  sa_help_strings["snapshots"]="SnapShots <router>\r\n\r\nReturn list of available snapshots on the specified router.";
 }
