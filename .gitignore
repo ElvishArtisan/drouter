@@ -65,6 +65,17 @@ src/outputpanel/logindialog.h
 src/outputpanel/outputpanel
 src/outputpanel/saparser.cpp
 src/outputpanel/saparser.h
+src/shotpanel/combobox.cpp
+src/shotpanel/combobox.h
+src/shotpanel/dparser.cpp
+src/shotpanel/dparser.h
+src/shotpanel/endpointmap.cpp
+src/shotpanel/endpointmap.h
+src/shotpanel/logindialog.cpp
+src/shotpanel/logindialog.h
+src/shotpanel/saparser.cpp
+src/shotpanel/saparser.h
+src/shotpanel/shotpanel
 src/tests/combobox.cpp
 src/tests/combobox.h
 src/tests/dparser.cpp
