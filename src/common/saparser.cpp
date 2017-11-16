@@ -29,6 +29,7 @@ SaParser::SaParser(QObject *parent)
   sa_reading_routers=false;
   sa_reading_sources=false;
   sa_reading_dests=false;
+  sa_reading_snapshots=false;
   sa_current_router=-1;
   sa_last_router=-1;
   sa_last_xpoint_router=-1;
@@ -111,6 +112,24 @@ int SaParser::outputCrosspoint(int router,int output) const
 void SaParser::setOutputCrosspoint(int router,int output,int input)
 {
   SendCommand(QString().sprintf("ActivateRoute %d %d %d",router,output,input));
+}
+
+
+int SaParser::snapshotQuantity(int router) const
+{
+  return sa_snapshot_names[router].size();
+}
+
+
+QString SaParser::snapshotName(int router,int n) const
+{
+  return sa_snapshot_names[router].at(n);
+}
+
+
+void SaParser::activateSnapshot(int router,const QString &snapshot)
+{
+  SendCommand(QString().sprintf("ActivateSnap %d ",router)+snapshot);
 }
 
 
@@ -248,6 +267,10 @@ void SaParser::DispatchCommand(const QString &cmd)
 	  sa_output_long_names[sa_current_router].clear();
 	  sa_reading_dests=true;
 	}
+	if(f0[1]=="snapshotnames") {
+	  sa_snapshot_names[sa_current_router].clear();
+	  sa_reading_snapshots=true;
+	}
       }
     }
     return;
@@ -276,7 +299,14 @@ void SaParser::DispatchCommand(const QString &cmd)
 	  }
 	}
 	if((f0[1]=="destnames")&&(sa_current_router==sa_last_router)) {
+	  sa_reading_dests=false;
 	  emit outputListChanged();
+	  for(QMap<int,QString>::const_iterator it=sa_router_names.begin();
+	      it!=sa_router_names.end();it++) {
+	    SendCommand(QString().sprintf("Snapshots %u",it.key()));
+	  }
+	}
+	if((f0[1]=="snapshotnames")&&(sa_current_router==sa_last_router)) {
 	  for(QMap<int,QString>::const_iterator it=sa_router_names.begin();
 	      it!=sa_router_names.end();it++) {
 	    SendCommand(QString().sprintf("RouteStat %u\r\n",it.key()));
@@ -286,7 +316,7 @@ void SaParser::DispatchCommand(const QString &cmd)
 	    it2--;
 	    sa_last_xpoint_output=it2.key();
 	  }
-	  sa_reading_dests=false;
+	  sa_reading_snapshots=false;
 	  sa_reading_xpoints=true;
 	  //	  emit connected(true,SaParser::Ok);
 	}
@@ -308,6 +338,10 @@ void SaParser::DispatchCommand(const QString &cmd)
   }
   if(sa_reading_dests) {
     ReadDestName(cmd);
+    return;
+  }
+  if(sa_reading_snapshots) {
+    ReadSnapshotName(cmd);
     return;
   }
 
@@ -396,6 +430,12 @@ void SaParser::ReadDestName(const QString &cmd)
       sa_output_long_names[sa_current_router][output]=f0[2];
     }
   }
+}
+
+
+void SaParser::ReadSnapshotName(const QString &cmd)
+{
+  sa_snapshot_names[sa_current_router].push_back(cmd.trimmed());
 }
 
 

@@ -118,6 +118,7 @@ rm -rf $RPM_BUILD_ROOT
 %defattr(-,root,root)
 %{_bindir}/buttonpanel
 %{_bindir}/outputpanel
+%{_bindir}/shotpanel
 %{_bindir}/xpointpanel
 %{_bindir}/xypanel
 %{_datadir}/man/man1/buttonpanel.1.gz

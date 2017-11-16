@@ -167,3 +167,5 @@
 	method.
 2019-11-16 Fred Gleason <fredg@paravelsystems.com>
 	* Extended dmap(1) to permit checking of map files.
+2019-11-16 Fred Gleason <fredg@paravelsystems.com>
+	* Added snappanel(1).

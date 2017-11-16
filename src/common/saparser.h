@@ -53,6 +53,9 @@ class SaParser : public QObject
   QString outputLongName(int router,int output) const;
   int outputCrosspoint(int router,int output) const;
   void setOutputCrosspoint(int router,int output,int input);
+  int snapshotQuantity(int router) const;
+  QString snapshotName(int router,int n) const;
+  void activateSnapshot(int router,const QString &snapshot);
   void connectToHost(const QString &hostname,uint16_t port,
 		     const QString &username,const QString &passwd);
   static QString connectionStateString(ConnectionState cstate);
@@ -77,6 +80,7 @@ class SaParser : public QObject
   void ReadRouterName(const QString &cmd);
   void ReadSourceName(const QString &cmd);
   void ReadDestName(const QString &cmd);
+  void ReadSnapshotName(const QString &cmd);
   void BubbleSort(std::map<unsigned,QString> *names,
 		  std::vector<unsigned> *ptrs);
   void SendCommand(const QString &cmd);
@@ -91,6 +95,7 @@ class SaParser : public QObject
   bool sa_reading_sources;
   bool sa_reading_dests;
   bool sa_reading_xpoints;
+  bool sa_reading_snapshots;
   int sa_last_xpoint_router;
   int sa_last_xpoint_output;
   QMap<int,QString> sa_router_names;
@@ -103,6 +108,7 @@ class SaParser : public QObject
   QMap<int,QMap<int,QString> > sa_output_names;
   QMap<int,QMap<int,QString> > sa_output_long_names;
   QMap<int,QMap<int,int> > sa_output_xpoints;
+  QMap<int,QStringList> sa_snapshot_names;
   QTimer *sa_holdoff_timer;
 };
 

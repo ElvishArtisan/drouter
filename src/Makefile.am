@@ -25,6 +25,7 @@ SUBDIRS = buttonpanel\
           dmap\
           drouterd\
           outputpanel\
+          shotpanel\
           tests\
           xpointpanel\
           xypanel
