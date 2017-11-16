@@ -162,3 +162,6 @@
 2019-11-15 Fred Gleason <fredg@paravelsystems.com>
 	* Implemented 'Snapshots', 'ActivateSnap' and 'ActivateScene'
 	commands for SA protocol in drouterd(8).
+2019-11-16 Fred Gleason <fredg@paravelsystems.com>
+	* Moved error checking for SA map files to the 'EndPointMap::loadSet()'
+	method.

@@ -26,7 +26,6 @@
 #include "server_net.h"
 
 #define SERVER_SA_PORT 9500
-#define SERVER_SA_CONFIG_DIR "/etc/drouter.conf.d"
 
 class ServerSa : public ServerNet
 {

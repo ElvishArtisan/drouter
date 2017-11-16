@@ -21,6 +21,8 @@
 #include <stdio.h>
 #include <unistd.h>
 
+#include <QDir>
+
 #include <sy/syprofile.h>
 
 #include "endpointmap.h"
@@ -212,7 +214,7 @@ Snapshot *EndPointMap::snapshot(const QString &name)
 }
 
 
-bool EndPointMap::load(const QString &filename)
+bool EndPointMap::load(const QString &filename,QStringList *unused_lines)
 {
   SyProfile *p=new SyProfile();
   if(!p->setSource(filename)) {
@@ -281,7 +283,9 @@ bool EndPointMap::load(const QString &filename)
     section=QString().sprintf("Snapshot%d",snap+1);
     name=p->stringValue(section,"Name","",&ok);
   }
-
+  if(unused_lines!=NULL) {
+    *unused_lines=p->unusedLines();
+  }
   delete p;
 
   return true;
@@ -343,6 +347,79 @@ void EndPointMap::save(FILE *f) const
       fprintf(f,"Route%dInput=%d\n",j+1,map_snapshots.at(i)->routeInput(j));
     }
   }
+}
+
+
+bool EndPointMap::loadSet(QMap<int,EndPointMap *> *maps,QStringList *msgs)
+{
+  QDir dir(ENDPOINTMAP_MAP_DIRECTORY);
+  msgs->clear();
+
+  QStringList unused_lines;
+  QStringList filter;
+  filter.push_back("*.conf");
+  QStringList mapfiles=
+    dir.entryList(filter,QDir::Files|QDir::Readable,QDir::Name);
+  for(int i=0;i<mapfiles.size();i++) {
+    EndPointMap *map=new EndPointMap();
+    QString pathname=dir.path()+"/"+mapfiles.at(i);
+    if(map->load(pathname,&unused_lines)) {
+      if(unused_lines.size()>0) {
+	msgs->clear();
+	msgs->push_back("malformed/unused lines found in \""+pathname+"\":");
+	for(int j=0;j<unused_lines.size();j++) {
+	  msgs->push_back(unused_lines.at(j));
+	}
+	return false;
+      }
+      for(int j=0;j<map->snapshotQuantity();j++) {
+	for(int k=j+1;k<map->snapshotQuantity();k++) {
+	  if(map->snapshot(j)->name()==map->snapshot(k)->name()) {
+	    msgs->clear();
+	    msgs->push_back("duplicate snapshot name \""+
+			    map->snapshot(j)->name()+
+			    "\" in \""+pathname+"\"");
+	    return false;
+	  }
+	}
+	for(int k=0;k<map->snapshot(j)->routeQuantity();k++) {
+	  if(map->snapshot(j)->routeOutput(k)>=
+	     map->quantity(EndPointMap::Output)) {
+	    msgs->clear();
+	    msgs->push_back(QString().sprintf("invalid output \"%d\"",map->snapshot(j)->routeOutput(k))+" in snapshot \""+map->snapshot(j)->name()+"\" in \""+
+			    pathname+"\"");
+	    return false;
+	  }
+	  if(map->snapshot(j)->routeInput(k)>=
+	     map->quantity(EndPointMap::Input)) {
+	    msgs->clear();
+	    msgs->push_back(QString().sprintf("invalid input \"%d\"",map->snapshot(j)->routeInput(k))+" in snapshot \""+map->snapshot(j)->name()+"\" in \""+
+			    pathname+"\"");
+	    return false;
+	  }
+	}
+      }
+      for(QMap<int,EndPointMap *>::const_iterator it=maps->begin();
+	  it!=maps->end();it++) {
+	if(it.key()==map->routerNumber()) {
+	  msgs->clear();
+	  msgs->push_back(QString().sprintf("duplicate SA router number \"%d\"",
+					    map->routerNumber()+1));
+	  return false;
+	}
+	if(it.value()->routerName()==map->routerName()) {
+	  msgs->clear();
+	  msgs->push_back("duplicate SA router name \""+map->routerName()+"\"");
+	  return false;
+	}
+      }
+      (*maps)[map->routerNumber()]=map;
+      msgs->push_back("loaded SA map from \""+dir.path()+"/"+mapfiles.at(i)+
+		      "\" "+QString().sprintf("[%d:",map->routerNumber()+1)+
+		      map->routerName()+"]");
+    }
+  }
+  return true;
 }
 
 

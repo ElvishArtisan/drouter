@@ -27,6 +27,8 @@
 #include <QList>
 #include <QString>
 
+#define ENDPOINTMAP_MAP_DIRECTORY "/etc/drouter.conf.d"
+
 class Snapshot
 {
  public:
@@ -73,9 +75,10 @@ class EndPointMap
   int snapshotQuantity() const;
   Snapshot *snapshot(int n) const;
   Snapshot *snapshot(const QString &name);
-  bool load(const QString &filename);
+  bool load(const QString &filename,QStringList *unused_lines=NULL);
   bool save(const QString &filename) const;
   void save(FILE *f) const;
+  static bool loadSet(QMap<int,EndPointMap *> *maps,QStringList *msgs);
   static QString routerTypeString(RouterType type);
   static QString typeString(Type type);
 
