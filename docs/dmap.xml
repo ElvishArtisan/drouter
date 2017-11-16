@@ -30,7 +30,8 @@
   -->
   <refsynopsisdiv id='synopsis'>
     <cmdsynopsis>
-      <command>dmap</command>    <arg choice='opt'><replaceable>OPTIONS</replaceable></arg>
+      <command>dmap</command>
+      <arg choice='opt'><replaceable>OPTIONS</replaceable></arg>
       <sbr/>
     </cmdsynopsis>
   </refsynopsisdiv>
@@ -38,14 +39,35 @@
   <refsect1 id='description'><title>Description</title>
   <para>
     <command>dmap</command><manvolnum>1</manvolnum> is a utility for
-    automatically generating Livewire matrix maps for use by
-    <command>drouterd</command><manvolnum>1</manvolnum>.  It works by
+    automatically checking or generating Livewire matrix maps for use by
+    <command>drouterd</command><manvolnum>1</manvolnum>. It works by
     connecting to a local drouterd instance and enumerating the reported
     resources.
+  </para>
+  <para>
+    When invoked with no arguments,
+    <command>dmap</command><manvolnum>1</manvolnum>
+    will read the maps in the
+    <computeroutput>/etc/drouter.conf.d</computeroutput> directory and
+    print any problems found to STDERR.
   </para>
   </refsect1>
 
   <refsect1 id='options'><title>Options</title>
+  <variablelist remap='TP'>
+    <varlistentry>
+      <term>
+	<option>--generate</option>
+      </term>
+      <listitem>
+	<para>
+	  Connect to the <command>drouterd</command><manvolnum>8</manvolnum>
+	  service generate a map from the resources found there.
+	</para>
+      </listitem>
+    </varlistentry>
+  </variablelist>
+
   <variablelist remap='TP'>
     <varlistentry>
       <term>
@@ -195,6 +217,19 @@
 	  <replaceable>filename</replaceable> (one IP address per line).
 	  Useful mostly for debugging. This option can be specified
 	  multiple times.
+	</para>
+      </listitem>
+    </varlistentry>
+  </variablelist>
+
+  <variablelist remap='TP'>
+    <varlistentry>
+      <term>
+	<option>--verbose</option>
+      </term>
+      <listitem>
+	<para>
+	  Be verbose (mostly useful when checking existing maps).
 	</para>
       </listitem>
     </varlistentry>

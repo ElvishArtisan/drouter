@@ -165,3 +165,5 @@
 2019-11-16 Fred Gleason <fredg@paravelsystems.com>
 	* Moved error checking for SA map files to the 'EndPointMap::loadSet()'
 	method.
+2019-11-16 Fred Gleason <fredg@paravelsystems.com>
+	* Extended dmap(1) to permit checking of map files.

@@ -368,7 +368,7 @@ bool EndPointMap::loadSet(QMap<int,EndPointMap *> *maps,QStringList *msgs)
 	msgs->clear();
 	msgs->push_back("malformed/unused lines found in \""+pathname+"\":");
 	for(int j=0;j<unused_lines.size();j++) {
-	  msgs->push_back(unused_lines.at(j));
+	  msgs->push_back("  "+unused_lines.at(j));
 	}
 	return false;
       }

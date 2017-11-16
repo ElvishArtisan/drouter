@@ -48,6 +48,8 @@ class MainObject : public QObject
   void errorData(QAbstractSocket::SocketError err,const QString &err_msg);
  
  private:
+  void Check();
+  void Generate();
   int ProcessUseNodeList(const QString &filename);
   int ProcessSkipNodeList(const QString &filename);
   DParser *map_parser;
@@ -57,6 +59,7 @@ class MainObject : public QObject
   int map_router_number;
   QString map_router_name;
   int map_max_nodes;
+  bool map_verbose;
   QList<QHostAddress> map_node_addresses;
   QList<QHostAddress> map_skip_node_addresses;
 };

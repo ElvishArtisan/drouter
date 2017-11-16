@@ -36,15 +36,25 @@ MainObject::MainObject(QObject *parent)
   : QObject(parent)
 {
   bool ok=false;
+  bool generate=false;
 
   map_output_map="";
   map_router_number=0;
   map_router_name="Livewire";
   map_router_type=EndPointMap::AudioRouter;
+  map_verbose=false;
 
   SyCmdSwitch *cmd=
     new SyCmdSwitch(qApp->argc(),qApp->argv(),"dmap",VERSION,DMAP_USAGE);
   for(unsigned i=0;i<cmd->keys();i++) {
+    if(cmd->key(i)=="--check") {
+      generate=false;
+      cmd->setProcessed(i,true);
+    }
+    if(cmd->key(i)=="--generate") {
+      generate=true;
+      cmd->setProcessed(i,true);
+    }
     if(cmd->key(i)=="--output-map") {
       map_output_map=cmd->value(i);
       cmd->setProcessed(i,true);
@@ -123,30 +133,21 @@ MainObject::MainObject(QObject *parent)
       }
       cmd->setProcessed(i,true);
     }
+    if(cmd->key(i)=="--verbose") {
+      map_verbose=true;
+      cmd->setProcessed(i,true);
+    }
     if(!cmd->processed(i)) {
       fprintf(stderr,"dmap: unknown option\n");
       exit(256);
     }
   }
-
-  //
-  // Create Map
-  //
-  map_map=new EndPointMap();
-  map_map->setRouterType(map_router_type);
-  map_map->setRouterName(map_router_name);
-  map_map->setRouterNumber(map_router_number-1);
-
-  //
-  // Connect to DRouter
-  //
-  map_parser=new DParser(this);
-  connect(map_parser,SIGNAL(connected(bool)),this,SLOT(connectedData(bool)));
-  connect(map_parser,
-	  SIGNAL(error(QAbstractSocket::SocketError,const QString &)),
-	  this,
-	  SLOT(errorData(QAbstractSocket::SocketError,const QString &)));
-  map_parser->connectToHost("localhost",23883);
+  if(generate) {
+    Generate();
+  }
+  else {
+    Check();
+  }
 }
 
 
@@ -262,6 +263,49 @@ void MainObject::errorData(QAbstractSocket::SocketError err,
 {
   fprintf(stderr,"dmap: parser error [%s]\n",(const char *)err_msg.toUtf8());
   exit(1);
+}
+
+
+void MainObject::Check()
+{
+  QMap<int,EndPointMap *> maps;
+  QStringList msgs;
+
+  if(!EndPointMap::loadSet(&maps,&msgs)) {
+    for(int i=0;i<msgs.size();i++) {
+      fprintf(stderr,"%s\n",(const char *)msgs.at(i).toUtf8());
+    }
+    exit(1);
+  }
+  if(map_verbose) {
+    for(int i=0;i<msgs.size();i++) {
+      fprintf(stderr,"%s\n",(const char *)msgs.at(i).toUtf8());
+    }
+  }
+  exit(0);
+}
+
+
+void MainObject::Generate()
+{
+  //
+  // Create Map
+  //
+  map_map=new EndPointMap();
+  map_map->setRouterType(map_router_type);
+  map_map->setRouterName(map_router_name);
+  map_map->setRouterNumber(map_router_number-1);
+
+  //
+  // Connect to DRouter
+  //
+  map_parser=new DParser(this);
+  connect(map_parser,SIGNAL(connected(bool)),this,SLOT(connectedData(bool)));
+  connect(map_parser,
+	  SIGNAL(error(QAbstractSocket::SocketError,const QString &)),
+	  this,
+	  SLOT(errorData(QAbstractSocket::SocketError,const QString &)));
+  map_parser->connectToHost("localhost",23883);
 }
 
 
