@@ -169,3 +169,6 @@
 	* Extended dmap(1) to permit checking of map files.
 2019-11-16 Fred Gleason <fredg@paravelsystems.com>
 	* Added snappanel(1).
+2019-11-17 Fred Gleason <fredg@paravelsystems.com>
+	* Added reticule lines to the edges of the crosspoint display
+	in xpointpanel(1).

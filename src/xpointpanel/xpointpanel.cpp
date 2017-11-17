@@ -123,6 +123,7 @@ MainWidget::MainWidget(QWidget *parent)
   // Scroll Area
   //
   panel_scene=new QGraphicsScene(this);
+  panel_scene->setBackgroundBrush(Qt::blue);
   panel_view=new XPointView(panel_scene,this);
   panel_view->setAlignment(Qt::AlignLeft|Qt::AlignTop);
   connect(panel_view,SIGNAL(doubleClicked(int,int)),
@@ -228,11 +229,11 @@ void MainWidget::routerBoxActivatedData(int n)
   //
   // Populate Crosspoints
   //
-  for(int i=1;i<panel_input_list->endpointQuantity();i++) {
+  for(int i=0;i<(panel_input_list->endpointQuantity()+1);i++) {
     panel_scene->
       addLine(0,26*i-1,26*panel_output_list->endpointQuantity(),26*i-1);
   }
-  for(int i=1;i<panel_output_list->endpointQuantity();i++) {
+  for(int i=0;i<(panel_output_list->endpointQuantity()+1);i++) {
     panel_scene->
       addLine(26*i-1,0,26*i-1,26*panel_input_list->endpointQuantity());
   }
@@ -352,26 +353,30 @@ void MainWidget::resizeEvent(QResizeEvent *e)
     setGeometry(15,10,panel_input_list->sizeHint().width()-10,20);
   panel_router_box->
     setGeometry(10,32,panel_input_list->sizeHint().width()-10,20);
-  panel_input_list->setGeometry(10,panel_output_list->sizeHint().width()+10,panel_input_list->sizeHint().width()+1,size().height()-(panel_output_list->sizeHint().width()-45));
+  panel_input_list->setGeometry(10,panel_output_list->sizeHint().width()+10,panel_input_list->sizeHint().width()-0,size().height()-(panel_output_list->sizeHint().width()-45));
   panel_output_list->setGeometry(panel_input_list->sizeHint().width()+10,10,size().width()-10,panel_output_list->sizeHint().width()+1);
   
-  int view_width=2+26*panel_output_list->endpointQuantity();
+  int view_width=3+26*panel_output_list->endpointQuantity();
   int bar_width=0;
-  int view_height=2+26*panel_input_list->endpointQuantity();
+  int view_height=3+26*panel_input_list->endpointQuantity();
   int bar_height=0;
+  int bar_x=0;
+  int bar_y=0;
   if(view_width>(size().width()-(panel_input_list->sizeHint().width()+10))) {
       view_width=size().width()-(panel_input_list->sizeHint().width()+10);
-    bar_height=15;
+      bar_x=1;
+      bar_height=15;
   }
   if(view_height>(size().height()-(panel_output_list->sizeHint().width()+15))) {
     view_height=size().height()-(panel_output_list->sizeHint().width()+15);
+    bar_y=1;
     bar_width=15;
   }
   if((bar_width!=0)&&(bar_height!=0)) {
     bar_width=0;
     bar_height=0;
   }
-  panel_view->setGeometry(panel_input_list->sizeHint().width()+10,panel_output_list->sizeHint().width()+10,view_width+bar_width,view_height+bar_height);
+  panel_view->setGeometry(panel_input_list->sizeHint().width()+bar_x+9,panel_output_list->sizeHint().width()+bar_y+9,view_width+bar_width,view_height+bar_height);
 }
 
 
