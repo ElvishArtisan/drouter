@@ -1,174 +1,174 @@
-2019-09-12 Fred Gleason <fredg@paravelsystems.com>
+2017-09-12 Fred Gleason <fredg@paravelsystems.com>
 	* Initial package creation.
-2019-09-12 Fred Gleason <fredg@paravelsystems.com>
+2017-09-12 Fred Gleason <fredg@paravelsystems.com>
 	* Added drouterd(8) service.
-2019-09-13 Fred Gleason <fredg@paravelsystems.com>
+2017-09-13 Fred Gleason <fredg@paravelsystems.com>
 	* Documented 'Protocol D' in 'docs/protocol_d.xml'.
-2019-09-13 Fred Gleason <fredg@paravelsystems.com>
+2017-09-13 Fred Gleason <fredg@paravelsystems.com>
 	* Replaced the 'DRouter::nodeAdded(const QHostAddress &)' signal with
 	'DRouter::nodeAdded(const SyNode &node)'.
 	* Replaced the 'DRouter::nodeRemoved(const QHostAddress &)' signal with
 	'DRouter::nodeAboutToBeRemoved(const SyNode &node)'.
-2019-09-13 Fred Gleason <fredg@paravelsystems.com>
+2017-09-13 Fred Gleason <fredg@paravelsystems.com>
 	* Implemented the 'ListDestinations' Protocol "D" command.
 	* Implemented the 'ListNodes' Protocol "D" command.
 	* Implemented the 'ListSources' Protocol "D" command.
 	* Implemented the 'SubscribeDestinations' Protocol "D" command.
 	* Implemented the 'SubscribeNodes' Protocol "D" command.
 	* Implemented the 'SubscribeSources' Protocol "D" command.
-2019-09-13 Fred Gleason <fredg@paravelsystems.com>
+2017-09-13 Fred Gleason <fredg@paravelsystems.com>
 	* Implemented the 'ClearCrosspoint' Protocol "D" command.
 	* Implemented the 'SetCrosspoint' Protocol "D" command.
-2019-09-13 Fred Gleason <fredg@paravelsystems.com>
+2017-09-13 Fred Gleason <fredg@paravelsystems.com>
 	* Added client command feedback for Protocol "D".
-2019-09-14 Fred Gleason <fredg@paravelsystems.com>
+2017-09-14 Fred Gleason <fredg@paravelsystems.com>
 	* Added dmap(8) in 'src/dmap/'.
-2019-09-14 Fred Gleason <fredg@paravelsystems.com>
+2017-09-14 Fred Gleason <fredg@paravelsystems.com>
 	* Implemented support for SoftwareAuthority protocol.
-2019-09-16 Fred Gleason <fredg@paravelsystems.com>
+2017-09-16 Fred Gleason <fredg@paravelsystems.com>
 	* Fixed a bug in 'src/drouterd/drouter.cpp' and
 	'src/drouterd/drouter.h' that could cause reception of multicast
 	messages to fail on systems with multiple network interfaces.
-2019-09-16 Fred Gleason <fredg@paravelsystems.com>
+2017-09-16 Fred Gleason <fredg@paravelsystems.com>
 	* Replaced 'std::vector' class with 'QList' in dmap(8).
-2019-09-16 Fred Gleason <fredg@paravelsystems.com>
+2017-09-16 Fred Gleason <fredg@paravelsystems.com>
 	* Fixed a bug in 'src/dmap/dmap.cpp' and 'src/dmap/dmap.h' that
 	could cause reception of multicast messages to fail on systems
 	with multiple network interfaces.
-2019-10-02 Fred Gleason <fredg@paravelsystems.com>
+2017-10-02 Fred Gleason <fredg@paravelsystems.com>
 	* Fixed a use-after-delete bug in drouterd(8).
-2019-10-02 Fred Gleason <fredg@paravelsystems.com>
+2017-10-02 Fred Gleason <fredg@paravelsystems.com>
 	* Fixed a bug in the 'ListNode' Protocol D command that caused
 	'phantom' nodes to appear in the node list.
-2019-10-03 Fred Gleason <fredg@paravelsystems.com>
+2017-10-03 Fred Gleason <fredg@paravelsystems.com>
 	* Fixed a bug that caused extraneous NODEDEL messages to be generated
 	when reporting a removed node via Protocol D.
-2019-10-03 Fred Gleason <fredg@paravelsystems.com>
+2017-10-03 Fred Gleason <fredg@paravelsystems.com>
 	* Fixed a bug in drouterd(8) that caused a segfault when processing
 	resource adds and removals.
-2019-10-04 Fred Gleason <fredg@paravelsystems.com>
+2017-10-04 Fred Gleason <fredg@paravelsystems.com>
 	* Added a 'DParser' method in 'common/'.
 	* Added dparsertest(1).
 	* Moved dmap(8) to dmap(1).
 	* Refactored dmap(1) to use drouterd(8) to enumerate node resources.
-2019-10-04 Fred Gleason <fredg@paravelsystems.com>
+2017-10-04 Fred Gleason <fredg@paravelsystems.com>
 	* Implemented a connection watchdog in DParser.
-2019-10-04 Fred Gleason <fredg@paravelsystems.com>
+2017-10-04 Fred Gleason <fredg@paravelsystems.com>
 	* Added 'ListGpis', 'ListGpos', 'SubscribeGpis' and 'SubscribeGpos'
 	commands to ProtocolD.
-2019-10-04 Fred Gleason <fredg@paravelsystems.com>
+2017-10-04 Fred Gleason <fredg@paravelsystems.com>
 	* Added 'ClearGpioCrosspoint' and 'SetGpioCrosspoint' commands to
 	ProtocolD.
-2019-10-04 Fred Gleason <fredg@paravelsystems.com>
+2017-10-04 Fred Gleason <fredg@paravelsystems.com>
 	* Changed the endpoint label 'Source' to 'Input'.
 	* Changed the endpoint label 'Destination' to 'Output'.
 	* Added a '--router-type=' switch to dmap(1).
 	* Implemented SA protocol support for 'RouteStat' and 'ActivateRoute'
 	for GPIO routers.
-2019-10-04 Fred Gleason <fredg@paravelsystems.com>
+2017-10-04 Fred Gleason <fredg@paravelsystems.com>
 	* Implemented SA protocol support for 'TriggerGPI' and 'TriggerGPO'
 	for GPIO routers.
-2019-10-04 Fred Gleason <fredg@paravelsystems.com>
+2017-10-04 Fred Gleason <fredg@paravelsystems.com>
 	* Fixed a bug in SA protocol that caused duplicate 'RouteStat' updates
 	to be generated when processing GPO state changes.
-2019-10-04 Fred Gleason <fredg@paravelsystems.com>
+2017-10-04 Fred Gleason <fredg@paravelsystems.com>
 	* Added support for an OFF input in SA protocol.
-2019-10-05 Fred Gleason <fredg@paravelsystems.com>
+2017-10-05 Fred Gleason <fredg@paravelsystems.com>
 	* Implemented SystemD socket activation for drouterd(8).
 	* Added a SystemD service definition for drouterd(8).
-2019-10-05 Fred Gleason <fredg@paravelsystems.com>
+2017-10-05 Fred Gleason <fredg@paravelsystems.com>
 	* Implemented the 'make rpm' target.
-2019-10-05 Fred Gleason <fredg@paravelsystems.com>
+2017-10-05 Fred Gleason <fredg@paravelsystems.com>
 	* Fixed a bug in drouterd(8) that broke startup on non-SystemD systems.
-2019-10-05 Fred Gleason <fredg@paravelsystems.com>
+2017-10-05 Fred Gleason <fredg@paravelsystems.com>
 	* Removed the '--no-off-source=' switch from dmap(1).
-2019-10-05 Fred Gleason <fredg@paravelsystems.com>
+2017-10-05 Fred Gleason <fredg@paravelsystems.com>
 	* Implemented configuration reload upon reception of SIGHUP
 	for drouterd(8).
-2019-10-06 Fred Gleason <fredg@paravelsystems.com>
+2017-10-06 Fred Gleason <fredg@paravelsystems.com>
 	* Fixed a bug in 'configure.ac' that broke when attempting to configure
 	without SystemD support.
-2019-10-06 Fred Gleason <fredg@paravelsystems.com>
+2017-10-06 Fred Gleason <fredg@paravelsystems.com>
 	* Implemented reload of SA maps upon reception of SIGHUP by
 	drouterd(8).
 	* Implemented the SystemD 'reload' command for the 'drouter'
 	service.
-2019-10-06 Fred Gleason <fredg@paravelsystems.com>
+2017-10-06 Fred Gleason <fredg@paravelsystems.com>
 	* Fixed an SA bug in drouterd(8) that caused the response to a
 	'RouterNames' command to be sent to all connected clients.
-2019-10-06 Fred Gleason <fredg@paravelsystems.com>
+2017-10-06 Fred Gleason <fredg@paravelsystems.com>
 	* Added an 'SaParser' class.
 	* Added xypanel(1).
-2019-10-09 Fred Gleason <fredg@paravelsystems.com>
+2017-10-09 Fred Gleason <fredg@paravelsystems.com>
 	* Refactored 'SaParser' to monitor all available routers.
-2019-10-09 Fred Gleason <fredg@paravelsystems.com>
+2017-10-09 Fred Gleason <fredg@paravelsystems.com>
 	* Implemented a thirty second delay before allowing SA connections
 	in dourterd(8).
 	* Added support for indicating initial connection errors to
 	xypanel(1).
-2019-10-09 Fred Gleason <fredg@paravelsystems.com>
+2017-10-09 Fred Gleason <fredg@paravelsystems.com>
 	* Added a login dialog to xypanel(1).
-2019-10-09 Fred Gleason <fredg@paravelsystems.com>
+2017-10-09 Fred Gleason <fredg@paravelsystems.com>
 	* Implemented returning a '-3' for the crosspoint input for an
 	output that is connected to a source that is outside of the
 	configured space in SA protocol.
-2019-10-09 Fred Gleason <fredg@paravelsystems.com>
+2017-10-09 Fred Gleason <fredg@paravelsystems.com>
 	* Fixed a bug in xypanel(1) that prevented setting an output being
 	set to 'OFF'.
-2019-10-09 Fred Gleason <fredg@paravelsystems.com>
+2017-10-09 Fred Gleason <fredg@paravelsystems.com>
 	* Fixed a bug in drouterd(8) that caused spurious RouteStat updates
 	to be generated when switching routes on nodes that contained both
 	audio and GPIO resources.
-2019-10-11 Fred Gleason <fredg@paravelsystems.com>
+2017-10-11 Fred Gleason <fredg@paravelsystems.com>
 	* Added outputpanel(1).
-2019-10-11 Fred Gleason <fredg@paravelsystems.com>
+2017-10-11 Fred Gleason <fredg@paravelsystems.com>
 	* Fixed bugs in xypanel(1) that caused incorrect Input and Output
 	names to be displayed when used with routers with sparse numbers.
-2019-10-12 Fred Gleason <fredg@paravelsystems.com>
+2017-10-12 Fred Gleason <fredg@paravelsystems.com>
 	* Added buttonpanel(1).
-2019-10-12 Fred Gleason <fredg@paravelsystems.com>
+2017-10-12 Fred Gleason <fredg@paravelsystems.com>
 	* Added resizing button text to buttonpanel(1).
-2019-10-12 Fred Gleason <fredg@paravelsystems.com>
+2017-10-12 Fred Gleason <fredg@paravelsystems.com>
 	* Added buttonpanel(1), outputpanel(1) and xypanel(1) man pages.
-2019-10-12 Fred Gleason <fredg@paravelsystems.com>
+2017-10-12 Fred Gleason <fredg@paravelsystems.com>
 	* Added a 'panels' RPM subpackage.
-2019-10-13 Fred Gleason <fredg@paravelsystems.com>
+2017-10-13 Fred Gleason <fredg@paravelsystems.com>
 	* Fixed a bug in buttonpanel(1) that caused a segfault at startup
 	when using a router with no sources.
-2019-10-13 Fred Gleason <fredg@paravelsystems.com>
+2017-10-13 Fred Gleason <fredg@paravelsystems.com>
 	* Incremented the package version to 0.5.0.
-2019-10-23 Fred Gleason <fredg@paravelsystems.com>
+2017-10-23 Fred Gleason <fredg@paravelsystems.com>
 	* Added section tags to the Protocol D specification.
-2019-10-23 Fred Gleason <fredg@paravelsystems.com>
+2017-10-23 Fred Gleason <fredg@paravelsystems.com>
 	* Added a 'ListClips' command to ProtocolD.
 	* Added a 'ListSilences' command to ProtocolD.
-2019-10-24 Fred Gleason <fredg@paravelsystems.com>
+2017-10-24 Fred Gleason <fredg@paravelsystems.com>
 	* Added a 'SubscribeClips' command to ProtocolD.
 	* Added a 'SubscribeSilences' command to ProtocolD.
-2019-10-26 Fred Gleason <fredg@paravelsystems.com>
+2017-10-26 Fred Gleason <fredg@paravelsystems.com>
 	* Added xpointpanel(1).
-2019-10-26 Fred Gleason <fredg@paravelsystems.com>
+2017-10-26 Fred Gleason <fredg@paravelsystems.com>
 	* Fixed rendering bugs in endpoint labels in xpointpanel(1).
-2019-10-26 Fred Gleason <fredg@paravelsystems.com>
+2017-10-26 Fred Gleason <fredg@paravelsystems.com>
 	* Fixed resizing bugs in the crosspoint grid in xpointpanel(1).
-2019-10-26 Fred Gleason <fredg@paravelsystems.com>
+2017-10-26 Fred Gleason <fredg@paravelsystems.com>
 	* Optimized xpointpanel(1) to improve router load speed.
-2019-10-26 Fred Gleason <fredg@paravelsystems.com>
+2017-10-26 Fred Gleason <fredg@paravelsystems.com>
 	* Added router number to the name in the 'Router' dropdown in
 	xpointpanel(1).
-2019-11-01 Fred Gleason <fredg@paravelsystems.com>
+2017-11-01 Fred Gleason <fredg@paravelsystems.com>
 	* Fixed bugs in xpointpanel(1) that caused incorrect operation with
 	routers containing holes.
-2019-11-15 Fred Gleason <fredg@paravelsystems.com>
+2017-11-15 Fred Gleason <fredg@paravelsystems.com>
 	* Implemented 'Snapshots', 'ActivateSnap' and 'ActivateScene'
 	commands for SA protocol in drouterd(8).
-2019-11-16 Fred Gleason <fredg@paravelsystems.com>
+2017-11-16 Fred Gleason <fredg@paravelsystems.com>
 	* Moved error checking for SA map files to the 'EndPointMap::loadSet()'
 	method.
-2019-11-16 Fred Gleason <fredg@paravelsystems.com>
+2017-11-16 Fred Gleason <fredg@paravelsystems.com>
 	* Extended dmap(1) to permit checking of map files.
-2019-11-16 Fred Gleason <fredg@paravelsystems.com>
+2017-11-16 Fred Gleason <fredg@paravelsystems.com>
 	* Added snappanel(1).
-2019-11-17 Fred Gleason <fredg@paravelsystems.com>
+2017-11-17 Fred Gleason <fredg@paravelsystems.com>
 	* Added reticule lines to the edges of the crosspoint display
 	in xpointpanel(1).
