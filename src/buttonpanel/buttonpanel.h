@@ -33,7 +33,7 @@
 #include "logindialog.h"
 #include "saparser.h"
 
-#define BUTTONPANEL_USAGE "[options] --panel=<panel1>\n"
+#define BUTTONPANEL_USAGE "[options]\n"
 #define LWPANELBUTTON_ACTIVE_STYLESHEET "color: #FFFFFF; background-color: #0000FF;"
 
 class MainWidget : public QWidget

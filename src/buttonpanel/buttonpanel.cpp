@@ -37,6 +37,7 @@ MainWidget::MainWidget(QWidget *parent)
   panel_columns=0;
   panel_rows=1;
   panel_router=1;
+  panel_hostname="localhost";
 
   bool ok=false;
 
