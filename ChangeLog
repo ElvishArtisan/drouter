@@ -172,3 +172,6 @@
 2017-11-17 Fred Gleason <fredg@paravelsystems.com>
 	* Added reticule lines to the edges of the crosspoint display
 	in xpointpanel(1).
+2018-02-17 Fred Gleason <fredg@paravelsystems.com>
+	* Fixed a bug in buttonpanel(1) that caused connection to hang
+	when the '--hostname=' switch was omitted.
