@@ -51,7 +51,7 @@
       </term>
       <listitem>
 	<para>
-	  Use no more than <replaceable>cols</replaceable> buttons per row.
+	  Use <replaceable>cols</replaceable> button columns per row.
 	</para>
       </listitem>
     </varlistentry>
@@ -90,6 +90,7 @@
       <para>
 	The number of the output to monitor and control. Optionally,
 	the router number (default <userinput>1</userinput>) may also be given.
+	This option may be given multiple times.
       </para>
     </listitem>
   </varlistentry>

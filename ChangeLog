@@ -176,3 +176,5 @@
 	* Fixed a bug in buttonpanel(1) that caused connection to hang
 	when the '--hostname=' switch was omitted.
 	* Updated the usage text for buttonpanel(1).
+2018-02-18 Fred Gleason <fredg@paravelsystems.com>
+	* Added the ability to display multiple outputs in buttonpanel(1).

@@ -2,7 +2,7 @@
 //
 // Button applet for controlling an lwpath output.
 //
-//   (C) Copyright 2002-2017 Fred Gleason <fredg@paravelsystems.com>
+//   (C) Copyright 2002-2018 Fred Gleason <fredg@paravelsystems.com>
 //
 //   This program is free software; you can redistribute it and/or modify
 //   it under the terms of the GNU General Public License as
@@ -21,25 +21,30 @@
 
 #include <QApplication>
 #include <QMessageBox>
+#include <QPainter>
 
 #include <sy/sycmdswitch.h>
+#include <sy/symcastsocket.h>
 
 #include "buttonpanel.h"
 
 //
 // Icons
 //
-//#include "../../icons/lwpath-16x16.xpm"
+#include "../../icons/drouter-16x16.xpm"
 
 MainWidget::MainWidget(QWidget *parent)
   : QWidget(parent)
 {
+  panel_width=400;
+  panel_height=20;
   panel_columns=0;
-  panel_rows=1;
-  panel_router=1;
   panel_hostname="localhost";
 
   bool ok=false;
+
+  setWindowTitle(QString("ButtonPanel v")+VERSION);
+  setWindowIcon(QPixmap(drouter_16x16_xpm));
 
   //
   // Read Command Options
@@ -70,7 +75,7 @@ MainWidget::MainWidget(QWidget *parent)
       cmd->setProcessed(i,true);
     }
     if(cmd->key(i)=="--output") {  // Defer processing on these
-      panel_router=1;
+      panel_routers.push_back(1);
       QStringList f0=cmd->value(i).split(":");
       if(f0.size()>2) {
 	QMessageBox::warning(this,"ButtonPanel - "+tr("Error"),
@@ -79,15 +84,15 @@ MainWidget::MainWidget(QWidget *parent)
 	exit(1);
       }
       if(f0.size()==2) {
-	panel_router=f0.at(0).toInt(&ok);
-	if((!ok)||(panel_router<1)) {
+	panel_routers.back()=f0.at(0).toInt(&ok);
+	if((!ok)||(panel_routers.back()<1)) {
 	  QMessageBox::warning(this,"ButtonPanel - "+tr("Error"),
 			       tr("Invalid router specified!"));
 	  exit(1);
 	}
       }
-      panel_output=f0.back().toInt(&ok)-1;
-      if((!ok)||(panel_output<0)) {
+      panel_outputs.push_back(f0.back().toInt(&ok));
+      if((!ok)||(panel_outputs.back()<0)) {
 	QMessageBox::warning(this,"ButtonPanel - "+tr("Error"),
 			     tr("Invalid output specified!"));
 	exit(1);
@@ -102,22 +107,30 @@ MainWidget::MainWidget(QWidget *parent)
   }
 
   //
-  // Create And Set Icon
+  // Sanity Checks
   //
-  //  setWindowIcon(QPixmap(lwpath_16x16_xpm));
+  if(panel_outputs.size()==0) {
+    QMessageBox::warning(this,"ButtonPanel - "+tr("Error"),
+			 tr("No output specified."));
+    exit(1);
+  }
 
   //
   // The SA Connection
   //
   panel_parser=new SaParser(this);
+  for(int i=0;i<panel_routers.size();i++) {
+    panel_panels.push_back(new ButtonWidget(panel_routers.at(i),
+					    panel_outputs.at(i),
+					    panel_columns,panel_parser,this));
+  }
   connect(panel_parser,SIGNAL(connected(bool,SaParser::ConnectionState)),
 	  this,SLOT(changeConnectionState(bool,SaParser::ConnectionState)));
-  connect(panel_parser,
-	  SIGNAL(outputCrosspointChanged(int,int,int)),
-	  this,SLOT(changeOutputCrosspoint(int,int,int)));
-  panel_button_mapper=new QSignalMapper(this);
-  connect(panel_button_mapper,SIGNAL(mapped(int)),
-	  this,SLOT(buttonClickedData(int)));
+  connect(panel_parser,SIGNAL(error(QAbstractSocket::SocketError)),
+	  this,SLOT(errorData(QAbstractSocket::SocketError)));
+  panel_resize_timer=new QTimer(this);
+  panel_resize_timer->setSingleShot(true);
+  connect(panel_resize_timer,SIGNAL(timeout()),this,SLOT(resizeData()));
 
   //
   // Dialogs
@@ -144,17 +157,7 @@ MainWidget::~MainWidget()
 
 QSize MainWidget::sizeHint() const
 {
-  if(panel_columns==0) {
-    return QSize(10+100*panel_buttons.size(),70);
-  }
-  return QSize(10+100*panel_columns,20+50*panel_rows);
-}
-
-
-void MainWidget::buttonClickedData(int n)
-{
-  //  printf("setOutputCrosspoint(%d,%d,%d)\n",panel_router,panel_output+1,n+1);
-  panel_parser->setOutputCrosspoint(panel_router,panel_output+1,n+1);
+  return QSize(panel_width,panel_height);
 }
 
 
@@ -163,103 +166,70 @@ void MainWidget::changeConnectionState(bool state,
 {
   //  printf("changeConnectionState(%d)\n",state);
   if(state) {
-    for(QMap<int,AutoPushButton *>::const_iterator it=panel_buttons.begin();
-	it!=panel_buttons.end();it++) {
-      delete it.value();
-    }
-    panel_buttons.clear();
-
-    if(panel_parser->outputName(panel_router,panel_output+1).isEmpty()) {
-      QMessageBox::warning(this,"ButtonPanel - "+tr("Error"),
-			   tr("No such output!"));
-      exit(1);
-    }
-    setWindowTitle(panel_parser->outputName(panel_router,panel_output+1)+" "+
-		   tr("Switcher"));
-    for(int i=0;i<panel_parser->inputQuantity(panel_router);i++) {
-      if(!panel_parser->inputName(panel_router,i+1).isEmpty()) {
-	panel_buttons[i]=new AutoPushButton(this);
-	panel_buttons[i]->setText(panel_parser->inputName(panel_router,i+1));
-	panel_buttons[i]->show();
-	connect(panel_buttons[i],SIGNAL(clicked()),
-		panel_button_mapper,SLOT(map()));
-	panel_button_mapper->setMapping(panel_buttons[i],i);
-      }
-    }
+    panel_resize_timer->start(0);  // So the widgets can create buttons first
   }
-  else {
-    for(int i=0;i<panel_buttons.size();i++) {
-      panel_buttons[i]->setDisabled(true);
-    }
-  }
-
-  panel_rows=1;
-  int col=0;
-  for(int i=0;i<panel_buttons.size();i++) {
-    if((panel_columns>0)&&(col==panel_columns)) {
-      panel_rows++;
-      col=0;
-    }
-    col++;
-  }
-
-  resize(sizeHint());
 }
 
 
-void MainWidget::changeOutputCrosspoint(int router,int output,int input)
+void MainWidget::errorData(QAbstractSocket::SocketError err)
 {
-  //  printf("changeOutputCrosspoint(%d,%d,%d)\n",router,output,input);
-  if((router==panel_router)&&((output-1)==panel_output)) {
-    for(QMap<int,AutoPushButton *>::const_iterator it=panel_buttons.begin();
-	it!=panel_buttons.end();it++) {
-      if((input-1)==it.key()) {
-	it.value()->setStyleSheet(LWPANELBUTTON_ACTIVE_STYLESHEET);
-      }
-      else {
-	it.value()->setStyleSheet("");
-      }
+  QMessageBox::warning(this,"ButtonPanel - "+tr("Error"),
+		       tr("Network Error")+": "+
+		       SyMcastSocket::socketErrorText(err));
+  exit(1);
+}
+
+
+void MainWidget::resizeData()
+{
+  //
+  // Calculate overall size
+  //
+  panel_width=0;
+  panel_height=5;
+  for(int i=0;i<panel_panels.size();i++) {
+    QSize size=panel_panels.at(i)->size();
+    if(size.width()>panel_width) {
+      panel_width=size.width();
     }
+    panel_height+=size.height()+5;
   }
+  panel_width+=5;
+
+  resizeEvent(NULL);
+  repaint();
+  setGeometry(geometry().x(),geometry().y(),panel_width,panel_height);
 }
 
 
 void MainWidget::resizeEvent(QResizeEvent *e)
 {
-  int col=0;
-  int row=0;
-  
-  if(panel_buttons.size()==0) {
-    return;
+  int prev_y=10;
+
+  for(int i=0;i<panel_panels.size();i++) {
+    ButtonWidget *widget=panel_panels.at(i);
+    panel_panels.at(i)->setGeometry(10,prev_y,widget->size().width(),
+				    widget->size().height());
+    prev_y+=widget->size().height()+5;
   }
-  int cell_w=(size().width()-20)/panel_buttons.size();
-  if(panel_columns>0) {
-    cell_w=(size().width()-10)/panel_columns;
-  }
-  int cell_h=(size().height()-20);
-  if(panel_columns>0) {
-    cell_h=(size().height()-20)/panel_rows;
+}
+
+
+void MainWidget::paintEvent(QPaintEvent *e)
+{
+  QPainter *p=new QPainter(this);
+
+  p->setPen(Qt::black);
+  p->setBrush(Qt::black);
+
+  for(int i=0;i<panel_panels.size()-1;i++) {
+    p->drawLine(0,
+		(i+1)*(5+panel_panels.at(i)->sizeHint().height())+1,
+		size().width(),
+		(i+1)*(5+panel_panels.at(i)->sizeHint().height())+1);
   }
 
-  if(panel_columns==0) {
-    for(QMap<int,AutoPushButton *>::const_iterator it=panel_buttons.begin();
-	it!=panel_buttons.end();it++) {
-      it.value()->setGeometry(10+cell_w*col,10,cell_w-10,cell_h);
-      col++;
-    }
-  }
-  else {
-    for(QMap<int,AutoPushButton *>::const_iterator it=panel_buttons.begin();
-	it!=panel_buttons.end();it++) {
-      it.value()->setGeometry(10+cell_w*col,10+cell_h*(row),
-			      cell_w-10,cell_h);
-      col++;
-      if((panel_columns>0)&&(col==panel_columns)) {
-	col=0;
-	row++;
-      }
-    }
-  }
+  delete p;
 }
 
 

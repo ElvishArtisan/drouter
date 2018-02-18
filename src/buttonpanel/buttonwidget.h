@@ -1,8 +1,8 @@
-// buttonpanel.h
+// buttonwidget.h
 //
-// Button applet for controlling an SA output.
+// Button container for a single output.
 //
-//   (C) Copyright 2002-2017 Fred Gleason <fredg@paravelsystems.com>
+//   (C) Copyright 2002-2018 Fred Gleason <fredg@paravelsystems.com>
 //
 //   This program is free software; you can redistribute it and/or modify
 //   it under the terms of the GNU General Public License as
@@ -19,58 +19,51 @@
 //   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
 //
 
-#ifndef BUTTONPANEL_H
-#define BUTTONPANEL_H
+#ifndef BUTTONWIDGET_H
+#define BUTTONWIDGET_H
 
-
-#include <QList>
+#include <QLabel>
+#include <QMap>
 #include <QPixmap>
 #include <QPushButton>
 #include <QSignalMapper>
-#include <QTimer>
 #include <QWidget>
 
 #include "autopushbutton.h"
-#include "buttonwidget.h"
 #include "logindialog.h"
 #include "saparser.h"
 
-#define BUTTONPANEL_USAGE "[options]\n"
-#define LWPANELBUTTON_ACTIVE_STYLESHEET "color: #FFFFFF; background-color: #0000FF;"
+#define BUTTONWIDGET_ACTIVE_STYLESHEET "color: #FFFFFF; background-color: #0000FF;"
+#define BUTTONWIDGET_CELL_WIDTH 90
+#define BUTTONWIDGET_CELL_HEIGHT 60
 
-class MainWidget : public QWidget
+class ButtonWidget : public QWidget
 {
   Q_OBJECT
  public:
-  MainWidget(QWidget *parent=0);
-  ~MainWidget();
+  ButtonWidget(int router,int output,int columns,SaParser *parser,
+	       QWidget *parent=0);
+  ~ButtonWidget();
   QSize sizeHint() const;
 
  private slots:
+  void buttonClickedData(int n);
   void changeConnectionState(bool state,SaParser::ConnectionState cstate);
-  void errorData(QAbstractSocket::SocketError err);
-  void resizeData();
+  void changeOutputCrosspoint(int router,int output,int input);
 
  protected:
   void resizeEvent(QResizeEvent *e);
-  void paintEvent(QPaintEvent *e);
 
  private:
   int panel_columns;
-  QString panel_hostname;
-  QString panel_username;
-  QString panel_password;
-  QList<int> panel_routers;
-  QList<int> panel_outputs;
-  QPixmap *panel_saspanels_map;
+  int panel_rows;
+  int panel_router;
+  int panel_output;
   SaParser *panel_parser;
   QSignalMapper *panel_button_mapper;
-  QList<ButtonWidget *> panel_panels;
-  LoginDialog *panel_login_dialog;
-  QTimer *panel_resize_timer;
-  int panel_width;
-  int panel_height;
+  QMap<int,AutoPushButton *> panel_buttons;
+  QLabel *panel_title_label;
 };
 
 
-#endif  // BUTTONPANEL_H
+#endif  // BUTTONWIDGET_H
