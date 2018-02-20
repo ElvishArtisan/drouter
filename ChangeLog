@@ -184,3 +184,5 @@
 2018-02-20 Fred Gleason <fredg@paravelsystems.com>
 	* Removed the 'Switcher' text from the output channel identifier
 	in buttonpanel(1).
+2018-02-20 Fred Gleason <fredg@paravelsystems.com>
+	* Incremented the package version to 0.6.0.
