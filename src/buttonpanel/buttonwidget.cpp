@@ -99,8 +99,8 @@ void ButtonWidget::changeConnectionState(bool state,
 			   tr("No such output!"));
       exit(1);
     }
-    panel_title_label->setText(panel_parser->outputName(panel_router,panel_output+1)+" "+
-			       tr("Switcher"));
+    panel_title_label->
+      setText(panel_parser->outputName(panel_router,panel_output+1));
     for(int i=0;i<panel_parser->inputQuantity(panel_router);i++) {
       if(!panel_parser->inputName(panel_router,i+1).isEmpty()) {
 	panel_buttons[i]=new AutoPushButton(this);

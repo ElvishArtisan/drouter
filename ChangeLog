@@ -181,3 +181,6 @@
 2018-02-20 Fred Gleason <fredg@paravelsystems.com>
 	* Fixed a bug in drouterd(8) that caused a RouteStat message to fail
 	to be generated when a destination was switched OFF.
+2018-02-20 Fred Gleason <fredg@paravelsystems.com>
+	* Removed the 'Switcher' text from the output channel identifier
+	in buttonpanel(1).
