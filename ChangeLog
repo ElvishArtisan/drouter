@@ -178,3 +178,6 @@
 	* Updated the usage text for buttonpanel(1).
 2018-02-18 Fred Gleason <fredg@paravelsystems.com>
 	* Added the ability to display multiple outputs in buttonpanel(1).
+2018-02-20 Fred Gleason <fredg@paravelsystems.com>
+	* Fixed a bug in drouterd(8) that caused a RouteStat message to fail
+	to be generated when a destination was switched OFF.

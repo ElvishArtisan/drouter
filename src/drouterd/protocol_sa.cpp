@@ -156,6 +156,10 @@ void ProtocolSa::processChangedDestination(const SyNode &node,int slot,
 		send(QString().sprintf("RouteStat %u %u %u False\r\n",
 				       map->routerNumber()+1,output+1,input+1));
 	    }
+	    else {
+	      sa_server->send(QString().sprintf("RouteStat %u %u -3 False\r\n",
+						map->routerNumber()+1,output+1));
+	    }
 	  }
 	}
 	else {
