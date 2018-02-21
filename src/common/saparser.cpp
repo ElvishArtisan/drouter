@@ -224,7 +224,6 @@ void SaParser::DispatchCommand(const QString &cmd)
 {
   //  printf("RECV: %s\n",(const char *)cmd.toUtf8());
 
-  //  unsigned matrix;
   bool ok=false;
 
   QStringList f0=cmd.toLower().split(" ");
@@ -234,7 +233,7 @@ void SaParser::DispatchCommand(const QString &cmd)
   //
   if(f0[0]=="login") {
     if((f0.size()==2)&&(f0[1]=="successful")) {
-      SendCommand("routernames");
+      SendCommand("RouterNames");
     }
     else {
       sa_socket->deleteLater();
@@ -318,7 +317,6 @@ void SaParser::DispatchCommand(const QString &cmd)
 	  }
 	  sa_reading_snapshots=false;
 	  sa_reading_xpoints=true;
-	  //	  emit connected(true,SaParser::Ok);
 	}
       }
     }
@@ -375,7 +373,10 @@ void SaParser::ReadRouterName(const QString &cmd)
 {
   bool ok=false;
   QStringList f0=cmd.split(" ",QString::SkipEmptyParts);
-  if(f0.size()==2) {
+  if(f0.size()>=2) {
+    for(int i=1;i<f0.size();i++) {
+      f0[1]+=" "+f0[i];
+    }
     int router=f0.at(0).toInt(&ok);
     if(ok) {
       sa_router_names[router]=f0.at(1);
