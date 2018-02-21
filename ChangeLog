@@ -189,3 +189,5 @@
 2018-02-21 Fred Gleason <fredg@paravelsystems.com>
 	* Modified the Software Authority parser to ensure strict compliance
 	with the protocol (camel-case command names).
+2018-02-21 Fred Gleason <fredg@paravelsystems.com>
+	* Incremented the package version to 0.6.1.
