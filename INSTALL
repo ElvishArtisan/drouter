@@ -6,6 +6,7 @@ You will need the following installed and configured properly on your
 system before building GlassCoder:
 
 Qt4 Toolkit, v4.6 or better (http://www.qt.io/).
+Switchyard, v0.17.1 or better (https://github.com/ElvishArtisan/Switchyard).
 
 
 DOCUMENTATION
