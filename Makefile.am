@@ -25,6 +25,7 @@ if DOCBOOK_AM
 endif
 
 SUBDIRS = icons\
+          python\
           $(DOCBOOK_AM_OPT) src\
           systemd
 

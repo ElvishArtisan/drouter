@@ -561,12 +561,12 @@
       </varlistentry>
       <varlistentry>
 	<term>
-	  <replaceable>state</replaceable>
+	  <replaceable>code</replaceable>
 	</term>
 	<listitem>
 	  <para>
-	    The state of the GPI lines, in the format
-	    <computeroutput>xxxxx</computeroutput>.
+	    A string representing the state of the GPI lines,
+	    in the format <computeroutput>xxxxx</computeroutput>.
 	  </para>
 	</listitem>
       </varlistentry>
@@ -630,12 +630,12 @@
       </varlistentry>
       <varlistentry>
 	<term>
-	  <replaceable>state</replaceable>
+	  <replaceable>code</replaceable>
 	</term>
 	<listitem>
 	  <para>
-	    The state of the GPO lines, in the format
-	    <computeroutput>xxxxx</computeroutput>.
+	    A string representing the state of the GPO lines,
+	    in the format <computeroutput>xxxxx</computeroutput>.
 	  </para>
 	</listitem>
       </varlistentry>
