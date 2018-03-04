@@ -27,6 +27,12 @@ class gpi:
         self.hostAddress=cmds[1]
         self.code=cmds[4]
 
+    def __eq__(self,other):
+        return self.slotNumber==other.slotNumber and self.hostName==other.hostName and self.hostAddress==other.hostAddress and self.code==other.code
+
+    def __ne__(self,other):
+        return not self.__eq__(other)
+
     def state(self,line):
         return self.code[line-1].lower()=="l"
     def setState(self,line,state):

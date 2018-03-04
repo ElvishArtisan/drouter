@@ -21,16 +21,6 @@
 #
 
 class node:
-    def __init__(self,h_name,h_addr,dev_name,src_slots,dst_slots,gpi_slots,
-                 gpo_slots):
-        self.hostName=h_name
-        self.hostAddress=h_addr
-        self.deviceName=dev_name
-        self.sourceQuantity=src_slots
-        self.destinationQuantity=dst_slots
-        self.gpiQuantity=gpi_slots
-        self.gpoQuantity=gpo_slots
-
     def __init__(self,cmds):
         self.hostName=cmds[2]
         self.hostAddress=cmds[1]
@@ -39,6 +29,12 @@ class node:
         self.destinationQuantity=int(cmds[5])
         self.gpiQuantity=int(cmds[6])
         self.gpoQuantity=int(cmds[7])
+
+    def __eq__(self,other):
+        return self.hostName==other.hostName and self.hostAddress==other.hostAddress and self.deviceName==other.deviceName and self.sourceQuantity==other.sourceQuantity and self.destinationQuantity==other.destinationQuantity and self.gpiQuantity==other.gpiQuantity and self.gpoQuantity==other.gpoQuantity
+
+    def __ne__(self,other):
+        return self.__eq__(other)
 
     def __str__(self):
         return "hostName: "+self.hostName+"\n"+"hostAddress: "+self.hostAddress+"\n"+"deviceName: "+self.deviceName+"\n"+"sourceQuantity: "+str(self.sourceQuantity)+"\n"+"destinationQuantity: "+str(self.destinationQuantity)+"\n"+"gpiQuantity: "+str(self.gpiQuantity)+"\n"+"gpoQuantity: "+str(self.gpoQuantity)+"\n"

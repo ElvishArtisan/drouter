@@ -29,5 +29,11 @@ class destination:
         self.streamAddress=cmds[4]
         self.channels=int(cmds[6])
 
+    def __eq__(self,other):
+        return self.slotNumber==other.slotNumber and self.name==other.name and self.hostAddress==other.hostAddress and self.hostName==other.hostName and self.streamAddress==other.streamAddress and self.channels==other.channels
+
+    def __ne__(self,other):
+        return not self.__eq__(other)
+
     def __str__(self):
         return "slotNumber: "+str(self.slotNumber)+"\n"+"name: "+self.name+"\n"+"hostName: "+self.hostName+"\n"+"hostAddress: "+self.hostAddress+"\n"+"streamAddress: "+self.streamAddress+"\n"+"channels: "+str(self.channels)+"\n"

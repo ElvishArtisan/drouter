@@ -31,5 +31,11 @@ class source:
         self.channels=int(cmds[7])
         self.blockSize=int(cmds[8])
 
+    def __eq__(self,other):
+        return self.slotNumber==other.slotNumber and self.name==other.name and self.hostAddress==other.hostAddress and self.hostName==other.hostName and self.streamAddress==other.streamAddress and self.streamEnabled==other.streamEnabled and self.channels==other.channels and self.blockSize==other.blockSize
+
+    def __ne__(self,other):
+        return not self.__eq__(other)
+
     def __str__(self):
         return "slotNumber: "+str(self.slotNumber)+"\n"+"name: "+self.name+"\n"+"hostName: "+self.hostName+"\n"+"hostAddress: "+self.hostAddress+"\n"+"streamAddress: "+self.streamAddress+"\n"+"streamEnabled: "+str(self.streamEnabled)+"\n"+"channels: "+str(self.channels)+"\n"+"blockSize: "+str(self.blockSize)+"\n"

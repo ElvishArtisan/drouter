@@ -30,6 +30,12 @@ class gpo:
         self.sourceAddress=cmds[6]
         self.sourceSlot=int(cmds[7])
 
+    def __eq__(self,other):
+        return self.slotNumber==other.slotNumber and self.name==other.name and self.hostName==other.hostName and self.hostAddress==other.hostAddress and self.code==other.code and self.sourceAddress==other.sourceAddress and self.sourceSlot==other.sourceSlot
+
+    def __ne__(self,other):
+        return not self.__eq__(other)
+
     def state(self,line):
         return self.code[line-1].lower()=="l"
     def setState(self,line,state):

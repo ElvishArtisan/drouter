@@ -29,10 +29,11 @@ import drouter.node
 import drouter.source
 
 class dparser:
-    def __init__(self,ready_cb,add_cb,del_cb):
+    def __init__(self,ready_cb,add_cb,del_cb,change_cb):
         self.ready_callback=ready_cb
         self.add_callback=add_cb
         self.delete_callback=del_cb
+        self.change_callback=change_cb
         self.__sock=socket.socket(socket.AF_INET)
         self.nodes={}
         self.sources={}
@@ -89,6 +90,12 @@ class dparser:
                 self.delete_callback(self,"SRC",source)
             del self.sources[self.key(cmds[1],int(cmds[2]))]
             return
+        if cmds[0]=="SRC":
+            oldsrc=self.sources[self.key(cmds[1],int(cmds[2]))]
+            self.sources[self.key(cmds[1],int(cmds[2]))]=drouter.source.source(cmds)
+            if (self.change_callback!=None) and self.__loaded and oldsrc != self.sources[self.key(cmds[1],int(cmds[2]))]:
+                self.change_callback(self,"SRC",oldsrc,
+                                     self.sources[self.key(cmds[1],int(cmds[2]))])
 
         if cmds[0]=="DSTADD":
             self.destinations[self.key(cmds[1],int(cmds[2]))]=drouter.destination.destination(cmds);
@@ -101,6 +108,12 @@ class dparser:
                 self.delete_callback(self,"DST",destination)
             del self.destinations[self.key(cmds[1],int(cmds[2]))]
             return
+        if cmds[0]=="DST":
+            olddst=self.destinations[self.key(cmds[1],int(cmds[2]))]
+            self.destinations[self.key(cmds[1],int(cmds[2]))]=drouter.destination.destination(cmds)
+            if (self.change_callback!=None) and self.__loaded and olddst != self.destinations[self.key(cmds[1],int(cmds[2]))]:
+                self.change_callback(self,"DST",olddst,
+                                     self.destinations[self.key(cmds[1],int(cmds[2]))])
 
         if cmds[0]=="GPIADD":
             self.gpis[self.key(cmds[1],int(cmds[2]))]=drouter.gpi.gpi(cmds)
@@ -113,6 +126,12 @@ class dparser:
                 self.delete_callback(self,"GPI",gpi)
             del self.gpis[self.key(cmds[1],int(cmds[2]))]
             return
+        if cmds[0]=="GPI":
+            oldgpi=self.gpis[self.key(cmds[1],int(cmds[2]))]
+            self.gpis[self.key(cmds[1],int(cmds[2]))]=drouter.gpi.gpi(cmds)
+            if (self.delete_callback!=None) and self.__loaded and oldgpi != self.gpis[self.key(cmds[1],int(cmds[2]))]:
+                self.change_callback(self,"GPI",oldgpi,self.gpis[self.key(cmds[1],int(cmds[2]))])
+            return
 
         if cmds[0]=="GPOADD":
             self.gpos[self.key(cmds[1],int(cmds[2]))]=drouter.gpo.gpo(cmds)
@@ -124,6 +143,12 @@ class dparser:
             if (self.delete_callback!=None) and self.__loaded:
                 self.delete_callback(self,"GPO",gpo)
             del self.gpos[self.key(cmds[1],int(cmds[2]))]
+            return
+        if cmds[0]=="GPO":
+            oldgpo=self.gpos[self.key(cmds[1],int(cmds[2]))]
+            self.gpos[self.key(cmds[1],int(cmds[2]))]=drouter.gpo.gpo(cmds)
+            if (self.delete_callback!=None) and self.__loaded and oldgpo != self.gpos[self.key(cmds[1],int(cmds[2]))]:
+                self.change_callback(self,"GPO",oldgpo,self.gpos[self.key(cmds[1],int(cmds[2]))])
             return
 
         if cmds[0]=="ok":
