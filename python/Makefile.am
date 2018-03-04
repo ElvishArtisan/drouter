@@ -22,6 +22,7 @@
 install-exec-am:	
 	mkdir -p $(DESTDIR)@libexecdir@/drouter
 	cp __init__.py $(DESTDIR)@libexecdir@/drouter/
+	cp alarm.py $(DESTDIR)@libexecdir@/drouter/
 	cp destination.py $(DESTDIR)@libexecdir@/drouter/
 	cp dparser.py $(DESTDIR)@libexecdir@/drouter/
 	cp gpi.py $(DESTDIR)@libexecdir@/drouter/
@@ -34,6 +35,7 @@ uninstall-local:
 	rm -rf $(DESTDIR)@libexecdir@/drouter
 
 EXTRA_DIST = __init__.py\
+             alarm.py\
              destination.py\
              dparser.py\
              gpi.py\

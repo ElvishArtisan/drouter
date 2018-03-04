@@ -22,6 +22,7 @@
 
 import socket
 
+import drouter.alarm
 import drouter.destination
 import drouter.gpi
 import drouter.gpo
@@ -29,11 +30,12 @@ import drouter.node
 import drouter.source
 
 class dparser:
-    def __init__(self,ready_cb,add_cb,del_cb,change_cb):
+    def __init__(self,ready_cb,add_cb,del_cb,change_cb,alarm_cb):
         self.ready_callback=ready_cb
         self.add_callback=add_cb
         self.delete_callback=del_cb
         self.change_callback=change_cb
+        self.alarm_callback=alarm_cb
         self.__sock=socket.socket(socket.AF_INET)
         self.nodes={}
         self.sources={}
@@ -45,6 +47,8 @@ class dparser:
         self.__destinations_loaded=False
         self.__gpis_loaded=False
         self.__gpos_loaded=False
+        self.__silences_loaded=False
+        self.__clips_loaded=False
         self.__loaded=False
 
     def connect(self,hostname):
@@ -151,6 +155,11 @@ class dparser:
                 self.change_callback(self,"GPO",oldgpo,self.gpos[self.key(cmds[1],int(cmds[2]))])
             return
 
+        if cmds[0]=="SILENCE" or cmds[0]=="CLIP":
+            if (self.alarm_callback!=None) and self.__loaded:
+                self.alarm_callback(self,drouter.alarm.alarm(cmds))
+            return
+
         if cmds[0]=="ok":
             if not self.__nodes_loaded:
                 self.__nodes_loaded=True
@@ -174,8 +183,16 @@ class dparser:
 
             if not self.__gpos_loaded:
                 self.__gpos_loaded=True
+                self.__sock.send("SubscribeSilences\r\n")
+                return;
+
+            if not self.__silences_loaded:
+                self.__silences_loaded=True
+                self.__sock.send("SubscribeClips\r\n")
+
+            if not self.__clips_loaded:
+                self.__clips_loaded=True
                 self.__loaded=True
                 if self.ready_callback!=None:
                     self.ready_callback(self)
-                return;
             return;

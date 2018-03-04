@@ -195,3 +195,6 @@
 	* Added a Python binding for Protocol D in 'python/'.
 2018-03-04 Fred Gleason <fredg@paravelsystems.com>
 	* Implemented an object change callback in the Python API.
+2018-03-04 Fred Gleason <fredg@paravelsystems.com>
+	* Added an 'alarm' class to the Python API.
+	* Implemented an alarm callback in the Python API.
