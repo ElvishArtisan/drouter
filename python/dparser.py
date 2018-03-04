@@ -30,18 +30,18 @@ import drouter.node
 import drouter.source
 
 class dparser:
-    def __init__(self,ready_cb,add_cb,del_cb,change_cb,alarm_cb):
-        self.ready_callback=ready_cb
-        self.add_callback=add_cb
-        self.delete_callback=del_cb
-        self.change_callback=change_cb
-        self.alarm_callback=alarm_cb
-        self.__sock=socket.socket(socket.AF_INET)
+    def __init__(self):
+        self.ready_callback=None
+        self.add_callback=None
+        self.delete_callback=None
+        self.change_callback=None
+        self.alarm_callback=None
         self.nodes={}
         self.sources={}
         self.destinations={}
         self.gpis={}
         self.gpos={}
+        self.__sock=socket.socket(socket.AF_INET)
         self.__nodes_loaded=False
         self.__sources_loaded=False
         self.__destinations_loaded=False
@@ -51,7 +51,22 @@ class dparser:
         self.__clips_loaded=False
         self.__loaded=False
 
-    def connect(self,hostname):
+    def setReadyCallback(self,cb):
+        self.ready_callback=cb
+
+    def setAddCallback(self,cb):
+        self.add_callback=cb
+
+    def setDeleteCallback(self,cb):
+        self.delete_callback=cb
+
+    def setChangeCallback(self,cb):
+        self.change_callback=cb
+
+    def setAlarmCallback(self,cb):
+        self.alarm_callback=cb
+
+    def start(self,hostname):
         self.__conn=self.__sock.connect((hostname,23883))
         self.__accum=""
         c=""
