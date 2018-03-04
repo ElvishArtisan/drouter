@@ -1,13 +1,12 @@
 ## automake.am
 ##
-## Automake.am for python/
+## Automake.am for drouter python tests
 ##
 ##   (C) Copyright 2018 Fred Gleason <fredg@paravelsystems.com>
 ##
 ##   This program is free software; you can redistribute it and/or modify
-##   it under the terms of the GNU General Public License as
-##   published by the Free Software Foundation; either version 2 of
-##   the License, or (at your option) any later version.
+##   it under the terms of the GNU General Public License version 2 as
+##   published by the Free Software Foundation.
 ##
 ##   This program is distributed in the hope that it will be useful,
 ##   but WITHOUT ANY WARRANTY; without even the implied warranty of
@@ -20,20 +19,8 @@
 ##
 ## Use automake to process this into a Makefile.in
 
-SUBDIRS = api\
-          tests
+EXTRA_DIST = show_changes.py
 
-CLEANFILES = *~\
-             *.idb\
-             *ilk\
-             *.obj\
-             *.pdb\
-             *.qm\
-             moc_*
-
+CLEANFILES = *~
 MAINTAINERCLEANFILES = *~\
-                       *.tar.gz\
-                       aclocal.m4\
-                       configure\
-                       Makefile.in\
-                       moc_*
+                       Makefile.in
