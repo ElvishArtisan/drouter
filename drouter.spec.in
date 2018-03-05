@@ -70,7 +70,8 @@ make
 %install
 rm -rf $RPM_BUILD_ROOT
 make install DESTDIR=$RPM_BUILD_ROOT
-mkdir -p $RPM_BUILD_ROOT/etc/drouter.conf.d
+mkdir -p $RPM_BUILD_ROOT/etc/drouter.d/maps
+mkdir -p $RPM_BUILD_ROOT/etc/drouter.d/scripts
 
 
 %post
@@ -115,7 +116,8 @@ rm -rf $RPM_BUILD_ROOT
 %{_datadir}/man/man1/dmap.1.gz
 /lib/systemd/system/drouter.service
 /lib/systemd/system/drouter.socket
-%dir /etc/drouter.conf.d/
+%dir /etc/drouter.d/maps
+%dir /etc/drouter.d/scripts
 %doc AUTHORS
 %doc ChangeLog
 %doc COPYING 

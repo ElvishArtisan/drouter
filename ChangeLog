@@ -232,3 +232,6 @@
 	* Moved the location of map files for Software Authority protocol
 	to '/etc/drouter.d/maps/'.
 	* Implemented a state script host in drouterd(8).
+2018-03-05 Fred Gleason <fredg@paravelsystems.com>
+	* Corrected the location of the configuration directories in
+	'drouter.spec.in'.
