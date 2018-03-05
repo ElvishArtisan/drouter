@@ -36,13 +36,13 @@ class Gpo:
     def __ne__(self,other):
         return not self.__eq__(other)
 
-    def state(self,line):
-        return self.code[line-1].lower()=="l"
-    def setState(self,line,state):
+    def bitState(self,line):
+        return self.code[line].lower()=="l"
+    def setBitState(self,line,state):
         if state:
-            self.code[line-1]="l"
+            self.code[line]="l"
         else:
-            self.code[line-1]="h"
+            self.code[line]="h"
 
     def __str__(self):
         return "slotNumber: "+str(self.slotNumber)+"\n"+"name: "+self.name+"\n"+"hostName: "+self.hostName+"\n"+"hostAddress: "+self.hostAddress+"\n"+"code: "+self.code+"\n"+"sourceAddress: "+self.sourceAddress+"\n"+"sourceSlot: "+str(self.sourceSlot)+"\n"

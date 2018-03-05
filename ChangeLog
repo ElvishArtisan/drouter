@@ -225,3 +225,6 @@
 2018-03-05 Fred Gleason <fredg@paravelsystems.com>
 	* Fixed a bug in the 'StateEngine' class that caused the change
 	callback to be suppressed if a delte callback had not been set.
+2018-03-05 Fred Gleason <fredg@paravelsystems.com>
+	* Changed the 'state()' and 'setState()' methods in the 'Gpi' and
+	'Gpo' classes to 'bitState()' and 'setBitState()' in the Python API.

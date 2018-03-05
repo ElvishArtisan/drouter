@@ -170,7 +170,6 @@ class StateEngine:
             del self.gpis[self.key(cmds[1],int(cmds[2]))]
             return
         if cmds[0]=="GPI":
-            print "GPI"
             oldgpi=self.gpis[self.key(cmds[1],int(cmds[2]))]
             self.gpis[self.key(cmds[1],int(cmds[2]))]=Drouter.Gpi.Gpi(cmds)
             if (self.change_callback!=None) and self.__loaded and oldgpi != self.gpis[self.key(cmds[1],int(cmds[2]))]:
