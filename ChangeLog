@@ -235,3 +235,5 @@
 2018-03-05 Fred Gleason <fredg@paravelsystems.com>
 	* Corrected the location of the configuration directories in
 	'drouter.spec.in'.
+2018-03-05 Fred Gleason <fredg@paravelsystems.com>
+	* Updated the dmap(1) man page.

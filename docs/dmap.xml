@@ -48,7 +48,7 @@
     When invoked with no arguments,
     <command>dmap</command><manvolnum>1</manvolnum>
     will read the maps in the
-    <computeroutput>/etc/drouter.conf.d</computeroutput> directory and
+    <computeroutput>/etc/drouter.d/maps</computeroutput> directory and
     print any problems found to STDERR.
   </para>
   </refsect1>
