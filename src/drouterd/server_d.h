@@ -91,6 +91,10 @@ class ServerD : public ServerNet
   void processSetGpioCrosspoint(int id,
 				const QHostAddress &gpo_hostaddr,int gpo_slot,
 				const QHostAddress &gpi_hostaddr,int gpi_slot);
+  void processSetGpoState(int id,const QHostAddress &gpo_hostaddr,int gpo_slot,
+			  const QString &code);
+  void processSetGpiState(int id,const QHostAddress &gpi_hostaddr,int gpi_slot,
+			  const QString &code);
 
  protected:
   void newConnection(int id,NetConnection *conn);

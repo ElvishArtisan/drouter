@@ -67,7 +67,14 @@ ProtocolD::ProtocolD(DRouter *router,int sock,QObject *parent)
 						   const QHostAddress &,int)),
 	  this,SLOT(processSetGpioCrosspointD(int,const QHostAddress &,int,
 					      const QHostAddress &,int)));
-
+  connect(d_server,SIGNAL(processSetGpoState(int,const QHostAddress &,int,
+					     const QString &)),
+	  this,SLOT(processSetGpoStateD(int,const QHostAddress &,int,
+					const QString &)));
+  connect(d_server,SIGNAL(processSetGpiState(int,const QHostAddress &,int,
+					     const QString &)),
+	  this,SLOT(processSetGpiStateD(int,const QHostAddress &,int,
+					const QString &)));
   d_server->setReady();
 }
 
@@ -388,6 +395,28 @@ void ProtocolD::processSetGpioCrosspointD(int id,
 					  int gpi_slot)
 {
   router()->setGpioCrosspoint(gpo_hostaddr,gpo_slot,gpi_hostaddr,gpi_slot);
+}
+
+
+void ProtocolD::processSetGpoStateD(int id,const QHostAddress &gpo_hostaddr,
+				    int gpo_slot,const QString &code)
+{
+  SyLwrpClient *gpo_lwrp;
+
+  if((gpo_lwrp=router()->node(gpo_hostaddr))!=NULL) {
+    gpo_lwrp->setGpoCode(gpo_slot,code);
+  }
+}
+
+
+void ProtocolD::processSetGpiStateD(int id,const QHostAddress &gpi_hostaddr,
+				    int gpi_slot,const QString &code)
+{
+  SyLwrpClient *gpi_lwrp;
+
+  if((gpi_lwrp=router()->node(gpi_hostaddr))!=NULL) {
+    gpi_lwrp->setGpiCode(gpi_slot,code);
+  }
 }
 
 

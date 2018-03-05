@@ -78,6 +78,18 @@ class dparser:
     def setGpioCrosspoint(self,out_host_addr,out_slot,in_host_addr,in_slot):
         self.__sock.send("SetGpioCrosspoint "+out_host_addr+" "+str(out_slot)+" "+in_host_addr+" "+str(in_slot)+"\r\n")
 
+    def setGpoCode(self,host_addr,slot,code):
+        self.__sock.send("SetGpoState "+host_addr+" "+str(slot)+" "+code+"\r\n")
+
+    def setGpoBitState(self,host_addr,slot,bit,state):
+        self.setGpoCode(host_addr,slot,self.__bitStateCode(bit,state))
+
+    def setGpiCode(self,host_addr,slot,code):
+        self.__sock.send("SetGpiState "+host_addr+" "+str(slot)+" "+code+"\r\n")
+
+    def setGpiBitState(self,host_addr,slot,bit,state):
+        self.setGpiCode(host_addr,slot,self.__bitStateCode(bit,state))
+
     def start(self,hostname):
         self.__conn=self.__sock.connect((hostname,23883))
         self.__accum=""
@@ -223,3 +235,15 @@ class dparser:
                 if self.ready_callback!=None:
                     self.ready_callback(self)
             return;
+
+    def __bitStateCode(self,bit,state):
+        code=""
+        for i in range(0,bit):
+            code+="x"
+        if state:
+            code+="l"
+        else:
+            code+="h"
+        for i in range(bit+1,5):
+            code+="x"
+        return code

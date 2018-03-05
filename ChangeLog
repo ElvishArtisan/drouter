@@ -207,3 +207,8 @@
 	* Added 'setCrosspoint()', 'clearCrossPoint()', 'setGpioCrosspoint()'
 	and 'clearGpioCrosspoint()' methods to the 'dparser' class in
 	the Python API.
+2018-03-04 Fred Gleason <fredg@paravelsystems.com>
+	* Implemented 'SetGpoState' and 'SetGpiState' Protocol D commands.
+	* Added 'setGpoCode(), 'setGpoBitState()', 'setGpiCode()' and
+	'setGpiBitState()' methods to the 'dparser' class in the
+	Python API.

@@ -304,5 +304,35 @@ void ServerD::processCommand(int id,const SyAString &cmd)
       }      
     }
   }
+  if(cmds.at(0).toLower()=="setgpostate") {
+    if(cmds.size()==4) {
+      bool ok=false;
+      QHostAddress gpo_hostaddr(cmds.at(1));
+      if(!gpo_hostaddr.isNull()) {
+	int gpo_slot=cmds.at(2).toInt(&ok);
+	if(ok&&(gpo_slot>=0)) {
+	  QString code=cmds.at(3);
+	  emit processSetGpoState(id,gpo_hostaddr,gpo_slot,code);
+	  send("ok\r\n",id);
+	  return;
+	}
+      }
+    }
+  }
+  if(cmds.at(0).toLower()=="setgpistate") {
+    if(cmds.size()==4) {
+      bool ok=false;
+      QHostAddress gpi_hostaddr(cmds.at(1));
+      if(!gpi_hostaddr.isNull()) {
+	int gpi_slot=cmds.at(2).toInt(&ok);
+	if(ok&&(gpi_slot>=0)) {
+	  QString code=cmds.at(3);
+	  emit processSetGpiState(id,gpi_hostaddr,gpi_slot,code);
+	  send("ok\r\n",id);
+	  return;
+	}
+      }
+    }
+  }
   send("error\r\n",id);
 }

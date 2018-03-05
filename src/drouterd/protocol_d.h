@@ -55,6 +55,10 @@ class ProtocolD : public Protocol
   void processSetGpioCrosspointD(int id,
 				 const QHostAddress &gpo_hostaddr,int gpo_slot,
 				 const QHostAddress &gpi_hostaddr,int gpi_slot);
+  void processSetGpoStateD(int id,const QHostAddress &gpo_hostaddr,int gpo_slot,
+			   const QString &code);
+  void processSetGpiStateD(int id,const QHostAddress &gpi_hostaddr,int gpi_slot,
+			   const QString &code);
 
  protected:
   void processAddedNode(const SyNode &node);

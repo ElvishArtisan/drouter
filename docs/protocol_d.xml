@@ -1341,6 +1341,103 @@
       </varlistentry>
     </variablelist>
   </sect2>
+
+  <sect2 id="sect.commands.set_gpo_state">
+    <title>Set GPO State</title>
+    <para>
+      <command>SetGpoState 
+      <replaceable>gpo-host-addr</replaceable>
+      <replaceable>gpo-slot</replaceable>
+      <replaceable>code</replaceable>
+      </command>
+    </para>
+    <para>
+      Set the state of a GPO device.
+    </para>
+    <variablelist>
+      <varlistentry>
+	<term>
+	  <replaceable>gpo-host-addr</replaceable>
+	</term>
+	<listitem>
+	  <para>
+	    The IPv4 address of the GPO node, in dotted-quad notation.
+	  </para>
+	</listitem>
+      </varlistentry>
+      <varlistentry>
+	<term>
+	  <replaceable>gpo-slot</replaceable>
+	</term>
+	<listitem>
+	  <para>
+	    The slot position number of the GPO on the parent node
+	    (zero-based).
+	  </para>
+	</listitem>
+      </varlistentry>
+      <varlistentry>
+	<term>
+	  <replaceable>code</replaceable>
+	</term>
+	<listitem>
+	  <para>
+	    A string representing the state of the GPO lines,
+	    in the format <computeroutput>xxxxx</computeroutput>.
+	  </para>
+	</listitem>
+      </varlistentry>
+    </variablelist>
+  </sect2>
+
+  <sect2 id="sect.commands.set_virtual_gpi_state">
+    <title>Set Virtual GPI State</title>
+    <para>
+      <command>SetGpiState 
+      <replaceable>gpi-host-addr</replaceable>
+      <replaceable>gpi-slot</replaceable>
+      <replaceable>code</replaceable>
+      </command>
+    </para>
+    <para>
+      Set the state of a virtual GPI device.
+    </para>
+    <variablelist>
+      <varlistentry>
+	<term>
+	  <replaceable>gpi-host-addr</replaceable>
+	</term>
+	<listitem>
+	  <para>
+	    The IPv4 address of the virtual GPI node, in dotted-quad notation.
+	  </para>
+	</listitem>
+      </varlistentry>
+      <varlistentry>
+	<term>
+	  <replaceable>gpi-slot</replaceable>
+	</term>
+	<listitem>
+	  <para>
+	    The slot position number of the virtual GPI on the parent node
+	    (zero-based).
+	  </para>
+	</listitem>
+      </varlistentry>
+      <varlistentry>
+	<term>
+	  <replaceable>code</replaceable>
+	</term>
+	<listitem>
+	  <para>
+	    A string representing the state of the GPI lines,
+	    in the format <computeroutput>xxxxx</computeroutput>.
+	  </para>
+	</listitem>
+      </varlistentry>
+    </variablelist>
+  </sect2>
+
 </sect1>
 
 </article>
