@@ -222,3 +222,6 @@
 	* Renamed the 'dparser' Python class in 'StateEngine'.
 2018-03-05 Fred Gleason <fredg@paravelsystems.com>
 	* Added a 'python' subpackage.
+2018-03-05 Fred Gleason <fredg@paravelsystems.com>
+	* Fixed a bug in the 'StateEngine' class that caused the change
+	callback to be suppressed if a delte callback had not been set.

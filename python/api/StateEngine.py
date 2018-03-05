@@ -170,9 +170,10 @@ class StateEngine:
             del self.gpis[self.key(cmds[1],int(cmds[2]))]
             return
         if cmds[0]=="GPI":
+            print "GPI"
             oldgpi=self.gpis[self.key(cmds[1],int(cmds[2]))]
             self.gpis[self.key(cmds[1],int(cmds[2]))]=Drouter.Gpi.Gpi(cmds)
-            if (self.delete_callback!=None) and self.__loaded and oldgpi != self.gpis[self.key(cmds[1],int(cmds[2]))]:
+            if (self.change_callback!=None) and self.__loaded and oldgpi != self.gpis[self.key(cmds[1],int(cmds[2]))]:
                 self.change_callback(self,"GPI",oldgpi,self.gpis[self.key(cmds[1],int(cmds[2]))])
             return
 
@@ -190,7 +191,7 @@ class StateEngine:
         if cmds[0]=="GPO":
             oldgpo=self.gpos[self.key(cmds[1],int(cmds[2]))]
             self.gpos[self.key(cmds[1],int(cmds[2]))]=Drouter.Gpo.Gpo(cmds)
-            if (self.delete_callback!=None) and self.__loaded and oldgpo != self.gpos[self.key(cmds[1],int(cmds[2]))]:
+            if (self.change_callback!=None) and self.__loaded and oldgpo != self.gpos[self.key(cmds[1],int(cmds[2]))]:
                 self.change_callback(self,"GPO",oldgpo,self.gpos[self.key(cmds[1],int(cmds[2]))])
             return
 
