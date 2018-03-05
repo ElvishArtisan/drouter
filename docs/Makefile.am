@@ -2,7 +2,7 @@
 ##
 ## docs/Makefile.am
 ##
-## (C) Copyright 2017 Fred Gleason <fredg@paravelsystems.com>
+## (C) Copyright 2017-2018 Fred Gleason <fredg@paravelsystems.com>
 ##
 ##   This program is free software; you can redistribute it and/or modify
 ##   it under the terms of the GNU General Public License version 2 as
@@ -35,6 +35,8 @@ all-local:	buttonpanel.1\
                 buttonpanel.xml\
                 dmap.1\
                 dmap.xml\
+                drouterd.8\
+                drouterd.xml\
                 outputpanel.1\
                 outputpanel.xml\
                 xypanel.1\
@@ -46,6 +48,8 @@ EXTRA_DIST = buttonpanel.1\
              buttonpanel.xml\
              dmap.1\
              dmap.xml\
+             drouterd.8\
+             drouterd.xml\
              outputpanel.1\
              outputpanel.xml\
              xypanel.1\
@@ -56,6 +60,7 @@ EXTRA_DIST = buttonpanel.1\
 
 man_MANS = buttonpanel.1\
            dmap.1\
+           drouterd.8\
            outputpanel.1\
            xypanel.1
 

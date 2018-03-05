@@ -114,6 +114,7 @@ rm -rf $RPM_BUILD_ROOT
 %{_bindir}/dmap
 %{_sbindir}/drouterd
 %{_datadir}/man/man1/dmap.1.gz
+%{_datadir}/man/man8/drouterd.8.gz
 /lib/systemd/system/drouter.service
 /lib/systemd/system/drouter.socket
 %dir /etc/drouter.d/maps

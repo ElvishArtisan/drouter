@@ -1,0 +1,142 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<refentry id="stdin" xmlns="http://docbook.org/ns/docbook" version="5.0">
+  <!--
+      Header
+  -->
+  <refmeta>
+    <refentrytitle>drouterd</refentrytitle>
+    <manvolnum>8</manvolnum>
+    <refmiscinfo class='source'>March 2018</refmiscinfo>
+    <refmiscinfo class='manual'>Linux Audio Manual</refmiscinfo>
+  </refmeta>
+  <refnamediv>
+    <refname>drouterd</refname>
+    <refpurpose>Service daemon for the Drouter system</refpurpose>
+  </refnamediv>
+  <info>
+    <author>
+      <personname>
+	<firstname>Fred</firstname>
+	<surname>Gleason</surname>
+	<email>fredg@paravelsystems.com</email>
+      </personname>
+      <contrib>Application Author</contrib>
+    </author>
+  </info>
+
+  <!--
+      Body
+  -->
+  <refsynopsisdiv id='synopsis'>
+    <cmdsynopsis>
+      <command>drouterd</command>
+      <arg choice='opt'><replaceable>OPTIONS</replaceable></arg>
+      <sbr/>
+    </cmdsynopsis>
+  </refsynopsisdiv>
+
+  <refsect1 id='description'><title>Description</title>
+  <para>
+    <command>drouterd</command><manvolnum>8</manvolnum> is the primary
+    service daemon for the Drouter system. When started (typically by
+    SystemD at boot time), it listens for Livewire multicast advertisements
+    on UDP port <computeroutput>4001</computeroutput>, then enumerating
+    any devices found via LWRP. The resulting list of devices can then
+    be queried and commanded via the <computeroutput>Protocol D</computeroutput>
+    interface at TCP port <computeroutput>23883</computeroutput> and
+    (optionally) <computeroutput>Software Authority Protocol</computeroutput>
+    at TCP port <computeroutput>9500</computeroutput>.
+  </para>
+  <para>
+    <command>drouterd</command><manvolnum>8</manvolnum> also includes a
+    full-featured Python scripting engine, permitting the creation of
+    &quot;state scripts&quot;, mini-programs that can monitor and react to
+    changes in configuration and state of objects on the Livewire network.
+  </para>
+  </refsect1>
+
+  <refsect1 id='options'><title>Options</title>
+  <variablelist remap='TP'>
+    <varlistentry>
+      <term>
+	<option>--help</option>
+      </term>
+      <listitem>
+	<para>
+	  Print a short usage message and then exit.
+	</para>
+      </listitem>
+    </varlistentry>
+  </variablelist>
+
+  <variablelist remap='TP'>
+    <varlistentry>
+      <term>
+	<option>--no-scripts</option>
+      </term>
+      <listitem>
+	<para>
+	  Do not start any state scripts found in
+	  <userinput>/etc/drouter.d/scripts</userinput>. Mostly useful
+	  for debugging.
+	</para>
+      </listitem>
+    </varlistentry>
+  </variablelist>
+
+  <variablelist remap='TP'>
+    <varlistentry>
+      <term>
+	<option>--version</option>
+      </term>
+      <listitem>
+	<para>
+	  Print the version string and then exit.
+	</para>
+      </listitem>
+    </varlistentry>
+  </variablelist>
+
+  </refsect1>
+
+  <refsect1 id='configuration'><title>Configuration</title>
+  <para>
+    Configuration of <command>drouterd</command><manvolnum>8</manvolnum>
+    is done by means of textual configuration files placed in various
+    subdirectories below <userinput>/etc/drouter.d/</userinput>.
+    These files are read by
+    <command>drouterd</command><manvolnum>8</manvolnum> upon startup
+    as well as upon reception of a <userinput>SIGHUP</userinput>.
+  </para>
+  <refsect2>
+    <title>State Scripts</title>
+    <para>
+      Python state scripts should be placed in
+      <userinput>/etc/drouter.d/scripts/</userinput>, with each script
+      named with a <userinput>.py</userinput> extension and set with
+      mode <userinput>0755</userinput>.
+    </para>
+  </refsect2>
+
+  <refsect2>
+    <title>Software Authority Routers</title>
+    <para>
+      Maps for generating routers to be exported via Software Authority
+      Protocol should be placed in <userinput>/etc/drouter.d/maps/</userinput>,
+      with each map file named with a <userinput>.map</userinput> extension.
+      See the <command>dmap</command><manvolnum>1</manvolnum> man page for
+      information on generating such maps.
+    </para>
+  </refsect2>
+    
+  </refsect1>
+
+  <refsect1 id='see_also'><title>See Also</title>
+  <para>
+  <citerefentry>
+    <refentrytitle>dmap</refentrytitle><manvolnum>1</manvolnum>
+  </citerefentry>
+  </para>
+  </refsect1>
+</refentry>
+

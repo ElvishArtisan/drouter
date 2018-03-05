@@ -237,3 +237,5 @@
 	'drouter.spec.in'.
 2018-03-05 Fred Gleason <fredg@paravelsystems.com>
 	* Updated the dmap(1) man page.
+2018-03-05 Fred Gleason <fredg@paravelsystems.com>
+	* Added a drouterd(8) man page.
