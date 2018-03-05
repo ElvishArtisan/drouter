@@ -228,3 +228,7 @@
 2018-03-05 Fred Gleason <fredg@paravelsystems.com>
 	* Changed the 'state()' and 'setState()' methods in the 'Gpi' and
 	'Gpo' classes to 'bitState()' and 'setBitState()' in the Python API.
+2018-03-05 Fred Gleason <fredg@paravelsystems.com>
+	* Moved the location of map files for Software Authority protocol
+	to '/etc/drouter.d/maps/'.
+	* Implemented a state script host in drouterd(8).

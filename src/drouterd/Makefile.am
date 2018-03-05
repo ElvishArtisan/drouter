@@ -36,6 +36,7 @@ dist_drouterd_SOURCES = drouter.cpp drouter.h\
                         protocol_d.cpp protocol_d.h\
                         protocol_sa.cpp protocol_sa.h\
                         protocolfactory.cpp protocolfactory.h\
+                        scripthost.cpp scripthost.h\
                         server_d.cpp server_d.h\
                         server_sa.cpp server_sa.h\
                         server_net.cpp server_net.h
@@ -46,6 +47,7 @@ nodist_drouterd_SOURCES = endpointmap.cpp endpointmap.h\
                           moc_protocol.cpp\
                           moc_protocol_d.cpp\
                           moc_protocol_sa.cpp\
+                          moc_scripthost.cpp\
                           moc_server_d.cpp\
                           moc_server_sa.cpp\
                           moc_server_net.cpp

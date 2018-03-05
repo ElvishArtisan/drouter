@@ -1,8 +1,8 @@
-// drouterd.h
+// scripthost.h
 //
-// Dynamic router service for Livewire networks
+// Run a state script.
 //
-//   (C) Copyright 2017 Fred Gleason <fredg@paravelsystems.com>
+//   (C) Copyright 2018 Fred Gleason <fredg@paravelsystems.com>
 //
 //   This program is free software; you can redistribute it and/or modify
 //   it under the terms of the GNU General Public License version 2 as
@@ -18,39 +18,38 @@
 //   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
 //
 
-#ifndef DROUTERD_H
-#define DROUTERD_H
+#ifndef SCRIPTHOST_H
+#define SCRIPTHOST_H
 
-#include <QList>
 #include <QObject>
+#include <QProcess>
+#include <QStringList>
+#include <QTimer>
 
-#include <sy/synode.h>
+#define SCRIPTHOST_RESTART_INTERVAL 1000
 
-#include "drouter.h"
-#include "protocol.h"
-#include "scripthost.h"
-
-#define DROUTERD_SCRIPTS_DIRECTORY QString("/etc/drouter.d/scripts")
-#define DROUTERD_SCRIPTS_FILTER QString("*.py")
-#define DROUTERD_USAGE "[--no-scripts]\n"
-
-class MainObject : public QObject
+class ScriptHost : public QObject
 {
  Q_OBJECT;
  public:
-  MainObject(QObject *parent=0);
+  ScriptHost(const QString &exec,QObject *parent=0);
+  ~ScriptHost();
+
+ public slots:
+  void start();
+  void terminate();
+  void kill();
 
  private slots:
-  void scriptsData();
-  void signalData();
+  void finishedData(int exit_code,QProcess::ExitStatus status);
+  void errorData(QProcess::ProcessError err);
 
  private:
-  QList<Protocol *> main_protocols;
-  QList<ScriptHost *> main_scripts;
-  DRouter *main_drouter;
-  QTimer *main_script_timer;
-  QTimer *main_signal_timer;
+  QProcess *script_process;
+  QStringList script_arguments;
+  QTimer *script_restart_timer;
+  bool script_restart;
 };
 
 
-#endif  // DROUTERD_H
+#endif  // SCRIPTHOST_H

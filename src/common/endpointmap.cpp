@@ -357,7 +357,7 @@ bool EndPointMap::loadSet(QMap<int,EndPointMap *> *maps,QStringList *msgs)
 
   QStringList unused_lines;
   QStringList filter;
-  filter.push_back("*.conf");
+  filter.push_back(ENDPOINTMAP_MAP_FILTER);
   QStringList mapfiles=
     dir.entryList(filter,QDir::Files|QDir::Readable,QDir::Name);
   for(int i=0;i<mapfiles.size();i++) {
