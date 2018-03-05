@@ -2,7 +2,7 @@
 
 # show_changes.py
 #
-# Use the drouter Python API to show changes in a Livewire network in realtime.
+# Drouter state script to show changes in a Livewire network in realtime.
 #
 # (C) Copyright 2018 Fred Gleason <fredg@paravelsystems.com>
 #
@@ -20,29 +20,29 @@
 #   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
 #
 
-import drouter.dparser
+import Drouter.StateEngine
 
 # ############################################################################
 #
 # Callbacks
 #
-#  These are called by the 'dparser' object in response to specific events.
+#  These are called by the 'StateEngine' object in response to specific events.
 #
 
 #
-# Called immediately after the 'dparser' object has completed initialization.
-# This is the place to do any needed startup initialization (create objects,
-# open connections, etc).
+# Called immediately after the 'StateEngine' object has completed
+# initialization. This is the place to do any needed startup initialization
+# (create objects, open connections, etc).
 #
-def RouterReady(dparser):
-    print "RouterReady() ran!"
+def EngineReady(engine):
+    print "EngineReady() ran!"
 
 
 #
 # Called every time a new object -- a node, source, destination or GPIO
 # resource -- is added to the system.
 #
-def ObjectAdded(dparser,type,object):
+def ObjectAdded(engine,type,object):
     if type=="NODE":
         print "ADDED NODE"
         print object
@@ -67,7 +67,7 @@ def ObjectAdded(dparser,type,object):
 # Called immediately before an object -- a node, source, destination or GPIO
 # resource -- is removed from the system.
 #
-def ObjectDeleted(dparser,type,object):
+def ObjectDeleted(engine,type,object):
     if type=="NODE":
         print "DELETED NODE"
         print object
@@ -92,7 +92,7 @@ def ObjectDeleted(dparser,type,object):
 # Called whenever an object -- a node, source, destination or GPIO resource --
 # reports a change to its configuration or state.
 #
-def ObjectChanged(dparser,type,old,new):
+def ObjectChanged(engine,type,old,new):
     if type=="NODE":
         print "OLD NODE"
         print old
@@ -126,28 +126,28 @@ def ObjectChanged(dparser,type,old,new):
 #
 # Called whenever an audio alarm -- a SILENCE or a CLIP -- changes state.
 #
-def Alarm(dparser,alarm):
+def Alarm(engine,alarm):
     print "ALARM"
     print alarm 
 
 # ############################################################################
 #
-# Main Loop
+# Event Loop
 #
-# Create a 'dparser' object to talk to the drouter service.
+# Create a 'StateEngine' object to talk to the drouter service.
 #
-parser=drouter.dparser.dparser()
+engine=Drouter.StateEngine.StateEngine()
 
 #
 # Set the callbacks so we receive notifications of changes.
 #
-parser.setReadyCallback(RouterReady)
-parser.setAddCallback(ObjectAdded)
-parser.setDeleteCallback(ObjectDeleted)
-parser.setChangeCallback(ObjectChanged)
-parser.setAlarmCallback(Alarm)
+engine.setReadyCallback(EngineReady)
+engine.setAddCallback(ObjectAdded)
+engine.setDeleteCallback(ObjectDeleted)
+engine.setChangeCallback(ObjectChanged)
+engine.setAlarmCallback(Alarm)
 
 #
-# Start the loop, giving the hostname/address of the drouter service.
+# Start the engine, giving the hostname/address of the Drouter service.
 #
-parser.start("localhost")
+engine.start("localhost")

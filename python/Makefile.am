@@ -21,7 +21,7 @@
 ## Use automake to process this into a Makefile.in
 
 SUBDIRS = api\
-          tests
+          examples
 
 CLEANFILES = *~\
              *.idb\

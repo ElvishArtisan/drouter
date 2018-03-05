@@ -1,6 +1,6 @@
 ## automake.am
 ##
-## Automake.am for drouter python tests
+## Automake.am for drouter example status scripts
 ##
 ##   (C) Copyright 2018 Fred Gleason <fredg@paravelsystems.com>
 ##

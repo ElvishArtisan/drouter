@@ -1,6 +1,6 @@
 #! /usr/bin/python
 
-# node.py
+# Node.py
 #
 # Container class for a Protocol D Node
 #
@@ -20,7 +20,7 @@
 #   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
 #
 
-class node:
+class Node:
     def __init__(self,cmds):
         self.hostName=cmds[2]
         self.hostAddress=cmds[1]

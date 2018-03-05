@@ -20,28 +20,28 @@
 ## Use automake to process this into a Makefile.in
 
 install-exec-am:	
-	mkdir -p $(DESTDIR)@libexecdir@/drouter
-	cp __init__.py $(DESTDIR)@libexecdir@/drouter/
-	cp alarm.py $(DESTDIR)@libexecdir@/drouter/
-	cp destination.py $(DESTDIR)@libexecdir@/drouter/
-	cp dparser.py $(DESTDIR)@libexecdir@/drouter/
-	cp gpi.py $(DESTDIR)@libexecdir@/drouter/
-	cp gpo.py $(DESTDIR)@libexecdir@/drouter/
-	cp node.py $(DESTDIR)@libexecdir@/drouter/
-	cp source.py $(DESTDIR)@libexecdir@/drouter/
-	chmod 755 $(DESTDIR)@libexecdir@/drouter/*.py
+	mkdir -p $(DESTDIR)@libexecdir@/Drouter
+	cp __init__.py $(DESTDIR)@libexecdir@/Drouter/
+	cp Alarm.py $(DESTDIR)@libexecdir@/Drouter/
+	cp Destination.py $(DESTDIR)@libexecdir@/Drouter/
+	cp Gpi.py $(DESTDIR)@libexecdir@/Drouter/
+	cp Gpo.py $(DESTDIR)@libexecdir@/Drouter/
+	cp Node.py $(DESTDIR)@libexecdir@/Drouter/
+	cp Source.py $(DESTDIR)@libexecdir@/Drouter/
+	cp StateEngine.py $(DESTDIR)@libexecdir@/Drouter/
+	chmod 755 $(DESTDIR)@libexecdir@/Drouter/*.py
 
 uninstall-local:	
-	rm -rf $(DESTDIR)@libexecdir@/drouter
+	rm -rf $(DESTDIR)@libexecdir@/Drouter
 
 EXTRA_DIST = __init__.py\
-             alarm.py\
-             destination.py\
-             dparser.py\
-             gpi.py\
-             gpo.py\
-             node.py\
-             source.py
+             Alarm.py\
+             Destination.py\
+             Gpi.py\
+             Gpo.py\
+             Node.py\
+             Source.py\
+             StateEngine.py
 
 CLEANFILES = *~
 MAINTAINERCLEANFILES = *~\

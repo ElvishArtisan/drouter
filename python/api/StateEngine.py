@@ -1,6 +1,6 @@
 #! /usr/bin/python
 
-# dparser.py
+# StateEngine.py
 #
 # Protocol D parser for drouter
 #
@@ -22,14 +22,14 @@
 
 import socket
 
-import drouter.alarm
-import drouter.destination
-import drouter.gpi
-import drouter.gpo
-import drouter.node
-import drouter.source
+import Drouter.Alarm
+import Drouter.Destination
+import Drouter.Gpi
+import Drouter.Gpo
+import Drouter.Node
+import Drouter.Source
 
-class dparser:
+class StateEngine:
     def __init__(self):
         self.ready_callback=None
         self.add_callback=None
@@ -111,7 +111,7 @@ class dparser:
 #       print self.__accum
         cmds=self.__accum.split("\t")
         if cmds[0]=="NODEADD":
-            self.nodes[cmds[1]]=drouter.node.node(cmds)
+            self.nodes[cmds[1]]=Drouter.Node.Node(cmds)
             if(self.add_callback!=None) and self.__loaded:
                 self.add_callback(self,"NODE",self.nodes[cmds[1]])
             return
@@ -123,7 +123,7 @@ class dparser:
             return
 
         if cmds[0]=="SRCADD":
-            self.sources[self.key(cmds[1],int(cmds[2]))]=drouter.source.source(cmds)
+            self.sources[self.key(cmds[1],int(cmds[2]))]=Drouter.Source.Source(cmds)
             if(self.add_callback!=None) and self.__loaded:
                 self.add_callback(self,"SRC",self.sources[self.key(cmds[1],int(cmds[2]))])
             return
@@ -135,13 +135,13 @@ class dparser:
             return
         if cmds[0]=="SRC":
             oldsrc=self.sources[self.key(cmds[1],int(cmds[2]))]
-            self.sources[self.key(cmds[1],int(cmds[2]))]=drouter.source.source(cmds)
+            self.sources[self.key(cmds[1],int(cmds[2]))]=Drouter.Source.Source(cmds)
             if (self.change_callback!=None) and self.__loaded and oldsrc != self.sources[self.key(cmds[1],int(cmds[2]))]:
                 self.change_callback(self,"SRC",oldsrc,
                                      self.sources[self.key(cmds[1],int(cmds[2]))])
 
         if cmds[0]=="DSTADD":
-            self.destinations[self.key(cmds[1],int(cmds[2]))]=drouter.destination.destination(cmds);
+            self.destinations[self.key(cmds[1],int(cmds[2]))]=Drouter.Destination.Destination(cmds);
             if(self.add_callback!=None) and self.__loaded:
                 self.add_callback(self,"DST",self.destinations[self.key(cmds[1],int(cmds[2]))])
             return
@@ -153,13 +153,13 @@ class dparser:
             return
         if cmds[0]=="DST":
             olddst=self.destinations[self.key(cmds[1],int(cmds[2]))]
-            self.destinations[self.key(cmds[1],int(cmds[2]))]=drouter.destination.destination(cmds)
+            self.destinations[self.key(cmds[1],int(cmds[2]))]=Drouter.Destination.Destination(cmds)
             if (self.change_callback!=None) and self.__loaded and olddst != self.destinations[self.key(cmds[1],int(cmds[2]))]:
                 self.change_callback(self,"DST",olddst,
                                      self.destinations[self.key(cmds[1],int(cmds[2]))])
 
         if cmds[0]=="GPIADD":
-            self.gpis[self.key(cmds[1],int(cmds[2]))]=drouter.gpi.gpi(cmds)
+            self.gpis[self.key(cmds[1],int(cmds[2]))]=Drouter.Gpi.Gpi(cmds)
             if(self.add_callback!=None) and self.__loaded:
                 self.add_callback(self,"GPI",self.gpis[self.key(cmds[1],int(cmds[2]))])
             return
@@ -171,13 +171,13 @@ class dparser:
             return
         if cmds[0]=="GPI":
             oldgpi=self.gpis[self.key(cmds[1],int(cmds[2]))]
-            self.gpis[self.key(cmds[1],int(cmds[2]))]=drouter.gpi.gpi(cmds)
+            self.gpis[self.key(cmds[1],int(cmds[2]))]=Drouter.Gpi.Gpi(cmds)
             if (self.delete_callback!=None) and self.__loaded and oldgpi != self.gpis[self.key(cmds[1],int(cmds[2]))]:
                 self.change_callback(self,"GPI",oldgpi,self.gpis[self.key(cmds[1],int(cmds[2]))])
             return
 
         if cmds[0]=="GPOADD":
-            self.gpos[self.key(cmds[1],int(cmds[2]))]=drouter.gpo.gpo(cmds)
+            self.gpos[self.key(cmds[1],int(cmds[2]))]=Drouter.Gpo.Gpo(cmds)
             if(self.add_callback!=None) and self.__loaded:
                 self.add_callback(self,"GPO",self.gpos[self.key(cmds[1],int(cmds[2]))])
             return
@@ -189,14 +189,14 @@ class dparser:
             return
         if cmds[0]=="GPO":
             oldgpo=self.gpos[self.key(cmds[1],int(cmds[2]))]
-            self.gpos[self.key(cmds[1],int(cmds[2]))]=drouter.gpo.gpo(cmds)
+            self.gpos[self.key(cmds[1],int(cmds[2]))]=Drouter.Gpo.Gpo(cmds)
             if (self.delete_callback!=None) and self.__loaded and oldgpo != self.gpos[self.key(cmds[1],int(cmds[2]))]:
                 self.change_callback(self,"GPO",oldgpo,self.gpos[self.key(cmds[1],int(cmds[2]))])
             return
 
         if cmds[0]=="SILENCE" or cmds[0]=="CLIP":
             if (self.alarm_callback!=None) and self.__loaded:
-                self.alarm_callback(self,drouter.alarm.alarm(cmds))
+                self.alarm_callback(self,Drouter.Alarm.Alarm(cmds))
             return
 
         if cmds[0]=="ok":

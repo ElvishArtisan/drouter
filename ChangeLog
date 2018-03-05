@@ -212,3 +212,11 @@
 	* Added 'setGpoCode(), 'setGpoBitState()', 'setGpiCode()' and
 	'setGpiBitState()' methods to the 'dparser' class in the
 	Python API.
+2018-03-05 Fred Gleason <fredg@paravelsystems.com>
+	* Renamed the 'drouter' Python module to 'Drouter'.
+	* Renamed the 'alarm' Python class to 'Alarm'.
+	* Renamed the 'destination' Python class to 'Destination'.
+	* Renamed the 'gpi' Python class to 'Gpi'.
+	* Renamed the 'gpo' Python class to 'Gpo'.
+	* Renamed the 'source' Python class to 'Source'.
+	* Renamed the 'dparser' Python class in 'StateEngine'.

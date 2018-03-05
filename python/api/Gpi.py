@@ -1,6 +1,6 @@
 #! /usr/bin/python
 
-# gpi.py
+# Gpi.py
 #
 # Container class for a Protocol D GPI
 #
@@ -20,7 +20,7 @@
 #   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
 #
 
-class gpi:
+class Gpi:
     def __init__(self,cmds):
         self.slotNumber=int(cmds[2])
         self.hostName=cmds[3]

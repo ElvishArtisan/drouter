@@ -1,8 +1,8 @@
 #! /usr/bin/python
 
-# alarm.py
+# Source.py
 #
-# Container class for a Protocol D Alarm
+# Container class for a Protocol D Source
 #
 #   (C) Copyright 2018 Fred Gleason <fredg@paravelsystems.com>
 #
@@ -20,20 +20,22 @@
 #   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
 #
 
-class alarm:
+class Source:
     def __init__(self,cmds):
-        self.event=cmds[0]
         self.slotNumber=cmds[2]
+        self.name=cmds[5]
         self.hostAddress=cmds[1]
-        self.port=cmds[3]
-        self.channel=cmds[4]
-        self.state=cmds[5]=="1"
+        self.hostName=cmds[3]
+        self.streamAddress=cmds[4]
+        self.streamEnabled=cmds[6]=="1"
+        self.channels=int(cmds[7])
+        self.blockSize=int(cmds[8])
 
     def __eq__(self,other):
-        return self.event==other.event and self.slotNumber==other.slotNumber and self.hostAddress==other.hostAddress and self.port==other.port and self.channel==other.channel and self.state==other.state
+        return self.slotNumber==other.slotNumber and self.name==other.name and self.hostAddress==other.hostAddress and self.hostName==other.hostName and self.streamAddress==other.streamAddress and self.streamEnabled==other.streamEnabled and self.channels==other.channels and self.blockSize==other.blockSize
 
     def __ne__(self,other):
         return not self.__eq__(other)
 
     def __str__(self):
-        return "event: "+self.event+"\n"+"slotNumber: "+str(self.slotNumber)+"\n"+"hostAddress: "+self.hostAddress+"\n"+"port: "+self.port+"\n"+"channel: "+str(self.channel)+"\n"+"state: "+str(self.state)+"\n"
+        return "slotNumber: "+str(self.slotNumber)+"\n"+"name: "+self.name+"\n"+"hostName: "+self.hostName+"\n"+"hostAddress: "+self.hostAddress+"\n"+"streamAddress: "+self.streamAddress+"\n"+"streamEnabled: "+str(self.streamEnabled)+"\n"+"channels: "+str(self.channels)+"\n"+"blockSize: "+str(self.blockSize)+"\n"
