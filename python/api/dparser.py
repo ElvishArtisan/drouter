@@ -66,6 +66,18 @@ class dparser:
     def setAlarmCallback(self,cb):
         self.alarm_callback=cb
 
+    def clearCrosspoint(self,out_host_addr,out_slot):
+        self.__sock.send("ClearCrosspoint "+out_host_addr+" "+str(out_slot)+"\r\n")
+        
+    def setCrosspoint(self,out_host_addr,out_slot,in_host_addr,in_slot):
+        self.__sock.send("SetCrosspoint "+out_host_addr+" "+str(out_slot)+" "+in_host_addr+" "+str(in_slot)+"\r\n")
+
+    def clearGpioCrosspoint(self,out_host_addr,out_slot):
+        self.__sock.send("ClearGpioCrosspoint "+out_host_addr+" "+str(out_slot)+"\r\n")
+        
+    def setGpioCrosspoint(self,out_host_addr,out_slot,in_host_addr,in_slot):
+        self.__sock.send("SetGpioCrosspoint "+out_host_addr+" "+str(out_slot)+" "+in_host_addr+" "+str(in_slot)+"\r\n")
+
     def start(self,hostname):
         self.__conn=self.__sock.connect((hostname,23883))
         self.__accum=""

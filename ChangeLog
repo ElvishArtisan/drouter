@@ -203,3 +203,7 @@
 2018-03-04 Fred Gleason <fredg@paravelsystems.com>
 	* Moved Python API components to 'python/api/'.
 	* Added 'show_changes.py' test in 'python/tests/'.
+2018-03-04 Fred Gleason <fredg@paravelsystems.com>
+	* Added 'setCrosspoint()', 'clearCrossPoint()', 'setGpioCrosspoint()'
+	and 'clearGpioCrosspoint()' methods to the 'dparser' class in
+	the Python API.
