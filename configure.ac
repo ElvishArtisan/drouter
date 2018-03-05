@@ -62,6 +62,11 @@ AC_SUBST(MOC,$MOC_NAME)
 PKG_CHECK_MODULES(SWITCHYARD,switchyard,[],[AC_MSG_ERROR([*** Switchyard not found ***])])
 
 #
+# Check for Python (Mandatory)
+#
+AM_PATH_PYTHON([2.7])
+
+#
 # Check for SystemD (Optional)
 #
 PKG_CHECK_MODULES(LIBSYSTEMD,libsystemd,[LIBSYSTEMD_FOUND=yes],[LIBSYSTEMD_FAILED=yes])

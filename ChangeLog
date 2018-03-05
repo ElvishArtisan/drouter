@@ -220,3 +220,5 @@
 	* Renamed the 'gpo' Python class to 'Gpo'.
 	* Renamed the 'source' Python class to 'Source'.
 	* Renamed the 'dparser' Python class in 'StateEngine'.
+2018-03-05 Fred Gleason <fredg@paravelsystems.com>
+	* Added a 'python' subpackage.
