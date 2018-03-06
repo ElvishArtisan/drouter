@@ -19,7 +19,12 @@
 ##
 ## Use automake to process this into a Makefile.in
 
-EXTRA_DIST = show_changes.py
+EXTRA_DIST = show_changes.py\
+             show_destinations.py\
+             show_gpis.py\
+             show_gpos.py\
+             show_nodes.py\
+             show_sources.py
 
 CLEANFILES = *~
 MAINTAINERCLEANFILES = *~\

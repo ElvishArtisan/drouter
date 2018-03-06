@@ -22,24 +22,46 @@
 
 class Gpi:
     def __init__(self,cmds):
-        self.slotNumber=int(cmds[2])
-        self.hostName=cmds[3]
-        self.hostAddress=cmds[1]
-        self.code=cmds[4]
+        self.__slotNumber=int(cmds[2])
+        self.__hostName=cmds[3]
+        self.__hostAddress=cmds[1]
+        self.__code=cmds[4]
+
+    def slotNumber(self):
+        """
+           Returns the slot number (integer, zero-based). 
+        """
+        return self.__slotNumber
+
+    def hostAddress(self):
+        """
+           Returns the IP address of the node (string).
+        """
+        return self.__hostAddress
+
+    def hostName(self):
+        """
+           Returns the host name of the node (string).
+        """
+        return self.__hostName
+
+    def code(self):
+        """
+           Returns the combined state in form 'xxxxx' (string).
+        """
+        return self.__code
+
+    def bitState(self,bit):
+        """
+           Returns the state of one bit (boolean).
+        """
+        return self.__code[bit].lower()=="l"
 
     def __eq__(self,other):
-        return self.slotNumber==other.slotNumber and self.hostName==other.hostName and self.hostAddress==other.hostAddress and self.code==other.code
+        return self.__slotNumber==other.__slotNumber and self.__hostName==other.__hostName and self.__hostAddress==other.__hostAddress and self.__code==other.__code
 
     def __ne__(self,other):
         return not self.__eq__(other)
 
-    def bitState(self,line):
-        return self.code[line].lower()=="l"
-    def setBitState(self,line,state):
-        if state:
-            self.code[line]="l"
-        else:
-            self.code[line]="h"
-
     def __str__(self):
-        return "slotNumber: "+str(self.slotNumber)+"\n"+"hostName: "+self.hostName+"\n"+"hostAddress: "+self.hostAddress+"\n"+"code: "+self.code+"\n"
+        return "slotNumber: "+str(self.__slotNumber)+"\n"+"hostName: "+self.__hostName+"\n"+"hostAddress: "+self.__hostAddress+"\n"+"code: "+self.__code+"\n"

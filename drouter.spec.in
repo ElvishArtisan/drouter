@@ -72,7 +72,16 @@ rm -rf $RPM_BUILD_ROOT
 make install DESTDIR=$RPM_BUILD_ROOT
 mkdir -p $RPM_BUILD_ROOT/etc/drouter.d/maps
 mkdir -p $RPM_BUILD_ROOT/etc/drouter.d/scripts
-
+mkdir -p $RPM_BUILD_ROOT/%{_datadir}/doc/drouter-%{version}
+cp AUTHORS $RPM_BUILD_ROOT/%{_datadir}/doc/drouter-%{version}/
+cp ChangeLog $RPM_BUILD_ROOT/%{_datadir}/doc/drouter-%{version}/
+cp COPYING $RPM_BUILD_ROOT/%{_datadir}/doc/drouter-%{version}/
+cp NEWS $RPM_BUILD_ROOT/%{_datadir}/doc/drouter-%{version}/
+cp README $RPM_BUILD_ROOT/%{_datadir}/doc/drouter-%{version}/
+mkdir -p $RPM_BUILD_ROOT/%{_datadir}/doc/drouter-%{version}/protocols
+cp docs/protocol_d.pdf $RPM_BUILD_ROOT/%{_datadir}/doc/drouter-%{version}/protocols/
+mkdir -p $RPM_BUILD_ROOT/%{_datadir}/doc/drouter-%{version}/examples
+cp python/examples/*.py $RPM_BUILD_ROOT/%{_datadir}/doc/drouter-%{version}/examples/
 
 %post
 if [ -x %{_bindir}/systemctl ] ; then
@@ -119,12 +128,12 @@ rm -rf $RPM_BUILD_ROOT
 /lib/systemd/system/drouter.socket
 %dir /etc/drouter.d/maps
 %dir /etc/drouter.d/scripts
-%doc AUTHORS
-%doc ChangeLog
-%doc COPYING 
-%doc NEWS 
-%doc README 
-%doc docs/protocol_d.pdf
+%{_datadir}/doc/drouter-%{version}/protocols/*
+%{_datadir}/doc/drouter-%{version}/AUTHORS
+%{_datadir}/doc/drouter-%{version}/ChangeLog
+%{_datadir}/doc/drouter-%{version}/COPYING
+%{_datadir}/doc/drouter-%{version}/NEWS
+%{_datadir}/doc/drouter-%{version}/README
 
 
 %files panels
@@ -144,9 +153,12 @@ rm -rf $RPM_BUILD_ROOT
 
 %files python
 /usr/lib/python@PYTHON_VERSION@/site-packages/Drouter
+%{_datadir}/doc/drouter-%{version}/examples/*
 
 
 %changelog
+* Tue Mar  6 2018 Fred Gleason <fredg@paravelsystems.com>
+-- Added python API example scripts.
 * Mon Mar  5 2018 Fred Gleason <fredg@paravelsystems.com>
 -- Added a 'python' subpackage.
 * Thu Oct 12 2017 Fred Gleason <fredg@paravelsystems.com>

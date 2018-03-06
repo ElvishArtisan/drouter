@@ -22,19 +22,65 @@
 
 class Node:
     def __init__(self,cmds):
-        self.hostName=cmds[2]
-        self.hostAddress=cmds[1]
-        self.deviceName=cmds[3]
-        self.sourceQuantity=int(cmds[4])
-        self.destinationQuantity=int(cmds[5])
-        self.gpiQuantity=int(cmds[6])
-        self.gpoQuantity=int(cmds[7])
+        self.__hostName=cmds[2]
+        self.__hostAddress=cmds[1]
+        self.__deviceName=cmds[3]
+        self.__sourceQuantity=int(cmds[4])
+        self.__destinationQuantity=int(cmds[5])
+        self.__gpiQuantity=int(cmds[6])
+        self.__gpoQuantity=int(cmds[7])
+
+    def hostName(self):
+        """
+           Returns the host name of the node (string).
+        """
+        return self.__hostName
+
+    def hostAddress(self):
+        """
+           Returns the IP address of the node (string).
+        """
+        return self.__hostAddress
+
+    def deviceName(self):
+        """
+           Returns the device name of the node ("DEVN" attribute) (string).
+        """
+        return self.__deviceName
+
+    def sourceQuantity(self):
+        """
+           Returns the number of source slots on this node
+           ("NSRC" attribute) (string).
+        """
+        return self.__sourceQuantity
+
+    def destinationQuantity(self):
+        """
+           Returns the number of destinations slots on this node
+           ("NDST" attribute) (string).
+        """
+        return self.__destinationQuantity
+
+    def gpiQuantity(self):
+        """
+           Returns the number of GPI slots on this node
+           ("NGPI" attribute) (string).
+        """
+        return self.__gpiQuantity
+
+    def gpoQuantity(self):
+        """
+           Returns the number of GPO slots on this node
+           ("NGPO" attribute) (string).
+        """
+        return self.__gpoQuantity
 
     def __eq__(self,other):
-        return self.hostName==other.hostName and self.hostAddress==other.hostAddress and self.deviceName==other.deviceName and self.sourceQuantity==other.sourceQuantity and self.destinationQuantity==other.destinationQuantity and self.gpiQuantity==other.gpiQuantity and self.gpoQuantity==other.gpoQuantity
+        return self.__hostName==other.__hostName and self.__hostAddress==other.__hostAddress and self.__deviceName==other.__deviceName and self.__sourceQuantity==other.__sourceQuantity and self.__destinationQuantity==other.__destinationQuantity and self.__gpiQuantity==other.__gpiQuantity and self.__gpoQuantity==other.__gpoQuantity
 
     def __ne__(self,other):
         return self.__eq__(other)
 
     def __str__(self):
-        return "hostName: "+self.hostName+"\n"+"hostAddress: "+self.hostAddress+"\n"+"deviceName: "+self.deviceName+"\n"+"sourceQuantity: "+str(self.sourceQuantity)+"\n"+"destinationQuantity: "+str(self.destinationQuantity)+"\n"+"gpiQuantity: "+str(self.gpiQuantity)+"\n"+"gpoQuantity: "+str(self.gpoQuantity)+"\n"
+        return "hostName: "+self.__hostName+"\n"+"hostAddress: "+self.__hostAddress+"\n"+"deviceName: "+self.__deviceName+"\n"+"sourceQuantity: "+str(self.__sourceQuantity)+"\n"+"destinationQuantity: "+str(self.__destinationQuantity)+"\n"+"gpiQuantity: "+str(self.__gpiQuantity)+"\n"+"gpoQuantity: "+str(self.__gpoQuantity)+"\n"

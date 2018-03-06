@@ -20,22 +20,67 @@
 #   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
 #
 
-class Source:
+class Source(object):
     def __init__(self,cmds):
-        self.slotNumber=cmds[2]
-        self.name=cmds[5]
-        self.hostAddress=cmds[1]
-        self.hostName=cmds[3]
-        self.streamAddress=cmds[4]
-        self.streamEnabled=cmds[6]=="1"
-        self.channels=int(cmds[7])
-        self.blockSize=int(cmds[8])
+        self.__slotNumber=cmds[2]
+        self.__name=cmds[5]
+        self.__hostAddress=cmds[1]
+        self.__hostName=cmds[3]
+        self.__streamAddress=cmds[4]
+        self.__streamEnabled=cmds[6]=="1"
+        self.__channels=int(cmds[7])
+        self.__blockSize=int(cmds[8])
+
+    def slotNumber(self):
+        """
+           Returns the slot number (integer, zero-based). 
+        """
+        return self.__slotNumber
+
+    def name(self):
+        """
+           Returns the slot name ("PSNM" attribute) (string)
+        """
+        return self.__name
+
+    def hostAddress(self):
+        """
+           Returns the IP address of the node (string).
+        """
+        return self.__hostAddress
+
+    def hostName(self):
+        """
+           Returns the host name of the node (string).
+        """
+        return self.__hostName
+
+    def streamAddress(self):
+        """
+           Returns the transmission multicast stream address ("RTPA"
+           attribute) (string)
+        """
+        return self.__streamAddress
+
+    def channels(self):
+        """
+           Returns the number of channels which this is sending
+           ("NCHN" attribute) (integer).
+        """
+        return self.__channels
+
+    def blockSize(self):
+        """
+           Returns the number of PCM frames per packet ("RTPP" attribute)
+           (integer).
+        """
+        return self.__blockSize
 
     def __eq__(self,other):
-        return self.slotNumber==other.slotNumber and self.name==other.name and self.hostAddress==other.hostAddress and self.hostName==other.hostName and self.streamAddress==other.streamAddress and self.streamEnabled==other.streamEnabled and self.channels==other.channels and self.blockSize==other.blockSize
+        return self.__slotNumber==other.__slotNumber and self.__name==other.__name and self.__hostAddress==other.__hostAddress and self.__hostName==other.__hostName and self.__streamAddress==other.__streamAddress and self.__streamEnabled==other.__streamEnabled and self.__channels==other.__channels and self.__blockSize==other.__blockSize
 
     def __ne__(self,other):
         return not self.__eq__(other)
 
     def __str__(self):
-        return "slotNumber: "+str(self.slotNumber)+"\n"+"name: "+self.name+"\n"+"hostName: "+self.hostName+"\n"+"hostAddress: "+self.hostAddress+"\n"+"streamAddress: "+self.streamAddress+"\n"+"streamEnabled: "+str(self.streamEnabled)+"\n"+"channels: "+str(self.channels)+"\n"+"blockSize: "+str(self.blockSize)+"\n"
+        return "slotNumber: "+str(self.__slotNumber)+"\n"+"name: "+self.__name+"\n"+"hostName: "+self.__hostName+"\n"+"hostAddress: "+self.__hostAddress+"\n"+"streamAddress: "+self.__streamAddress+"\n"+"streamEnabled: "+str(self.__streamEnabled)+"\n"+"channels: "+str(self.__channels)+"\n"+"blockSize: "+str(self.__blockSize)+"\n"

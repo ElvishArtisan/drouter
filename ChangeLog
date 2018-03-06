@@ -239,3 +239,11 @@
 	* Updated the dmap(1) man page.
 2018-03-05 Fred Gleason <fredg@paravelsystems.com>
 	* Added a drouterd(8) man page.
+2018-03-06 Fred Gleason <fredg@paravelsystems.com>
+	* Added PyDoc strings to all classes in 'python/api/'.
+	* Converted public attributes to methods in the Python API.
+	* Added 'python/examples/show_destinations.py'.
+	* Added 'python/examples/show_gpis.py'.
+	* Added 'python/examples/show_gpos.py'.
+	* Added 'python/examples/show_nodes.py'.
+	* Added 'python/examples/show_sources.py'.
