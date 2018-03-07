@@ -256,3 +256,5 @@
 2018-03-07 Fred Gleason <fredg@paravelsystems.com>
 	* Changed the encoding of the alarm channel parameters in
 	Protocol D to use "LEFT" and "RIGHT" in place of 0 and 1.
+2018-03-07 Fred Gleason <fredg@paravelsystems.com>
+	* Added 'python/example/silence_alarm.py'.

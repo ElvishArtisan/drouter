@@ -24,7 +24,8 @@ EXTRA_DIST = show_changes.py\
              show_gpis.py\
              show_gpos.py\
              show_nodes.py\
-             show_sources.py
+             show_sources.py\
+             silence_alarm.py
 
 CLEANFILES = *~
 MAINTAINERCLEANFILES = *~\
