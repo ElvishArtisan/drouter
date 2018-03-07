@@ -247,3 +247,9 @@
 	* Added 'python/examples/show_gpos.py'.
 	* Added 'python/examples/show_nodes.py'.
 	* Added 'python/examples/show_sources.py'.
+2018-03-07 Fred Gleason <fredg@paravelsystems.com>
+	* Fixed a bug in the 'Alarm' class in the Python API that caused
+	the 'slotNumber()' and 'channel()' methods to return a string instead
+	of an integer.
+	* Fixed a bug in the 'Source' class in the Python API that caused
+	the 'slotNumber()' method to return a string instead of an integer.

@@ -23,10 +23,10 @@
 class Alarm:
     def __init__(self,cmds):
         self.__event=cmds[0]
-        self.__slotNumber=cmds[2]
+        self.__slotNumber=int(cmds[2])
         self.__hostAddress=cmds[1]
         self.__port=cmds[3]
-        self.__channel=cmds[4]
+        self.__channel=int(cmds[4])
         self.__state=cmds[5]=="1"
 
     def event(self):

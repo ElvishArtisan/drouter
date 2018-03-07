@@ -22,7 +22,7 @@
 
 class Source(object):
     def __init__(self,cmds):
-        self.__slotNumber=cmds[2]
+        self.__slotNumber=int(cmds[2])
         self.__name=cmds[5]
         self.__hostAddress=cmds[1]
         self.__hostName=cmds[3]
