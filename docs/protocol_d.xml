@@ -151,9 +151,9 @@
 	</term>
 	<listitem>
 	  <para>
-	    The audio channel, where <computeroutput>0</computeroutput> means
-	    the left channel and <computeroutput>1</computeroutput> means
-	    the right channel.
+	    The audio channel. Valid types are
+	    <computeroutput>LEFT</computeroutput> or
+	    <computeroutput>RIGHT</computeroutput>.
 	  </para>
 	</listitem>
       </varlistentry>
@@ -230,9 +230,9 @@
 	</term>
 	<listitem>
 	  <para>
-	    The audio channel, where <computeroutput>0</computeroutput> means
-	    the left channel and <computeroutput>1</computeroutput> means
-	    the right channel.
+	    The audio channel. Valid types are
+	    <computeroutput>LEFT</computeroutput> or
+	    <computeroutput>RIGHT</computeroutput>.
 	  </para>
 	</listitem>
       </varlistentry>
@@ -319,9 +319,9 @@
 	</term>
 	<listitem>
 	  <para>
-	    The audio channel, where <computeroutput>0</computeroutput> means
-	    the left channel and <computeroutput>1</computeroutput> means
-	    the right channel.
+	    The audio channel. Valid types are
+	    <computeroutput>LEFT</computeroutput> or
+	    <computeroutput>RIGHT</computeroutput>.
 	  </para>
 	</listitem>
       </varlistentry>
@@ -396,9 +396,9 @@
 	</term>
 	<listitem>
 	  <para>
-	    The audio channel, where <computeroutput>0</computeroutput> means
-	    the left channel and <computeroutput>1</computeroutput> means
-	    the right channel.
+	    The audio channel. Valid types are
+	    <computeroutput>LEFT</computeroutput> or
+	    <computeroutput>RIGHT</computeroutput>.
 	  </para>
 	</listitem>
       </varlistentry>

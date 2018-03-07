@@ -685,8 +685,20 @@ QString ProtocolD::AlarmRecord(const QString &keyword,
     ret+="UNKNOWN\t";
     break;
   }
-  ret+=QString().sprintf("%d\t",chan);
-  ret+=QString().sprintf("%d",state);
+  switch(chan) {
+  case 0:
+    ret+="LEFT\t";
+    break;
+
+  case 1:
+    ret+="RIGHT\t";
+    break;
+
+  default:
+    ret+="UNKNOWN\t";
+    break;
+  }
+  ret+=QString().sprintf("%d\t",state);
   ret+="\r\n";
 
   return ret;

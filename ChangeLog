@@ -253,3 +253,6 @@
 	of an integer.
 	* Fixed a bug in the 'Source' class in the Python API that caused
 	the 'slotNumber()' method to return a string instead of an integer.
+2018-03-07 Fred Gleason <fredg@paravelsystems.com>
+	* Changed the encoding of the alarm channel parameters in
+	Protocol D to use "LEFT" and "RIGHT" in place of 0 and 1.

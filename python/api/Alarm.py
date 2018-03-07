@@ -26,7 +26,7 @@ class Alarm:
         self.__slotNumber=int(cmds[2])
         self.__hostAddress=cmds[1]
         self.__port=cmds[3]
-        self.__channel=int(cmds[4])
+        self.__channel=cmds[4]
         self.__state=cmds[5]=="1"
 
     def event(self):
@@ -59,8 +59,8 @@ class Alarm:
 
     def channel(self):
         """
-           Returns the channel number that originated the alarm (integer).
-           0 = Left, 1 = Right
+           Returns the channel that originated the alarm (string).
+           Possible values are "LEFT" or "RIGHT".
         """
         return self.__channel
 
