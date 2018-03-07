@@ -63,7 +63,7 @@ of the Livewire network.
 
 
 %build
-%configure --libexecdir=/usr/lib/python@PYTHON_VERSION@/site-packages
+%configure --libexecdir=%{_libdir}/python@PYTHON_VERSION@/site-packages
 make
 
 
@@ -152,7 +152,7 @@ rm -rf $RPM_BUILD_ROOT
 
 
 %files python
-/usr/lib/python@PYTHON_VERSION@/site-packages/Drouter
+%{_libdir}/python@PYTHON_VERSION@/site-packages/Drouter
 %{_datadir}/doc/drouter-%{version}/examples/*
 
 
