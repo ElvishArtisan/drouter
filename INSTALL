@@ -7,6 +7,8 @@ system before building GlassCoder:
 
 Qt4 Toolkit, v4.6 or better (http://www.qt.io/).
 
+Python 2.7 or better.
+
 
 DOCUMENTATION
 -------------

@@ -1,3 +1,14 @@
 This is the NEWS file for the drouter package.
 
 -------------------------------------------------------------------------------
+v0.6.2 - 3/7/2018
+
+Beta Release
+
+Changes:
+   Python API. Added a Python API that permits the creation of 'state scripts',
+   self-contained Python applets that can monitor and change the state of
+   a Livewire network. See the 'python/examples/' subdirectory for sample
+   scripts.
+
+-------------------------------------------------------------------------------

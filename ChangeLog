@@ -261,3 +261,6 @@
 2018-03-07 Fred Gleason <fredg@paravelsystems.com>
 	* Modified 'drouter.spec.in' to use the %{_libdir} macro to determine
 	installation location for Python components.
+2018-03-07 Fred Gleason <fredg@paravelsystems.com>
+	* Updated 'NEWS'.
+	* Incremented the package version to 0.6.2.
