@@ -29,7 +29,7 @@ import Drouter.Gpo
 import Drouter.Node
 import Drouter.Source
 
-class StateEngine:
+class StateEngine(object):
     """
        Initialize an instance of StateEngine.
     """

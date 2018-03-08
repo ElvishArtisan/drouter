@@ -20,7 +20,7 @@
 #   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
 #
 
-class Destination:
+class Destination(object):
     def __init__(self,cmds):
         self.__slotNumber=int(cmds[2])
         self.__name=cmds[5]

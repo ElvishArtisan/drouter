@@ -20,7 +20,7 @@
 #   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
 #
 
-class Alarm:
+class Alarm(object):
     def __init__(self,cmds):
         self.__event=cmds[0]
         self.__slotNumber=int(cmds[2])

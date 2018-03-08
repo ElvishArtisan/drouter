@@ -20,7 +20,7 @@
 #   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
 #
 
-class Node:
+class Node(object):
     def __init__(self,cmds):
         self.__hostName=cmds[2]
         self.__hostAddress=cmds[1]
