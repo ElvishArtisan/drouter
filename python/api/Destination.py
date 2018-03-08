@@ -60,6 +60,18 @@ class Destination(object):
         """
         return self.__streamAddress
 
+    def streamNumber(self):
+        """
+           Returns the Livewire stream number corresponding to the
+           streamAddress().
+        """
+        octets=self.__streamAddress.split(".")
+        if len(octets)!=4 :
+            return 0
+        if int(octets[2])>127:
+            return 0
+        return 256*int(octets[2])+int(octets[3])
+
     def channels(self):
         """
            Returns the maximum number of channels of which this destination
@@ -74,4 +86,4 @@ class Destination(object):
         return not self.__eq__(other)
 
     def __str__(self):
-        return "slotNumber: "+str(self.__slotNumber)+"\n"+"name: "+self.__name+"\n"+"hostName: "+self.__hostName+"\n"+"hostAddress: "+self.__hostAddress+"\n"+"streamAddress: "+self.__streamAddress+"\n"+"channels: "+str(self.__channels)+"\n"
+        return "slotNumber: "+str(self.__slotNumber)+"\n"+"name: "+self.__name+"\n"+"hostName: "+self.__hostName+"\n"+"hostAddress: "+self.__hostAddress+"\n"+"streamAddress: "+self.__streamAddress+"\n"+"streamNumber: "+str(self.streamNumber())+"\n"+"channels: "+str(self.__channels)+"\n"

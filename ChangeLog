@@ -275,3 +275,6 @@
 	in the Python API.
 	* Added a 'priv' parameter to the callbacks in the 'StateEngine'
 	class in the Python API.
+2018-03-08 Fred Gleason <fredg@paravelsystems.com>
+	* Added a 'streamNumber()' class to the 'Destination' and
+	'Source' classes in the Python API.
