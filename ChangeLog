@@ -264,3 +264,7 @@
 2018-03-07 Fred Gleason <fredg@paravelsystems.com>
 	* Updated 'NEWS'.
 	* Incremented the package version to 0.6.2.
+2018-03-07 Fred Gleason <fredg@paravelsystems.com>
+	* Fixed a bug in drouterd(8) that caused a spurious NODEDEL message
+	to be emitted when a node returned an "ERROR 2000 server busy" LWRP
+	response.

@@ -505,6 +505,9 @@ void ProtocolD::processAddedNode(const SyNode &node)
 
 void ProtocolD::processAboutToBeRemovedNode(const SyNode &node)
 {
+  if(node.hostAddress().isNull()) {
+    return;  // Zombie node!
+  }
   QList<NetConnection *> conns=d_server->connections();
   for(int i=0;i<conns.size();i++) {
     if(conns.at(i)!=NULL) {
