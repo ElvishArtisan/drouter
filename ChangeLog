@@ -270,3 +270,8 @@
 	response.
 2018-03-08 Fred Gleason <fredg@paravelsystems.com>
 	* Modified all classes in the Python API to inherit from 'object'.
+2018-03-08 Fred Gleason <fredg@paravelsystems.com>
+	* Added a 'setPrivateObject()' method to the 'StateEngine' class
+	in the Python API.
+	* Added a 'priv' parameter to the callbacks in the 'StateEngine'
+	class in the Python API.

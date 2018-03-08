@@ -48,7 +48,7 @@ host_port="OUTPUT"
 #
 # Called whenever an audio alarm -- a SILENCE or a CLIP -- changes state.
 #
-def Alarm(engine,alarm):
+def Alarm(engine,priv,alarm):
     if alarm.hostAddress()==host_addr and alarm.slotNumber()==host_slot and alarm.event()=="SILENCE" and alarm.port()==host_port:
         if alarm.state():
             msg=MIMEText("Silence at "+alarm.channel()+" channel of "+host_port+" port "+host_addr+":"+str(host_slot)+" has been detected!")

@@ -36,7 +36,7 @@ import Drouter.StateEngine
 #
 # For this script, we simply enumerate all gpos, then exit
 #
-def EngineReady(engine):
+def EngineReady(engine,priv):
     gpos=engine.Gpos()
 
     for gpo in gpos:

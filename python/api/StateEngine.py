@@ -39,6 +39,7 @@ class StateEngine(object):
         self.__destinations={}
         self.__gpis={}
         self.__gpos={}
+        self.__callback_priv=None
         self.__ready_callback=None
         self.__add_callback=None
         self.__delete_callback=None
@@ -132,12 +133,18 @@ class StateEngine(object):
         """
         return self.__gpos.values()
 
+    def setPrivateObject(self,priv):
+        """
+        Set the object to be passed to callbacks in the 'priv' parameter.
+        """
+        self.__callback_priv=priv
+
     def setReadyCallback(self,cb):
         """
         Set the 'ready' callback, called by StateEngine immediately after
         initialization is complete. The callback should be of the form:
 
-           def callback(self,engine)
+           def callback(self,engine,priv)
 
         where:
           engine: reference to the calling StateEngine.
@@ -150,7 +157,7 @@ class StateEngine(object):
         a new object is added to the Drouter system. The callback should be
         of the form:
 
-           def callback(self,engine,type,object)
+           def callback(self,engine,priv,type,object)
 
         where:
           engine: reference to the calling StateEngine
@@ -169,7 +176,7 @@ class StateEngine(object):
         an object is removed from the Drouter system. The callback should be
         of the form:
 
-           def callback(self,engine,type,object)
+           def callback(self,engine,priv,type,object)
 
         where:
           engine: reference to the calling StateEngine
@@ -188,7 +195,7 @@ class StateEngine(object):
         an existing object is modified in the Drouter system. The callback
         should be of the form:
 
-           def callback(self,engine,type,old_object,new_object)
+           def callback(self,engine,priv,type,old_object,new_object)
 
         where:
              engine: reference to the calling StateEngine
@@ -212,7 +219,7 @@ class StateEngine(object):
         Set the 'alarm' callback, called by StateEngine immediately after
         reception of an audio alarm (a CLIP or SILENCE event).
 
-           def callback(self,engine,alarm)
+           def callback(self,engine,priv,alarm)
 
         where:
              engine: reference to the calling StateEngine
@@ -378,90 +385,90 @@ class StateEngine(object):
         if cmds[0]=="NODEADD":
             self.__nodes[cmds[1]]=Drouter.Node.Node(cmds)
             if(self.__add_callback!=None) and self.__loaded:
-                self.__add_callback(self,"NODE",self.__nodes[cmds[1]])
+                self.__add_callback(self,self.__callback_priv,"NODE",self.__nodes[cmds[1]])
             return
         if cmds[0]=="NODEDEL":
             node=self.__nodes[cmds[1]]
             if (self.__delete_callback!=None) and self.__loaded:
-                self.__delete_callback(self,"NODE",node)
+                self.__delete_callback(self,self.__callback_priv,"NODE",node)
             del self.__nodes[cmds[1]]
             return
 
         if cmds[0]=="SRCADD":
             self.__sources[self.__key(cmds[1],int(cmds[2]))]=Drouter.Source.Source(cmds)
             if(self.__add_callback!=None) and self.__loaded:
-                self.__add_callback(self,"SRC",self.__sources[self.__key(cmds[1],int(cmds[2]))])
+                self.__add_callback(self,self.__callback_priv,"SRC",self.__sources[self.__key(cmds[1],int(cmds[2]))])
             return
         if cmds[0]=="SRCDEL":
             source=self.__sources[self.__key(cmds[1],int(cmds[2]))]
             if (self.__delete_callback!=None) and self.__loaded:
-                self.__delete_callback(self,"SRC",source)
+                self.__delete_callback(self,self.__callback_priv,"SRC",source)
             del self.__sources[self.__key(cmds[1],int(cmds[2]))]
             return
         if cmds[0]=="SRC":
             oldsrc=self.__sources[self.__key(cmds[1],int(cmds[2]))]
             self.__sources[self.__key(cmds[1],int(cmds[2]))]=Drouter.Source.Source(cmds)
             if (self.__change_callback!=None) and self.__loaded and oldsrc != self.__sources[self.__key(cmds[1],int(cmds[2]))]:
-                self.__change_callback(self,"SRC",oldsrc,
+                self.__change_callback(self,self.__callback_priv,"SRC",oldsrc,
                                      self.__sources[self.__key(cmds[1],int(cmds[2]))])
 
         if cmds[0]=="DSTADD":
             self.__destinations[self.__key(cmds[1],int(cmds[2]))]=Drouter.Destination.Destination(cmds);
             if(self.__add_callback!=None) and self.__loaded:
-                self.__add_callback(self,"DST",self.__destinations[self.__key(cmds[1],int(cmds[2]))])
+                self.__add_callback(self,self.__callback_priv,"DST",self.__destinations[self.__key(cmds[1],int(cmds[2]))])
             return
         if cmds[0]=="DSTDEL":
             destination=self.__destinations[self.__key(cmds[1],int(cmds[2]))]
             if (self.__delete_callback!=None) and self.__loaded:
-                self.__delete_callback(self,"DST",destination)
+                self.__delete_callback(self,self.__callback_priv,"DST",destination)
             del self.__destinations[self.__key(cmds[1],int(cmds[2]))]
             return
         if cmds[0]=="DST":
             olddst=self.__destinations[self.__key(cmds[1],int(cmds[2]))]
             self.__destinations[self.__key(cmds[1],int(cmds[2]))]=Drouter.Destination.Destination(cmds)
             if (self.__change_callback!=None) and self.__loaded and olddst != self.__destinations[self.__key(cmds[1],int(cmds[2]))]:
-                self.__change_callback(self,"DST",olddst,
+                self.__change_callback(self,self.__callback_priv,"DST",olddst,
                                      self.__destinations[self.__key(cmds[1],int(cmds[2]))])
 
         if cmds[0]=="GPIADD":
             self.__gpis[self.__key(cmds[1],int(cmds[2]))]=Drouter.Gpi.Gpi(cmds)
             if(self.__add_callback!=None) and self.__loaded:
-                self.__add_callback(self,"GPI",self.__gpis[self.__key(cmds[1],int(cmds[2]))])
+                self.__add_callback(self,self.__callback_priv,"GPI",self.__gpis[self.__key(cmds[1],int(cmds[2]))])
             return
         if cmds[0]=="GPIDEL":
             gpi=self.__gpis[self.__key(cmds[1],int(cmds[2]))]
             if (self.__delete_callback!=None) and self.__loaded:
-                self.__delete_callback(self,"GPI",gpi)
+                self.__delete_callback(self,self.__callback_priv,"GPI",gpi)
             del self.__gpis[self.__key(cmds[1],int(cmds[2]))]
             return
         if cmds[0]=="GPI":
             oldgpi=self.__gpis[self.__key(cmds[1],int(cmds[2]))]
             self.__gpis[self.__key(cmds[1],int(cmds[2]))]=Drouter.Gpi.Gpi(cmds)
             if (self.__change_callback!=None) and self.__loaded and oldgpi != self.__gpis[self.__key(cmds[1],int(cmds[2]))]:
-                self.__change_callback(self,"GPI",oldgpi,self.__gpis[self.__key(cmds[1],int(cmds[2]))])
+                self.__change_callback(self,self.__callback_priv,"GPI",oldgpi,self.__gpis[self.__key(cmds[1],int(cmds[2]))])
             return
 
         if cmds[0]=="GPOADD":
             self.__gpos[self.__key(cmds[1],int(cmds[2]))]=Drouter.Gpo.Gpo(cmds)
             if(self.__add_callback!=None) and self.__loaded:
-                self.__add_callback(self,"GPO",self.__gpos[self.__key(cmds[1],int(cmds[2]))])
+                self.__add_callback(self,self.__callback_priv,"GPO",self.__gpos[self.__key(cmds[1],int(cmds[2]))])
             return
         if cmds[0]=="GPODEL":
             gpo=self.__gpos[self.__key(cmds[1],int(cmds[2]))]
             if (self.__delete_callback!=None) and self.__loaded:
-                self.__delete_callback(self,"GPO",gpo)
+                self.__delete_callback(self,self.__callback_priv,"GPO",gpo)
             del self.__gpos[self.__key(cmds[1],int(cmds[2]))]
             return
         if cmds[0]=="GPO":
             oldgpo=self.__gpos[self.__key(cmds[1],int(cmds[2]))]
             self.__gpos[self.__key(cmds[1],int(cmds[2]))]=Drouter.Gpo.Gpo(cmds)
             if (self.__change_callback!=None) and self.__loaded and oldgpo != self.__gpos[self.__key(cmds[1],int(cmds[2]))]:
-                self.__change_callback(self,"GPO",oldgpo,self.__gpos[self.__key(cmds[1],int(cmds[2]))])
+                self.__change_callback(self,self.__callback_priv,"GPO",oldgpo,self.__gpos[self.__key(cmds[1],int(cmds[2]))])
             return
 
         if cmds[0]=="SILENCE" or cmds[0]=="CLIP":
             if (self.__alarm_callback!=None) and self.__loaded:
-                self.__alarm_callback(self,Drouter.Alarm.Alarm(cmds))
+                self.__alarm_callback(self,self.__callback_priv,Drouter.Alarm.Alarm(cmds))
             return
 
         if cmds[0]=="ok":
@@ -498,7 +505,7 @@ class StateEngine(object):
                 self.__clips_loaded=True
                 self.__loaded=True
                 if self.__ready_callback!=None:
-                    self.__ready_callback(self)
+                    self.__ready_callback(self,self.__callback_priv)
             return;
 
     def __bitStateCode(self,bit,state):

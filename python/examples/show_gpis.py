@@ -36,7 +36,7 @@ import Drouter.StateEngine
 #
 # For this script, we simply enumerate all gpis, then exit
 #
-def EngineReady(engine):
+def EngineReady(engine,priv):
     gpis=engine.Gpis()
 
     for gpi in gpis:

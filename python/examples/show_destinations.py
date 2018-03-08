@@ -36,7 +36,7 @@ import Drouter.StateEngine
 #
 # For this script, we simply enumerate all destinations, then exit
 #
-def EngineReady(engine):
+def EngineReady(engine,priv):
     destinations=engine.Destinations()
 
     for destination in destinations:

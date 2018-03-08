@@ -34,7 +34,7 @@ import Drouter.StateEngine
 # initialization. This is the place to do any needed startup initialization
 # (create objects, open connections, etc).
 #
-def EngineReady(engine):
+def EngineReady(engine,priv):
     print "EngineReady() ran!"
 
 
@@ -42,7 +42,7 @@ def EngineReady(engine):
 # Called every time a new object -- a node, source, destination or GPIO
 # resource -- is added to the system.
 #
-def ObjectAdded(engine,type,object):
+def ObjectAdded(engine,priv,type,object):
     if type=="NODE":
         print "ADDED NODE"
         print object
@@ -67,7 +67,7 @@ def ObjectAdded(engine,type,object):
 # Called immediately before an object -- a node, source, destination or GPIO
 # resource -- is removed from the system.
 #
-def ObjectDeleted(engine,type,object):
+def ObjectDeleted(engine,priv,type,object):
     if type=="NODE":
         print "DELETED NODE"
         print object
@@ -92,7 +92,7 @@ def ObjectDeleted(engine,type,object):
 # Called whenever an object -- a node, source, destination or GPIO resource --
 # reports a change to its configuration or state.
 #
-def ObjectChanged(engine,type,old,new):
+def ObjectChanged(engine,priv,type,old,new):
     if type=="NODE":
         print "OLD NODE"
         print old
@@ -126,7 +126,7 @@ def ObjectChanged(engine,type,old,new):
 #
 # Called whenever an audio alarm -- a SILENCE or a CLIP -- changes state.
 #
-def Alarm(engine,alarm):
+def Alarm(engine,priv,alarm):
     print "ALARM"
     print alarm 
 

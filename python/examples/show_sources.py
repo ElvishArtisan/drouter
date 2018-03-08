@@ -36,7 +36,7 @@ import Drouter.StateEngine
 #
 # For this script, we simply enumerate all sources, then exit
 #
-def EngineReady(engine):
+def EngineReady(engine,priv):
     sources=engine.Sources()
 
     for source in sources:
