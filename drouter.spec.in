@@ -27,6 +27,7 @@ License: GPLv2
 Source: %{name}-@VERSION@.tar.gz
 BuildRequires: qt-devel systemd-devel python
 BuildRoot: /var/tmp/%{name}-@VERSION@
+Requires: python
 
 
 %package panels
@@ -121,6 +122,7 @@ rm -rf $RPM_BUILD_ROOT
 %files
 %defattr(-,root,root)
 %{_bindir}/dmap
+%{_bindir}/pf_import.py
 %{_sbindir}/drouterd
 %{_datadir}/man/man1/dmap.1.gz
 %{_datadir}/man/man8/drouterd.8.gz

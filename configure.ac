@@ -118,6 +118,7 @@ AC_CONFIG_FILES([ \
     python/api/Makefile \
     python/examples/Makefile \
     python/Makefile \
+    scripts/Makefile \
     src/Makefile \
     src/buttonpanel/Makefile \
     src/common/Makefile \
