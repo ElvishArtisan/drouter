@@ -33,6 +33,8 @@
 
 all-local:	buttonpanel.1\
                 buttonpanel.xml\
+                dlist.1\
+                dlist.xml\
                 dmap.1\
                 dmap.xml\
                 drouterd.8\
@@ -46,6 +48,8 @@ all-local:	buttonpanel.1\
 
 EXTRA_DIST = buttonpanel.1\
              buttonpanel.xml\
+             dlist.1\
+             dlist.xml\
              dmap.1\
              dmap.xml\
              drouterd.8\
@@ -59,6 +63,7 @@ EXTRA_DIST = buttonpanel.1\
              protocol_d.xml
 
 man_MANS = buttonpanel.1\
+           dlist.1\
            dmap.1\
            drouterd.8\
            outputpanel.1\

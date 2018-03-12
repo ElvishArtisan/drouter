@@ -21,14 +21,18 @@
 
 install-exec-am:	
 	mkdir -p $(DESTDIR)@prefix@/bin
+	cp dlist.py $(DESTDIR)@prefix@/bin/dlist
 	cp pf_import.py $(DESTDIR)@prefix@/bin/
 
 uninstall-local:	
+	rm -f $(DESTDIR)@prefix@/bin/dlist
 	rm -f $(DESTDIR)@prefix@/bin/pf_import.py
 
-bin_SCRIPT = pf_import.py
+bin_SCRIPT = dlist.py\
+             pf_import.py
 
-EXTRA_DIST = pf_import.py
+EXTRA_DIST = dlist.py\
+             pf_import.py
 
 CLEANFILES = *~
 MAINTAINERCLEANFILES = *~\

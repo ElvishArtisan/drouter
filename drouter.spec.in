@@ -154,6 +154,7 @@ rm -rf $RPM_BUILD_ROOT
 
 
 %files python
+%{_bindir}/dlist
 %{_libdir}/python@PYTHON_VERSION@/site-packages/Drouter
 %{_datadir}/doc/drouter-%{version}/examples/*
 

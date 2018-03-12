@@ -74,6 +74,13 @@ class Source(object):
             return 0
         return 256*int(octets[2])+int(octets[3])
 
+    def streamEnabled(self):
+        """
+           Returns the status of the stream enabled flag ("RTPE" attribute)
+           (boolean)
+        """
+        return self.__streamEnabled
+
     def channels(self):
         """
            Returns the number of channels which this is sending
@@ -94,5 +101,18 @@ class Source(object):
     def __ne__(self,other):
         return not self.__eq__(other)
 
+    def __lt__(self,other):
+        if self.__flatAddress(self.__hostAddress)<other.__flatAddress(other.__hostAddress):
+           return True
+        if self.__flatAddress(self.__hostAddress)>other.__flatAddress(other.__hostAddress):
+           return False
+        if self.__slotNumber<other.__slotNumber:
+           return True
+        return False
+
     def __str__(self):
         return "slotNumber: "+str(self.__slotNumber)+"\n"+"name: "+self.__name+"\n"+"hostName: "+self.__hostName+"\n"+"hostAddress: "+self.__hostAddress+"\n"+"streamAddress: "+self.__streamAddress+"\n"+"streamNumber: "+str(self.streamNumber())+"\n"+"streamEnabled: "+str(self.__streamEnabled)+"\n"+"channels: "+str(self.__channels)+"\n"+"blockSize: "+str(self.__blockSize)+"\n"
+
+    def __flatAddress(self,addr):
+        octets=addr.split(".")
+        return int(octets[3])*16777216+int(octets[2])*65536+int(octets[1])*256+int(octets[0])
