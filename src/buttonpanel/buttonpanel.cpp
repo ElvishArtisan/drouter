@@ -39,7 +39,7 @@ MainWidget::MainWidget(QWidget *parent)
   panel_width=400;
   panel_height=20;
   panel_columns=0;
-  panel_hostname="localhost";
+  panel_hostname="";
 
   bool ok=false;
 
@@ -113,6 +113,18 @@ MainWidget::MainWidget(QWidget *parent)
     QMessageBox::warning(this,"ButtonPanel - "+tr("Error"),
 			 tr("No output specified."));
     exit(1);
+  }
+
+  //
+  // Get the hostname
+  //
+  if(panel_hostname.isEmpty()) {
+    if(getenv("DROUTER_HOSTNAME")!=NULL) {
+      panel_hostname=getenv("DROUTER_HOSTNAME");
+    }
+    else {
+      panel_hostname="localhost";
+    }
   }
 
   //

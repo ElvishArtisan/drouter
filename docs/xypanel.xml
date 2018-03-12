@@ -57,18 +57,21 @@
     </varlistentry>
   </variablelist>
 
-  <varlistentry>
-    <term>
-      <option>--hostname=<arg choice="req"><replaceable>host-name</replaceable></arg></option>
-    </term>
-    <listitem>
-      <para>
-	The hostname of the server to which make a connection. Default
-	value is <userinput>localhost</userinput>.
-      </para>
-    </listitem>
-  </varlistentry>
-  
+  <variablelist remap='TP'>
+    <varlistentry>
+      <term>
+	<option>--hostname <replaceable>host-name</replaceable></option>
+      </term>
+      <listitem>
+	<para>
+	  Use the Drouter server at <replaceable>host-name</replaceable>.
+	  Default value is <userinput>localhost</userinput>. See also the
+	  section ENVIRONMENTAL VARIABLES, below.
+	</para>
+      </listitem>
+    </varlistentry>
+  </variablelist>
+
   <varlistentry>
     <term>
       <option>--password=<arg choice="req"><replaceable>pwd</replaceable></arg></option>
@@ -109,19 +112,44 @@
 
   </refsect1>
 
+  <refsect1 id='environmental_variables'>
+    <title>Environmental Variables</title>
+    <para>
+      The following environmental variables can be used to influence
+      the behavior of <command>xypanel</command><manvolnum>1</manvolnum>: 
+    </para>
+    <variablelist>
+      <varlistentry>
+	<term><userinput>$DROUTER_HOSTNAME</userinput></term>
+	<listitem>
+	  <para>
+	    If no <option>--hostname</option> option is given,
+	    <command>dlist</command><manvolnum>1</manvolnum> will
+	    attempt to use the Drouter server referenced in
+	    <userinput>$DROUTER_HOSTNAME</userinput>. If
+	    <userinput>$DROUTER_HOSTNAME</userinput> is not defined,
+	    then the Drouter server at <userinput>localhost</userinput>
+	    will be used.
+	  </para>
+	</listitem>
+      </varlistentry>
+    </variablelist>
+  </refsect1>
+
   <refsect1 id='see_also'><title>See Also</title>
   <para>
-  <citerefentry>
-    <refentrytitle>buttonpanel</refentrytitle><manvolnum>5</manvolnum>
-  </citerefentry>
-  ,
-  <citerefentry>
-    <refentrytitle>dmap</refentrytitle><manvolnum>1</manvolnum>
-  </citerefentry>
-  ,
-  <citerefentry>
-    <refentrytitle>outputpanel</refentrytitle><manvolnum>1</manvolnum>
-  </citerefentry>
+    <citerefentry>
+      <refentrytitle>buttonpanel</refentrytitle><manvolnum>5</manvolnum>
+    </citerefentry>,
+    <citerefentry>
+      <refentrytitle>outputpanel</refentrytitle><manvolnum>1</manvolnum>
+    </citerefentry>,
+    <citerefentry>
+      <refentrytitle>shotpanel</refentrytitle><manvolnum>1</manvolnum>
+    </citerefentry>,
+    <citerefentry>
+      <refentrytitle>xpointpanel</refentrytitle><manvolnum>1</manvolnum>
+    </citerefentry>
   </para>
   </refsect1>
 </refentry>

@@ -285,3 +285,10 @@
 2018-03-12 Fred Gleason <fredg@paravelsystems.com>
 	* Added a 'streamEnabled()' method to 'Source' in the Python API.
 	* Added a dlist(1) command.
+2018-03-12 Fred Gleason <fredg@paravelsystems.com>
+	* Added a xpointpanel(1) man page.
+	* Added support for $DROUTER_HOSTNAME to buttonpanel(1).
+	* Added support for $DROUTER_HOSTNAME to outputpanel(1).
+	* Added support for $DROUTER_HOSTNAME to shotpanel(1).
+	* Added support for $DROUTER_HOSTNAME to xpointpanel(1).
+	* Added support for $DROUTER_HOSTNAME to xypanel(1).

@@ -41,6 +41,8 @@ all-local:	buttonpanel.1\
                 drouterd.xml\
                 outputpanel.1\
                 outputpanel.xml\
+                xpointpanel.1\
+                xpointpanel.xml\
                 xypanel.1\
                 xypanel.xml\
                 protocol_d.html\
@@ -56,6 +58,8 @@ EXTRA_DIST = buttonpanel.1\
              drouterd.xml\
              outputpanel.1\
              outputpanel.xml\
+             xpointpanel.1\
+             xpointpanel.xml\
              xypanel.1\
              xypanel.xml\
              protocol_d.html\
@@ -67,6 +71,7 @@ man_MANS = buttonpanel.1\
            dmap.1\
            drouterd.8\
            outputpanel.1\
+           xpointpanel.1\
            xypanel.1
 
 CLEANFILES = *~

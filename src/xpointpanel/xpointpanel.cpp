@@ -52,7 +52,7 @@ MainWidget::MainWidget(QWidget *parent)
   //
   // Initialize Variables
   //
-  panel_hostname="localhost";
+  panel_hostname="";
   panel_username="admin";
   panel_password="";
 
@@ -79,6 +79,18 @@ MainWidget::MainWidget(QWidget *parent)
       QMessageBox::warning(this,"XPointPanel - "+tr("Error"),
 			   tr("Unknown argument")+" \""+cmd->key(i)+"\".");
       exit(1);
+    }
+  }
+
+  //
+  // Get the hostname
+  //
+  if(panel_hostname.isEmpty()) {
+    if(getenv("DROUTER_HOSTNAME")!=NULL) {
+      panel_hostname=getenv("DROUTER_HOSTNAME");
+    }
+    else {
+      panel_hostname="localhost";
     }
   }
 

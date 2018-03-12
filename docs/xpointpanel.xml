@@ -4,15 +4,14 @@
       Header
   -->
   <refmeta>
-    <refentrytitle>outputpanel</refentrytitle>
+    <refentrytitle>xpointpanel</refentrytitle>
     <manvolnum>1</manvolnum>
     <refmiscinfo class='source'>October 2017</refmiscinfo>
     <refmiscinfo class='manual'>Linux Audio Manual</refmiscinfo>
   </refmeta>
   <refnamediv>
-    <refname>outputpanel</refname>
-    <refpurpose>Button-based control panel applet for audio routing
-    systems</refpurpose>
+    <refname>xpointpanel</refname>
+    <refpurpose>Crosspoint control panel applet for audio routing systems</refpurpose>
   </refnamediv>
   <info>
     <author>
@@ -30,35 +29,21 @@
   -->
   <refsynopsisdiv id='synopsis'>
     <cmdsynopsis>
-      <command>outputpanel</command>    <arg choice='opt'><replaceable>OPTIONS</replaceable></arg>
+      <command>xpointpanel</command>    <arg choice='opt'><replaceable>OPTIONS</replaceable></arg>
       <sbr/>
     </cmdsynopsis>
   </refsynopsisdiv>
 
   <refsect1 id='description'><title>Description</title>
   <para>
-    <command>outputpanel</command><manvolnum>1</manvolnum> is a GUI
-    control applet that can be used to control one or more audio outputs
-    on an audio routing system using Software Authority control protocol
-    (such as PathFinder or DRouter).
+    <command>xpointpanel</command><manvolnum>1</manvolnum> is an crosspoint control
+    applet that can be used to control audio routing with systems using the
+    Software Authority control protocol (such as PathFinder or DRouter's
+    <command>drouterd</command><manvolnum>8</manvolnum>).
   </para>
   </refsect1>
 
   <refsect1 id='options'><title>Options</title>
-  <variablelist remap='TP'>
-    <varlistentry>
-      <term>
-	<option>--columns=<arg choice="req"><replaceable>cols</replaceable></arg></option>
-      </term>
-      <listitem>
-	<para>
-	  Use no more than <replaceable>cols</replaceable> output controls
-	  per row.
-	</para>
-      </listitem>
-    </varlistentry>
-  </variablelist>
-
   <variablelist remap='TP'>
     <varlistentry>
       <term>
@@ -89,28 +74,12 @@
 
   <varlistentry>
     <term>
-      <option>--output=<arg coice="opt"><replaceable>router-num</replaceable></arg>:<arg choice="req"><replaceable>output-num</replaceable></arg></option>
-    </term>
-    <listitem>
-      <para>
-	Specify an output to monitor and control. Optionally, the router number
-	(default <userinput>1</userinput>) may also be given. This option
-	may be given multiple times, causing 
-	outputpanel<manvolnum>1</manvolnum> to display multiple panels
-	within a single window. (See also the <option>--cols=</option> option,
-	above).
-      </para>
-    </listitem>
-  </varlistentry>
-  
-  <varlistentry>
-    <term>
       <option>--password=<arg choice="req"><replaceable>pwd</replaceable></arg></option>
     </term>
     <listitem>
       <para>
 	Password to use when authenticating on the server. If not
-	given, outputpanel<manvolnum>1</manvolnum> will prompt for one
+	given, buttonpanel<manvolnum>1</manvolnum> will prompt for one
 	at startup.
       </para>
     </listitem>
@@ -147,7 +116,7 @@
     <title>Environmental Variables</title>
     <para>
       The following environmental variables can be used to influence
-      the behavior of <command>outputpanel</command><manvolnum>1</manvolnum>: 
+      the behavior of <command>xpointpanel</command><manvolnum>1</manvolnum>: 
     </para>
     <variablelist>
       <varlistentry>
@@ -173,13 +142,13 @@
       <refentrytitle>buttonpanel</refentrytitle><manvolnum>5</manvolnum>
     </citerefentry>,
     <citerefentry>
+      <refentrytitle>outputpanel</refentrytitle><manvolnum>1</manvolnum>
+    </citerefentry>,
+    <citerefentry>
       <refentrytitle>shotpanel</refentrytitle><manvolnum>1</manvolnum>
     </citerefentry>,
     <citerefentry>
       <refentrytitle>xypanel</refentrytitle><manvolnum>1</manvolnum>
-    </citerefentry>,
-    <citerefentry>
-      <refentrytitle>xpointpanel</refentrytitle><manvolnum>1</manvolnum>
     </citerefentry>
   </para>
   </refsect1>

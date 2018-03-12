@@ -37,7 +37,7 @@
 //
 // Icons
 //
-//#include "../../icons/lwpath-16x16.xpm"
+#include "../../icons/drouter-16x16.xpm"
 
 
 MainWidget::MainWidget(QWidget *parent)
@@ -51,7 +51,7 @@ MainWidget::MainWidget(QWidget *parent)
   //
   // Initialize Variables
   //
-  panel_hostname="localhost";
+  panel_hostname="";
   panel_username="admin";
   panel_password="";
 
@@ -82,9 +82,21 @@ MainWidget::MainWidget(QWidget *parent)
   }
 
   //
+  // Get the hostname
+  //
+  if(panel_hostname.isEmpty()) {
+    if(getenv("DROUTER_HOSTNAME")!=NULL) {
+      panel_hostname=getenv("DROUTER_HOSTNAME");
+    }
+    else {
+      panel_hostname="localhost";
+    }
+  }
+
+  //
   // Create And Set Icon
   //
-  //  setWindowIcon(QIcon(lwpath_16x16_xpm));
+  setWindowIcon(QIcon(drouter_16x16_xpm));
 
   //
   // Fonts
