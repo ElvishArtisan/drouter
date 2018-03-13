@@ -292,3 +292,6 @@
 	* Added support for $DROUTER_HOSTNAME to shotpanel(1).
 	* Added support for $DROUTER_HOSTNAME to xpointpanel(1).
 	* Added support for $DROUTER_HOSTNAME to xypanel(1).
+2018-03-13 Fred Gleason <fredg@paravelsystems.com>
+	* Updated 'NEWS'.
+	* Incremented the package version to 0.6.4.

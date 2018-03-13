@@ -1,6 +1,21 @@
 This is the NEWS file for the drouter package.
 
 -------------------------------------------------------------------------------
+v0.6.4 - 3/13/2018
+
+Beta Release
+
+Changes:
+   Resource Listing. Added a dlist(1) command for listing resources on a
+   Livewire network. See the dlist(1) man page for more information.
+
+   PathFinder Map Importation. Added a 'pf_import.py' script for generating
+   a Software Authority map from an existing PathFinder installation.
+
+   Environmental Variables. Added support for a $DROUTER_HOSTNAME environmental
+   variable to permit auto-population of the --hostname parameter in various
+   utilities.
+-------------------------------------------------------------------------------
 v0.6.2 - 3/7/2018
 
 Beta Release
