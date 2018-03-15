@@ -1,8 +1,8 @@
 // drouter.cpp
 //
-// Dynamic router for Livewire networks
+// Dynamic router database component for Drouter
 //
-//   (C) Copyright 2017 Fred Gleason <fredg@paravelsystems.com>
+//   (C) Copyright 2018 Fred Gleason <fredg@paravelsystems.com>
 //
 //   This program is free software; you can redistribute it and/or modify
 //   it under the terms of the GNU General Public License version 2 as
@@ -18,49 +18,34 @@
 //   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
 //
 
-#include <stdint.h>
+#include <errno.h>
 #include <stdio.h>
-#include <stdlib.h>
-#include <syslog.h>
+#include <string.h>
+#include <linux/un.h>
+#include <sys/socket.h>
 
 #include <QHostAddress>
 #include <QSignalMapper>
+#include <QSocketNotifier>
+#include <QSqlDatabase>
+#include <QSqlError>
+#include <QSqlQuery>
+#include <QVariant>
 
-#include <sy/sycmdswitch.h>
+#include <sy/syconfig.h>
 #include <sy/syinterfaces.h>
-#include <sy/symcastsocket.h>
 
 #include "drouter.h"
+#include "protoipc.h"
 
 DRouter::DRouter(QObject *parent)
   : QObject(parent)
 {
-  //
-  // Livewire Advertisement Sockets
-  //
-  QSignalMapper *mapper=new QSignalMapper(this);
-  connect(mapper,SIGNAL(mapped(int)),this,SLOT(advtReadyReadData(int)));
-  SyInterfaces *ifaces=new SyInterfaces();
-  if(!ifaces->update()) {
-    fprintf(stderr,"drouterd: unable to get network interface information\n");
-    exit(1);
-  }
-  for(int i=0;i<ifaces->quantity();i++) {
-    drouter_advt_sockets.
-      push_back(new SyMcastSocket(SyMcastSocket::ReadOnly,this));
-    if(!drouter_advt_sockets.back()->
-       bind(ifaces->ipv4Address(i),SWITCHYARD_ADVERTS_PORT)) {
-      fprintf(stderr,"drouterd: unable to bind %s:%d\n",
-	      (const char *)ifaces->ipv4Address(i).toString().toUtf8(),
-	      SWITCHYARD_ADVERTS_PORT);
-      exit(1);
-    }
-    drouter_advt_sockets.back()->subscribe(SWITCHYARD_ADVERTS_ADDRESS);
-    mapper->setMapping(drouter_advt_sockets.back(),
-		       drouter_advt_sockets.size()-1);
-    connect(drouter_advt_sockets.back(),SIGNAL(readyRead()),
-	    mapper,SLOT(map()));
-  }
+}
+
+
+DRouter::~DRouter()
+{
 }
 
 
@@ -192,107 +177,26 @@ SyGpo *DRouter::gpo(const QHostAddress &hostaddr,int slot) const
 }
 
 
-bool DRouter::clearCrosspoint(const QHostAddress &dst_hostaddr,int dst_slot)
+bool DRouter::start(QString *err_msg)
 {
-  SyLwrpClient *lwrp=NULL;
-
-  //
-  // Get the destination
-  //
-  if((lwrp=drouter_nodes.value(dst_hostaddr.toIPv4Address()))==NULL) {
+  if(!StartDb(err_msg)) {
     return false;
   }
-  if(dst_slot>=(int)lwrp->dstSlots()) {
+  if(!StartProtocolIpc(err_msg)) {
     return false;
   }
-  lwrp->setDstAddress(dst_slot,0);
+  if(!StartLivewire(err_msg)) {
+    return false;
+  }
 
   return true;
 }
-
-
-bool DRouter::setCrosspoint(const QHostAddress &dst_hostaddr,int dst_slot,
-			    const QHostAddress &src_hostaddr,int src_slot)
-{
-  SyLwrpClient *lwrp=NULL;
-
-  //
-  // Get the source
-  //
-  if((lwrp=drouter_nodes.value(src_hostaddr.toIPv4Address()))==NULL) {
-    return false;
-  }
-  if(src_slot>=(int)lwrp->srcSlots()) {
-    return false;
-  }
-  QHostAddress addr=lwrp->srcAddress(src_slot);
-
-  //
-  // Get the destination
-  //
-  if((lwrp=drouter_nodes.value(dst_hostaddr.toIPv4Address()))==NULL) {
-    return false;
-  }
-  if(dst_slot>=(int)lwrp->dstSlots()) {
-    return false;
-  }
-  lwrp->setDstAddress(dst_slot,addr);
-
-  return true;
-}
-
-
-bool DRouter::clearGpioCrosspoint(const QHostAddress &gpo_hostaddr,int gpo_slot)
-{
-  SyLwrpClient *lwrp=NULL;
-
-  //
-  // Get the GPO
-  //
-  if((lwrp=drouter_nodes.value(gpo_hostaddr.toIPv4Address()))==NULL) {
-    return false;
-  }
-  if(gpo_slot>=(int)lwrp->gpos()) {
-    return false;
-  }
-  lwrp->setGpoSourceAddress(gpo_slot,QHostAddress(),-1);
-
-  return true;
-}
-
-
-bool DRouter::setGpioCrosspoint(const QHostAddress &gpo_hostaddr,int gpo_slot,
-				const QHostAddress &gpi_hostaddr,int gpi_slot)
-{
-  SyLwrpClient *lwrp=NULL;
-
-  //
-  // Get the GPI
-  //
-  if((lwrp=drouter_nodes.value(gpi_hostaddr.toIPv4Address()))==NULL) {
-    return false;
-  }
-  if(gpi_slot>=(int)lwrp->gpis()) {
-    return false;
-  }
-
-  //
-  // Get the GPO
-  //
-  if((lwrp=drouter_nodes.value(gpo_hostaddr.toIPv4Address()))==NULL) {
-    return false;
-  }
-  if(gpo_slot>=(int)lwrp->gpos()) {
-    return false;
-  }
-  lwrp->setGpoSourceAddress(gpo_slot,gpi_hostaddr,gpi_slot);
-
-  return true;
-}
-
 
 void DRouter::nodeConnectedData(unsigned id,bool state)
 {
+  QString sql;
+  QSqlQuery *q;
+
   if(state) {
     if(node(QHostAddress(id))==NULL) {
       fprintf(stderr,"DRouter::nodeConnectedData() - received connect signal from unknown node\n");
@@ -311,7 +215,81 @@ void DRouter::nodeConnectedData(unsigned id,bool state)
 			      DROUTER_SILENCE_THRESHOLD,
 			      DROUTER_SILENCE_TIMEOUT);
     }
-    emit nodeAdded(*(lwrp->node()));
+    //    emit nodeAdded(*(lwrp->node()));
+    sql=QString("insert into NODES set ")+
+      "HOST_ADDRESS=\""+QHostAddress(id).toString()+"\","+
+      "HOST_NAME=\""+lwrp->hostName()+"\","+
+      "DEVICE_NAME=\""+lwrp->deviceName()+"\","+
+      QString().sprintf("SOURCE_SLOTS=%u,",lwrp->srcSlots())+
+      QString().sprintf("DESTINATION_SLOTS=%u,",lwrp->dstSlots())+
+      QString().sprintf("GPI_SLOTS=%u,",lwrp->gpis())+
+      QString().sprintf("GPO_SLOTS=%u",lwrp->gpos());
+    q=new QSqlQuery(sql);
+    delete q;
+    for(unsigned i=0;i<lwrp->srcSlots();i++) {
+      sql=QString("insert into SOURCES set ")+
+	"HOST_ADDRESS=\""+QHostAddress(id).toString()+"\","+
+	QString().sprintf("SLOT=%u,",i)+
+	"HOST_NAME=\""+lwrp->hostName()+"\","+
+	"STREAM_ADDRESS=\""+lwrp->srcAddress(i).toString()+"\","+
+	"NAME=\""+lwrp->srcName(i)+"\","+
+	QString().sprintf("STREAM_ENABLED=%u,",lwrp->srcEnabled(i))+
+	QString().sprintf("CHANNELS=%u,",lwrp->srcChannels(i))+
+	QString().sprintf("BLOCK_SIZE=%u",lwrp->srcPacketSize(i));
+      q=new QSqlQuery(sql);
+      delete q;
+    }
+    for(unsigned i=0;i<lwrp->dstSlots();i++) {
+      sql=QString("insert into DESTINATIONS set ")+
+	"HOST_ADDRESS=\""+QHostAddress(id).toString()+"\","+
+	QString().sprintf("SLOT=%u,",i)+
+	"HOST_NAME=\""+lwrp->hostName()+"\","+
+	"STREAM_ADDRESS=\""+lwrp->dstAddress(i).toString()+"\","+
+	"NAME=\""+lwrp->dstName(i)+"\","+
+	QString().sprintf("CHANNELS=%u",lwrp->dstChannels(i));
+      q=new QSqlQuery(sql);
+      delete q;
+    }
+    for(unsigned i=0;i<lwrp->gpis();i++) {
+      sql=QString("insert into GPIS set ")+
+	"HOST_ADDRESS=\""+QHostAddress(id).toString()+"\","+
+	QString().sprintf("SLOT=%u,",i)+
+	"HOST_NAME=\""+lwrp->hostName()+"\","+
+	"CODE=\""+lwrp->gpiBundle(i)->code()+"\"";
+      q=new QSqlQuery(sql);
+      delete q;
+    }
+    for(unsigned i=0;i<lwrp->gpos();i++) {
+      sql=QString("insert into GPOS set ")+
+	"HOST_ADDRESS=\""+QHostAddress(id).toString()+"\","+
+	QString().sprintf("SLOT=%u,",i)+
+	"HOST_NAME=\""+lwrp->hostName()+"\","+
+	"CODE=\""+lwrp->gpiBundle(i)->code()+"\","+
+	"NAME=\""+lwrp->gpo(i)->name()+"\","+
+	"SOURCE_ADDRESS=\""+lwrp->gpo(i)->sourceAddress().toString()+"\","+
+	QString().sprintf("SOURCE_SLOT=%d",lwrp->gpo(i)->sourceSlot());
+      q=new QSqlQuery(sql);
+      delete q;
+    }
+    /*
+    for(unsigned i=0;i<lwrp->srcSlots();i++) {
+      NotifyProtocols("SRCADD",
+		      QHostAddress(id).toString()+QString().sprintf(":%u",i));
+    }
+    for(unsigned i=0;i<lwrp->dstSlots();i++) {
+      NotifyProtocols("DSTADD",
+		      QHostAddress(id).toString()+QString().sprintf(":%u",i));
+    }
+    for(unsigned i=0;i<lwrp->gpis();i++) {
+      NotifyProtocols("GPIADD",
+		      QHostAddress(id).toString()+QString().sprintf(":%u",i));
+    }
+    for(unsigned i=0;i<lwrp->gpos();i++) {
+      NotifyProtocols("GPOADD",
+		      QHostAddress(id).toString()+QString().sprintf(":%u",i));
+    }
+    */
+    NotifyProtocols("NODEADD",QHostAddress(id).toString());
   }
   else {
     SyLwrpClient *lwrp=node(QHostAddress(id));
@@ -319,7 +297,59 @@ void DRouter::nodeConnectedData(unsigned id,bool state)
       fprintf(stderr,"DRouter::nodeConnectedData() - received disconnect signal from unknown node\n");
       exit(256);
     }
-    emit nodeAboutToBeRemoved(*(lwrp->node()));
+    //    emit nodeAboutToBeRemoved(*(lwrp->node()));
+    /*
+    for(unsigned i=0;i<lwrp->srcSlots();i++) {
+      NotifyProtocols("SRCDEL",
+		      QHostAddress(id).toString()+QString().sprintf(":%u",i));
+    }
+    for(unsigned i=0;i<lwrp->dstSlots();i++) {
+      NotifyProtocols("DSTDEL",
+		      QHostAddress(id).toString()+QString().sprintf(":%u",i));
+    }
+    for(unsigned i=0;i<lwrp->gpis();i++) {
+      NotifyProtocols("GPIDEL",
+		      QHostAddress(id).toString()+QString().sprintf(":%u",i));
+    }
+    for(unsigned i=0;i<lwrp->gpos();i++) {
+      NotifyProtocols("GPODEL",
+		      QHostAddress(id).toString()+QString().sprintf(":%u",i));
+    }
+    */
+    sql=QString("select ")+
+      "SOURCE_SLOTS,"+       // 00
+      "DESTINATION_SLOTS,"+  // 01
+      "GPI_SLOTS,"+          // 02
+      "GPO_SLOTS "+          // 03
+      "from NODES where "+
+      "HOST_ADDRESS=\""+QHostAddress(id).toString()+"\"";
+    q=new QSqlQuery(sql);
+    if(q->first()) {
+      NotifyProtocols("NODEDEL",QHostAddress(id).toString(),
+		      q->value(0).toInt(),q->value(1).toInt(),
+		      q->value(2).toInt(),q->value(3).toInt());
+    }
+    delete q;
+    sql=QString("delete from SOURCES where ")+
+      "HOST_ADDRESS=\""+QHostAddress(id).toString()+"\"";
+    q=new QSqlQuery(sql);
+    delete q;
+    sql=QString("delete from DESTINATIONS where ")+
+      "HOST_ADDRESS=\""+QHostAddress(id).toString()+"\"";
+    q=new QSqlQuery(sql);
+    delete q;
+    sql=QString("delete from GPIS where ")+
+      "HOST_ADDRESS=\""+QHostAddress(id).toString()+"\"";
+    q=new QSqlQuery(sql);
+    delete q;
+    sql=QString("delete from GPOS where ")+
+      "HOST_ADDRESS=\""+QHostAddress(id).toString()+"\"";
+    q=new QSqlQuery(sql);
+    delete q;
+    sql=QString("delete from NODES where ")+
+      "HOST_ADDRESS=\""+QHostAddress(id).toString()+"\"";
+    q=new QSqlQuery(sql);
+    delete q;
     drouter_nodes.erase(drouter_nodes.find(id));
   }
 }
@@ -328,38 +358,106 @@ void DRouter::nodeConnectedData(unsigned id,bool state)
 void DRouter::sourceChangedData(unsigned id,int slotnum,const SyNode &node,
 				const SySource &src)
 {
-  emit srcChanged(node,slotnum,src);
+  QString sql;
+  QSqlQuery *q;
+
+  sql=QString("update SOURCES set ")+
+    "HOST_NAME=\""+node.hostName()+"\","+
+    "STREAM_ADDRESS=\""+src.streamAddress().toString()+"\","+
+    "NAME=\""+src.name()+"\","+
+    QString().sprintf("STREAM_ENABLED=%u,",src.enabled())+
+    QString().sprintf("CHANNELS=%u,",src.channels())+
+    QString().sprintf("BLOCK_SIZE=%u where ",src.packetSize())+
+    "HOST_ADDRESS=\""+QHostAddress(id).toString()+"\" && "+
+    QString().sprintf("SLOT=%u",slotnum);
+  q=new QSqlQuery(sql);
+  delete q;
+  NotifyProtocols("SRC",QHostAddress(id).toString()+
+		  QString().sprintf(":%u",slotnum));
 }
 
 
 void DRouter::destinationChangedData(unsigned id,int slotnum,const SyNode &node,
 				     const SyDestination &dst)
 {
-  emit dstChanged(node,slotnum,dst);
+  QString sql;
+  QSqlQuery *q;
+
+  sql=QString("update DESTINATIONS set ")+
+    "HOST_NAME=\""+node.hostName()+"\","+
+    "STREAM_ADDRESS=\""+dst.streamAddress().toString()+"\","+
+    "NAME=\""+dst.name()+"\","+
+    QString().sprintf("CHANNELS=%u where ",dst.channels())+
+    "HOST_ADDRESS=\""+QHostAddress(id).toString()+"\" && "+
+    QString().sprintf("SLOT=%u",slotnum);
+  q=new QSqlQuery(sql);
+  delete q;
+  NotifyProtocols("DST",QHostAddress(id).toString()+
+		  QString().sprintf(":%u",slotnum));
 }
 
 
 void DRouter::gpiChangedData(unsigned id,int slotnum,const SyNode &node,
 			     const SyGpioBundle &gpi)
 {
-  emit gpiChanged(node,slotnum,gpi);
+  QString sql;
+  QSqlQuery *q;
+
+  sql=QString("update GPIS set ")+
+    "CODE=\""+gpi.code().toLower()+"\" where "+
+    "HOST_ADDRESS=\""+QHostAddress(id).toString()+"\" && "+
+    QString().sprintf("SLOT=%u",slotnum);
+  q=new QSqlQuery(sql);
+  delete q;
+  NotifyProtocols("GPI",QHostAddress(id).toString()+
+		  QString().sprintf(":%u",slotnum));
 }
 
 
 void DRouter::gpoChangedData(unsigned id,int slotnum,const SyNode &node,
 			     const SyGpo &gpo)
 {
-  emit gpoChanged(node,slotnum,gpo);
+  QString sql;
+  QSqlQuery *q;
+
+  sql=QString("update GPOS set ")+
+    "CODE=\""+gpo.bundle()->code().toLower()+"\","+
+    "NAME=\""+gpo.name()+"\","+
+    "SOURCE_ADDRESS=\""+gpo.sourceAddress().toString()+"=\" where "+
+    QString().sprintf("SOURCE_SLOT=%d,",gpo.sourceSlot())+
+    "HOST_ADDRESS=\""+QHostAddress(id).toString()+"\" && "+
+    QString().sprintf("SLOT=%u",slotnum);
+  q=new QSqlQuery(sql);
+  delete q;
+  NotifyProtocols("GPO",QHostAddress(id).toString()+
+		  QString().sprintf(":%u",slotnum));
 }
 
 
 void DRouter::audioClipAlarmData(unsigned id,SyLwrpClient::MeterType type,
 				 unsigned slotnum,int chan,bool state)
 {
+  QString sql;
+  QSqlQuery *q;
   SyLwrpClient *lwrp=NULL;
+  QString table="SOURCES";
+  QString chan_name="LEFT";
 
+  if(type==SyLwrpClient::OutputMeter) {
+    table="DESTINATIONS";
+  }
+  if(chan==1) {
+    chan_name="RIGHT";
+  }
   if((lwrp=drouter_nodes[id])!=NULL) {
-    emit clipAlarmChanged(*(lwrp->node()),(int)slotnum,type,chan,state);
+    sql=QString("update ")+table+" set "+
+      chan_name+"_CLIP="+QString().sprintf("%d where ",state)+
+      "HOST_ADDRESS=\""+QHostAddress(id).toString()+"\" && "+
+      QString().sprintf("SLOT=%d",slotnum);
+    q=new QSqlQuery(sql);
+    delete q;
+    NotifyProtocols("CLIP",QString().sprintf("%d:%d:",type,chan)+QHostAddress(id).toString()+QString().sprintf(":%d",slotnum));
+    //    emit clipAlarmChanged(*(lwrp->node()),(int)slotnum,type,chan,state);
   }
 }
 
@@ -367,10 +465,28 @@ void DRouter::audioClipAlarmData(unsigned id,SyLwrpClient::MeterType type,
 void DRouter::audioSilenceAlarmData(unsigned id,SyLwrpClient::MeterType type,
 				    unsigned slotnum,int chan,bool state)
 {
+  QString sql;
+  QSqlQuery *q;
   SyLwrpClient *lwrp=NULL;
+  QString table="SOURCES";
+  QString chan_name="LEFT";
+
+  if(type==SyLwrpClient::OutputMeter) {
+    table="DESTINATIONS";
+  }
+  if(chan==1) {
+    chan_name="RIGHT";
+  }
 
   if((lwrp=drouter_nodes[id])!=NULL) {
-    emit silenceAlarmChanged(*(lwrp->node()),(int)slotnum,type,chan,state);
+    sql=QString("update ")+table+" set "+
+      chan_name+"_SILENCE="+QString().sprintf("%d where ",state)+
+      "HOST_ADDRESS=\""+QHostAddress(id).toString()+"\" && "+
+      QString().sprintf("SLOT=%d",slotnum);
+    q=new QSqlQuery(sql);
+    delete q;
+    NotifyProtocols("SILENCE",QString().sprintf("%d:%d:",type,chan)+QHostAddress(id).toString()+QString().sprintf(":%d",slotnum));
+    //    emit silenceAlarmChanged(*(lwrp->node()),(int)slotnum,type,chan,state);
   }
 }
 
@@ -414,4 +530,261 @@ void DRouter::advtReadyReadData(int ifnum)
       node->connectToHost(addr,SWITCHYARD_LWRP_PORT,"",false);
     }
   }
+}
+
+
+void DRouter::newIpcConnectionData(int listen_sock)
+{
+  printf("newIpcConnectionData()\n");
+  int sock;
+
+  if((sock=accept(listen_sock,NULL,NULL))<0) {
+    fprintf(stderr,"accept failed [%s]\n",strerror(errno));
+    return;
+  }
+  drouter_ipc_sockets[sock]=new QTcpSocket(this);
+  drouter_ipc_accums[sock]=QString();
+  drouter_ipc_sockets[sock]->
+    setSocketDescriptor(sock,QAbstractSocket::ConnectedState);
+  connect(drouter_ipc_sockets[sock],SIGNAL(readyRead()),
+	  drouter_ipc_ready_mapper,SLOT(map()));
+  drouter_ipc_ready_mapper->
+    setMapping(drouter_ipc_sockets[sock],sock);
+}
+
+
+void DRouter::ipcReadyReadData(int sock)
+{
+  char data[1501];
+  int n;
+
+  while((n=drouter_ipc_sockets[sock]->read(data,1500))>0) {
+    for(int i=0;i<n;i++) {
+      switch(0xFF&data[i]) {
+      case 10:
+	break;
+
+      case 13:
+	if(!ProcessIpcCommand(sock,drouter_ipc_accums[sock])) {
+	  return;
+	}
+	drouter_ipc_accums[sock]="";
+	break;
+
+      default:
+	drouter_ipc_accums[sock]+=0xFF&data[i];
+	break;
+      }
+    }
+  }
+  drouter_ipc_sockets[sock]->write("Hello back!",11);
+}
+
+
+void DRouter::NotifyProtocols(const QString &type,const QString &id,
+			      int srcs,int dsts,int gpis,int gpos)
+{
+  for(QMap<int,QTcpSocket *>::iterator it=drouter_ipc_sockets.begin();
+      it!=drouter_ipc_sockets.end();it++) {
+    if(gpos<0) {
+      it.value()->write((type+":"+id+"\r\n").toUtf8());
+    }
+    else {
+      it.value()->write((type+":"+id+
+			 QString().sprintf(":%d:%d:%d:%d\r\n",
+					   srcs,dsts,gpis,gpos)).toUtf8());
+    }
+  }
+}
+
+
+bool DRouter::StartProtocolIpc(QString *err_msg)
+{
+  int sock;
+  struct sockaddr_un sa;
+
+  //
+  // UNIX Server
+  //
+  if((sock=socket(AF_UNIX,SOCK_SEQPACKET,0))<0) {
+    *err_msg=tr("unable to start protocol ipc")+" ["+strerror(errno)+"]";
+    return false;
+  }
+  memset(&sa,0,sizeof(sa));
+  sa.sun_family=AF_UNIX;
+  strncpy(sa.sun_path+1,DROUTER_IPC_ADDRESS,UNIX_PATH_MAX-1);
+  if(bind(sock,(struct sockaddr *)(&sa),sizeof(sa))<0) {
+    *err_msg=tr("unable to bind protocol ipc")+" ["+strerror(errno)+"]";
+    return false;
+  }
+  if(listen(sock,3)<0) {
+    *err_msg=tr("unable to listen protocol ipc")+" ["+strerror(errno)+"]";
+    return false;
+  }
+  QSocketNotifier *socknotify=
+    new QSocketNotifier(sock,QSocketNotifier::Read,this);
+  connect(socknotify,SIGNAL(activated(int)),
+	  this,SLOT(newIpcConnectionData(int)));
+
+  //
+  // Slot Mappers
+  //
+  drouter_ipc_ready_mapper=new QSignalMapper(this);
+  connect(drouter_ipc_ready_mapper,SIGNAL(mapped(int)),
+	  this,SLOT(ipcReadyReadData(int)));
+
+  return true;
+}
+
+
+bool DRouter::ProcessIpcCommand(int sock,const QString &cmd)
+{
+  if(cmd=="QUIT") {
+    printf("deleting: %d\n",sock);
+    drouter_ipc_sockets[sock]->close();
+    drouter_ipc_sockets[sock]->deleteLater();
+    drouter_ipc_sockets.remove(sock);
+    drouter_ipc_accums.remove(sock);
+    return false;
+  }
+  return true;
+}
+
+
+bool DRouter::StartDb(QString *err_msg)
+{
+  QString sql;
+  QSqlQuery *q;
+  QSqlQuery *q1;
+
+  //
+  // Connect to Database
+  //
+  QSqlDatabase db=QSqlDatabase::addDatabase("QMYSQL3");
+  db.setHostName("localhost");
+  db.setDatabaseName("drouter");
+  db.setUserName("drouter");
+  db.setPassword("drouter");
+  if(!db.open()) {
+    *err_msg=tr("unable to open database")+" ["+db.lastError().driverText()+"]";
+    return false;
+  }
+
+  //
+  // Clear Old Data
+  //
+  sql="show tables";
+  q=new QSqlQuery(sql);
+  while(q->next()) {
+    sql=QString("drop table `")+q->value(0).toString()+"`";
+    q1=new QSqlQuery(sql);
+    delete q1;
+  }
+  delete q;
+
+  //
+  // Create Schema
+  //
+  sql=QString("create table if not exists NODES (")+
+    "HOST_ADDRESS char(15) not null primary key,"+
+    "HOST_NAME char(16),"+
+    "DEVICE_NAME char(20),"+
+    "SOURCE_SLOTS int,"+
+    "DESTINATION_SLOTS int,"+
+    "GPI_SLOTS int,"+
+    "GPO_SLOTS int)";
+  q=new QSqlQuery(sql);
+  delete q;
+
+  sql=QString("create table if not exists SOURCES (")+
+    "ID int auto_increment not null primary key,"+
+    "HOST_ADDRESS char(15) not null,"+
+    "SLOT int not null,"+
+    "HOST_NAME char(16),"+
+    "STREAM_ADDRESS char(15),"+
+    "NAME char(16),"+
+    "STREAM_ENABLED int,"+
+    "CHANNELS int,"+
+    "BLOCK_SIZE int,"+
+    "LEFT_CLIP int default 0,"+
+    "RIGHT_CLIP int default 0,"+
+    "LEFT_SILENCE int default 0,"+
+    "RIGHT_SILENCE int default 0,"+
+    "unique index SLOT_IDX(HOST_ADDRESS,SLOT))";
+  q=new QSqlQuery(sql);
+  delete q;
+
+  sql=QString("create table if not exists DESTINATIONS (")+
+    "ID int auto_increment not null primary key,"+
+    "HOST_ADDRESS char(15) not null,"+
+    "SLOT int not null,"+
+    "HOST_NAME char(16),"+
+    "STREAM_ADDRESS char(15),"+
+    "NAME char(16),"+
+    "CHANNELS int,"+
+    "LEFT_CLIP int default 0,"+
+    "RIGHT_CLIP int default 0,"+
+    "LEFT_SILENCE int default 0,"+
+    "RIGHT_SILENCE int default 0,"+
+    "unique index SLOT_IDX(HOST_ADDRESS,SLOT))";
+  q=new QSqlQuery(sql);
+  delete q;
+
+  sql=QString("create table if not exists GPIS (")+
+    "ID int auto_increment not null primary key,"+
+    "HOST_ADDRESS char(15) not null,"+
+    "SLOT int not null,"+
+    "HOST_NAME char(16),"+
+    "CODE char(5),"+
+    "unique index SLOT_IDX(HOST_ADDRESS,SLOT))";
+  q=new QSqlQuery(sql);
+  delete q;
+
+  sql=QString("create table if not exists GPOS (")+
+    "ID int auto_increment not null primary key,"+
+    "HOST_ADDRESS char(15) not null,"+
+    "SLOT int not null,"+
+    "HOST_NAME char(16),"+
+    "CODE char(5),"+
+    "NAME char(16),"+
+    "SOURCE_ADDRESS char(22),"+
+    "SOURCE_SLOT int default -1,"+
+    "unique index SLOT_IDX(HOST_ADDRESS,SLOT))";
+  q=new QSqlQuery(sql);
+  delete q;
+
+  return true;
+}
+
+
+bool DRouter::StartLivewire(QString *err_msg)
+{
+  //
+  // Livewire Advertisement Sockets
+  //
+  QSignalMapper *mapper=new QSignalMapper(this);
+  connect(mapper,SIGNAL(mapped(int)),this,SLOT(advtReadyReadData(int)));
+  SyInterfaces *ifaces=new SyInterfaces();
+  if(!ifaces->update()) {
+    fprintf(stderr,"drouterd: unable to get network interface information\n");
+    exit(1);
+  }
+  for(int i=0;i<ifaces->quantity();i++) {
+    drouter_advt_sockets.
+      push_back(new SyMcastSocket(SyMcastSocket::ReadOnly,this));
+    if(!drouter_advt_sockets.back()->
+       bind(ifaces->ipv4Address(i),SWITCHYARD_ADVERTS_PORT)) {
+      fprintf(stderr,"drouterd: unable to bind %s:%d\n",
+	      (const char *)ifaces->ipv4Address(i).toString().toUtf8(),
+	      SWITCHYARD_ADVERTS_PORT);
+      exit(1);
+    }
+    drouter_advt_sockets.back()->subscribe(SWITCHYARD_ADVERTS_ADDRESS);
+    mapper->setMapping(drouter_advt_sockets.back(),
+		       drouter_advt_sockets.size()-1);
+    connect(drouter_advt_sockets.back(),SIGNAL(readyRead()),
+	    mapper,SLOT(map()));
+  }
+
+  return true;
 }

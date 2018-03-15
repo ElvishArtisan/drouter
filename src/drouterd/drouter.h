@@ -1,8 +1,8 @@
 // drouter.h
 //
-// Dynamic router for Livewire networks
+// Dynamic router database component for Drouter
 //
-//   (C) Copyright 2017 Fred Gleason <fredg@paravelsystems.com>
+//   (C) Copyright 2018 Fred Gleason <fredg@paravelsystems.com>
 //
 //   This program is free software; you can redistribute it and/or modify
 //   it under the terms of the GNU General Public License version 2 as
@@ -24,12 +24,11 @@
 #include <QList>
 #include <QMap>
 #include <QObject>
+#include <QSignalMapper>
+#include <QTcpServer>
 
 #include <sy/sylwrp_client.h>
 #include <sy/symcastsocket.h>
-#include <sy/synode.h>
-
-#include "drouter.h"
 
 #define DROUTER_CLIP_THRESHOLD -20
 #define DROUTER_CLIP_TIMEOUT 1000
@@ -41,6 +40,7 @@ class DRouter : public QObject
  Q_OBJECT;
  public:
   DRouter(QObject *parent=0);
+  ~DRouter();
   QList<QHostAddress> nodeHostAddresses() const;
   SyLwrpClient *node(const QHostAddress &hostaddr);
   SyLwrpClient *nodeBySrcStream(const QHostAddress &strmaddress,int *slot);
@@ -53,26 +53,7 @@ class DRouter : public QObject
 			  SyLwrpClient::MeterType type,int chan) const;
   SyGpioBundle *gpi(const QHostAddress &hostaddr,int slot) const;
   SyGpo *gpo(const QHostAddress &hostaddr,int slot) const;
-
- public slots:
-  bool clearCrosspoint(const QHostAddress &dst_hostaddr,int dst_slot);
-  bool setCrosspoint(const QHostAddress &dst_hostaddr,int dst_slot,
-		     const QHostAddress &src_hostaddr,int src_slot);
-  bool clearGpioCrosspoint(const QHostAddress &gpo_hostaddr,int gpo_slot);
-  bool setGpioCrosspoint(const QHostAddress &gpo_hostaddr,int gpo_slot,
-			 const QHostAddress &gpi_hostaddr,int gpi_slot);
-
- signals:
-  void nodeAdded(const SyNode &node);
-  void nodeAboutToBeRemoved(const SyNode &node);
-  void srcChanged(const SyNode &node,int slot,const SySource &src);
-  void dstChanged(const SyNode &node,int slot,const SyDestination &dst);
-  void gpiChanged(const SyNode &node,int slot,const SyGpioBundle &gpi);
-  void gpoChanged(const SyNode &node,int slot,const SyGpo &gpo);
-  void clipAlarmChanged(const SyNode &node,int slot,
-			SyLwrpClient::MeterType type,int chan,bool state);
-  void silenceAlarmChanged(const SyNode &node,int slot,
-			   SyLwrpClient::MeterType type,int chan,bool state);
+  bool start(QString *err_msg);
 
  private slots:
   void nodeConnectedData(unsigned id,bool state);
@@ -89,10 +70,22 @@ class DRouter : public QObject
   void audioSilenceAlarmData(unsigned id,SyLwrpClient::MeterType type,
 			     unsigned slotnum,int chan,bool state);
   void advtReadyReadData(int ifnum);
+  void newIpcConnectionData(int listen_sock);
+  void ipcReadyReadData(int sock);
 
  private:
+  void NotifyProtocols(const QString &type,const QString &id,
+		       int srcs=-1,int dsts=-1,int gpis=-1,int gpos=-1);
+  bool StartProtocolIpc(QString *err_msg);
+  bool ProcessIpcCommand(int sock,const QString &cmd);
+  bool StartDb(QString *err_msg);
+  bool StartLivewire(QString *err_msg);
   QMap<unsigned,SyLwrpClient *> drouter_nodes;
   QList<SyMcastSocket *> drouter_advt_sockets;
+  QMap<int,QTcpSocket *> drouter_ipc_sockets;
+  QMap<int,QString> drouter_ipc_accums;
+  QSignalMapper *drouter_ipc_ready_mapper;
+  QTcpServer *drouter_ipc_server;
 };
 
 

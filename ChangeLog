@@ -295,3 +295,5 @@
 2018-03-13 Fred Gleason <fredg@paravelsystems.com>
 	* Updated 'NEWS'.
 	* Incremented the package version to 0.6.4.
+2018-03-15 Fred Gleason <fredg@paravelsystems.com>
+	* Refactored drouterd(8) to implement multi-threading.

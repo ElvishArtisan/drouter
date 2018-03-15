@@ -28,31 +28,24 @@ moc_%.cpp:	%.h
 	@MOC@ $< -o $@
 
 
-sbin_PROGRAMS = drouterd
+sbin_PROGRAMS = dprotod\
+                drouterd
 
 dist_drouterd_SOURCES = drouter.cpp drouter.h\
                         drouterd.cpp drouterd.h\
-                        protocol.cpp protocol.h\
-                        protocol_d.cpp protocol_d.h\
-                        protocol_sa.cpp protocol_sa.h\
-                        protocolfactory.cpp protocolfactory.h\
-                        scripthost.cpp scripthost.h\
-                        server_d.cpp server_d.h\
-                        server_sa.cpp server_sa.h\
-                        server_net.cpp server_net.h
+                        protoipc.h
 
-nodist_drouterd_SOURCES = endpointmap.cpp endpointmap.h\
-                          moc_drouter.cpp\
+nodist_drouterd_SOURCES = moc_drouter.cpp\
                           moc_drouterd.cpp\
-                          moc_protocol.cpp\
-                          moc_protocol_d.cpp\
-                          moc_protocol_sa.cpp\
-                          moc_scripthost.cpp\
-                          moc_server_d.cpp\
-                          moc_server_sa.cpp\
-                          moc_server_net.cpp
+                          protoipc.h
 
 drouterd_LDADD = @QT4CLI_LIBS@ @SWITCHYARD_LIBS@ @LIBSYSTEMD_LIBS@
+
+dist_dprotod_SOURCES = dprotod.cpp dprotod.h
+
+nodist_dprotod_SOURCES = moc_dprotod.cpp
+
+dprotod_LDADD = @QT4CLI_LIBS@ @SWITCHYARD_LIBS@ @LIBSYSTEMD_LIBS@
 
 CLEANFILES = *~\
              moc_*\

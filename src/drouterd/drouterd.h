@@ -2,7 +2,7 @@
 //
 // Dynamic router service for Livewire networks
 //
-//   (C) Copyright 2017 Fred Gleason <fredg@paravelsystems.com>
+//   (C) Copyright 2018 Fred Gleason <fredg@paravelsystems.com>
 //
 //   This program is free software; you can redistribute it and/or modify
 //   it under the terms of the GNU General Public License version 2 as
@@ -21,14 +21,10 @@
 #ifndef DROUTERD_H
 #define DROUTERD_H
 
-#include <QList>
 #include <QObject>
-
-#include <sy/synode.h>
+#include <QTimer>
 
 #include "drouter.h"
-#include "protocol.h"
-#include "scripthost.h"
 
 #define DROUTERD_SCRIPTS_DIRECTORY QString("/etc/drouter.d/scripts")
 #define DROUTERD_SCRIPTS_FILTER QString("*.py")
@@ -41,14 +37,10 @@ class MainObject : public QObject
   MainObject(QObject *parent=0);
 
  private slots:
-  void scriptsData();
   void signalData();
 
  private:
-  QList<Protocol *> main_protocols;
-  QList<ScriptHost *> main_scripts;
   DRouter *main_drouter;
-  QTimer *main_script_timer;
   QTimer *main_signal_timer;
 };
 

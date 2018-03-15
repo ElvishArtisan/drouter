@@ -24,8 +24,6 @@
 #include <syslog.h>
 
 #include <QCoreApplication>
-#include <QDir>
-#include <QHostAddress>
 
 #include <sy/sycmdswitch.h>
 
@@ -34,7 +32,6 @@
 #endif  // LIBSYSTEMD
 
 #include "drouterd.h"
-#include "protocolfactory.h"
 
 bool global_reload=false;
 
@@ -51,15 +48,15 @@ void SigHandler(int signo)
 MainObject::MainObject(QObject *parent)
   : QObject(parent)
 {
-  bool no_scripts=false;
-  int socks[2]={-1,-1};
-  int n;
+  //  bool no_scripts=false;
+  //  int socks[2]={-1,-1};
+  //  int n;
   QString err_msg;
   SyCmdSwitch *cmd=
     new SyCmdSwitch(qApp->argc(),qApp->argv(),"drouterd",VERSION,DROUTERD_USAGE);
   for(unsigned i=0;i<(cmd->keys());i++) {
     if(cmd->key(i)=="--no-scripts") {
-      no_scripts=true;
+      //      no_scripts=true;
       cmd->setProcessed(i,true);
     }
     if(!cmd->processed(i)) {
@@ -73,11 +70,7 @@ MainObject::MainObject(QObject *parent)
   //
   openlog("drouterd",LOG_PERROR,LOG_DAEMON);
 
-  //
-  // DRouter
-  //
-  main_drouter=new DRouter(this);
-
+  /*
 #ifdef LIBSYSTEMD
   //
   // Get sockets from SystemD
@@ -112,6 +105,15 @@ MainObject::MainObject(QObject *parent)
   if(!no_scripts) {
     main_script_timer->start(30000);
   }
+  */
+  //
+  // Start Router Process
+  //
+  main_drouter=new DRouter(this);
+  if(!main_drouter->start(&err_msg)) {
+    fprintf(stderr,"drouterd: %s\n",(const char *)err_msg.toUtf8());
+    exit(1);
+  }
 
   //
   // Set Signals
@@ -123,38 +125,19 @@ MainObject::MainObject(QObject *parent)
 }
 
 
-void MainObject::scriptsData()
-{
-  for(int i=0;i<main_scripts.size();i++) {
-    delete main_scripts.at(i);
-  }
-  main_scripts.clear();
-
-  QDir dir(DROUTERD_SCRIPTS_DIRECTORY);
-  QStringList filters;
-  filters.push_back(DROUTERD_SCRIPTS_FILTER);
-  QStringList scripts=dir.entryList(filters,QDir::Files|QDir::Executable);
-
-  for(int i=0;i<scripts.size();i++) {
-    main_scripts.push_back(new ScriptHost(DROUTERD_SCRIPTS_DIRECTORY+"/"+
-					  scripts.at(i),this));
-    main_scripts.back()->start();
-    //    printf("script[%d]: %s\n",i,(const char *)scripts.at(i).toUtf8());
-  }
-}
-
-
 void MainObject::signalData()
 {
   if(global_reload) {
+    /*
     for(int i=0;i<main_scripts.size();i++) {
       main_scripts.at(i)->terminate();
     }
     for(int i=0;i<main_protocols.size();i++) {
       main_protocols.at(i)->reload();
     }
+    */
     syslog(LOG_INFO,"reloaded configuration");
-    main_script_timer->start(30000);
+    //    main_script_timer->start(30000);
     global_reload=false;
   }
 }

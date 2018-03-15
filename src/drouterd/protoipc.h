@@ -1,8 +1,8 @@
-// protocolfactory.cpp
+// protoipc.h
 //
-// Create a protocol instance.
+// Common data structures for DRouter protocol IPC
 //
-//   (C) Copyright 2017 Fred Gleason <fredg@paravelsystems.com>
+//   (C) Copyright 2018 Fred Gleason <fredg@paravelsystems.com>
 //
 //   This program is free software; you can redistribute it and/or modify
 //   it under the terms of the GNU General Public License version 2 as
@@ -18,24 +18,12 @@
 //   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
 //
 
-#include "protocol_d.h"
-#include "protocol_sa.h"
-#include "protocolfactory.h"
+#ifndef PROTOIPC_H
+#define PROTOIPC_H
 
-Protocol *ProtocolFactory(DRouter *router,Protocol::Type type,int sock,
-			  QObject *parent)
-{
-  Protocol *p=NULL;
+/*
+ * Used for the abstract UNIX socket address
+ */
+#define DROUTER_IPC_ADDRESS "p0q9346unq90-846un5b6w0ue-a09i"
 
-  switch(type) {
-  case Protocol::ProtocolD:
-    p=new ProtocolD(router,sock,parent);
-    break;
-
-  case Protocol::ProtocolSa:
-    p=new ProtocolSa(router,sock,parent);
-    break;
-  }
-
-  return p;
-}
+#endif  // PROTOIPC_H
