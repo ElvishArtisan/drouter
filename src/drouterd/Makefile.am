@@ -41,9 +41,14 @@ nodist_drouterd_SOURCES = moc_drouter.cpp\
 
 drouterd_LDADD = @QT4CLI_LIBS@ @SWITCHYARD_LIBS@ @LIBSYSTEMD_LIBS@
 
-dist_dprotod_SOURCES = dprotod.cpp dprotod.h
+dist_dprotod_SOURCES = dprotod.cpp dprotod.h\
+                       protocol.cpp protocol.h\
+                       protocol_d.cpp protocol_d.h\
+                       protoipc.h
 
-nodist_dprotod_SOURCES = moc_dprotod.cpp
+nodist_dprotod_SOURCES = moc_dprotod.cpp\
+                         moc_protocol.cpp\
+                         moc_protocol_d.cpp
 
 dprotod_LDADD = @QT4CLI_LIBS@ @SWITCHYARD_LIBS@ @LIBSYSTEMD_LIBS@
 

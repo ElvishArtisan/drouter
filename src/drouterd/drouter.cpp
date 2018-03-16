@@ -215,7 +215,6 @@ void DRouter::nodeConnectedData(unsigned id,bool state)
 			      DROUTER_SILENCE_THRESHOLD,
 			      DROUTER_SILENCE_TIMEOUT);
     }
-    //    emit nodeAdded(*(lwrp->node()));
     sql=QString("insert into NODES set ")+
       "HOST_ADDRESS=\""+QHostAddress(id).toString()+"\","+
       "HOST_NAME=\""+lwrp->hostName()+"\","+
@@ -271,24 +270,6 @@ void DRouter::nodeConnectedData(unsigned id,bool state)
       q=new QSqlQuery(sql);
       delete q;
     }
-    /*
-    for(unsigned i=0;i<lwrp->srcSlots();i++) {
-      NotifyProtocols("SRCADD",
-		      QHostAddress(id).toString()+QString().sprintf(":%u",i));
-    }
-    for(unsigned i=0;i<lwrp->dstSlots();i++) {
-      NotifyProtocols("DSTADD",
-		      QHostAddress(id).toString()+QString().sprintf(":%u",i));
-    }
-    for(unsigned i=0;i<lwrp->gpis();i++) {
-      NotifyProtocols("GPIADD",
-		      QHostAddress(id).toString()+QString().sprintf(":%u",i));
-    }
-    for(unsigned i=0;i<lwrp->gpos();i++) {
-      NotifyProtocols("GPOADD",
-		      QHostAddress(id).toString()+QString().sprintf(":%u",i));
-    }
-    */
     NotifyProtocols("NODEADD",QHostAddress(id).toString());
   }
   else {
@@ -297,25 +278,6 @@ void DRouter::nodeConnectedData(unsigned id,bool state)
       fprintf(stderr,"DRouter::nodeConnectedData() - received disconnect signal from unknown node\n");
       exit(256);
     }
-    //    emit nodeAboutToBeRemoved(*(lwrp->node()));
-    /*
-    for(unsigned i=0;i<lwrp->srcSlots();i++) {
-      NotifyProtocols("SRCDEL",
-		      QHostAddress(id).toString()+QString().sprintf(":%u",i));
-    }
-    for(unsigned i=0;i<lwrp->dstSlots();i++) {
-      NotifyProtocols("DSTDEL",
-		      QHostAddress(id).toString()+QString().sprintf(":%u",i));
-    }
-    for(unsigned i=0;i<lwrp->gpis();i++) {
-      NotifyProtocols("GPIDEL",
-		      QHostAddress(id).toString()+QString().sprintf(":%u",i));
-    }
-    for(unsigned i=0;i<lwrp->gpos();i++) {
-      NotifyProtocols("GPODEL",
-		      QHostAddress(id).toString()+QString().sprintf(":%u",i));
-    }
-    */
     sql=QString("select ")+
       "SOURCE_SLOTS,"+       // 00
       "DESTINATION_SLOTS,"+  // 01
@@ -423,10 +385,11 @@ void DRouter::gpoChangedData(unsigned id,int slotnum,const SyNode &node,
   sql=QString("update GPOS set ")+
     "CODE=\""+gpo.bundle()->code().toLower()+"\","+
     "NAME=\""+gpo.name()+"\","+
-    "SOURCE_ADDRESS=\""+gpo.sourceAddress().toString()+"=\" where "+
-    QString().sprintf("SOURCE_SLOT=%d,",gpo.sourceSlot())+
+    "SOURCE_ADDRESS=\""+gpo.sourceAddress().toString()+"\","+
+    QString().sprintf("SOURCE_SLOT=%d where ",gpo.sourceSlot())+
     "HOST_ADDRESS=\""+QHostAddress(id).toString()+"\" && "+
     QString().sprintf("SLOT=%u",slotnum);
+      printf("SQL: %s\n",(const char *)sql.toUtf8());
   q=new QSqlQuery(sql);
   delete q;
   NotifyProtocols("GPO",QHostAddress(id).toString()+
@@ -577,7 +540,6 @@ void DRouter::ipcReadyReadData(int sock)
       }
     }
   }
-  drouter_ipc_sockets[sock]->write("Hello back!",11);
 }
 
 
@@ -639,6 +601,10 @@ bool DRouter::StartProtocolIpc(QString *err_msg)
 
 bool DRouter::ProcessIpcCommand(int sock,const QString &cmd)
 {
+  bool ok=false;
+
+  printf("IPC CMD: %s\n",(const char *)cmd.toUtf8());
+
   if(cmd=="QUIT") {
     printf("deleting: %d\n",sock);
     drouter_ipc_sockets[sock]->close();
@@ -647,6 +613,72 @@ bool DRouter::ProcessIpcCommand(int sock,const QString &cmd)
     drouter_ipc_accums.remove(sock);
     return false;
   }
+
+  QStringList cmds=cmd.split(" ");
+  if((cmds.at(0)=="ClearCrosspoint")&&(cmds.size()==3)) {
+    SyLwrpClient *lwrp=drouter_nodes[QHostAddress(cmds.at(1)).toIPv4Address()];
+    unsigned slotnum=cmds.at(2).toUInt(&ok);
+    if((lwrp!=NULL)&&ok&&(slotnum<lwrp->dstSlots())) {
+      lwrp->setDstAddress(slotnum,QHostAddress("239.192.0.0"));
+    }
+  }
+
+  if((cmds.at(0)=="ClearGpioCrosspoint")&&(cmds.size()==3)) {
+    SyLwrpClient *lwrp=drouter_nodes[QHostAddress(cmds.at(1)).toIPv4Address()];
+    unsigned slotnum=cmds.at(2).toUInt(&ok);
+    if((lwrp!=NULL)&&ok&&(slotnum<lwrp->gpos())) {
+      lwrp->setGpoSourceAddress(slotnum,QHostAddress(),-1);
+    }
+  }
+
+  if((cmds.at(0)=="SetCrosspoint")&&(cmds.size()==5)) {
+    SyLwrpClient *dst_lwrp=
+      drouter_nodes[QHostAddress(cmds.at(1)).toIPv4Address()];
+    unsigned dst_slotnum=cmds.at(2).toUInt(&ok);
+    if((dst_lwrp!=NULL)&&ok&&(dst_slotnum<dst_lwrp->dstSlots())) {
+      SyLwrpClient *src_lwrp=
+	drouter_nodes[QHostAddress(cmds.at(3)).toIPv4Address()];
+      unsigned src_slotnum=cmds.at(4).toUInt(&ok);
+      if((src_lwrp!=NULL)&&ok&&(src_slotnum<src_lwrp->srcSlots())) {
+	dst_lwrp->setDstAddress(dst_slotnum,src_lwrp->srcAddress(src_slotnum));
+      }
+    }
+  }
+
+  if((cmds.at(0)=="SetGpioCrosspoint")&&(cmds.size()==5)) {
+    SyLwrpClient *gpo_lwrp=
+      drouter_nodes[QHostAddress(cmds.at(1)).toIPv4Address()];
+    unsigned gpo_slotnum=cmds.at(2).toUInt(&ok);
+    if((gpo_lwrp!=NULL)&&ok&&(gpo_slotnum<gpo_lwrp->gpos())) {
+      SyLwrpClient *gpi_lwrp=
+	drouter_nodes[QHostAddress(cmds.at(3)).toIPv4Address()];
+      unsigned gpi_slotnum=cmds.at(4).toUInt(&ok);
+      if((gpi_lwrp!=NULL)&&ok&&(gpi_slotnum<gpi_lwrp->gpis())) {
+	gpo_lwrp->
+	  setGpoSourceAddress(gpo_slotnum,gpi_lwrp->hostAddress(),
+			      gpi_slotnum);
+      }
+    }
+  }
+
+  if((cmds.at(0)=="SetGpiState")&&(cmds.size()==4)) {
+    SyLwrpClient *gpi_lwrp=
+      drouter_nodes[QHostAddress(cmds.at(1)).toIPv4Address()];
+    unsigned gpi_slotnum=cmds.at(2).toUInt(&ok);
+    if((gpi_lwrp!=NULL)&&ok&&(gpi_slotnum<gpi_lwrp->gpis())) {
+      gpi_lwrp->setGpiCode(gpi_slotnum,cmds.at(3));
+    }
+  }
+
+  if((cmds.at(0)=="SetGpoState")&&(cmds.size()==4)) {
+    SyLwrpClient *gpo_lwrp=
+      drouter_nodes[QHostAddress(cmds.at(1)).toIPv4Address()];
+    unsigned gpo_slotnum=cmds.at(2).toUInt(&ok);
+    if((gpo_lwrp!=NULL)&&ok&&(gpo_slotnum<gpo_lwrp->gpos())) {
+      gpo_lwrp->setGpoCode(gpo_slotnum,cmds.at(3));
+    }
+  }
+
   return true;
 }
 

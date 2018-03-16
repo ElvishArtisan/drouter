@@ -47,6 +47,7 @@ src/drouterd/combobox.cpp
 src/drouterd/combobox.h
 src/drouterd/dparser.cpp
 src/drouterd/dparser.h
+src/drouterd/dprotod
 src/drouterd/drouterd
 src/drouterd/endpointmap.cpp
 src/drouterd/endpointmap.h

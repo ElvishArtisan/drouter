@@ -297,3 +297,10 @@
 	* Incremented the package version to 0.6.4.
 2018-03-15 Fred Gleason <fredg@paravelsystems.com>
 	* Refactored drouterd(8) to implement multi-threading.
+2018-03-16 Fred Gleason <fredg@paravelsystems.com>
+	* Implemented the 'ClearCrosspoint' Protocol D command.
+	* Implemented the 'ClearGpioCrosspoint' Protocol D command.
+	* Implemented the 'SetCrosspoint' Protocol D command.
+	* Implemented the 'SetGpioCrosspoint' Protocol D command.
+	* Implemented the 'SetGpiState' Protocol D command.
+	* Implemented the 'SetGpoState' Protocol D command.
