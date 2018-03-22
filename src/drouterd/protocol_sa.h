@@ -1,6 +1,6 @@
-// protocol_d.h
+// protocol_sa.h
 //
-// Protocol D handler for DRouter.
+// Software Authority protocol handler for DRouter.
 //
 //   (C) Copyright 2018 Fred Gleason <fredg@paravelsystems.com>
 //
@@ -18,24 +18,24 @@
 //   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
 //
 
-#ifndef PROTOCOL_D_H
-#define PROTOCOL_D_H
+#ifndef PROTOCOL_SA_H
+#define PROTOCOL_SA_H
 
 #include <signal.h>
 
 #include <QSqlQuery>
 #include <QTcpServer>
 
-
 #include <sy/sylwrp_client.h>
 
+#include "endpointmap.h"
 #include "protocol.h"
 
-class ProtocolD : public Protocol
+class ProtocolSa : public Protocol
 {
  Q_OBJECT;
  public:
-  ProtocolD(QObject *parent=0);
+  ProtocolSa(QObject *parent=0);
 
  private slots:
   void newConnectionData();
@@ -43,10 +43,6 @@ class ProtocolD : public Protocol
   void disconnectedData();
 
  protected:
-  void nodeAdded(const QHostAddress &host_addr);
-  void nodeRemoved(const QHostAddress &host_addr,
-		   int srcs,int dsts,int gpis,int gpos);
-  void nodeChanged(const QHostAddress &host_addr);
   void sourceChanged(const QHostAddress &host_addr,int slotnum);
   void destinationChanged(const QHostAddress &host_addr,int slotnum);
   void gpiChanged(const QHostAddress &host_addr,int slotnum);
@@ -59,23 +55,27 @@ class ProtocolD : public Protocol
 		      const QString &tbl_name,int chan);
 
  private:
+  void SendSourceInfo(unsigned router);
+  QString SourceNamesSqlFields(EndPointMap::RouterType type) const;
+  QString SourceNamesMessage(EndPointMap::RouterType type,QSqlQuery *q);
+  void SendDestInfo(unsigned router);
+  QString DestNamesSqlFields(EndPointMap::RouterType type) const;
+  QString DestNamesMessage(EndPointMap::RouterType type,QSqlQuery *q);
+  void SendGpiInfo(unsigned router,int input);
+  QString GPIStatSqlFields() const;
+  QString GPIStatMessage(QSqlQuery *q);
+  void SendGpoInfo(unsigned router,int output);
+  QString GPOStatSqlFields() const;
+  QString GPOStatMessage(QSqlQuery *q);
   void ProcessCommand(const QString &cmd);
-  QString AlarmSqlFields(const QString &type,int chan) const;
-  QString AlarmRecord(const QString &keyword,SyLwrpClient::MeterType port,
-		      int chan,QSqlQuery *q);
-  QString DestinationSqlFields() const;
-  QString DestinationRecord(const QString &keyword,QSqlQuery *q) const;
-  QString GpiSqlFields() const;
-  QString GpiRecord(const QString &keyword,QSqlQuery *q);
-  QString GpoSqlFields() const;
-  QString GpoRecord(const QString &keyword,QSqlQuery *q);
-  QString NodeSqlFields() const;
-  QString NodeRecord(const QString &keyword,QSqlQuery *q) const;
-  QString SourceSqlFields() const;
-  QString SourceRecord(const QString &keyword,QSqlQuery *q);
+  void LoadMaps();
+  void LoadHelp();
+  QMap<QString,QString> proto_help_strings;
   QTcpSocket *proto_socket;
   QTcpServer *proto_server;
   QString proto_accum;
+  QMap<int,EndPointMap *> proto_maps;
+
   bool proto_destinations_subscribed;
   bool proto_gpis_subscribed;
   bool proto_gpos_subscribed;
@@ -86,4 +86,4 @@ class ProtocolD : public Protocol
 };
 
 
-#endif  // PROTOCOL_D_H
+#endif  // PROTOCOL_SA_H

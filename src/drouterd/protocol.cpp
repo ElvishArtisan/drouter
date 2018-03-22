@@ -25,6 +25,8 @@
 #include <linux/un.h>
 #include <sys/socket.h>
 #include <sys/types.h>
+#include <sys/wait.h>
+
 
 #include <QCoreApplication>
 #include <QSqlDatabase>
@@ -36,10 +38,30 @@
 #include "protocol.h"
 #include "protoipc.h"
 
+bool global_shutting_down=false;
+
+void SigHandler(int signo)
+{
+  switch(signo) {
+  case SIGCHLD:
+    waitpid(-1,NULL,WNOHANG);
+    break;
+
+  case SIGINT:
+  case SIGTERM:
+    global_shutting_down=true;
+    break;
+  }
+}
+
+
 Protocol::Protocol(QObject *parent)
   : QObject(parent)
 {
   proto_ipc_socket=NULL;
+  proto_shutdown_timer=new QTimer(this);
+  connect(proto_shutdown_timer,SIGNAL(timeout()),
+	  this,SLOT(shutdownTimerData()));
 }
 
 
@@ -79,6 +101,14 @@ bool Protocol::startIpc(QString *err_msg)
     *err_msg="database error ["+db.lastError().driverText()+"]";
     return false;
   }
+
+  //
+  // Set Signals
+  //
+  ::signal(SIGCHLD,SigHandler);
+  ::signal(SIGINT,SigHandler);
+  ::signal(SIGTERM,SigHandler);
+  proto_shutdown_timer->start(500);
 
   return true;
 }
@@ -160,6 +190,14 @@ void Protocol::ipcReadyReadData()
       }
     }
   }  
+}
+
+
+void Protocol::shutdownTimerData()
+{
+  if(global_shutting_down) {
+    quit();
+  }
 }
 
 

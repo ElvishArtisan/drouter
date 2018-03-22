@@ -24,6 +24,7 @@
 #include <QHostAddress>
 #include <QObject>
 #include <QTcpSocket>
+#include <QTimer>
 
 #include <sy/sylwrp_client.h>
 
@@ -46,6 +47,7 @@ class Protocol : public QObject
 
  private slots:
   void ipcReadyReadData();
+  void shutdownTimerData();
 
  protected:
   virtual void nodeAdded(const QHostAddress &host_addr);
@@ -68,6 +70,7 @@ class Protocol : public QObject
   void ProcessIpcCommand(const QString &cmd);
   QTcpSocket *proto_ipc_socket;
   QString proto_ipc_accum;
+  QTimer *proto_shutdown_timer;
 };
 
 

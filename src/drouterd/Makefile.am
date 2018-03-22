@@ -35,7 +35,8 @@ dist_drouterd_SOURCES = drouter.cpp drouter.h\
                         drouterd.cpp drouterd.h\
                         protoipc.h
 
-nodist_drouterd_SOURCES = moc_drouter.cpp\
+nodist_drouterd_SOURCES = endpointmap.cpp endpointmap.h\
+                          moc_drouter.cpp\
                           moc_drouterd.cpp\
                           protoipc.h
 
@@ -44,11 +45,14 @@ drouterd_LDADD = @QT4CLI_LIBS@ @SWITCHYARD_LIBS@ @LIBSYSTEMD_LIBS@
 dist_dprotod_SOURCES = dprotod.cpp dprotod.h\
                        protocol.cpp protocol.h\
                        protocol_d.cpp protocol_d.h\
+                       protocol_sa.cpp protocol_sa.h\
                        protoipc.h
 
-nodist_dprotod_SOURCES = moc_dprotod.cpp\
+nodist_dprotod_SOURCES = endpointmap.cpp endpointmap.h\
+                         moc_dprotod.cpp\
                          moc_protocol.cpp\
-                         moc_protocol_d.cpp
+                         moc_protocol_d.cpp\
+                         moc_protocol_sa.cpp
 
 dprotod_LDADD = @QT4CLI_LIBS@ @SWITCHYARD_LIBS@ @LIBSYSTEMD_LIBS@
 

@@ -18,31 +18,56 @@
 //   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
 //
 
-#include <sys/types.h>
-#include <sys/wait.h>
-
 #include <QCoreApplication>
+
+#include <sy/sycmdswitch.h>
 
 #include "dprotod.h"
 #include "protocol_d.h"
-
-void SigHandler(int signo)
-{
-  switch(signo) {
-  case SIGCHLD:
-    waitpid(-1,NULL,WNOHANG);
-    break;
-  }
-}
-
+#include "protocol_sa.h"
 
 MainObject::MainObject(QObject *parent)
   : QObject(parent)
 {
-  //
-  // The ProtocolD Server
-  //
-  main_protocol=new ProtocolD(this);
+  main_protocol=NULL;
+  bool protocol_d=false;
+  bool protocol_sa=false;
+  int protocols_defined=0;
+
+  SyCmdSwitch *cmd=
+    new SyCmdSwitch(qApp->argc(),qApp->argv(),"dprotod",VERSION,DPROTOD_USAGE);
+  for(unsigned i=0;i<cmd->keys();i++) {
+    if(cmd->key(i)=="--protocol-d") {
+      protocol_d=true;
+      protocols_defined++;
+      cmd->setProcessed(i,true);
+    }
+    if(cmd->key(i)=="--protocol-sa") {
+      protocol_sa=true;
+      protocols_defined++;
+      cmd->setProcessed(i,true);
+    }
+    if(!cmd->processed(i)) {
+      fprintf(stderr,"dprotod: unrecognized option\n");
+      exit(1);
+    }
+  }
+  if(protocols_defined==0) {
+    fprintf(stderr,"dprotod: no --protocol specified\n");
+    exit(1);
+  }
+  if(protocols_defined>1) {
+    fprintf(stderr,
+	    "dprotod: only one --protocol may be specified per instance\n");
+    exit(1);
+  }
+
+  if(protocol_d) {
+    main_protocol=new ProtocolD(this);
+  }
+  if(protocol_sa) {
+    main_protocol=new ProtocolSa(this);
+  }
 }
 
 

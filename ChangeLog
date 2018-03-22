@@ -304,3 +304,9 @@
 	* Implemented the 'SetGpioCrosspoint' Protocol D command.
 	* Implemented the 'SetGpiState' Protocol D command.
 	* Implemented the 'SetGpoState' Protocol D command.
+2018-03-22 Fred Gleason <fredg@paravelsystems.com>
+	* Implemented the 'RouterNames' Software Authority command.
+	* Implemented the 'SourceNames' Software Authority command.
+	* Implemented the 'DestNames' Software Authority command.
+	* Implemented the 'GPIStat' Software Authority command.
+	* Implemented the 'GPOStat' Software Authority command.

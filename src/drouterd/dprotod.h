@@ -25,6 +25,8 @@
 
 #include "protocol.h"
 
+#define DPROTOD_USAGE "--protocol-d\n"
+
 class MainObject : public QObject
 {
  Q_OBJECT;

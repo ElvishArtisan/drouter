@@ -30,6 +30,8 @@
 #include <sy/sylwrp_client.h>
 #include <sy/symcastsocket.h>
 
+#include "endpointmap.h"
+
 #define DROUTER_CLIP_THRESHOLD -20
 #define DROUTER_CLIP_TIMEOUT 1000
 #define DROUTER_SILENCE_THRESHOLD -500
@@ -80,10 +82,12 @@ class DRouter : public QObject
   bool ProcessIpcCommand(int sock,const QString &cmd);
   bool StartDb(QString *err_msg);
   bool StartLivewire(QString *err_msg);
+  void LoadMaps();
   QMap<unsigned,SyLwrpClient *> drouter_nodes;
   QList<SyMcastSocket *> drouter_advt_sockets;
   QMap<int,QTcpSocket *> drouter_ipc_sockets;
   QMap<int,QString> drouter_ipc_accums;
+  QMap<int,EndPointMap *> drouter_maps;
   QSignalMapper *drouter_ipc_ready_mapper;
   QTcpServer *drouter_ipc_server;
 };
