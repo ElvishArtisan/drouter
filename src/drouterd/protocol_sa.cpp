@@ -145,7 +145,6 @@ void ProtocolSa::destinationCrosspointChanged(const QHostAddress &host_addr,int 
     "&& DESTINATIONS.HOST_ADDRESS=\""+host_addr.toString()+"\" && "+
     QString().sprintf("DESTINATIONS.SLOT=%d ",slotnum)+
     "order by SA_DESTINATIONS.SOURCE_NUMBER,SA_DESTINATIONS.ROUTER_NUMBER";
-  printf("SQL: %s\n",(const char *)sql.toUtf8());
   q=new QSqlQuery(sql);
   while(q->next()) {
     proto_socket->write(RouteStatMessage(q).toUtf8());
@@ -232,10 +231,16 @@ void ProtocolSa::ActivateRoute(unsigned router,unsigned output,unsigned input)
 	  switch(map->routerType()) {
 	  case EndPointMap::AudioRouter:
 	    setCrosspoint(dst_addr,dst_slotnum,src_addr,src_slotnum);
+	    syslog(LOG_INFO,"activated audio route router: %d  input: %d to output: %d from %s",
+		   router+1,output+1,input,
+		   (const char *)proto_socket->peerAddress().toString().toUtf8());
 	    break;
 	  
 	  case EndPointMap::GpioRouter:
 	    setGpioCrosspoint(dst_addr,dst_slotnum,src_addr,src_slotnum);
+	    syslog(LOG_INFO,"activated gpio route router: %d  input: %d to output: %d from %s",
+		   router+1,output+1,input,
+		   (const char *)proto_socket->peerAddress().toString().toUtf8());
 	    break;
 
 	  case EndPointMap::LastRouter:
@@ -258,6 +263,10 @@ void ProtocolSa::TriggerGpi(unsigned router,unsigned input,unsigned msecs,const 
       int slotnum=map->slot(EndPointMap::Input,input);
       if((!addr.isNull())&&(slotnum>=0)) {
 	setGpiState(addr,slotnum,code);
+	syslog(LOG_INFO,"set gpi state router: %d  input: %d to state: %s from %s",
+	       router+1,input+1,
+	       (const char *)code.toUtf8(),
+	       (const char *)proto_socket->peerAddress().toString().toUtf8());
       }
     }
   }
@@ -274,6 +283,10 @@ void ProtocolSa::TriggerGpo(unsigned router,unsigned output,unsigned msecs,const
       int slotnum=map->slot(EndPointMap::Output,output);
       if((!addr.isNull())&&(slotnum>=0)) {
 	setGpoState(addr,slotnum,code);
+	syslog(LOG_INFO,"set gpo state router: %d  output: %d to state: %s from %s",
+	       router+1,output+1,
+	       (const char *)code.toUtf8(),
+	       (const char *)proto_socket->peerAddress().toString().toUtf8());
       }
     }
   }
@@ -299,8 +312,6 @@ void ProtocolSa::SendSnapshotNames(unsigned router)
 
 void ProtocolSa::ActivateSnapshot(unsigned router,const QString &snapshot_name)
 {
-  printf("ActivateSnapshot(%d,%s)\n",router,(const char *)snapshot_name.toUtf8());
-
   EndPointMap *map=NULL;
   Snapshot *ss=NULL;
 
@@ -314,6 +325,9 @@ void ProtocolSa::ActivateSnapshot(unsigned router,const QString &snapshot_name)
       ActivateRoute(router,ss->routeOutput(i)-1,ss->routeInput(i));
     }
   }
+  syslog(LOG_INFO,"activated snapshot %d:%s from %s",router+1,
+	 (const char *)snapshot_name.toUtf8(),
+	 (const char *)proto_socket->peerAddress().toString().toUtf8());
 }
 
 

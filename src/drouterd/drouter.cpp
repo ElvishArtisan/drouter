@@ -19,9 +19,9 @@
 //
 
 #include <errno.h>
+#include <linux/un.h>
 #include <stdio.h>
 #include <string.h>
-#include <linux/un.h>
 #include <syslog.h>
 #include <sys/socket.h>
 
@@ -649,7 +649,6 @@ void DRouter::advtReadyReadData(int ifnum)
 
 void DRouter::newIpcConnectionData(int listen_sock)
 {
-  printf("newIpcConnectionData()\n");
   int sock;
 
   if((sock=accept(listen_sock,NULL,NULL))<0) {
@@ -664,6 +663,7 @@ void DRouter::newIpcConnectionData(int listen_sock)
 	  drouter_ipc_ready_mapper,SLOT(map()));
   drouter_ipc_ready_mapper->
     setMapping(drouter_ipc_sockets[sock],sock);
+  syslog(LOG_DEBUG,"opened new IPC connection %d", sock);
 }
 
 
@@ -754,14 +754,15 @@ bool DRouter::ProcessIpcCommand(int sock,const QString &cmd)
 {
   bool ok=false;
 
-  printf("IPC CMD: %s\n",(const char *)cmd.toUtf8());
+  syslog(LOG_DEBUG,"received IPC cmd: \"%s\" from connection %d",
+	 (const char *)cmd.toUtf8(),sock);
 
   if(cmd=="QUIT") {
-    printf("deleting: %d\n",sock);
     drouter_ipc_sockets[sock]->close();
     drouter_ipc_sockets[sock]->deleteLater();
     drouter_ipc_sockets.remove(sock);
     drouter_ipc_accums.remove(sock);
+    syslog(LOG_DEBUG,"closed IPC connection %d",sock);
     return false;
   }
 

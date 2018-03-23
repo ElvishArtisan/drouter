@@ -347,7 +347,6 @@ void ProtocolD::silenceChanged(const QHostAddress &host_addr,int slotnum,
 
 void ProtocolD::ProcessCommand(const QString &cmd)
 {
-  //  printf("RECV[%d]: %s\n",proto_socket->socketDescriptor(),(const char *)cmd.toUtf8());
   QStringList cmds=cmd.split(" ");
   QString keyword=cmds.at(0).toLower();
   QString sql;

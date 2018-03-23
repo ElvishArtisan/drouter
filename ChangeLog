@@ -323,3 +323,5 @@
 2018-03-23 Fred Gleason <fredg@paravelsystems.com>
 	* Fixed a bug in dprotod(8) that caused change of an audio router
 	to 'off' to fail to be reported.
+2018-03-23 Fred Gleason <fredg@paravelsystems.com>
+	* Added debugging syslog() statements to drouterd(8).
