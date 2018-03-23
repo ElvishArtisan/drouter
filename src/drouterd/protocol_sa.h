@@ -49,7 +49,9 @@ class ProtocolSa : public Protocol
   void gpoCrosspointChanged(const QHostAddress &host_addr,int slotnum);
 
  private:
-  void SetRoute(unsigned router,unsigned output,unsigned input);
+  void ActivateRoute(unsigned router,unsigned output,unsigned input);
+  void TriggerGpi(unsigned router,unsigned input,unsigned msecs,const QString &code);
+  void TriggerGpo(unsigned router,unsigned output,unsigned msecs,const QString &code);
   void SendSourceInfo(unsigned router);
   QString SourceNamesSqlFields(EndPointMap::RouterType type) const;
   QString SourceNamesMessage(EndPointMap::RouterType type,QSqlQuery *q);

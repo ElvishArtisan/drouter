@@ -207,7 +207,7 @@ void ProtocolSa::gpoCrosspointChanged(const QHostAddress &host_addr,int slotnum)
 }
 
 
-void ProtocolSa::SetRoute(unsigned router,unsigned output,unsigned input)
+void ProtocolSa::ActivateRoute(unsigned router,unsigned output,unsigned input)
 {
   EndPointMap *map;
 
@@ -246,6 +246,38 @@ void ProtocolSa::SetRoute(unsigned router,unsigned output,unsigned input)
 	    break;
 	  }
 	}
+      }
+    }
+  }
+}
+
+
+void ProtocolSa::TriggerGpi(unsigned router,unsigned input,unsigned msecs,const QString &code)
+{
+  EndPointMap *map;
+
+  if((map=proto_maps.value(router))!=NULL) {
+    if(map->routerType()==EndPointMap::GpioRouter) {
+      QHostAddress addr=map->hostAddress(EndPointMap::Input,input);
+      int slotnum=map->slot(EndPointMap::Input,input);
+      if((!addr.isNull())&&(slotnum>=0)) {
+	setGpiState(addr,slotnum,code);
+      }
+    }
+  }
+}
+
+
+void ProtocolSa::TriggerGpo(unsigned router,unsigned output,unsigned msecs,const QString &code)
+{
+  EndPointMap *map;
+
+  if((map=proto_maps.value(router))!=NULL) {
+    if(map->routerType()==EndPointMap::GpioRouter) {
+      QHostAddress addr=map->hostAddress(EndPointMap::Output,output);
+      int slotnum=map->slot(EndPointMap::Output,output);
+      if((!addr.isNull())&&(slotnum>=0)) {
+	setGpoState(addr,slotnum,code);
       }
     }
   }
@@ -677,7 +709,7 @@ void ProtocolSa::ProcessCommand(const QString &cmd)
 	if(ok) {
 	  input=cmds[3].toUInt(&ok);
 	  if(ok) {
-	    SetRoute(cardnum-1,output-1,input);
+	    ActivateRoute(cardnum-1,output-1,input);
 	    //	    emit setRoute(id,cardnum-1,input,output-1);
 	  }
 	  else {
@@ -716,34 +748,8 @@ void ProtocolSa::ProcessCommand(const QString &cmd)
 			  toUtf8());
     }
     proto_socket->write(">>",2);
-
-    /*
-    if(cmds.size()>=2) {
-      cardnum=cmds[1].toUInt(&ok);
-      if(ok) {
-	if(cmds.size()>=3) {
-	  output=cmds[2].toUInt(&ok);
-	  if(!ok) {
-	    send("Error\r\n",id);
-	    send(">>",id);
-	    return;
-	  }
-	}
-      }
-      else {
-	send("Error\r\n",id);
-	send(">>",id);
-	return;
-      }
-      emit sendRouteInfo(id,cardnum-1,output);
-    }
-    else {
-      send("Error\r\n",id);
-      send(">>",id);
-    }
-    */
   }
-  /*
+
   if(cmds[0].toLower()=="triggergpi") {
     if((cmds.size()==4)||(cmds.size()==5)) {
       if(cmds.size()==5) {
@@ -753,7 +759,7 @@ void ProtocolSa::ProcessCommand(const QString &cmd)
       if(ok) {
 	input=cmds[2].toUInt(&ok);
 	if(cmds[3].length()==5) {
-	  emit setGpiState(id,cardnum-1,input-1,msecs,cmds[3]);
+	  TriggerGpi(cardnum-1,input-1,msecs,cmds[3]);
 	}
       }
     }
@@ -766,14 +772,14 @@ void ProtocolSa::ProcessCommand(const QString &cmd)
       }
       cardnum=cmds[1].toUInt(&ok);
       if(ok) {
-	output=cmds[2].toUInt(&ok);
+	input=cmds[2].toUInt(&ok);
 	if(cmds[3].length()==5) {
-	  emit setGpoState(id,cardnum-1,output-1,msecs,cmds[3]);
+	  TriggerGpo(cardnum-1,input-1,msecs,cmds[3]);
 	}
       }
     }
   }
-
+  /*
   if((cmds[0].toLower()=="snapshots")&&(cmds.size()==2)) {
     cardnum=cmds[1].toUInt(&ok);
     if(ok) {

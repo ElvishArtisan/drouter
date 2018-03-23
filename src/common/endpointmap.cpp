@@ -124,7 +124,10 @@ int EndPointMap::quantity(EndPointMap::Type type) const
 
 QHostAddress EndPointMap::hostAddress(EndPointMap::Type type,int n) const
 {
-  return map_host_addresses[type].at(n);
+  if(n<map_host_addresses[type].size()) {
+    return map_host_addresses[type].at(n);
+  }
+  return QHostAddress();
 }
 
 
@@ -142,7 +145,10 @@ void EndPointMap::setHostAddress(EndPointMap::Type type,int n,const QString &add
 
 int EndPointMap::slot(EndPointMap::Type type,int n) const
 {
-  return map_slots[type].at(n);
+  if(n<map_slots[type].size()) {
+    return map_slots[type].at(n);
+  }
+  return -1;
 }
 
 
