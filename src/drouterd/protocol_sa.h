@@ -67,6 +67,9 @@ class ProtocolSa : public Protocol
   void SendGpoInfo(unsigned router,int output);
   QString GPOStatSqlFields() const;
   QString GPOStatMessage(QSqlQuery *q);
+  void SendRouteInfo(unsigned router,int output);
+  QString RouteStatSqlFields(EndPointMap::RouterType type,int router);
+  QString RouteStatMessage(QSqlQuery *q);
   void ProcessCommand(const QString &cmd);
   void LoadMaps();
   void LoadHelp();

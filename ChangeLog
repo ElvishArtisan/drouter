@@ -310,3 +310,5 @@
 	* Implemented the 'DestNames' Software Authority command.
 	* Implemented the 'GPIStat' Software Authority command.
 	* Implemented the 'GPOStat' Software Authority command.
+2018-03-23 Fred Gleason <fredg@paravelsystems.com>
+	* Implemented the 'RouteStat' Software Authority command.

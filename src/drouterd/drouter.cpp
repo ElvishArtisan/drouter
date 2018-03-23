@@ -837,7 +837,8 @@ bool DRouter::StartDb(QString *err_msg)
     "RIGHT_CLIP int default 0,"+
     "LEFT_SILENCE int default 0,"+
     "RIGHT_SILENCE int default 0,"+
-    "unique index SLOT_IDX(HOST_ADDRESS,SLOT))";
+    "unique index SLOT_IDX(HOST_ADDRESS,SLOT),"+
+    "index STREAM_ADDRESS_IDX(STREAM_ADDRESS,STREAM_ENABLED))";
   q=new QSqlQuery(sql);
   delete q;
 
@@ -876,7 +877,8 @@ bool DRouter::StartDb(QString *err_msg)
     "NAME char(16),"+
     "SOURCE_ADDRESS char(22),"+
     "SOURCE_SLOT int default -1,"+
-    "unique index SLOT_IDX(HOST_ADDRESS,SLOT))";
+    "unique index SLOT_IDX(HOST_ADDRESS,SLOT),"+
+    "index SOURCE_ADDRESS_IDX(SOURCE_ADDRESS,SOURCE_SLOT))";
   q=new QSqlQuery(sql);
   delete q;
 
@@ -887,7 +889,8 @@ bool DRouter::StartDb(QString *err_msg)
     "SOURCE_ID int not null,"+
     "HOST_ADDRESS char(15) not null,"+
     "index ROUTER_IDX(ROUTER_NUMBER,SOURCE_NUMBER),"+
-    "index HOST_ADDRESS_IDX(HOST_ADDRESS))";
+    "index HOST_ADDRESS_IDX(HOST_ADDRESS),"+
+    "index SOURCE_ID_IDX(SOURCE_ID))";
   q=new QSqlQuery(sql);
   delete q;
 
@@ -909,7 +912,8 @@ bool DRouter::StartDb(QString *err_msg)
     "GPI_ID int not null,"+
     "HOST_ADDRESS char(15) not null,"+
     "index ROUTER_IDX(ROUTER_NUMBER,SOURCE_NUMBER),"+
-    "index HOST_ADDRESS_IDX(HOST_ADDRESS))";
+    "index HOST_ADDRESS_IDX(HOST_ADDRESS),"+
+    "index GPI_ID_IDX(GPI_ID))";
   q=new QSqlQuery(sql);
   delete q;
 
@@ -920,7 +924,8 @@ bool DRouter::StartDb(QString *err_msg)
     "GPO_ID int not null,"+
     "HOST_ADDRESS char(15) not null,"+
     "index ROUTER_IDX(ROUTER_NUMBER,SOURCE_NUMBER),"+
-    "index HOST_ADDRESS_IDX(HOST_ADDRESS))";
+    "index HOST_ADDRESS_IDX(HOST_ADDRESS),"+
+    "index GPO_ID_IDX(GPO_ID))";
   q=new QSqlQuery(sql);
   delete q;
 
