@@ -145,6 +145,7 @@ void ProtocolSa::destinationCrosspointChanged(const QHostAddress &host_addr,int 
     "&& DESTINATIONS.HOST_ADDRESS=\""+host_addr.toString()+"\" && "+
     QString().sprintf("DESTINATIONS.SLOT=%d ",slotnum)+
     "order by SA_DESTINATIONS.SOURCE_NUMBER,SA_DESTINATIONS.ROUTER_NUMBER";
+  printf("SQL: %s\n",(const char *)sql.toUtf8());
   q=new QSqlQuery(sql);
   while(q->next()) {
     proto_socket->write(RouteStatMessage(q).toUtf8());
@@ -597,7 +598,7 @@ QString ProtocolSa::RouteStatSqlFields(EndPointMap::RouterType type)
       "from DESTINATIONS right join SA_DESTINATIONS on DESTINATIONS.ID=SA_DESTINATIONS.DESTINATION_ID "+
       "left join SOURCES on SOURCES.STREAM_ADDRESS=DESTINATIONS.STREAM_ADDRESS "+
       "left join SA_SOURCES on SA_SOURCES.SOURCE_ID=SOURCES.ID where "+
-      "SOURCES.STREAM_ENABLED=1 ";
+      "(SOURCES.STREAM_ENABLED=1 || SA_SOURCES.SOURCE_NUMBER is null) ";
   }
   else {
     return QString("select ")+
