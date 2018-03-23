@@ -35,7 +35,6 @@ ProtocolSa::ProtocolSa(QObject *parent)
   int flags;
 
   proto_socket=NULL;
-  //  proto_ipc_socket=NULL;
   proto_destinations_subscribed=false;
   proto_gpis_subscribed=false;
   proto_gpos_subscribed=false;
@@ -141,7 +140,6 @@ void ProtocolSa::destinationCrosspointChanged(const QHostAddress &host_addr,int 
 {
   QString sql;
   QSqlQuery *q;
-  int endpt=-1;
 
   sql=RouteStatSqlFields(EndPointMap::AudioRouter)+
     "&& DESTINATIONS.HOST_ADDRESS=\""+host_addr.toString()+"\" && "+
@@ -159,7 +157,6 @@ void ProtocolSa::gpiCodeChanged(const QHostAddress &host_addr,int slotnum)
 {
   QString sql;
   QSqlQuery *q;
-  int endpt=-1;
 
   sql=GPIStatSqlFields()+" where "+
     "GPIS.HOST_ADDRESS=\""+host_addr.toString()+"\" && "+
@@ -176,7 +173,6 @@ void ProtocolSa::gpoCodeChanged(const QHostAddress &host_addr,int slotnum)
 {
   QString sql;
   QSqlQuery *q;
-  int endpt=-1;
 
   sql=GPOStatSqlFields()+" where "+
     "GPOS.HOST_ADDRESS=\""+host_addr.toString()+"\" && "+
@@ -193,7 +189,6 @@ void ProtocolSa::gpoCrosspointChanged(const QHostAddress &host_addr,int slotnum)
 {
   QString sql;
   QSqlQuery *q;
-  int endpt=-1;
 
   sql=RouteStatSqlFields(EndPointMap::GpioRouter)+
     "GPOS.HOST_ADDRESS=\""+host_addr.toString()+"\" && "+
@@ -279,6 +274,43 @@ void ProtocolSa::TriggerGpo(unsigned router,unsigned output,unsigned msecs,const
       if((!addr.isNull())&&(slotnum>=0)) {
 	setGpoState(addr,slotnum,code);
       }
+    }
+  }
+}
+
+
+void ProtocolSa::SendSnapshotNames(unsigned router)
+{
+  EndPointMap *map=NULL;
+
+  if((map=proto_maps.value(router))==NULL) {
+    proto_socket->write(QString("Error - Bay Does Not exist.\r\n").toUtf8());
+    proto_socket->write(">>",2);
+    return;
+  }
+  proto_socket->write(QString().sprintf("Begin SnapshotNames - %u\r\n",router+1).toUtf8());
+  for(int i=0;i<map->snapshotQuantity();i++) {
+    proto_socket->write(QString("   "+map->snapshot(i)->name()+"\r\n").toUtf8());
+  }
+  proto_socket->write(QString().sprintf("End SnapshotNames - %u\r\n",router+1).toUtf8());
+}
+
+
+void ProtocolSa::ActivateSnapshot(unsigned router,const QString &snapshot_name)
+{
+  printf("ActivateSnapshot(%d,%s)\n",router,(const char *)snapshot_name.toUtf8());
+
+  EndPointMap *map=NULL;
+  Snapshot *ss=NULL;
+
+  if((map=proto_maps.value(router))==NULL) {
+    proto_socket->write(QString("Error - Bay Does Not exist.\r\n").toUtf8());
+    return;
+  }
+  proto_socket->write(QString("Snapshot Initiated\r\n").toUtf8());
+  if((ss=map->snapshot(snapshot_name))!=NULL) {
+    for(int i=0;i<ss->routeQuantity();i++) {
+      ActivateRoute(router,ss->routeOutput(i)-1,ss->routeInput(i));
     }
   }
 }
@@ -779,34 +811,33 @@ void ProtocolSa::ProcessCommand(const QString &cmd)
       }
     }
   }
-  /*
+
   if((cmds[0].toLower()=="snapshots")&&(cmds.size()==2)) {
     cardnum=cmds[1].toUInt(&ok);
     if(ok) {
-      emit sendSnapshotNames(id,cardnum-1);
+      SendSnapshotNames(cardnum-1);
     }
     else {
-      send("Error - Bay Does Not exist.\r\n",id);
-      send(">>",id);
+      proto_socket->write(QString("Error - Bay Does Not exist.\r\n").toUtf8());
     }
+    proto_socket->write(">>",2);
   }
 
   if(((cmds[0].toLower()=="activatescene")||
-      (cmds[0].toLower()=="activatesnap"))&&(cmds.size()>2)) {
+      (cmds[0].toLower()=="activatesnap"))&&(cmds.size()>=3)) {
     cardnum=cmds[1].toUInt(&ok);
     if(ok) {
       QString snapshot="";
       for(int i=2;i<cmds.size();i++) {
 	snapshot+=cmds.at(i)+" ";
       }
-      emit activateSnapshot(id,cardnum-1,snapshot.trimmed());
+      ActivateSnapshot(cardnum-1,snapshot.trimmed());
     }
     else {
-      send("Error - Bay Does Not exist.\r\n",id);
-      send(">>",id);
+      proto_socket->write(QString("Error - Bay Does Not exist.\r\n").toUtf8());
     }
   }
-  */
+  proto_socket->write(">>",2);
 }
 
 

@@ -317,3 +317,6 @@
 2018-03-23 Fred Gleason <fredg@paravelsystems.com>
 	* Implemented the 'TriggerGpi' Software Authority command.
 	* Implemented the 'TriggerGpo' Software Authority command.
+2018-03-23 Fred Gleason <fredg@paravelsystems.com>
+	* Implemented the 'Snapshots' Software Authority command.
+	* Implemented the 'ActivateSnap/ActivateScene' Software Authority command.
