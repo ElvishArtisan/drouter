@@ -56,8 +56,12 @@ class Protocol : public QObject
   virtual void nodeChanged(const QHostAddress &host_addr);
   virtual void sourceChanged(const QHostAddress &host_addr,int slotnum);
   virtual void destinationChanged(const QHostAddress &host_addr,int slotnum);
+  virtual void destinationCrosspointChanged(const QHostAddress &host_addr,int slotnum);
   virtual void gpiChanged(const QHostAddress &host_addr,int slotnum);
+  virtual void gpiCodeChanged(const QHostAddress &host_addr,int slotnum);
   virtual void gpoChanged(const QHostAddress &host_addr,int slotnum);
+  virtual void gpoCrosspointChanged(const QHostAddress &host_addr,int slotnum);
+  virtual void gpoCodeChanged(const QHostAddress &host_addr,int slotnum);
   virtual void clipChanged(const QHostAddress &host_addr,int slotnum,
 			   SyLwrpClient::MeterType meter_type,
 			   const QString &tbl_name,int chan);

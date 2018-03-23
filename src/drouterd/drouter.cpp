@@ -440,6 +440,17 @@ void DRouter::destinationChangedData(unsigned id,int slotnum,const SyNode &node,
 {
   QString sql;
   QSqlQuery *q;
+  bool xpoint_changed=false;
+
+  sql=QString("select ")+
+    "STREAM_ADDRESS from DESTINATIONS where "
+    "HOST_ADDRESS=\""+QHostAddress(id).toString()+"\" && "+
+    QString().sprintf("SLOT=%d",slotnum);
+  q=new QSqlQuery(sql);
+  if(q->first()) {
+    xpoint_changed=QHostAddress(q->value(0).toString())!=dst.streamAddress();
+  }
+  delete q;
 
   sql=QString("update DESTINATIONS set ")+
     "HOST_NAME=\""+node.hostName()+"\","+
@@ -450,6 +461,10 @@ void DRouter::destinationChangedData(unsigned id,int slotnum,const SyNode &node,
     QString().sprintf("SLOT=%u",slotnum);
   q=new QSqlQuery(sql);
   delete q;
+  if(xpoint_changed) {
+    NotifyProtocols("DSTX",QHostAddress(id).toString()+
+		    QString().sprintf(":%u",slotnum));
+  }
   NotifyProtocols("DST",QHostAddress(id).toString()+
 		  QString().sprintf(":%u",slotnum));
 }
@@ -460,6 +475,18 @@ void DRouter::gpiChangedData(unsigned id,int slotnum,const SyNode &node,
 {
   QString sql;
   QSqlQuery *q;
+  bool code_changed=false;
+
+  sql=QString("select ")+
+    "CODE "+            // 00
+    "from GPIS where "+
+    "HOST_ADDRESS=\""+QHostAddress(id).toString()+"\" && "+
+    QString().sprintf("SLOT=%d",slotnum);
+  q=new QSqlQuery(sql);
+  if(q->first()) {
+    code_changed=q->value(0).toString().toLower()!=gpi.code().toLower();
+  }
+  delete q;
 
   sql=QString("update GPIS set ")+
     "CODE=\""+gpi.code().toLower()+"\" where "+
@@ -467,6 +494,10 @@ void DRouter::gpiChangedData(unsigned id,int slotnum,const SyNode &node,
     QString().sprintf("SLOT=%u",slotnum);
   q=new QSqlQuery(sql);
   delete q;
+  if(code_changed) {
+    NotifyProtocols("GPICODE",QHostAddress(id).toString()+
+		    QString().sprintf(":%u",slotnum));
+  }
   NotifyProtocols("GPI",QHostAddress(id).toString()+
 		  QString().sprintf(":%u",slotnum));
 }
@@ -477,6 +508,23 @@ void DRouter::gpoChangedData(unsigned id,int slotnum,const SyNode &node,
 {
   QString sql;
   QSqlQuery *q;
+  bool xpoint_changed=false;
+  bool code_changed=false;
+
+  sql=QString("select ")+
+    "SOURCE_ADDRESS,"+  // 00
+    "SOURCE_SLOT,"+     // 01
+    "CODE "+            // 02
+    "from GPOS where "+
+    "HOST_ADDRESS=\""+QHostAddress(id).toString()+"\" && "+
+    QString().sprintf("SLOT=%d",slotnum);
+  q=new QSqlQuery(sql);
+  if(q->first()) {
+    xpoint_changed=(QHostAddress(q->value(0).toString())!=gpo.sourceAddress()||
+		    q->value(1).toInt()!=gpo.sourceSlot());
+    code_changed=q->value(2).toString().toLower()!=gpo.bundle()->code().toLower();
+  }
+  delete q;
 
   sql=QString("update GPOS set ")+
     "CODE=\""+gpo.bundle()->code().toLower()+"\","+
@@ -487,6 +535,14 @@ void DRouter::gpoChangedData(unsigned id,int slotnum,const SyNode &node,
     QString().sprintf("SLOT=%u",slotnum);
   q=new QSqlQuery(sql);
   delete q;
+  if(xpoint_changed) {
+    NotifyProtocols("GPOX",QHostAddress(id).toString()+
+		    QString().sprintf(":%u",slotnum));
+  }
+  if(code_changed) {
+    NotifyProtocols("GPOCODE",QHostAddress(id).toString()+
+		    QString().sprintf(":%u",slotnum));
+  }
   NotifyProtocols("GPO",QHostAddress(id).toString()+
 		  QString().sprintf(":%u",slotnum));
 }

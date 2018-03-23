@@ -43,18 +43,13 @@ class ProtocolSa : public Protocol
   void disconnectedData();
 
  protected:
-  void sourceChanged(const QHostAddress &host_addr,int slotnum);
-  void destinationChanged(const QHostAddress &host_addr,int slotnum);
-  void gpiChanged(const QHostAddress &host_addr,int slotnum);
-  void gpoChanged(const QHostAddress &host_addr,int slotnum);
-  void clipChanged(const QHostAddress &host_addr,int slotnum,
-		   SyLwrpClient::MeterType meter_type,
-		   const QString &tbl_name,int chan);
-  void silenceChanged(const QHostAddress &host_addr,int slotnum,
-		      SyLwrpClient::MeterType meter_type,
-		      const QString &tbl_name,int chan);
+  void destinationCrosspointChanged(const QHostAddress &host_addr,int slotnum);
+  void gpiCodeChanged(const QHostAddress &host_addr,int slotnum);
+  void gpoCodeChanged(const QHostAddress &host_addr,int slotnum);
+  void gpoCrosspointChanged(const QHostAddress &host_addr,int slotnum);
 
  private:
+  void SetRoute(unsigned router,unsigned output,unsigned input);
   void SendSourceInfo(unsigned router);
   QString SourceNamesSqlFields(EndPointMap::RouterType type) const;
   QString SourceNamesMessage(EndPointMap::RouterType type,QSqlQuery *q);
@@ -68,7 +63,7 @@ class ProtocolSa : public Protocol
   QString GPOStatSqlFields() const;
   QString GPOStatMessage(QSqlQuery *q);
   void SendRouteInfo(unsigned router,int output);
-  QString RouteStatSqlFields(EndPointMap::RouterType type,int router);
+  QString RouteStatSqlFields(EndPointMap::RouterType type);
   QString RouteStatMessage(QSqlQuery *q);
   void ProcessCommand(const QString &cmd);
   void LoadMaps();

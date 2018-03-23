@@ -227,12 +227,32 @@ void Protocol::destinationChanged(const QHostAddress &host_addr,int slotnum)
 }
 
 
+void Protocol::destinationCrosspointChanged(const QHostAddress &host_addr,int slotnum)
+{
+}
+
+
 void Protocol::gpiChanged(const QHostAddress &host_addr,int slotnum)
 {
 }
 
 
+void Protocol::gpiCodeChanged(const QHostAddress &host_addr,int slotnum)
+{
+}
+
+
 void Protocol::gpoChanged(const QHostAddress &host_addr,int slotnum)
+{
+}
+
+
+void Protocol::gpoCrosspointChanged(const QHostAddress &host_addr,int slotnum)
+{
+}
+
+
+void Protocol::gpoCodeChanged(const QHostAddress &host_addr,int slotnum)
 {
 }
 
@@ -286,8 +306,24 @@ void Protocol::ProcessIpcCommand(const QString &cmd)
     destinationChanged(QHostAddress(cmds.at(1)),cmds.at(2).toInt());
   }
 
+  if((cmds.at(0)=="DSTX")&&(cmds.size()==3)) {
+    destinationCrosspointChanged(QHostAddress(cmds.at(1)),cmds.at(2).toInt());
+  }
+
   if((cmds.at(0)=="GPI")&&(cmds.size()==3)) {
     gpiChanged(QHostAddress(cmds.at(1)),cmds.at(2).toInt());
+  }
+
+  if((cmds.at(0)=="GPICODE")&&(cmds.size()==3)) {
+    gpiCodeChanged(QHostAddress(cmds.at(1)),cmds.at(2).toInt());
+  }
+
+  if((cmds.at(0)=="GPOX")&&(cmds.size()==3)) {
+    gpoCrosspointChanged(QHostAddress(cmds.at(1)),cmds.at(2).toInt());
+  }
+
+  if((cmds.at(0)=="GPOCODE")&&(cmds.size()==3)) {
+    gpoCodeChanged(QHostAddress(cmds.at(1)),cmds.at(2).toInt());
   }
 
   if((cmds.at(0)=="GPO")&&(cmds.size()==3)) {
