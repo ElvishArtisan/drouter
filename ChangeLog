@@ -337,3 +337,6 @@
 2018-03-26 Fred Gleason <fredg@paravelsystems.com>
 	* Modified the Softwre Authority parser to be more robust in
 	dealing with the ">>" prompt.
+2018-03-26 Fred Gleason <fredg@paravelsystems.com>
+	* Fixed a bug in dprotod(8) that caused extraneous RouteStat
+	entries to be transmitted when processing a route change.

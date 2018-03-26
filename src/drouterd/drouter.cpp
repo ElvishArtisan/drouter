@@ -969,6 +969,7 @@ bool DRouter::StartDb(QString *err_msg)
     "SOURCE_NUMBER int not null,"
     "DESTINATION_ID int not null,"+
     "HOST_ADDRESS char(15) not null,"+
+    "index ROUTER_IDX_TEST(ROUTER_NUMBER),"
     "index ROUTER_IDX(ROUTER_NUMBER,SOURCE_NUMBER),"+
     "index HOST_ADDRESS_IDX(HOST_ADDRESS)) "+
     "engine MEMORY character set utf8 collate utf8_general_ci";

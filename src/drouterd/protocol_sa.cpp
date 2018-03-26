@@ -143,7 +143,8 @@ void ProtocolSa::destinationCrosspointChanged(const QHostAddress &host_addr,int 
 
   sql=RouteStatSqlFields(EndPointMap::AudioRouter)+
     "&& DESTINATIONS.HOST_ADDRESS=\""+host_addr.toString()+"\" && "+
-    QString().sprintf("DESTINATIONS.SLOT=%d ",slotnum)+
+    QString().sprintf("DESTINATIONS.SLOT=%d &&",slotnum)+
+    "SA_DESTINATIONS.ROUTER_NUMBER=SA_SOURCES.ROUTER_NUMBER "+
     "order by SA_DESTINATIONS.SOURCE_NUMBER,SA_DESTINATIONS.ROUTER_NUMBER";
   q=new QSqlQuery(sql);
   while(q->next()) {
@@ -192,7 +193,8 @@ void ProtocolSa::gpoCrosspointChanged(const QHostAddress &host_addr,int slotnum)
 
   sql=RouteStatSqlFields(EndPointMap::GpioRouter)+
     "GPOS.HOST_ADDRESS=\""+host_addr.toString()+"\" && "+
-    QString().sprintf("GPOS.SLOT=%d ",slotnum)+
+    QString().sprintf("GPOS.SLOT=%d && ",slotnum)+
+    "GPOS.ROUTER_NUMBER=GPIS.ROUTER_NUMBER "+
     "order by SA_GPOS.SOURCE_NUMBER,SA_GPOS.ROUTER_NUMBER";
   q=new QSqlQuery(sql);
   while(q->next()) {
@@ -582,6 +584,7 @@ void ProtocolSa::SendRouteInfo(unsigned router,int output)
   sql=RouteStatSqlFields(map->routerType());
   if(map->routerType()==EndPointMap::AudioRouter) {
     sql+=QString().sprintf("&& SA_DESTINATIONS.ROUTER_NUMBER=%d ",router);
+    sql+=QString().sprintf("&& SA_SOURCES.ROUTER_NUMBER=%d ",router);
     if(output>=0) {
       sql+=QString().sprintf("&& SA_DESTINATIONS.SOURCE_NUMBER=%d ",output);
     }
