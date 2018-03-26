@@ -878,7 +878,8 @@ bool DRouter::StartDb(QString *err_msg)
     "SOURCE_SLOTS int,"+
     "DESTINATION_SLOTS int,"+
     "GPI_SLOTS int,"+
-    "GPO_SLOTS int)";
+    "GPO_SLOTS int) "+
+    "engine MEMORY character set utf8 collate utf8_general_ci";
   q=new QSqlQuery(sql);
   delete q;
 
@@ -897,7 +898,8 @@ bool DRouter::StartDb(QString *err_msg)
     "LEFT_SILENCE int default 0,"+
     "RIGHT_SILENCE int default 0,"+
     "unique index SLOT_IDX(HOST_ADDRESS,SLOT),"+
-    "index STREAM_ADDRESS_IDX(STREAM_ADDRESS,STREAM_ENABLED))";
+    "index STREAM_ADDRESS_IDX(STREAM_ADDRESS,STREAM_ENABLED)) "+
+    "engine MEMORY character set utf8 collate utf8_general_ci";
   q=new QSqlQuery(sql);
   delete q;
 
@@ -913,7 +915,8 @@ bool DRouter::StartDb(QString *err_msg)
     "RIGHT_CLIP int default 0,"+
     "LEFT_SILENCE int default 0,"+
     "RIGHT_SILENCE int default 0,"+
-    "unique index SLOT_IDX(HOST_ADDRESS,SLOT))";
+    "unique index SLOT_IDX(HOST_ADDRESS,SLOT)) "+
+    "engine MEMORY character set utf8 collate utf8_general_ci";
   q=new QSqlQuery(sql);
   delete q;
 
@@ -923,7 +926,8 @@ bool DRouter::StartDb(QString *err_msg)
     "SLOT int not null,"+
     "HOST_NAME char(16),"+
     "CODE char(5),"+
-    "unique index SLOT_IDX(HOST_ADDRESS,SLOT))";
+    "unique index SLOT_IDX(HOST_ADDRESS,SLOT)) "+
+    "engine MEMORY character set utf8 collate utf8_general_ci";
   q=new QSqlQuery(sql);
   delete q;
 
@@ -937,7 +941,8 @@ bool DRouter::StartDb(QString *err_msg)
     "SOURCE_ADDRESS char(22),"+
     "SOURCE_SLOT int default -1,"+
     "unique index SLOT_IDX(HOST_ADDRESS,SLOT),"+
-    "index SOURCE_ADDRESS_IDX(SOURCE_ADDRESS,SOURCE_SLOT))";
+    "index SOURCE_ADDRESS_IDX(SOURCE_ADDRESS,SOURCE_SLOT)) "+
+    "engine MEMORY character set utf8 collate utf8_general_ci";
   q=new QSqlQuery(sql);
   delete q;
 
@@ -949,7 +954,8 @@ bool DRouter::StartDb(QString *err_msg)
     "HOST_ADDRESS char(15) not null,"+
     "index ROUTER_IDX(ROUTER_NUMBER,SOURCE_NUMBER),"+
     "index HOST_ADDRESS_IDX(HOST_ADDRESS),"+
-    "index SOURCE_ID_IDX(SOURCE_ID))";
+    "index SOURCE_ID_IDX(SOURCE_ID)) "+
+    "engine MEMORY character set utf8 collate utf8_general_ci";
   q=new QSqlQuery(sql);
   delete q;
 
@@ -960,7 +966,8 @@ bool DRouter::StartDb(QString *err_msg)
     "DESTINATION_ID int not null,"+
     "HOST_ADDRESS char(15) not null,"+
     "index ROUTER_IDX(ROUTER_NUMBER,SOURCE_NUMBER),"+
-    "index HOST_ADDRESS_IDX(HOST_ADDRESS))";
+    "index HOST_ADDRESS_IDX(HOST_ADDRESS)) "+
+    "engine MEMORY character set utf8 collate utf8_general_ci";
   q=new QSqlQuery(sql);
   delete q;
 
@@ -972,7 +979,8 @@ bool DRouter::StartDb(QString *err_msg)
     "HOST_ADDRESS char(15) not null,"+
     "index ROUTER_IDX(ROUTER_NUMBER,SOURCE_NUMBER),"+
     "index HOST_ADDRESS_IDX(HOST_ADDRESS),"+
-    "index GPI_ID_IDX(GPI_ID))";
+    "index GPI_ID_IDX(GPI_ID)) "+
+    "engine MEMORY character set utf8 collate utf8_general_ci";
   q=new QSqlQuery(sql);
   delete q;
 
@@ -984,7 +992,8 @@ bool DRouter::StartDb(QString *err_msg)
     "HOST_ADDRESS char(15) not null,"+
     "index ROUTER_IDX(ROUTER_NUMBER,SOURCE_NUMBER),"+
     "index HOST_ADDRESS_IDX(HOST_ADDRESS),"+
-    "index GPO_ID_IDX(GPO_ID))";
+    "index GPO_ID_IDX(GPO_ID)) "+
+    "engine MEMORY character set utf8 collate utf8_general_ci";
   q=new QSqlQuery(sql);
   delete q;
 
