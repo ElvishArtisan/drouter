@@ -21,6 +21,7 @@
 #ifndef DROUTERD_H
 #define DROUTERD_H
 
+#include <QList>
 #include <QObject>
 #include <QTimer>
 
@@ -28,6 +29,7 @@
 
 #define DROUTERD_SCRIPTS_DIRECTORY QString("/etc/drouter.d/scripts")
 #define DROUTERD_SCRIPTS_FILTER QString("*.py")
+#define DROUTERD_PROTOCOL_START_INTERVAL 30000
 #define DROUTERD_USAGE "[--no-scripts]\n"
 
 class MainObject : public QObject
@@ -38,10 +40,13 @@ class MainObject : public QObject
 
  private slots:
   void signalData();
+  void protocolData();
 
  private:
   DRouter *main_drouter;
   QTimer *main_signal_timer;
+  QTimer *main_protocol_timer;
+  QList<pid_t> main_protocol_pids;
 };
 
 

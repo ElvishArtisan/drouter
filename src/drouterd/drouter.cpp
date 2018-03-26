@@ -25,6 +25,7 @@
 #include <syslog.h>
 #include <sys/socket.h>
 
+#include <QCoreApplication>
 #include <QHostAddress>
 #include <QSignalMapper>
 #include <QSocketNotifier>
@@ -193,6 +194,7 @@ bool DRouter::start(QString *err_msg)
 
   return true;
 }
+
 
 void DRouter::nodeConnectedData(unsigned id,bool state)
 {

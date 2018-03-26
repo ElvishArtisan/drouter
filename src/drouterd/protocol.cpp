@@ -63,6 +63,8 @@ Protocol::Protocol(QObject *parent)
   proto_shutdown_timer=new QTimer(this);
   connect(proto_shutdown_timer,SIGNAL(timeout()),
 	  this,SLOT(shutdownTimerData()));
+
+  ::signal(SIGCHLD,SigHandler);
 }
 
 
@@ -106,9 +108,8 @@ bool Protocol::startIpc(QString *err_msg)
   //
   // Set Signals
   //
-  ::signal(SIGCHLD,SigHandler);
-  ::signal(SIGINT,SigHandler);
-  ::signal(SIGTERM,SigHandler);
+  //  ::signal(SIGINT,SigHandler);
+  //  ::signal(SIGTERM,SigHandler);
   proto_shutdown_timer->start(500);
 
   return true;

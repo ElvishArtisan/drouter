@@ -22,6 +22,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <syslog.h>
+#include <unistd.h>
 
 #include <QCoreApplication>
 
@@ -34,6 +35,7 @@
 #include "drouterd.h"
 
 bool global_reload=false;
+bool global_exiting=false;
 
 void SigHandler(int signo)
 {
@@ -48,15 +50,20 @@ void SigHandler(int signo)
 MainObject::MainObject(QObject *parent)
   : QObject(parent)
 {
-  //  bool no_scripts=false;
+  // bool no_scripts=false;
   //  int socks[2]={-1,-1};
   //  int n;
+  bool no_protocols=false;
   QString err_msg;
   SyCmdSwitch *cmd=
     new SyCmdSwitch(qApp->argc(),qApp->argv(),"drouterd",VERSION,DROUTERD_USAGE);
   for(unsigned i=0;i<(cmd->keys());i++) {
     if(cmd->key(i)=="--no-scripts") {
       //      no_scripts=true;
+      cmd->setProcessed(i,true);
+    }
+    if(cmd->key(i)=="--no-protocols") {
+      no_protocols=true;
       cmd->setProcessed(i,true);
     }
     if(!cmd->processed(i)) {
@@ -116,6 +123,16 @@ MainObject::MainObject(QObject *parent)
   }
 
   //
+  // Protocol Start Timer
+  //
+  main_protocol_timer=new QTimer(this);
+  main_protocol_timer->setSingleShot(true);
+  connect(main_protocol_timer,SIGNAL(timeout()),this,SLOT(protocolData()));
+  if(!no_protocols) {
+    main_protocol_timer->start(DROUTERD_PROTOCOL_START_INTERVAL);
+  }
+
+  //
   // Set Signals
   //
   main_signal_timer=new QTimer(this);
@@ -140,6 +157,24 @@ void MainObject::signalData()
     //    main_script_timer->start(30000);
     global_reload=false;
   }
+}
+
+
+void MainObject::protocolData()
+{
+  pid_t pid=0;
+
+  if((pid=fork())==0) {
+    execl("/usr/sbin/dprotod","dprotod","--protocol-d",(char *)NULL);
+  }
+  main_protocol_pids.push_back(pid);
+  syslog(LOG_INFO,"started Protocol D protocol");
+
+  if((pid=fork())==0) {
+    execl("/usr/sbin/dprotod","dprotod","--protocol-sa",(char *)NULL);
+  }
+  main_protocol_pids.push_back(pid);
+  syslog(LOG_INFO,"started Software Authority protocol");
 }
 
 

@@ -325,3 +325,6 @@
 	to 'off' to fail to be reported.
 2018-03-23 Fred Gleason <fredg@paravelsystems.com>
 	* Added debugging syslog() statements to drouterd(8).
+2018-03-26 Fred Gleason <fredg@paravelsystems.com>
+	* Implemented auto-start of protocols in drouterd(8).
+	* Added the '--no-protocols' switch to drouterd(8).

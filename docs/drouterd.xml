@@ -72,6 +72,20 @@
   <variablelist remap='TP'>
     <varlistentry>
       <term>
+	<option>--no-protocols</option>
+      </term>
+      <listitem>
+	<para>
+	  Do not auto-start the front-side protocols. Mostly useful
+	  for debugging.
+	</para>
+      </listitem>
+    </varlistentry>
+  </variablelist>
+
+  <variablelist remap='TP'>
+    <varlistentry>
+      <term>
 	<option>--no-scripts</option>
       </term>
       <listitem>
