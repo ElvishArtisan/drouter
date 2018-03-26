@@ -82,6 +82,8 @@ class DRouter : public QObject
   bool ProcessIpcCommand(int sock,const QString &cmd);
   bool StartDb(QString *err_msg);
   bool StartLivewire(QString *err_msg);
+  void LockTables() const;
+  void UnlockTables() const;
   void LoadMaps();
   QMap<unsigned,SyLwrpClient *> drouter_nodes;
   QList<SyMcastSocket *> drouter_advt_sockets;

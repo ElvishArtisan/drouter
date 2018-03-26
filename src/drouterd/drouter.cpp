@@ -221,6 +221,7 @@ void DRouter::nodeConnectedData(unsigned id,bool state)
 			      DROUTER_SILENCE_THRESHOLD,
 			      DROUTER_SILENCE_TIMEOUT);
     }
+    LockTables();
     sql=QString("insert into NODES set ")+
       "HOST_ADDRESS=\""+QHostAddress(id).toString()+"\","+
       "HOST_NAME=\""+lwrp->hostName()+"\","+
@@ -352,6 +353,7 @@ void DRouter::nodeConnectedData(unsigned id,bool state)
 	}
       }
     }
+    UnlockTables();
     NotifyProtocols("NODEADD",QHostAddress(id).toString());
   }
   else {
@@ -360,6 +362,7 @@ void DRouter::nodeConnectedData(unsigned id,bool state)
       fprintf(stderr,"DRouter::nodeConnectedData() - received disconnect signal from unknown node\n");
       exit(256);
     }
+    LockTables();
     sql=QString("select ")+
       "SOURCE_SLOTS,"+       // 00
       "DESTINATION_SLOTS,"+  // 01
@@ -411,6 +414,7 @@ void DRouter::nodeConnectedData(unsigned id,bool state)
     q=new QSqlQuery(sql);
     delete q;
     drouter_nodes.erase(drouter_nodes.find(id));
+    UnlockTables();
   }
 }
 
@@ -1031,6 +1035,31 @@ bool DRouter::StartLivewire(QString *err_msg)
   }
 
   return true;
+}
+
+
+void DRouter::LockTables() const
+{
+  QString sql=QString("lock tables ")+
+    "DESTINATIONS write,"+
+    "GPIS write,"+
+    "GPOS write,"+
+    "NODES write,"+
+    "SA_DESTINATIONS write,"+
+    "SA_GPIS write,"+
+    "SA_GPOS write,"+
+    "SA_SOURCES write,"+
+    "SOURCES write";
+  QSqlQuery *q=new QSqlQuery(sql);
+  delete q;
+}
+
+
+void DRouter::UnlockTables() const
+{
+  QString sql=QString("unlock tables");
+  QSqlQuery *q=new QSqlQuery(sql);
+  delete q;
 }
 
 
