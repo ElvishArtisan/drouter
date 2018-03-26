@@ -851,8 +851,8 @@ void ProtocolSa::ProcessCommand(const QString &cmd)
     else {
       proto_socket->write(QString("Error - Bay Does Not exist.\r\n").toUtf8());
     }
+    proto_socket->write(">>",2);
   }
-  proto_socket->write(">>",2);
 }
 
 

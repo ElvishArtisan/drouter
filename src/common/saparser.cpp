@@ -198,9 +198,11 @@ void SaParser::readyReadData()
       break;
 
     case 10:
+      /*
       if(sa_accum.left(2)==">>") {
 	sa_accum=sa_accum.right(sa_accum.length()-2);
       }
+      */
       DispatchCommand(sa_accum);
       sa_accum="";
       break;
@@ -220,13 +222,13 @@ void SaParser::errorData(QAbstractSocket::SocketError err)
 }
 
 
-void SaParser::DispatchCommand(const QString &cmd)
+void SaParser::DispatchCommand(QString cmd)
 {
-  //  printf("RECV: %s\n",(const char *)cmd.toUtf8());
+  //    printf("RECV: %s\n",(const char *)cmd.toUtf8());
 
   bool ok=false;
 
-  QStringList f0=cmd.toLower().split(" ");
+  QStringList f0=cmd.replace(">>","").toLower().split(" ");
 
   //
   // Process Login
