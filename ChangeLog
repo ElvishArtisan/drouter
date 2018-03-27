@@ -346,3 +346,5 @@
 	* Implemented ScriptEngine support.
 2018-03-27 Fred Gleason <fredg@paravelsystems.com>
 	* Removed the 'restart' rule from the SystemD service definition.
+2018-03-27 Fred Gleason <fredg@paravelsystems.com>
+	* Fixed bugs that broke the 'make rpm' target.
