@@ -33,11 +33,13 @@ sbin_PROGRAMS = dprotod\
 
 dist_drouterd_SOURCES = drouter.cpp drouter.h\
                         drouterd.cpp drouterd.h\
-                        protoipc.h
+                        protoipc.h\
+                        scriptengine.cpp scriptengine.h
 
 nodist_drouterd_SOURCES = endpointmap.cpp endpointmap.h\
                           moc_drouter.cpp\
                           moc_drouterd.cpp\
+                          moc_scriptengine.cpp\
                           protoipc.h
 
 drouterd_LDADD = @QT4CLI_LIBS@ @SWITCHYARD_LIBS@ @LIBSYSTEMD_LIBS@

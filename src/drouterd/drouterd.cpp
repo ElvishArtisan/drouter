@@ -37,20 +37,10 @@
 bool global_reload=false;
 bool global_exiting=false;
 
-void SigHandler(int signo)
-{
-  switch(signo) {
-  case SIGHUP:
-    global_reload=true;
-    break;
-  }
-}
-
-
 MainObject::MainObject(QObject *parent)
   : QObject(parent)
 {
-  // bool no_scripts=false;
+  main_no_scripts=false;
   main_protocol_socks[0]=-1;
   main_protocol_socks[1]=-1;
   int n;
@@ -60,7 +50,7 @@ MainObject::MainObject(QObject *parent)
     new SyCmdSwitch(qApp->argc(),qApp->argv(),"drouterd",VERSION,DROUTERD_USAGE);
   for(unsigned i=0;i<(cmd->keys());i++) {
     if(cmd->key(i)=="--no-scripts") {
-      //      no_scripts=true;
+      main_no_scripts=true;
       cmd->setProcessed(i,true);
     }
     if(cmd->key(i)=="--no-protocols") {
@@ -95,17 +85,16 @@ MainObject::MainObject(QObject *parent)
     }
   }
 #endif  // LIBSYSTEMD
-  /*
+
   //
   // State Scripts
   //
-  main_script_timer=new QTimer(this);
-  main_script_timer->setSingleShot(true);
-  connect(main_script_timer,SIGNAL(timeout()),this,SLOT(scriptsData()));
-  if(!no_scripts) {
-    main_script_timer->start(30000);
-  }
-  */
+  main_script_engine=new ScriptEngine();
+
+  main_scripts_timer=new QTimer(this);
+  main_scripts_timer->setSingleShot(true);
+  connect(main_scripts_timer,SIGNAL(timeout()),this,SLOT(scriptsData()));
+
   //
   // Start Router Process
   //
@@ -123,32 +112,6 @@ MainObject::MainObject(QObject *parent)
   connect(main_protocol_timer,SIGNAL(timeout()),this,SLOT(protocolData()));
   if(!no_protocols) {
     main_protocol_timer->start(DROUTERD_PROTOCOL_START_INTERVAL);
-  }
-
-  //
-  // Set Signals
-  //
-  main_signal_timer=new QTimer(this);
-  connect(main_signal_timer,SIGNAL(timeout()),this,SLOT(signalData()));
-  main_signal_timer->start(500);
-  signal(SIGHUP,SigHandler);
-}
-
-
-void MainObject::signalData()
-{
-  if(global_reload) {
-    /*
-    for(int i=0;i<main_scripts.size();i++) {
-      main_scripts.at(i)->terminate();
-    }
-    for(int i=0;i<main_protocols.size();i++) {
-      main_protocols.at(i)->reload();
-    }
-    */
-    syslog(LOG_INFO,"reloaded configuration");
-    //    main_script_timer->start(30000);
-    global_reload=false;
   }
 }
 
@@ -180,6 +143,15 @@ void MainObject::protocolData()
   }
   main_protocol_pids.push_back(pid);
   syslog(LOG_INFO,"started Software Authority protocol");
+  if(!main_no_scripts) {
+    main_scripts_timer->start(5000);
+  }
+}
+
+
+void MainObject::scriptsData()
+{
+  main_script_engine->start();
 }
 
 

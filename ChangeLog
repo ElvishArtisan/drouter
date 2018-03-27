@@ -342,3 +342,5 @@
 	entries to be transmitted when processing a route change.
 2018-03-27 Fred Gleason <fredg@paravelsystems.com>
 	* Implemented support for SystemD socket activation.
+2018-03-27 Fred Gleason <fredg@paravelsystems.com>
+	* Implemented ScriptEngine support.

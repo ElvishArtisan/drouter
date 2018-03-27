@@ -1,6 +1,6 @@
-// drouterd.h
+// scriptengine.h
 //
-// Dynamic router service for Livewire networks
+// Run state scripts.
 //
 //   (C) Copyright 2018 Fred Gleason <fredg@paravelsystems.com>
 //
@@ -18,38 +18,33 @@
 //   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
 //
 
-#ifndef DROUTERD_H
-#define DROUTERD_H
+#ifndef SCRIPTENGINE_H
+#define SCRIPTENGINE_H
 
-#include <QList>
+#include <QMap>
 #include <QObject>
 #include <QTimer>
 
-#include "drouter.h"
-#include "scriptengine.h"
+#define SCRIPTENGINE_RESTART_INTERVAL 1000
+#define SCRIPTENGINE_SCRIPTS_DIRECTORY QString("/etc/drouter.d/scripts")
+#define SCRIPTENGINE_SCRIPTS_FILTER QString("*.py")
 
-#define DROUTERD_PROTOCOL_START_INTERVAL 30000
-#define DROUTERD_USAGE "[--no-scripts]\n"
-
-class MainObject : public QObject
+class ScriptEngine : public QObject
 {
  Q_OBJECT;
  public:
-  MainObject(QObject *parent=0);
+  ScriptEngine(QObject *parent=0);
+  void start();
+  void stop();
 
  private slots:
-  void protocolData();
-  void scriptsData();
+  void scanData();
 
  private:
-  DRouter *main_drouter;
-  QTimer *main_protocol_timer;
-  QList<pid_t> main_protocol_pids;
-  int main_protocol_socks[2];
-  bool main_no_scripts;
-  QTimer *main_scripts_timer;
-  ScriptEngine *main_script_engine;
+  QString Pathname(const QString &script) const;
+  QMap<pid_t,QString> script_scripts;
+  QTimer *script_scan_timer;
 };
 
 
-#endif  // DROUTERD_H
+#endif  // SCRIPTENGINE_H
