@@ -9,6 +9,8 @@ Qt4 Toolkit, v4.6 or better (http://www.qt.io/).
 
 Python 2.7 or better.
 
+MySQL or MariaDB RDBMS.
+
 
 DOCUMENTATION
 -------------
@@ -37,6 +39,21 @@ obtained the source via CVS will need to do './autogen.sh' first.  There
 are a number of options for the 'configure' script; do './configure --help'
 for a detailed list.
 
+Before starting the 'drouter' service for the first time, you will need to
+create a MySQL/MariaDB database, along with a user for accessing same. The
+database name, user name and user password should all be 'drouter'. The
+database is for the internal use of drouterd(8) server -- outside client
+processes should *not* have access to it. The 'drouter' user should have
+the following privileges for the database:
+
+    Select
+    Insert
+    Update
+    Delete
+    Create
+    Drop
+    Index
+    Lock Tables
 
 BUILDING ON RHEL 7
 ------------------

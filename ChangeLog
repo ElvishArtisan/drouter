@@ -348,3 +348,7 @@
 	* Removed the 'restart' rule from the SystemD service definition.
 2018-03-27 Fred Gleason <fredg@paravelsystems.com>
 	* Fixed bugs that broke the 'make rpm' target.
+2018-03-27 Fred Gleason <fredg@paravelsystems.com>
+	* Added a 'mariadb-server' dependency in 'drouter.spec.in'.
+	* Updated 'INSTALL' to include information about the
+	MySQL/MariaDB prequisites.
