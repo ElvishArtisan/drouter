@@ -29,7 +29,7 @@
 
 #include "protocol_sa.h"
 
-ProtocolSa::ProtocolSa(QObject *parent)
+ProtocolSa::ProtocolSa(int sock,QObject *parent)
   : Protocol(parent)
 {
   int flags;
@@ -48,7 +48,12 @@ ProtocolSa::ProtocolSa(QObject *parent)
   //
   proto_server=new QTcpServer(this);
   connect(proto_server,SIGNAL(newConnection()),this,SLOT(newConnectionData()));
-  proto_server->listen(QHostAddress::Any,9500);
+  if(sock<0) {
+    proto_server->listen(QHostAddress::Any,9500);
+  }
+  else {
+    proto_server->setSocketDescriptor(sock);
+  }
   flags=flags|FD_CLOEXEC;
   if((flags=fcntl(proto_server->socketDescriptor(),F_SETFD,&flags))<0) {
     fprintf(stderr,"dprotod: socket error [%s]\n",(const char *)strerror(errno));
@@ -760,7 +765,6 @@ void ProtocolSa::ProcessCommand(const QString &cmd)
 	  input=cmds[3].toUInt(&ok);
 	  if(ok) {
 	    ActivateRoute(cardnum-1,output-1,input);
-	    //	    emit setRoute(id,cardnum-1,input,output-1);
 	  }
 	  else {
 	    proto_socket->write(QString("Error\r\n").toUtf8());

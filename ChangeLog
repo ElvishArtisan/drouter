@@ -340,3 +340,5 @@
 2018-03-26 Fred Gleason <fredg@paravelsystems.com>
 	* Fixed a bug in dprotod(8) that caused extraneous RouteStat
 	entries to be transmitted when processing a route change.
+2018-03-27 Fred Gleason <fredg@paravelsystems.com>
+	* Implemented support for SystemD socket activation.

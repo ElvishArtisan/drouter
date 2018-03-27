@@ -25,7 +25,7 @@
 
 #include "protocol.h"
 
-#define DPROTOD_USAGE "--protocol-d\n"
+#define DPROTOD_USAGE "--protocol-d | --protocol-sa [--systemd]\n"
 
 class MainObject : public QObject
 {
@@ -34,7 +34,10 @@ class MainObject : public QObject
   MainObject(QObject *parent=0);
 
  private:
+  bool StartIpc(QString *err_msg);
   Protocol *main_protocol;
+  bool main_protocol_d;
+  bool main_protocol_sa;
 };
 
 

@@ -47,6 +47,7 @@ class MainObject : public QObject
   QTimer *main_signal_timer;
   QTimer *main_protocol_timer;
   QList<pid_t> main_protocol_pids;
+  int main_protocol_socks[2];
 };
 
 

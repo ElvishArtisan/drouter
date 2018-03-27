@@ -35,7 +35,7 @@ class ProtocolD : public Protocol
 {
  Q_OBJECT;
  public:
-  ProtocolD(QObject *parent=0);
+ ProtocolD(int sock,QObject *parent=0);
 
  private slots:
   void newConnectionData();

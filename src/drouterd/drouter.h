@@ -41,7 +41,7 @@ class DRouter : public QObject
 {
  Q_OBJECT;
  public:
-  DRouter(QObject *parent=0);
+  DRouter(int *proto_socks,QObject *parent=0);
   ~DRouter();
   QList<QHostAddress> nodeHostAddresses() const;
   SyLwrpClient *node(const QHostAddress &hostaddr);
@@ -85,6 +85,7 @@ class DRouter : public QObject
   void LockTables() const;
   void UnlockTables() const;
   void LoadMaps();
+  void SendProtoSocket(int dest_sock,int proto_sock);
   QMap<unsigned,SyLwrpClient *> drouter_nodes;
   QList<SyMcastSocket *> drouter_advt_sockets;
   QMap<int,QTcpSocket *> drouter_ipc_sockets;
@@ -92,6 +93,7 @@ class DRouter : public QObject
   QMap<int,EndPointMap *> drouter_maps;
   QSignalMapper *drouter_ipc_ready_mapper;
   QTcpServer *drouter_ipc_server;
+  int *drouter_proto_socks;
 };
 
 

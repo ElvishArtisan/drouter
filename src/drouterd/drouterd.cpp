@@ -51,8 +51,9 @@ MainObject::MainObject(QObject *parent)
   : QObject(parent)
 {
   // bool no_scripts=false;
-  //  int socks[2]={-1,-1};
-  //  int n;
+  main_protocol_socks[0]=-1;
+  main_protocol_socks[1]=-1;
+  int n;
   bool no_protocols=false;
   QString err_msg;
   SyCmdSwitch *cmd=
@@ -77,7 +78,7 @@ MainObject::MainObject(QObject *parent)
   //
   openlog("drouterd",LOG_PERROR,LOG_DAEMON);
 
-  /*
+
 #ifdef LIBSYSTEMD
   //
   // Get sockets from SystemD
@@ -85,8 +86,8 @@ MainObject::MainObject(QObject *parent)
   n=sd_listen_fds(0);
   if(n>0) {
     if(n==2) {
-      socks[0]=SD_LISTEN_FDS_START+0;
-      socks[1]=SD_LISTEN_FDS_START+1;
+      main_protocol_socks[0]=SD_LISTEN_FDS_START+0;
+      main_protocol_socks[1]=SD_LISTEN_FDS_START+1;
     }
     else {
       fprintf(stderr,"drouterd: error receiving sockets from SystemD\n");
@@ -94,15 +95,7 @@ MainObject::MainObject(QObject *parent)
     }
   }
 #endif  // LIBSYSTEMD
-
-  //
-  // Protocols
-  //
-  main_protocols.
-    push_back(ProtocolFactory(main_drouter,Protocol::ProtocolD,socks[0],this));
-  main_protocols.
-    push_back(ProtocolFactory(main_drouter,Protocol::ProtocolSa,socks[1],this));
-
+  /*
   //
   // State Scripts
   //
@@ -116,7 +109,7 @@ MainObject::MainObject(QObject *parent)
   //
   // Start Router Process
   //
-  main_drouter=new DRouter(this);
+  main_drouter=new DRouter(main_protocol_socks,this);
   if(!main_drouter->start(&err_msg)) {
     fprintf(stderr,"drouterd: %s\n",(const char *)err_msg.toUtf8());
     exit(1);
@@ -165,13 +158,25 @@ void MainObject::protocolData()
   pid_t pid=0;
 
   if((pid=fork())==0) {
-    execl("/usr/sbin/dprotod","dprotod","--protocol-d",(char *)NULL);
+    if(main_protocol_socks[0]<0) {
+      execl("/usr/sbin/dprotod","dprotod","--protocol-d",(char *)NULL);
+    }
+    else {
+      execl("/usr/sbin/dprotod","dprotod","--protocol-d","--systemd",
+	    (char *)NULL);
+    }
   }
   main_protocol_pids.push_back(pid);
   syslog(LOG_INFO,"started Protocol D protocol");
 
   if((pid=fork())==0) {
-    execl("/usr/sbin/dprotod","dprotod","--protocol-sa",(char *)NULL);
+    if(main_protocol_socks[1]<0) {
+      execl("/usr/sbin/dprotod","dprotod","--protocol-sa",(char *)NULL);
+    }
+    else {
+      execl("/usr/sbin/dprotod","dprotod","--protocol-sa","--systemd",
+	    (char *)NULL);
+    }
   }
   main_protocol_pids.push_back(pid);
   syslog(LOG_INFO,"started Software Authority protocol");

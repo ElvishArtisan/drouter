@@ -26,13 +26,12 @@
 
 #include "protocol_d.h"
 
-ProtocolD::ProtocolD(QObject *parent)
+ProtocolD::ProtocolD(int sock,QObject *parent)
   : Protocol(parent)
 {
   int flags;
 
   proto_socket=NULL;
-  //  proto_ipc_socket=NULL;
   proto_destinations_subscribed=false;
   proto_gpis_subscribed=false;
   proto_gpos_subscribed=false;
@@ -46,7 +45,12 @@ ProtocolD::ProtocolD(QObject *parent)
   //
   proto_server=new QTcpServer(this);
   connect(proto_server,SIGNAL(newConnection()),this,SLOT(newConnectionData()));
-  proto_server->listen(QHostAddress::Any,23883);
+  if(sock<0) {
+    proto_server->listen(QHostAddress::Any,23883);
+  }
+  else {
+    proto_server->setSocketDescriptor(sock);
+  }
   flags=flags|FD_CLOEXEC;
   if((flags=fcntl(proto_server->socketDescriptor(),F_SETFD,&flags))<0) {
     fprintf(stderr,"dprotod: socket error [%s]\n",(const char *)strerror(errno));

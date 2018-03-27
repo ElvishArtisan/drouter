@@ -24,6 +24,7 @@
 #include <string.h>
 #include <syslog.h>
 #include <sys/socket.h>
+#include <unistd.h>
 
 #include <QCoreApplication>
 #include <QHostAddress>
@@ -40,9 +41,10 @@
 #include "drouter.h"
 #include "protoipc.h"
 
-DRouter::DRouter(QObject *parent)
+DRouter::DRouter(int *proto_socks,QObject *parent)
   : QObject(parent)
 {
+  drouter_proto_socks=proto_socks;
 }
 
 
@@ -606,7 +608,6 @@ void DRouter::audioSilenceAlarmData(unsigned id,SyLwrpClient::MeterType type,
     q=new QSqlQuery(sql);
     delete q;
     NotifyProtocols("SILENCE",QString().sprintf("%d:%d:",type,chan)+QHostAddress(id).toString()+QString().sprintf(":%d",slotnum));
-    //    emit silenceAlarmChanged(*(lwrp->node()),(int)slotnum,type,chan,state);
   }
 }
 
@@ -764,6 +765,28 @@ bool DRouter::ProcessIpcCommand(int sock,const QString &cmd)
 	 (const char *)cmd.toUtf8(),sock);
 
   if(cmd=="QUIT") {
+    drouter_ipc_sockets[sock]->close();
+    drouter_ipc_sockets[sock]->deleteLater();
+    drouter_ipc_sockets.remove(sock);
+    drouter_ipc_accums.remove(sock);
+    syslog(LOG_DEBUG,"closed IPC connection %d",sock);
+    return false;
+  }
+
+  if(cmd=="SEND_D_SOCK") {
+    SendProtoSocket(sock,drouter_proto_socks[0]);
+    close(drouter_proto_socks[0]);
+    drouter_ipc_sockets[sock]->close();
+    drouter_ipc_sockets[sock]->deleteLater();
+    drouter_ipc_sockets.remove(sock);
+    drouter_ipc_accums.remove(sock);
+    syslog(LOG_DEBUG,"closed IPC connection %d",sock);
+    return false;
+  }
+
+  if(cmd=="SEND_SA_SOCK") {
+    SendProtoSocket(sock,drouter_proto_socks[1]);
+    close(drouter_proto_socks[1]);
     drouter_ipc_sockets[sock]->close();
     drouter_ipc_sockets[sock]->deleteLater();
     drouter_ipc_sockets.remove(sock);
@@ -1078,4 +1101,29 @@ void DRouter::LoadMaps()
     syslog(LOG_DEBUG,"%s",(const char *)msgs.at(i).toUtf8());
   }
   syslog(LOG_INFO,"loaded %d SA map(s)",drouter_maps.size());
+}
+
+
+void DRouter::SendProtoSocket(int dest_sock,int proto_sock)
+{
+  struct msghdr msg;
+  struct cmsghdr *cmsg=NULL;
+  char buf[CMSG_SPACE(sizeof &proto_sock)];
+  int *fdptr;
+
+  memset(&msg,0,sizeof(msg));
+  msg.msg_control=buf;
+  msg.msg_controllen=sizeof(buf);
+  cmsg=CMSG_FIRSTHDR(&msg);
+  cmsg->cmsg_level=SOL_SOCKET;
+  cmsg->cmsg_type=SCM_RIGHTS;
+  cmsg->cmsg_len=CMSG_LEN(sizeof(int));
+  fdptr=(int *)CMSG_DATA(cmsg);
+  memcpy(fdptr,&proto_sock,sizeof(int));
+  msg.msg_controllen=cmsg->cmsg_len;
+
+  if(sendmsg(dest_sock,&msg,0)<0) {
+    syslog(LOG_ERR,"error sending protocol socket [%s]",strerror(errno));
+    exit(1);
+  }
 }
