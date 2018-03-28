@@ -284,7 +284,7 @@ void DRouter::nodeConnectedData(unsigned id,bool state)
       delete q;
       for(QMap<int,EndPointMap *>::const_iterator it=drouter_maps.begin();it!=drouter_maps.end();it++) {
 	if(it.value()->routerType()==EndPointMap::AudioRouter) {
-	  if((endpt=it.value()->endPoint(EndPointMap::Input,QHostAddress(id).toString(),i))>=0) {
+	  if((endpt=it.value()->endPoint(EndPointMap::Output,QHostAddress(id).toString(),i))>=0) {
 	    sql=QString("insert into SA_DESTINATIONS set ")+
 	      QString().sprintf("ROUTER_NUMBER=%d,",it.value()->routerNumber())+
 	      QString().sprintf("SOURCE_NUMBER=%d,",endpt)+
@@ -343,7 +343,7 @@ void DRouter::nodeConnectedData(unsigned id,bool state)
       delete q;
       for(QMap<int,EndPointMap *>::const_iterator it=drouter_maps.begin();it!=drouter_maps.end();it++) {
 	if(it.value()->routerType()==EndPointMap::GpioRouter) {
-	  if((endpt=it.value()->endPoint(EndPointMap::Input,QHostAddress(id).toString(),i))>=0) {
+	  if((endpt=it.value()->endPoint(EndPointMap::Output,QHostAddress(id).toString(),i))>=0) {
 	    sql=QString("insert into SA_GPOS set ")+
 	      QString().sprintf("ROUTER_NUMBER=%d,",it.value()->routerNumber())+
 	      QString().sprintf("SOURCE_NUMBER=%d,",endpt)+
