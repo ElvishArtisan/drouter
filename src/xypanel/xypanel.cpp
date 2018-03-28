@@ -220,6 +220,7 @@ void MainWidget::routerBoxActivatedData(int n)
   int count;
   int endpt;
   int router=panel_router_box->itemData(n).toInt();
+
   panel_output_box->clear();
   count=0;
   endpt=0;
@@ -256,9 +257,8 @@ void MainWidget::routerBoxActivatedData(int n)
 void MainWidget::outputBoxActivatedData(int n)
 {
   int router=panel_router_box->currentItemData().toInt();
-  outputCrosspointChangedData(router,
-			      panel_output_box->currentItemData().toInt(),
-			      panel_parser->outputCrosspoint(router,n+1));
+  int output=panel_output_box->currentItemData().toInt();
+  outputCrosspointChangedData(router,output,panel_parser->outputCrosspoint(router,output));
 }
 
 
