@@ -376,7 +376,7 @@ void SaParser::ReadRouterName(const QString &cmd)
   bool ok=false;
   QStringList f0=cmd.split(" ",QString::SkipEmptyParts);
   if(f0.size()>=2) {
-    for(int i=1;i<f0.size();i++) {
+    for(int i=2;i<f0.size();i++) {
       f0[1]+=" "+f0[i];
     }
     int router=f0.at(0).toInt(&ok);

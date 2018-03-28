@@ -363,3 +363,6 @@
 	* Tweaked the 'GPIStat', 'GPOStat' and 'RouteStat' updates to
 	include the '>>' prompt in Software Authority protocol in
 	drouterd(8).
+2018-03-28 Fred Gleason <fredg@paravelsystems.com>
+	* Fixed a bug in xypanel(1) that caused the router names to be
+	lsited twice in the 'Router' dropdown.
