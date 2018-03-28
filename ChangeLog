@@ -368,3 +368,5 @@
 	listed twice in the 'Router' dropdown.
 	* Fixed a bug in xypanel(1) that caused source assignments to
 	be displayed incorrectly for routers with sparse endpoints.
+2018-03-28 Fred Gleason <fredg@paravelsystems.com>
+	* Fixed typos in the drouter.map(5) man page.

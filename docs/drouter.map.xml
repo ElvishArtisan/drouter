@@ -155,7 +155,7 @@
 	  <listitem>
 	    <para>
 	      Where <replaceable>slot-num</replaceable> is the offset position
-	      of the input on the host node, starting with <userinput>0</userinput>
+	      of the input on the host node, starting with <userinput>1</userinput>
 	      and counting upwards, as returned by the LWRP
 	      <userinput>SRC</userinput> or <userinput>GPI</userinput>
 	      commands.
@@ -201,7 +201,7 @@
 	  <listitem>
 	    <para>
 	      Where <replaceable>slot-num</replaceable> is the offset position
-	      of the output on the host node, starting with <userinput>0</userinput>
+	      of the output on the host node, starting with <userinput>1</userinput>
 	      and counting upwards, as returned by the LWRP
 	      <userinput>DST</userinput> or <userinput>GPO</userinput>
 	      commands.
