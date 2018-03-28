@@ -357,3 +357,5 @@
 2018-03-28 Fred Gleason <fredg@paravelsystems.com>
 	* Fixed a bug in drouterd(8) that caused corrupt indices to
 	be generated for Software Authority routers.
+2018-03-28 Fred Gleason <fredg@paravelsystems.com>
+	* Removed redundant syslog messages from dprotod(8).

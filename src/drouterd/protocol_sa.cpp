@@ -873,10 +873,6 @@ void ProtocolSa::LoadMaps()
     fprintf(stderr,"dprotod: %s\n",(const char *)msgs.join("\n").toUtf8());
     exit(1);
   }
-  for(int i=0;i<msgs.size();i++) {
-    syslog(LOG_DEBUG,"%s",(const char *)msgs.at(i).toUtf8());
-  }
-  syslog(LOG_INFO,"loaded %d SA map(s)",proto_maps.size());
 }
 
 
