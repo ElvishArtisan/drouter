@@ -1,0 +1,308 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<refentry id="stdin" xmlns="http://docbook.org/ns/docbook" version="5.0">
+  <!--
+      Header
+  -->
+  <refmeta>
+    <refentrytitle>drouter.map</refentrytitle>
+    <manvolnum>5</manvolnum>
+    <refmiscinfo class='source'>March 2018</refmiscinfo>
+    <refmiscinfo class='manual'>Linux Audio Manual</refmiscinfo>
+  </refmeta>
+  <refnamediv>
+    <refname>drouter.map</refname>
+    <refpurpose>Definition file for a Software Authority router</refpurpose>
+  </refnamediv>
+  <info>
+    <author>
+      <personname>
+	<firstname>Fred</firstname>
+	<surname>Gleason</surname>
+	<email>fredg@paravelsystems.com</email>
+      </personname>
+      <contrib>Application Author</contrib>
+    </author>
+  </info>
+
+  <!--
+      Body
+  -->
+  <refsynopsisdiv id='synopsis'>
+    <cmdsynopsis>
+      <command>drouter.map</command>
+      <arg choice='opt'><replaceable>OPTIONS</replaceable></arg>
+      <sbr/>
+    </cmdsynopsis>
+  </refsynopsisdiv>
+
+  <refsect1 id='description'><title>Description</title>
+  <para>
+    <command>drouter.map</command><manvolnum>5</manvolnum> files define
+    routers to be made available by the 
+    <command>drouterd</command><manvolnum>8</manvolnum> service via
+    Software Authority protocol, one file per router to be defined. Map
+    files must end with a <userinput>.map</userinput> extension and be
+    placed in the <userinput>/etc/drouter.d/maps/</userinput> subdirectory
+    on the system running <command>drouterd</command><manvolnum>8</manvolnum>.
+  </para>
+  </refsect1>
+
+  <refsect1 id='file_format'>
+    <title>File Format</title>
+    <para>
+      The file format consists of sections, each of which contain
+      configuration  information  in  the  form  of keyword/value pairs.
+      Each section begins with with the name of the section in []  brackets,
+      followed  by zero  or more keyword/value pairs, with the keyword and value
+      seperated by an '=' sign. Lines starting with ; are ignored, as are blank
+      lines.
+    </para>
+    <para>
+       For example:
+    </para>
+    <programlisting>
+       [Section1]
+       Keyword1=value1
+       Keyword2=value2
+       Keyword3=value3
+    </programlisting>
+  </refsect1>
+
+  <refsect1 id='file_sections'>
+    <title>File Sections</title>
+    <refsect2 id='global_section'>
+      <title>The [Global] Section</title>
+      <para>
+	The <userinput>[Global]</userinput> section contains the following
+	parameters:
+      </para>
+      <variablelist>
+	<varlistentry>
+	  <term>
+	    <userinput>RouterName=<replaceable>name</replaceable></userinput>
+	  </term>
+	  <listitem>
+	    <para>
+	      Where <replaceable>name</replaceable> is the alphanumeric
+	      string that will appear in the output of the
+	      <computeroutput>RouterNames</computeroutput> command for
+	      this router.
+	    </para>
+	  </listitem>
+	</varlistentry>
+	<varlistentry>
+	  <term>
+	    <userinput>RouterNumber=<replaceable>num</replaceable></userinput>
+	  </term>
+	  <listitem>
+	    <para>
+	      Where <replaceable>num</replaceable> is the router number
+	      that will be advertised for this router in the output of the
+	      <computeroutput>RouterNames</computeroutput> command for
+	      this router. Each Software Authority router must have a unique
+	      number across the entire
+	      <command>drouterd</command><manvolnum>8</manvolnum> service.
+	    </para>
+	  </listitem>
+	</varlistentry>
+	<varlistentry>
+	  <term>
+	    <userinput>RouterType=<replaceable>type</replaceable></userinput>
+	  </term>
+	  <listitem>
+	    <para>
+	      Where <replaceable>type</replaceable> is either
+	      <userinput>audio</userinput> or <userinput>gpio</userinput>.
+	    </para>
+	  </listitem>
+	</varlistentry>
+      </variablelist>
+    </refsect2>
+
+    <refsect2 id='input_section'>
+      <title>The [Input<replaceable>num</replaceable>] Section</title>
+      <para>
+	Each input in the router is defined by means of an
+	[Input<replaceable>num</replaceable>] section, with
+	<replaceable>num</replaceable> corresponding to the Input
+	Number. Input numbers must start with <userinput>1</userinput>
+	and be consecutive to the highest number.
+      </para>
+      <para>
+	Each <userinput>[Input<replaceable>num</replaceable>]</userinput>
+	section must contain exactly one of each of the following
+	parameters:
+      </para>
+      <variablelist>
+	<varlistentry>
+	  <term>
+	    <userinput>HostAddress=<replaceable>ipv4-addr</replaceable></userinput>
+	  </term>
+	  <listitem>
+	    <para>
+	      Where <replaceable>ipv4-addr</replaceable> is the IPv4 address of
+	      the node hosting the input (an audio Source or Gpi, depending on
+	      the type of router), in dotted-quad notation. To leave an
+	      input position &quot;undefined&quot;, specify an address of
+	      <userinput>0.0.0.0</userinput>.
+	    </para>
+	  </listitem>
+	</varlistentry>
+	<varlistentry>
+	  <term>
+	    <userinput>Slot=<replaceable>slot-num</replaceable></userinput>
+	  </term>
+	  <listitem>
+	    <para>
+	      Where <replaceable>slot-num</replaceable> is the offset position
+	      of the input on the host node, starting with <userinput>0</userinput>
+	      and counting upwards, as returned by the LWRP
+	      <userinput>SRC</userinput> or <userinput>GPI</userinput>
+	      commands.
+	    </para>
+	  </listitem>
+	</varlistentry>
+      </variablelist>
+    </refsect2>
+
+    <refsect2 id='output_section'>
+      <title>The [Output<replaceable>num</replaceable>] Section</title>
+      <para>
+	Each output in the router is defined by means of an
+	[Output<replaceable>num</replaceable>] section, with
+	<replaceable>num</replaceable> corresponding to the Output
+	Number. Output numbers must start with <userinput>1</userinput>
+	and be consecutive to the highest number.
+      </para>
+      <para>
+	Each <userinput>[Output<replaceable>num</replaceable>]</userinput>
+	section must contain exactly one of each of the following
+	parameters:
+      </para>
+      <variablelist>
+	<varlistentry>
+	  <term>
+	    <userinput>HostAddress=<replaceable>ipv4-addr</replaceable></userinput>
+	  </term>
+	  <listitem>
+	    <para>
+	      Where <replaceable>ipv4-addr</replaceable> is the IPv4 address of
+	      the node hosting the output (an audio Destination or Gpo, depending
+	      upon the type of router), in dotted-quad notation. To leave an
+	      output position &quot;undefined&quot;, specify an address of
+	      <userinput>0.0.0.0</userinput>.
+	    </para>
+	  </listitem>
+	</varlistentry>
+	<varlistentry>
+	  <term>
+	    <userinput>Slot=<replaceable>slot-num</replaceable></userinput>
+	  </term>
+	  <listitem>
+	    <para>
+	      Where <replaceable>slot-num</replaceable> is the offset position
+	      of the output on the host node, starting with <userinput>0</userinput>
+	      and counting upwards, as returned by the LWRP
+	      <userinput>DST</userinput> or <userinput>GPO</userinput>
+	      commands.
+	    </para>
+	  </listitem>
+	</varlistentry>
+      </variablelist>
+    </refsect2>
+
+    <refsect2 id='snapshot_section'>
+      <title>The [Snapshot<replaceable>num</replaceable>] Section</title>
+      <para>
+	Snapshots can be defined for the router by a
+	[Snapshot<replaceable>num</replaceable>] section for each desired
+	snapshot, where <replaceable>num</replaceable> is the snapshot
+	number that will be returned by the
+	<computeroutput>Snapshots</computeroutput> command. Snapshot numbers
+	must begin with <userinput>1</userinput> and be consecutive to the
+	highest number.
+      </para>
+      <para>
+	Each <userinput>[Snapshot<replaceable>num</replaceable>]</userinput>
+	may contain the following parameters:
+      </para>
+      <variablelist>
+	<varlistentry>
+	  <term>
+	    <userinput>Name=<replaceable>snap-name</replaceable></userinput>
+	  </term>
+	  <listitem>
+	    <para>
+	      Where <replaceable>snap-name</replaceable> is the alphanumeric
+	      string that will be returned by the
+	      <computeroutput>Snapshots</computeroutput> command. Each
+	      <userinput>[Snapshot<replaceable>num</replaceable>]</userinput>
+	      section must contain exactly one <userinput>Name=</userinput>
+	      parameter.
+	    </para>
+	  </listitem>
+	</varlistentry>
+
+	<varlistentry>
+	  <term>
+	      <userinput>Route<replaceable>n</replaceable>Output=<replaceable>out</replaceable></userinput>
+	  </term>
+	  <listitem>
+	    <para>
+	      Where <replaceable>n</replaceable> is an integer, beginning
+	      with <userinput>1</userinput> and consecutively increasing
+	      for each route defined in the snapshot. The
+	      <userinput>Route<replaceable>n</replaceable>Output</userinput>
+	      parameter takes the output number of the route to be changed, as defined
+	      in the <userinput>[Output]</userinput> sections defined elsewhere
+	      in the same file. Each
+	      <userinput>Route<replaceable>n</replaceable>Output</userinput>
+	      section must have a corresponding
+	      <userinput>Route<replaceable>n</replaceable>Input</userinput> section.
+	    </para>
+	  </listitem>
+	</varlistentry>
+      
+	<varlistentry>
+	  <term>
+	      <userinput>Route<replaceable>n</replaceable>Input=<replaceable>in</replaceable></userinput>
+	  </term>
+	  <listitem>
+	    <para>
+	      Where <replaceable>n</replaceable> is an integer, beginning
+	      with <userinput>1</userinput> and consecutively increasing
+	      for each route defined in the snapshot. The
+	      <userinput>Route<replaceable>n</replaceable>Input</userinput> parameter
+	      takes the input number of the route to be changed, as defined
+	      in the <userinput>[Input]</userinput> sections defined elsewhere
+	      in the same file. Additionally, 
+	      <userinput>Route<replaceable>n</replaceable>Input</userinput>
+	      parameters may take a value of <userinput>0</userinput>, which
+	      will result in the snapshot muting the referenced output. Each
+	      <userinput>Route<replaceable>n</replaceable>Input</userinput>
+	      section must have a corresponding
+	      <userinput>Route<replaceable>n</replaceable>Output</userinput> section.
+	    </para>
+	  </listitem>
+	</varlistentry>
+      
+      </variablelist>
+    </refsect2>
+
+  </refsect1>
+
+  <refsect1 id='see_also'><title>See Also</title>
+  <para>
+  <citerefentry>
+    <refentrytitle>dlist</refentrytitle><manvolnum>1</manvolnum>
+  </citerefentry>,
+  <citerefentry>
+    <refentrytitle>dmap</refentrytitle><manvolnum>1</manvolnum>
+  </citerefentry>,
+  <citerefentry>
+    <refentrytitle>drouterd</refentrytitle><manvolnum>8</manvolnum>
+  </citerefentry>
+  </para>
+  </refsect1>
+</refentry>
+

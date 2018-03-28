@@ -352,3 +352,5 @@
 	* Added a 'mariadb-server' dependency in 'drouter.spec.in'.
 	* Updated 'INSTALL' to include information about the
 	MySQL/MariaDB prequisites.
+2018-03-27 Fred Gleason <fredg@paravelsystems.com>
+	* Added a drouter.map(5) man page.

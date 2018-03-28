@@ -119,8 +119,7 @@
     is done by means of textual configuration files placed in various
     subdirectories below <userinput>/etc/drouter.d/</userinput>.
     These files are read by
-    <command>drouterd</command><manvolnum>8</manvolnum> upon startup
-    as well as upon reception of a <userinput>SIGHUP</userinput>.
+    <command>drouterd</command><manvolnum>8</manvolnum> upon startup.
   </para>
   <refsect2>
     <title>State Scripts</title>
@@ -128,7 +127,17 @@
       Python state scripts should be placed in
       <userinput>/etc/drouter.d/scripts/</userinput>, with each script
       named with a <userinput>.py</userinput> extension and set with
-      mode <userinput>0755</userinput>.
+      mode <userinput>0755</userinput>. Documentation of the Python
+      API can be found by executing the following statements at an
+      interactive Python prompt:
+    </para>
+    <programlisting>
+      import Drouter.StateEngine
+      help(Drouter.StateEngine)
+    </programlisting>
+    <para>
+      Numerous example scripts are provided with the Drouter source code
+      in the &quot;python/examples/&quot; subdirectory.
     </para>
   </refsect2>
 
@@ -139,7 +148,9 @@
       Protocol should be placed in <userinput>/etc/drouter.d/maps/</userinput>,
       with each map file named with a <userinput>.map</userinput> extension.
       See the <command>dmap</command><manvolnum>1</manvolnum> man page for
-      information on generating such maps.
+      information on generating such maps, as well as the
+      <command>drouter.map</command><manvolnum>5</manvolnum> man page for
+      documentation of the map format itself.
     </para>
   </refsect2>
     
@@ -147,6 +158,12 @@
 
   <refsect1 id='see_also'><title>See Also</title>
   <para>
+  <citerefentry>
+    <refentrytitle>drouter.map</refentrytitle><manvolnum>5</manvolnum>
+  </citerefentry>,
+  <citerefentry>
+    <refentrytitle>dlist</refentrytitle><manvolnum>1</manvolnum>
+  </citerefentry>,
   <citerefentry>
     <refentrytitle>dmap</refentrytitle><manvolnum>1</manvolnum>
   </citerefentry>

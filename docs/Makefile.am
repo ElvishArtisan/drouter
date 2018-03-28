@@ -28,6 +28,8 @@
 	xsltproc $(DOCBOOK_STYLESHEETS)/fo/docbook.xsl $< | fop - -pdf $@
 %.1:	%.xml
 	xsltproc $(DOCBOOK_STYLESHEETS)/manpages/docbook.xsl $<
+%.5:	%.xml
+	xsltproc $(DOCBOOK_STYLESHEETS)/manpages/docbook.xsl $<
 %.8:	%.xml
 	xsltproc $(DOCBOOK_STYLESHEETS)/manpages/docbook.xsl $<
 
@@ -37,6 +39,8 @@ all-local:	buttonpanel.1\
                 dlist.xml\
                 dmap.1\
                 dmap.xml\
+                drouter.map.5\
+                drouter.map.xml\
                 drouterd.8\
                 drouterd.xml\
                 outputpanel.1\
@@ -54,6 +58,8 @@ EXTRA_DIST = buttonpanel.1\
              dlist.xml\
              dmap.1\
              dmap.xml\
+             drouter.map.5\
+             drouter.map.xml\
              drouterd.8\
              drouterd.xml\
              outputpanel.1\
@@ -69,6 +75,7 @@ EXTRA_DIST = buttonpanel.1\
 man_MANS = buttonpanel.1\
            dlist.1\
            dmap.1\
+           drouter.map.5\
            drouterd.8\
            outputpanel.1\
            xpointpanel.1\
