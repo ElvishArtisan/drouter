@@ -154,6 +154,7 @@ void ProtocolSa::destinationCrosspointChanged(const QHostAddress &host_addr,int 
   q=new QSqlQuery(sql);
   while(q->next()) {
     proto_socket->write(RouteStatMessage(q).toUtf8());
+    proto_socket->write(">>",2);
   }
   delete q;
 }
@@ -170,6 +171,7 @@ void ProtocolSa::gpiCodeChanged(const QHostAddress &host_addr,int slotnum)
   q=new QSqlQuery(sql);
   while(q->next()) {
     proto_socket->write(GPIStatMessage(q).toUtf8());
+    proto_socket->write(">>",2);
   }
   delete q;
 }
@@ -186,6 +188,7 @@ void ProtocolSa::gpoCodeChanged(const QHostAddress &host_addr,int slotnum)
   q=new QSqlQuery(sql);
   while(q->next()) {
     proto_socket->write(GPOStatMessage(q).toUtf8());
+    proto_socket->write(">>",2);
   }
   delete q;
 }
@@ -204,6 +207,7 @@ void ProtocolSa::gpoCrosspointChanged(const QHostAddress &host_addr,int slotnum)
   q=new QSqlQuery(sql);
   while(q->next()) {
     proto_socket->write(RouteStatMessage(q).toUtf8());
+    proto_socket->write(">>",2);
   }
   delete q;
 }
