@@ -57,6 +57,7 @@ class MainObject : public QObject
   EndPointMap::RouterType map_router_type;
   EndPointMap *map_map;
   int map_router_number;
+  bool map_save_names;
   QString map_router_name;
   int map_max_nodes;
   bool map_verbose;

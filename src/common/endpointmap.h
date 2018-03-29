@@ -73,15 +73,17 @@ class EndPointMap
   void setName(Type type,int n,const QString &str);
   int endPoint(Type type,const QHostAddress &hostaddr,int slot) const;
   int endPoint(Type type,const QString &hostaddr,int slot) const;
-  void insert(Type type,int n,const QHostAddress &host_addr,int slot);
-  void insert(Type type,int n,const QString &host_addr,int slot);
+  void insert(Type type,int n,const QHostAddress &host_addr,int slot,
+	      const QString &name=QString());
+  void insert(Type type,int n,const QString &host_addr,int slot,
+	      const QString &name=QString());
   void erase(Type type,int n);
   int snapshotQuantity() const;
   Snapshot *snapshot(int n) const;
   Snapshot *snapshot(const QString &name);
   bool load(const QString &filename,QStringList *unused_lines=NULL);
-  bool save(const QString &filename) const;
-  void save(FILE *f) const;
+  bool save(const QString &filename,bool incl_names) const;
+  void save(FILE *f,bool incl_names) const;
   static bool loadSet(QMap<int,EndPointMap *> *maps,QStringList *msgs);
   static QString routerTypeString(RouterType type);
   static QString typeString(Type type);

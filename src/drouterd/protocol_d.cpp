@@ -364,6 +364,11 @@ void ProtocolD::ProcessCommand(const QString &cmd)
     return;
   }
 
+  if(keyword=="ping") {
+    proto_socket->write("Pong\r\n",6);
+    return;
+  }
+
   if(keyword=="listdestinations") {
     sql=DestinationSqlFields()+"order by HOST_ADDRESS,SLOT";
     q=new QSqlQuery(sql);

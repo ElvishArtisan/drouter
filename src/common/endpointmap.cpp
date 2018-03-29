@@ -196,17 +196,21 @@ int EndPointMap::endPoint(Type type,const QString &hostaddr,int slot) const
 }
 
 
-void EndPointMap::insert(EndPointMap::Type type,int n,const QHostAddress &host_addr,int slot)
+void EndPointMap::insert(EndPointMap::Type type,int n,const QHostAddress &host_addr,int slot,
+			 const QString &name)
 {
   map_host_addresses[type].insert(n,host_addr);
   map_slots[type].insert(n,slot);
+  map_names[type].insert(n,name);
 }
 
 
-void EndPointMap::insert(EndPointMap::Type type,int n,const QString &host_addr,int slot)
+void EndPointMap::insert(EndPointMap::Type type,int n,const QString &host_addr,int slot,
+			 const QString &name)
 {
   map_host_addresses[type].insert(n,QHostAddress(host_addr));
   map_slots[type].insert(n,slot);
+  map_names[type].insert(n,name);
 }
 
 
@@ -320,7 +324,7 @@ bool EndPointMap::load(const QString &filename,QStringList *unused_lines)
 }
 
 
-bool EndPointMap::save(const QString &filename) const
+bool EndPointMap::save(const QString &filename,bool incl_names) const
 {
   QString tempname=filename+"-temp";
   FILE *f=NULL;
@@ -328,7 +332,7 @@ bool EndPointMap::save(const QString &filename) const
   if((f=fopen(tempname.toUtf8(),"w"))==NULL) {
     return false;
   }
-  save(f);
+  save(f,incl_names);
   fclose(f);
   if(rename(tempname.toUtf8(),filename.toUtf8())!=0) {
     unlink(tempname.toUtf8());
@@ -339,7 +343,7 @@ bool EndPointMap::save(const QString &filename) const
 }
 
 
-void EndPointMap::save(FILE *f) const
+void EndPointMap::save(FILE *f,bool incl_names) const
 {
   fprintf(f,"[Global]\n");
   fprintf(f,"RouterType=%s\n",
@@ -360,6 +364,14 @@ void EndPointMap::save(FILE *f) const
 	      (const char *)map_host_addresses[type].at(j).toString().toUtf8());
       }
       fprintf(f,"Slot=%d\n",map_slots[type].at(j)+1);
+      if(incl_names) {
+	fprintf(f,"Name=%s\n",
+		(const char *)map_names[type].at(j).toUtf8());
+      }
+      else {
+	fprintf(f,"; Name=%s\n",
+		(const char *)map_names[type].at(j).toUtf8());
+      }
       fprintf(f,"\n");
     }
   }

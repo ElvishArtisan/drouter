@@ -161,6 +161,19 @@
   <variablelist remap='TP'>
     <varlistentry>
       <term>
+	<option>--save-names</option>
+      </term>
+      <listitem>
+	<para>
+	  Save the LWRP name for each endpoint as part of the map.
+	</para>
+      </listitem>
+    </varlistentry>
+  </variablelist>
+
+  <variablelist remap='TP'>
+    <varlistentry>
+      <term>
 	<option>--skip-node=</option><replaceable>ip-addr</replaceable>
       </term>
       <listitem>

@@ -39,6 +39,7 @@ MainObject::MainObject(QObject *parent)
   bool generate=false;
 
   map_output_map="";
+  map_save_names=false;
   map_router_number=0;
   map_router_name="Livewire";
   map_router_type=EndPointMap::AudioRouter;
@@ -57,6 +58,10 @@ MainObject::MainObject(QObject *parent)
     }
     if(cmd->key(i)=="--output-map") {
       map_output_map=cmd->value(i);
+      cmd->setProcessed(i,true);
+    }
+    if(cmd->key(i)=="--save-names") {
+      map_save_names=true;
       cmd->setProcessed(i,true);
     }
     if(cmd->key(i)=="--router-name") {
@@ -153,6 +158,7 @@ MainObject::MainObject(QObject *parent)
 
 void MainObject::connectedData(bool state)
 {
+  printf("connected\n");
   QList<QHostAddress> hosts;
 
   //
@@ -197,9 +203,10 @@ void MainObject::connectedData(bool state)
     for(int i=0;i<hosts.size();i++) {
       SyNode *node=map_parser->node(hosts.at(i));
       for(unsigned j=0;j<node->srcSlotQuantity();j++) {
+	SySource *src=map_parser->src(hosts.at(i),j);
 	map_map->
 	  insert(EndPointMap::Input,map_map->quantity(EndPointMap::Input),
-		 node->hostAddress(),j);
+		 node->hostAddress(),j,src->name());
       }
     }
 
@@ -209,9 +216,10 @@ void MainObject::connectedData(bool state)
     for(int i=0;i<hosts.size();i++) {
       SyNode *node=map_parser->node(hosts.at(i));
       for(unsigned j=0;j<node->dstSlotQuantity();j++) {
+	SyDestination *dst=map_parser->dst(hosts.at(i),j);
 	map_map->
 	  insert(EndPointMap::Output,map_map->quantity(EndPointMap::Output),
-		 node->hostAddress(),j);
+		 node->hostAddress(),j,dst->name());
       }
     }
   }
@@ -224,7 +232,7 @@ void MainObject::connectedData(bool state)
       for(unsigned j=0;j<node->gpiSlotQuantity();j++) {
 	map_map->
 	  insert(EndPointMap::Input,map_map->quantity(EndPointMap::Input),
-		 node->hostAddress(),j);
+		 node->hostAddress(),j,QString().sprintf("OUT %d",j+1));
       }
     }
 
@@ -236,7 +244,7 @@ void MainObject::connectedData(bool state)
       for(unsigned j=0;j<node->gpoSlotQuantity();j++) {
 	map_map->
 	  insert(EndPointMap::Output,map_map->quantity(EndPointMap::Output),
-		 node->hostAddress(),j);
+		 node->hostAddress(),j,QString().sprintf("OUT %d",j+1));
       }
     }
   }
@@ -245,10 +253,10 @@ void MainObject::connectedData(bool state)
   // Save
   //
   if(map_output_map.isEmpty()) {
-    map_map->save(stdout);
+    map_map->save(stdout,map_save_names);
   }
   else {
-    if(!map_map->save(map_output_map)) {
+    if(!map_map->save(map_output_map,map_save_names)) {
       fprintf(stderr,"dmap: unable to save map\n");
       exit(1);
     }
