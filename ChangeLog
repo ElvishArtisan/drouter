@@ -377,3 +377,7 @@
 	* Added a '--save-names' switch to dmap(1).
 2018-03-29 Fred Gleason <fredg@paravelsystems.com>
 	* Added a '--save-names' switch to the 'pf_import.py' script.
+2018-03-29 Fred Gleason <fredg@paravelsystems.com>
+	* Fixed a bug in drouterd(8) that caused blank names to be
+	supplied for GPO destinations in the output of the SA
+	'DestNames' command.

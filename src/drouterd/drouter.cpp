@@ -334,12 +334,16 @@ void DRouter::nodeConnectedData(unsigned id,bool state)
       }
     }
     for(unsigned i=0;i<lwrp->gpos();i++) {
+      QString name=lwrp->gpo(i)->name();
+      if(name.isEmpty()) {
+	name=QString().sprintf("GPO %d",i+1);
+      }
       sql=QString("insert into GPOS set ")+
 	"HOST_ADDRESS=\""+QHostAddress(id).toString()+"\","+
 	QString().sprintf("SLOT=%u,",i)+
 	"HOST_NAME=\""+lwrp->hostName()+"\","+
 	"CODE=\""+lwrp->gpiBundle(i)->code()+"\","+
-	"NAME=\""+lwrp->gpo(i)->name()+"\","+
+	"NAME=\""+name+"\","+
 	"SOURCE_ADDRESS=\""+lwrp->gpo(i)->sourceAddress().toString()+"\","+
 	QString().sprintf("SOURCE_SLOT=%d",lwrp->gpo(i)->sourceSlot());
       q=new QSqlQuery(sql);
