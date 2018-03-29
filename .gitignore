@@ -24,6 +24,8 @@ moc_*
 src/buttonpanel/buttonpanel
 src/buttonpanel/combobox.cpp
 src/buttonpanel/combobox.h
+src/buttonpanel/config.cpp
+src/buttonpanel/config.h
 src/buttonpanel/dparser.cpp
 src/buttonpanel/dparser.h
 src/buttonpanel/endpointmap.cpp
@@ -34,6 +36,8 @@ src/buttonpanel/saparser.cpp
 src/buttonpanel/saparser.h
 src/dmap/combobox.cpp
 src/dmap/combobox.h
+src/dmap/config.cpp
+src/dmap/config.h
 src/dmap/dmap
 src/dmap/dparser.cpp
 src/dmap/dparser.h
@@ -45,6 +49,8 @@ src/dmap/saparser.cpp
 src/dmap/saparser.h
 src/drouterd/combobox.cpp
 src/drouterd/combobox.h
+src/drouterd/config.cpp
+src/drouterd/config.h
 src/drouterd/dparser.cpp
 src/drouterd/dparser.h
 src/drouterd/dprotod
@@ -57,6 +63,8 @@ src/drouterd/saparser.cpp
 src/drouterd/saparser.h
 src/outputpanel/combobox.cpp
 src/outputpanel/combobox.h
+src/outputpanel/config.cpp
+src/outputpanel/config.h
 src/outputpanel/dparser.cpp
 src/outputpanel/dparser.h
 src/outputpanel/endpointmap.cpp
@@ -68,6 +76,8 @@ src/outputpanel/saparser.cpp
 src/outputpanel/saparser.h
 src/shotpanel/combobox.cpp
 src/shotpanel/combobox.h
+src/shotpanel/config.cpp
+src/shotpanel/config.h
 src/shotpanel/dparser.cpp
 src/shotpanel/dparser.h
 src/shotpanel/endpointmap.cpp
@@ -79,6 +89,8 @@ src/shotpanel/saparser.h
 src/shotpanel/shotpanel
 src/tests/combobox.cpp
 src/tests/combobox.h
+src/tests/config.cpp
+src/tests/config.h
 src/tests/dparser.cpp
 src/tests/dparser.h
 src/tests/dparsertest
@@ -90,6 +102,8 @@ src/tests/saparser.cpp
 src/tests/saparser.h
 src/xpointpanel/combobox.cpp
 src/xpointpanel/combobox.h
+src/xpointpanel/config.cpp
+src/xpointpanel/config.h
 src/xpointpanel/dparser.cpp
 src/xpointpanel/dparser.h
 src/xpointpanel/endpointmap.cpp
@@ -101,6 +115,8 @@ src/xpointpanel/saparser.h
 src/xpointpanel/xpointpanel
 src/xypanel/combobox.cpp
 src/xypanel/combobox.h
+src/xypanel/config.cpp
+src/xypanel/config.h
 src/xypanel/dparser.cpp
 src/xypanel/dparser.h
 src/xypanel/endpointmap.cpp
