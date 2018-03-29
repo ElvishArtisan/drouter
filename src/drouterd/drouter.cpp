@@ -270,7 +270,9 @@ void DRouter::nodeConnectedData(unsigned id,bool state)
 	      QString().sprintf("ROUTER_NUMBER=%d,",it.value()->routerNumber())+
 	      QString().sprintf("SOURCE_NUMBER=%d,",endpt)+
 	      QString().sprintf("SOURCE_ID=%d,",last_id)+
-	      "HOST_ADDRESS=\""+QHostAddress(id).toString()+"\"";
+	      "STREAM_ADDRESS=\""+lwrp->srcAddress(i).toString()+"\","+
+	      "HOST_ADDRESS=\""+QHostAddress(id).toString()+"\","+
+	      QString().sprintf("SLOT=%d",i);
 	    if(!it.value()->name(EndPointMap::Input,endpt).isEmpty()) {
 	      sql+=",NAME=\""+it.value()->name(EndPointMap::Input,endpt)+"\"";
 	    }
@@ -303,7 +305,9 @@ void DRouter::nodeConnectedData(unsigned id,bool state)
 	      QString().sprintf("ROUTER_NUMBER=%d,",it.value()->routerNumber())+
 	      QString().sprintf("SOURCE_NUMBER=%d,",endpt)+
 	      QString().sprintf("DESTINATION_ID=%d,",last_id)+
-	      "HOST_ADDRESS=\""+QHostAddress(id).toString()+"\"";
+	      "STREAM_ADDRESS=\""+lwrp->dstAddress(i).toString()+"\","+
+	      "HOST_ADDRESS=\""+QHostAddress(id).toString()+"\","+
+	      QString().sprintf("SLOT=%d",i);
 	    if(!it.value()->name(EndPointMap::Output,endpt).isEmpty()) {
 	      sql+=",NAME=\""+it.value()->name(EndPointMap::Output,endpt)+"\"";
 	    }
@@ -334,7 +338,8 @@ void DRouter::nodeConnectedData(unsigned id,bool state)
 	      QString().sprintf("ROUTER_NUMBER=%d,",it.value()->routerNumber())+
 	      QString().sprintf("SOURCE_NUMBER=%d,",endpt)+
 	      QString().sprintf("GPI_ID=%d,",last_id)+
-	      "HOST_ADDRESS=\""+QHostAddress(id).toString()+"\"";
+	      "HOST_ADDRESS=\""+QHostAddress(id).toString()+"\","+
+	      QString().sprintf("SLOT=%d",i);
 	    if(!it.value()->name(EndPointMap::Input,endpt).isEmpty()) {
 	      sql+=",NAME=\""+it.value()->name(EndPointMap::Input,endpt)+"\"";
 	    }
@@ -372,7 +377,10 @@ void DRouter::nodeConnectedData(unsigned id,bool state)
 	      QString().sprintf("ROUTER_NUMBER=%d,",it.value()->routerNumber())+
 	      QString().sprintf("SOURCE_NUMBER=%d,",endpt)+
 	      QString().sprintf("GPO_ID=%d,",last_id)+
-	      "HOST_ADDRESS=\""+QHostAddress(id).toString()+"\"";
+	      "SOURCE_ADDRESS=\""+lwrp->gpo(i)->sourceAddress().toString()+"\","+
+	      QString().sprintf("SOURCE_SLOT=%d,",lwrp->gpo(i)->sourceSlot())+
+	      "HOST_ADDRESS=\""+QHostAddress(id).toString()+"\","+
+	      QString().sprintf("SLOT=%d",i);
 	    if(!it.value()->name(EndPointMap::Output,endpt).isEmpty()) {
 	      sql+=",NAME=\""+it.value()->name(EndPointMap::Output,endpt)+"\"";
 	    }
@@ -465,6 +473,12 @@ void DRouter::sourceChangedData(unsigned id,int slotnum,const SyNode &node,
     QString().sprintf("SLOT=%u",slotnum);
   q=new QSqlQuery(sql);
   delete q;
+  sql=QString("update SA_SOURCES set ")+
+    "STREAM_ADDRESS=\""+src.streamAddress().toString()+"\" where "+
+    "HOST_ADDRESS=\""+QHostAddress(id).toString()+"\" && "+
+    QString().sprintf("SLOT=%u",slotnum);
+  q=new QSqlQuery(sql);
+  delete q;
   NotifyProtocols("SRC",QHostAddress(id).toString()+
 		  QString().sprintf(":%u",slotnum));
 }
@@ -492,6 +506,12 @@ void DRouter::destinationChangedData(unsigned id,int slotnum,const SyNode &node,
     "STREAM_ADDRESS=\""+dst.streamAddress().toString()+"\","+
     "NAME=\""+dst.name()+"\","+
     QString().sprintf("CHANNELS=%u where ",dst.channels())+
+    "HOST_ADDRESS=\""+QHostAddress(id).toString()+"\" && "+
+    QString().sprintf("SLOT=%u",slotnum);
+  q=new QSqlQuery(sql);
+  delete q;
+  sql=QString("update SA_DESTINATIONS set ")+
+    "STREAM_ADDRESS=\""+dst.streamAddress().toString()+"\" where "+
     "HOST_ADDRESS=\""+QHostAddress(id).toString()+"\" && "+
     QString().sprintf("SLOT=%u",slotnum);
   q=new QSqlQuery(sql);
@@ -564,6 +584,13 @@ void DRouter::gpoChangedData(unsigned id,int slotnum,const SyNode &node,
   sql=QString("update GPOS set ")+
     "CODE=\""+gpo.bundle()->code().toLower()+"\","+
     "NAME=\""+gpo.name()+"\","+
+    "SOURCE_ADDRESS=\""+gpo.sourceAddress().toString()+"\","+
+    QString().sprintf("SOURCE_SLOT=%d where ",gpo.sourceSlot())+
+    "HOST_ADDRESS=\""+QHostAddress(id).toString()+"\" && "+
+    QString().sprintf("SLOT=%u",slotnum);
+  q=new QSqlQuery(sql);
+  delete q;
+  sql=QString("update SA_GPOS set ")+
     "SOURCE_ADDRESS=\""+gpo.sourceAddress().toString()+"\","+
     QString().sprintf("SOURCE_SLOT=%d where ",gpo.sourceSlot())+
     "HOST_ADDRESS=\""+QHostAddress(id).toString()+"\" && "+
@@ -1003,13 +1030,15 @@ bool DRouter::StartDb(QString *err_msg)
 
   sql=QString("create table if not exists SA_SOURCES (")+
     "ID int auto_increment not null primary key,"+
+    "HOST_ADDRESS char(15) not null,"+
+    "SLOT int not null,"+
     "ROUTER_NUMBER int not null,"+
     "SOURCE_NUMBER int not null,"
     "SOURCE_ID int not null,"+
-    "HOST_ADDRESS char(15) not null,"+
     "NAME char(32),"+
+    "STREAM_ADDRESS char(15),"+
     "index ROUTER_IDX(ROUTER_NUMBER,SOURCE_NUMBER),"+
-    "index HOST_ADDRESS_IDX(HOST_ADDRESS),"+
+    "index HOST_ADDRESS_IDX(HOST_ADDRESS,SLOT),"+
     "index SOURCE_ID_IDX(SOURCE_ID)) "+
     "engine MEMORY character set utf8 collate utf8_general_ci";
   q=new QSqlQuery(sql);
@@ -1017,27 +1046,30 @@ bool DRouter::StartDb(QString *err_msg)
 
   sql=QString("create table if not exists SA_DESTINATIONS (")+
     "ID int auto_increment not null primary key,"+
+    "HOST_ADDRESS char(15) not null,"+
+    "SLOT int not null,"+
     "ROUTER_NUMBER int not null,"+
     "SOURCE_NUMBER int not null,"
     "DESTINATION_ID int not null,"+
-    "HOST_ADDRESS char(15) not null,"+
     "NAME char(32),"+
+    "STREAM_ADDRESS char(15),"+
     "index ROUTER_IDX_TEST(ROUTER_NUMBER),"
     "index ROUTER_IDX(ROUTER_NUMBER,SOURCE_NUMBER),"+
-    "index HOST_ADDRESS_IDX(HOST_ADDRESS)) "+
+    "index HOST_ADDRESS_IDX(HOST_ADDRESS,SLOT)) "+
     "engine MEMORY character set utf8 collate utf8_general_ci";
   q=new QSqlQuery(sql);
   delete q;
 
   sql=QString("create table if not exists SA_GPIS (")+
     "ID int auto_increment not null primary key,"+
+    "HOST_ADDRESS char(15) not null,"+
+    "SLOT int not null,"+
     "ROUTER_NUMBER int not null,"+
     "SOURCE_NUMBER int not null,"
     "GPI_ID int not null,"+
-    "HOST_ADDRESS char(15) not null,"+
     "NAME char(32),"+
     "index ROUTER_IDX(ROUTER_NUMBER,SOURCE_NUMBER),"+
-    "index HOST_ADDRESS_IDX(HOST_ADDRESS),"+
+    "index HOST_ADDRESS_IDX(HOST_ADDRESS,SLOT),"+
     "index GPI_ID_IDX(GPI_ID)) "+
     "engine MEMORY character set utf8 collate utf8_general_ci";
   q=new QSqlQuery(sql);
@@ -1045,13 +1077,16 @@ bool DRouter::StartDb(QString *err_msg)
 
   sql=QString("create table if not exists SA_GPOS (")+
     "ID int auto_increment not null primary key,"+
+    "HOST_ADDRESS char(15) not null,"+
+    "SLOT int not null,"+
     "ROUTER_NUMBER int not null,"+
     "SOURCE_NUMBER int not null,"
     "GPO_ID int not null,"+
-    "HOST_ADDRESS char(15) not null,"+
     "NAME char(32),"+
+    "SOURCE_ADDRESS char(22),"+
+    "SOURCE_SLOT int default -1,"+
     "index ROUTER_IDX(ROUTER_NUMBER,SOURCE_NUMBER),"+
-    "index HOST_ADDRESS_IDX(HOST_ADDRESS),"+
+    "index HOST_ADDRESS_IDX(HOST_ADDRESS,SLOT),"+
     "index GPO_ID_IDX(GPO_ID)) "+
     "engine MEMORY character set utf8 collate utf8_general_ci";
   q=new QSqlQuery(sql);

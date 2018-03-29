@@ -145,11 +145,10 @@ void ProtocolSa::destinationCrosspointChanged(const QHostAddress &host_addr,int 
 {
   QString sql;
   QSqlQuery *q;
-
+ 
   sql=RouteStatSqlFields(EndPointMap::AudioRouter)+
-    "&& DESTINATIONS.HOST_ADDRESS=\""+host_addr.toString()+"\" && "+
-    QString().sprintf("DESTINATIONS.SLOT=%d &&",slotnum)+
-    "SA_DESTINATIONS.ROUTER_NUMBER=SA_SOURCES.ROUTER_NUMBER "+
+    " SA_DESTINATIONS.HOST_ADDRESS=\""+host_addr.toString()+"\" && "+
+    QString().sprintf("SA_DESTINATIONS.SLOT=%d ",slotnum)+
     "order by SA_DESTINATIONS.SOURCE_NUMBER,SA_DESTINATIONS.ROUTER_NUMBER";
   q=new QSqlQuery(sql);
   while(q->next()) {
@@ -200,9 +199,8 @@ void ProtocolSa::gpoCrosspointChanged(const QHostAddress &host_addr,int slotnum)
   QSqlQuery *q;
 
   sql=RouteStatSqlFields(EndPointMap::GpioRouter)+
-    "GPOS.HOST_ADDRESS=\""+host_addr.toString()+"\" && "+
-    QString().sprintf("GPOS.SLOT=%d && ",slotnum)+
-    "GPOS.ROUTER_NUMBER=GPIS.ROUTER_NUMBER "+
+    " SA_GPOS.HOST_ADDRESS=\""+host_addr.toString()+"\" && "+
+    QString().sprintf("SA_GPOS.SLOT=%d ",slotnum)+
     "order by SA_GPOS.SOURCE_NUMBER,SA_GPOS.ROUTER_NUMBER";
   q=new QSqlQuery(sql);
   while(q->next()) {
@@ -608,8 +606,7 @@ void ProtocolSa::SendRouteInfo(unsigned router,int output)
   }
   sql=RouteStatSqlFields(map->routerType());
   if(map->routerType()==EndPointMap::AudioRouter) {
-    sql+=QString().sprintf("&& SA_DESTINATIONS.ROUTER_NUMBER=%d ",router);
-    sql+=QString().sprintf("&& SA_SOURCES.ROUTER_NUMBER=%d ",router);
+    sql+=QString().sprintf("SA_DESTINATIONS.ROUTER_NUMBER=%d ",router);
     if(output>=0) {
       sql+=QString().sprintf("&& SA_DESTINATIONS.SOURCE_NUMBER=%d ",output);
     }
@@ -637,20 +634,27 @@ QString ProtocolSa::RouteStatSqlFields(EndPointMap::RouterType type)
       "SA_DESTINATIONS.ROUTER_NUMBER,"+  // 00
       "SA_DESTINATIONS.SOURCE_NUMBER,"+  // 01
       "SA_SOURCES.SOURCE_NUMBER "+       // 02
-      "from DESTINATIONS right join SA_DESTINATIONS on DESTINATIONS.ID=SA_DESTINATIONS.DESTINATION_ID "+
-      "left join SOURCES on SOURCES.STREAM_ADDRESS=DESTINATIONS.STREAM_ADDRESS "+
-      "left join SA_SOURCES on SA_SOURCES.SOURCE_ID=SOURCES.ID where "+
-      "(SOURCES.STREAM_ENABLED=1 || SA_SOURCES.SOURCE_NUMBER is null) ";
+      "from SA_DESTINATIONS left join SA_SOURCES "+
+      "on SA_DESTINATIONS.STREAM_ADDRESS=SA_SOURCES.STREAM_ADDRESS && "+
+      "SA_SOURCES.ROUTER_NUMBER=SA_DESTINATIONS.ROUTER_NUMBER where ";
   }
   else {
     return QString("select ")+
       "SA_GPOS.ROUTER_NUMBER,"+  // 00
       "SA_GPOS.SOURCE_NUMBER,"+  // 01
-      "SA_GPIS.SOURCE_NUMBER "+       // 02
+      "SA_GPIS.SOURCE_NUMBER "+  // 02
+      "from SA_GPOS left join SA_GPIS "+
+      "on SA_GPOS.SOURCE_ADDRESS=SA_GPIS.HOST_ADDRESS && "+
+      "SA_GPOS.SOURCE_SLOT=SA_GPIS.SLOT && "+
+      "SA_GPIS.ROUTER_NUMBER=SA_GPOS.ROUTER_NUMBER where ";
+
+
+      /*
       "from GPOS right join SA_GPOS on GPOS.ID=SA_GPOS.GPO_ID "+
       "left join GPIS on GPIS.HOST_ADDRESS=GPOS.SOURCE_ADDRESS && "+
       "GPIS.SLOT=GPOS.SOURCE_SLOT "+
       "left join SA_GPIS on SA_GPIS.GPI_ID=GPIS.ID where ";
+      */
   }
   return QString();
 }

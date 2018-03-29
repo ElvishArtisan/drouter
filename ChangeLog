@@ -383,3 +383,6 @@
 	'DestNames' command.
 2018-03-29 Fred Gleason <fredg@paravelsystems.com>
 	* Added a drouter.conf(5) file.
+2018-03-29 Fred Gleason <fredg@paravelsystems.com>
+	* Fixed a bug in drouterd(8) that caused incomplete RouteStat
+	updates to be generated with Software Authority protocol.
