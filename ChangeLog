@@ -375,3 +375,5 @@
 	and '[Output<n>]' sections of drouter.map(5) files.
 2018-03-29 Fred Gleason <fredg@paravelsystems.com>
 	* Added a '--save-names' switch to dmap(1).
+2018-03-29 Fred Gleason <fredg@paravelsystems.com>
+	* Added a '--save-names' switch to the 'pf_import.py' script.

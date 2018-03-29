@@ -25,15 +25,19 @@ import socket
 import sys
 
 class Endpoint(object):
-    def __init__(self,host_addr,slot):
+    def __init__(self,host_addr,slot,name):
         self.__hostAddress=host_addr
         self.__slotNumber=int(slot)
+        self.__name=name
 
     def hostAddress(self):
         return self.__hostAddress
 
     def slotNumber(self):
         return self.__slotNumber
+
+    def name(self):
+        return self.__name
 
 class SAParser(object):
     def __init__(self,username,password,router):
@@ -86,7 +90,7 @@ class SAParser(object):
                 return
             else:
                 cmds=cmd.split("\t")
-                self.inputs[int(cmds[0])]=Endpoint(cmds[3],cmds[5])
+                self.inputs[int(cmds[0])]=Endpoint(cmds[3],cmds[5],cmds[1])
                 if int(cmds[0])>self.max_inputs:
                     self.max_inputs=int(cmds[0])
 
@@ -103,7 +107,7 @@ class SAParser(object):
                 self.istate=5
             else:
                 cmds=cmd.split("\t")
-                self.outputs[int(cmds[0])]=Endpoint(cmds[3],cmds[5])
+                self.outputs[int(cmds[0])]=Endpoint(cmds[3],cmds[5],cmds[1])
                 if int(cmds[0])>self.max_outputs:
                     self.max_outputs=int(cmds[0])
 
@@ -118,6 +122,7 @@ parser.add_argument("--pf-router-number",required=True,help="source router numbe
 parser.add_argument("--router-type",required=True,choices=["audio","gpio"],help="type of router map to create")
 parser.add_argument("--router-number",required=True,help="router number to create")
 parser.add_argument("--router-name",required=True,help="name of router to create")
+parser.add_argument("--save-names",required=False,action="store_true",help="include LWRP names in map")
 parser.add_argument("--output-file",required=True,help="file to save map to");
 args = parser.parse_args()
 
@@ -141,17 +146,33 @@ for input in range(1,max_inputs+1):
     try:
         file.write("HostAddress="+inputs[input].hostAddress()+"\n")
         file.write("Slot="+str(inputs[input].slotNumber())+"\n")
+        if(args.save_names):
+            file.write("Name="+inputs[input].name()+"\n")
+        else:
+            file.write("; Name="+inputs[input].name()+"\n")
     except(KeyError):
         file.write("HostAddress=0.0.0.0\n")
         file.write("Slot=0\n")
+        if(args.save_names):
+            file.write("Name=\n")
+        else:
+            file.write("; Name=\n")
     file.write("\n")
 for output in range(1,max_outputs+1):
     file.write("[Output"+str(output)+"]\n")
     try:
         file.write("HostAddress="+outputs[output].hostAddress()+"\n")
         file.write("Slot="+str(outputs[output].slotNumber())+"\n")
+        if(args.save_names):
+            file.write("Name="+outputs[input].name()+"\n")
+        else:
+            file.write("; Name="+outputs[input].name()+"\n")
     except(KeyError):
         file.write("HostAddress=0.0.0.0\n")
         file.write("Slot=0\n")
+        if(args.save_names):
+            file.write("Name=\n")
+        else:
+            file.write("; Name=\n")
     file.write("\n")
 file.close()
