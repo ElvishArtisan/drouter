@@ -260,6 +260,9 @@ void DRouter::nodeConnectedData(unsigned id,bool state)
 	      QString().sprintf("SOURCE_NUMBER=%d,",endpt)+
 	      QString().sprintf("SOURCE_ID=%d,",last_id)+
 	      "HOST_ADDRESS=\""+QHostAddress(id).toString()+"\"";
+	    if(!it.value()->name(EndPointMap::Input,endpt).isEmpty()) {
+	      sql+=",NAME=\""+it.value()->name(EndPointMap::Input,endpt)+"\"";
+	    }
 	    q=new QSqlQuery(sql);
 	    delete q;
 	  }
@@ -290,6 +293,9 @@ void DRouter::nodeConnectedData(unsigned id,bool state)
 	      QString().sprintf("SOURCE_NUMBER=%d,",endpt)+
 	      QString().sprintf("DESTINATION_ID=%d,",last_id)+
 	      "HOST_ADDRESS=\""+QHostAddress(id).toString()+"\"";
+	    if(!it.value()->name(EndPointMap::Output,endpt).isEmpty()) {
+	      sql+=",NAME=\""+it.value()->name(EndPointMap::Output,endpt)+"\"";
+	    }
 	    q=new QSqlQuery(sql);
 	    delete q;
 	  }
@@ -318,6 +324,9 @@ void DRouter::nodeConnectedData(unsigned id,bool state)
 	      QString().sprintf("SOURCE_NUMBER=%d,",endpt)+
 	      QString().sprintf("GPI_ID=%d,",last_id)+
 	      "HOST_ADDRESS=\""+QHostAddress(id).toString()+"\"";
+	    if(!it.value()->name(EndPointMap::Input,endpt).isEmpty()) {
+	      sql+=",NAME=\""+it.value()->name(EndPointMap::Input,endpt)+"\"";
+	    }
 	    q=new QSqlQuery(sql);
 	    delete q;
 	  }
@@ -349,6 +358,9 @@ void DRouter::nodeConnectedData(unsigned id,bool state)
 	      QString().sprintf("SOURCE_NUMBER=%d,",endpt)+
 	      QString().sprintf("GPO_ID=%d,",last_id)+
 	      "HOST_ADDRESS=\""+QHostAddress(id).toString()+"\"";
+	    if(!it.value()->name(EndPointMap::Output,endpt).isEmpty()) {
+	      sql+=",NAME=\""+it.value()->name(EndPointMap::Output,endpt)+"\"";
+	    }
 	    q=new QSqlQuery(sql);
 	    delete q;
 	  }
@@ -979,6 +991,7 @@ bool DRouter::StartDb(QString *err_msg)
     "SOURCE_NUMBER int not null,"
     "SOURCE_ID int not null,"+
     "HOST_ADDRESS char(15) not null,"+
+    "NAME char(32),"+
     "index ROUTER_IDX(ROUTER_NUMBER,SOURCE_NUMBER),"+
     "index HOST_ADDRESS_IDX(HOST_ADDRESS),"+
     "index SOURCE_ID_IDX(SOURCE_ID)) "+
@@ -992,6 +1005,7 @@ bool DRouter::StartDb(QString *err_msg)
     "SOURCE_NUMBER int not null,"
     "DESTINATION_ID int not null,"+
     "HOST_ADDRESS char(15) not null,"+
+    "NAME char(32),"+
     "index ROUTER_IDX_TEST(ROUTER_NUMBER),"
     "index ROUTER_IDX(ROUTER_NUMBER,SOURCE_NUMBER),"+
     "index HOST_ADDRESS_IDX(HOST_ADDRESS)) "+
@@ -1005,6 +1019,7 @@ bool DRouter::StartDb(QString *err_msg)
     "SOURCE_NUMBER int not null,"
     "GPI_ID int not null,"+
     "HOST_ADDRESS char(15) not null,"+
+    "NAME char(32),"+
     "index ROUTER_IDX(ROUTER_NUMBER,SOURCE_NUMBER),"+
     "index HOST_ADDRESS_IDX(HOST_ADDRESS),"+
     "index GPI_ID_IDX(GPI_ID)) "+
@@ -1018,6 +1033,7 @@ bool DRouter::StartDb(QString *err_msg)
     "SOURCE_NUMBER int not null,"
     "GPO_ID int not null,"+
     "HOST_ADDRESS char(15) not null,"+
+    "NAME char(32),"+
     "index ROUTER_IDX(ROUTER_NUMBER,SOURCE_NUMBER),"+
     "index HOST_ADDRESS_IDX(HOST_ADDRESS),"+
     "index GPO_ID_IDX(GPO_ID)) "+

@@ -26,6 +26,7 @@
 #include <QHostAddress>
 #include <QList>
 #include <QString>
+#include <QStringList>
 
 #define ENDPOINTMAP_MAP_DIRECTORY "/etc/drouter.d/maps"
 #define ENDPOINTMAP_MAP_FILTER QString("*.map")
@@ -68,6 +69,8 @@ class EndPointMap
   void setHostAddress(Type type,int n,const QString &addr);
   int slot(Type type,int n) const;
   void setSlot(Type type,int n,int slot);
+  QString name(Type type,int n,const QString &orig_name=QString()) const;
+  void setName(Type type,int n,const QString &str);
   int endPoint(Type type,const QHostAddress &hostaddr,int slot) const;
   int endPoint(Type type,const QString &hostaddr,int slot) const;
   void insert(Type type,int n,const QHostAddress &host_addr,int slot);
@@ -89,6 +92,7 @@ class EndPointMap
   RouterType map_router_type;
   QList<QHostAddress> map_host_addresses[EndPointMap::LastType];
   QList<int> map_slots[EndPointMap::LastType];
+  QStringList map_names[EndPointMap::LastType];
   QList<Snapshot *> map_snapshots;
 };
 

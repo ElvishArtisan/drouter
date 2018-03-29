@@ -380,14 +380,16 @@ QString ProtocolSa::SourceNamesSqlFields(EndPointMap::RouterType type) const
       "SOURCES.HOST_ADDRESS,"+      // 02
       "SOURCES.HOST_NAME,"+         // 03
       "SOURCES.SLOT,"+              // 04
-      "SOURCES.STREAM_ADDRESS "+    // 05
+      "SOURCES.STREAM_ADDRESS,"+    // 05
+      "SA_SOURCES.NAME "+           // 06
       "from "+"SOURCES left join SA_"+"SOURCES on "+"SOURCES.ID=SA_"+"SOURCES."+"SOURCE_ID ";
   }
   return QString("select ")+
     "SA_GPIS.SOURCE_NUMBER,"+  // 00
     "GPIS.HOST_ADDRESS,"+      // 01
     "GPIS.HOST_NAME,"+         // 02
-    "GPIS.SLOT "+              // 03
+    "GPIS.SLOT,"+              // 03
+    "SA_GPIS.NAME "+           // 04
     "from "+"GPIS left join SA_"+"GPIS on "+"GPIS.ID=SA_"+"GPIS."+"GPI_ID ";
 }
 
@@ -395,9 +397,13 @@ QString ProtocolSa::SourceNamesSqlFields(EndPointMap::RouterType type) const
 QString ProtocolSa::SourceNamesMessage(EndPointMap::RouterType type,QSqlQuery *q)
 {
   if(type==EndPointMap::AudioRouter) {
+    QString name=q->value(1).toString();
+    if(!q->value(6).toString().isEmpty()) {
+      name=q->value(6).toString();
+    }
     return QString().sprintf("    %u",q->value(0).toInt()+1)+
-      "\t"+q->value(1).toString()+
-      "\t"+q->value(1).toString()+" ON "+q->value(3).toString()+
+      "\t"+name+
+      "\t"+name+" ON "+q->value(3).toString()+
       "\t"+q->value(2).toString()+
       "\t"+q->value(3).toString()+
       "\t"+QString().sprintf("%u",q->value(4).toInt()+1)+
@@ -405,9 +411,13 @@ QString ProtocolSa::SourceNamesMessage(EndPointMap::RouterType type,QSqlQuery *q
       "\t"+q->value(5).toString()+
       "\r\n";
   }
+  QString name="GPI";
+  if(!q->value(4).toString().isEmpty()) {
+    name=q->value(4).toString();
+  }
   return QString().sprintf("    %u",q->value(0).toInt()+1)+
-    "\t"+QString().sprintf("GPI %d",q->value(3).toInt()+1)+
-    "\t"+QString().sprintf("GPI %d",q->value(3).toInt()+1)+" ON "+q->value(2).toString()+
+    "\t"+name+QString().sprintf(" %d",q->value(3).toInt()+1)+
+    "\t"+name+QString().sprintf(" %d",q->value(3).toInt()+1)+" ON "+q->value(2).toString()+
     "\t"+q->value(1).toString()+
     "\t"+q->value(2).toString()+
     "\t"+QString().sprintf("%u",q->value(3).toInt()+1)+
@@ -455,7 +465,8 @@ QString ProtocolSa::DestNamesSqlFields(EndPointMap::RouterType type) const
       "DESTINATIONS.NAME,"+              // 01
       "DESTINATIONS.HOST_ADDRESS,"+      // 02
       "DESTINATIONS.HOST_NAME,"+         // 03
-      "DESTINATIONS.SLOT "+              // 04
+      "DESTINATIONS.SLOT,"+              // 04
+      "SA_DESTINATIONS.NAME "+           // 05
       "from DESTINATIONS left join SA_DESTINATIONS on DESTINATIONS.ID=SA_DESTINATIONS.DESTINATION_ID ";
   }
   return QString("select ")+
@@ -463,16 +474,21 @@ QString ProtocolSa::DestNamesSqlFields(EndPointMap::RouterType type) const
     "GPOS.NAME,"+              // 01
     "GPOS.HOST_ADDRESS,"+      // 02
     "GPOS.HOST_NAME,"+         // 03
-    "GPOS.SLOT "+              // 04
+    "GPOS.SLOT,"+              // 04
+    "SA_GPOS.NAME "+           // 05
     "from GPOS left join SA_GPOS on GPOS.ID=SA_GPOS.GPO_ID ";
 }
 
 
 QString ProtocolSa::DestNamesMessage(EndPointMap::RouterType type,QSqlQuery *q)
 {
+  QString name=q->value(1).toString();
+  if(!q->value(5).toString().isEmpty()) {
+    name=q->value(5).toString();
+  }
   return QString().sprintf("    %u",q->value(0).toInt()+1)+
-    "\t"+q->value(1).toString()+
-    "\t"+q->value(1).toString()+" ON "+q->value(3).toString()+
+    "\t"+name+
+    "\t"+name+" ON "+q->value(3).toString()+
     "\t"+q->value(2).toString()+
     "\t"+q->value(3).toString()+
     "\t"+QString().sprintf("%d",q->value(4).toInt()+1)+

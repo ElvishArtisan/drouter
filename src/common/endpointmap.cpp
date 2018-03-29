@@ -158,6 +158,26 @@ void EndPointMap::setSlot(EndPointMap::Type type,int n,int slot)
 }
 
 
+QString EndPointMap::name(EndPointMap::Type type,int n,const QString &orig_name) const
+{
+  QString ret;
+
+  if(n<map_names[type].size()) {
+    ret=map_names[type].at(n);
+  }
+  if(ret.isEmpty()) {
+    ret=orig_name;
+  }
+  return ret;
+}
+
+
+void EndPointMap::setName(EndPointMap::Type type,int n,const QString &str)
+{
+  map_names[type][n]=str;
+}
+
+
 int EndPointMap::endPoint(Type type,const QHostAddress &hostaddr,int slot) const
 {
   for(int i=0;i<map_host_addresses[type].size();i++) {
@@ -253,6 +273,8 @@ bool EndPointMap::load(const QString &filename,QStringList *unused_lines)
       map_host_addresses[type].push_back(addr);
       map_slots[type].push_back(p->intValue(EndPointMap::typeString(type)+
 	       QString().sprintf("%d",count+1),"Slot")-1);
+      map_names[type].push_back(p->stringValue(EndPointMap::typeString(type)+
+	       QString().sprintf("%d",count+1),"Name"));
       count++;
       addr=p->addressValue(EndPointMap::typeString(type)+
 	       QString().sprintf("%d",count+1),"HostAddress",QHostAddress(),&ok);

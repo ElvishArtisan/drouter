@@ -54,8 +54,8 @@
       configuration  information  in  the  form  of keyword/value pairs.
       Each section begins with with the name of the section in []  brackets,
       followed  by zero  or more keyword/value pairs, with the keyword and value
-      seperated by an '=' sign. Lines starting with ; are ignored, as are blank
-      lines.
+      seperated by an '=' sign. Lines starting with ; (semi-colon) are ignored,
+      as are blank lines.
     </para>
     <para>
        For example:
@@ -98,9 +98,9 @@
 	    <para>
 	      Where <replaceable>num</replaceable> is the router number
 	      that will be advertised for this router in the output of the
-	      <computeroutput>RouterNames</computeroutput> command for
-	      this router. Each Software Authority router must have a unique
-	      number across the entire
+	      <computeroutput>RouterNames</computeroutput> command.
+	      Each Software Authority router must have a
+	      number (positive integer) that is unique across the entire
 	      <command>drouterd</command><manvolnum>8</manvolnum> service.
 	    </para>
 	  </listitem>
@@ -130,7 +130,7 @@
       </para>
       <para>
 	Each <userinput>[Input<replaceable>num</replaceable>]</userinput>
-	section must contain exactly one of each of the following
+	section must contain exactly one of each of the following two
 	parameters:
       </para>
       <variablelist>
@@ -159,6 +159,24 @@
 	      and counting upwards, as returned by the LWRP
 	      <userinput>SRC</userinput> or <userinput>GPI</userinput>
 	      commands.
+	    </para>
+	  </listitem>
+	</varlistentry>
+      </variablelist>
+      <para>
+	Additionally, the following optional parameter may be included: 
+      </para>
+      <variablelist>
+	<varlistentry>
+	  <term>
+	    <userinput>Name=<replaceable>str</replaceable></userinput>
+	  </term>
+	  <listitem>
+	    <para>
+	      If present, the string <replaceable>str</replaceable> will
+	      be used as the name of the source in the output of the
+	      <computeroutput>SourceNames</computeroutput> command, in
+	      place of that derived from the source's LWRP definition.
 	    </para>
 	  </listitem>
 	</varlistentry>
@@ -209,6 +227,24 @@
 	  </listitem>
 	</varlistentry>
       </variablelist>
+      <para>
+	Additionally, the following optional parameter may be included: 
+      </para>
+      <variablelist>
+	<varlistentry>
+	  <term>
+	    <userinput>Name=<replaceable>str</replaceable></userinput>
+	  </term>
+	  <listitem>
+	    <para>
+	      If present, the string <replaceable>str</replaceable> will
+	      be used as the name of the destination in the output of the
+	      <computeroutput>DestNames</computeroutput> command, in
+	      place of that derived from the destination's LWRP definition.
+	    </para>
+	  </listitem>
+	</varlistentry>
+      </variablelist>
     </refsect2>
 
     <refsect2 id='snapshot_section'>
@@ -253,7 +289,7 @@
 	      with <userinput>1</userinput> and consecutively increasing
 	      for each route defined in the snapshot. The
 	      <userinput>Route<replaceable>n</replaceable>Output</userinput>
-	      parameter takes the output number of the route to be changed, as defined
+	      parameter takes the output number of the route to be changed, as listed
 	      in the <userinput>[Output]</userinput> sections defined elsewhere
 	      in the same file. Each
 	      <userinput>Route<replaceable>n</replaceable>Output</userinput>
@@ -273,7 +309,7 @@
 	      with <userinput>1</userinput> and consecutively increasing
 	      for each route defined in the snapshot. The
 	      <userinput>Route<replaceable>n</replaceable>Input</userinput> parameter
-	      takes the input number of the route to be changed, as defined
+	      takes the input number of the route to be changed, as listed
 	      in the <userinput>[Input]</userinput> sections defined elsewhere
 	      in the same file. Additionally, 
 	      <userinput>Route<replaceable>n</replaceable>Input</userinput>
