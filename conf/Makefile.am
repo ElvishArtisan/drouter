@@ -1,8 +1,6 @@
 ## Makefile.am
 ##
-## Makefile for 'src/common/'
-##
-## (C) Copyright 2017 Fred Gleason <fredg@paravelsystems.com>
+## (C) Copyright 2018 Fred Gleason <fredg@paravelsystems.com>
 ##
 ##   This program is free software; you can redistribute it and/or modify
 ##   it under the terms of the GNU General Public License version 2 as
@@ -17,21 +15,16 @@
 ##   License along with this program; if not, write to the Free Software
 ##   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
 ##
-##
 ## Use automake to process this into a Makefile.in
 
-EXTRA_DIST = combobox.cpp combobox.h\
-             config.cpp config.h\
-             dparser.cpp dparser.h\
-             endpointmap.cpp endpointmap.h\
-             logindialog.cpp logindialog.h\
-             saparser.cpp saparser.h
+EXTRA_DIST = drouter.conf-sample
 
-CLEANFILES = *~\
-             moc_*\
-             *.obj\
-             *.idb\
-             *.pdb\
-             *ilk
+CLEANFILES = *~
 MAINTAINERCLEANFILES = *~\
+                       *.1\
+                       *.8\
+                       *.html\
+                       *.pdf\
+                       aclocal.m4\
+                       configure\
                        Makefile.in

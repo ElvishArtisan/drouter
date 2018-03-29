@@ -24,7 +24,8 @@ if DOCBOOK_AM
   DOCBOOK_AM_OPT = docs
 endif
 
-SUBDIRS = icons\
+SUBDIRS = conf\
+          icons\
           python\
           scripts\
           $(DOCBOOK_AM_OPT) src\

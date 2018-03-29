@@ -113,6 +113,7 @@ else
 fi 
 
 AC_CONFIG_FILES([ \
+    conf/Makefile \
     docs/Makefile \
     icons/Makefile \
     python/api/Makefile \

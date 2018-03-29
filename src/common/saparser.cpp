@@ -224,7 +224,7 @@ void SaParser::errorData(QAbstractSocket::SocketError err)
 
 void SaParser::DispatchCommand(QString cmd)
 {
-  //    printf("RECV: %s\n",(const char *)cmd.toUtf8());
+  //printf("RECV: %s\n",(const char *)cmd.toUtf8());
 
   bool ok=false;
 

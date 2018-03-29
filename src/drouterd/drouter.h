@@ -30,6 +30,7 @@
 #include <sy/sylwrp_client.h>
 #include <sy/symcastsocket.h>
 
+#include "config.h"
 #include "endpointmap.h"
 
 #define DROUTER_CLIP_THRESHOLD -20
@@ -94,6 +95,7 @@ class DRouter : public QObject
   QSignalMapper *drouter_ipc_ready_mapper;
   QTcpServer *drouter_ipc_server;
   int *drouter_proto_socks;
+  Config *drouter_config;
 };
 
 

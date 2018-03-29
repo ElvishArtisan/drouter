@@ -45,6 +45,9 @@ DRouter::DRouter(int *proto_socks,QObject *parent)
   : QObject(parent)
 {
   drouter_proto_socks=proto_socks;
+
+  drouter_config=new Config();
+  drouter_config->load();
 }
 
 
@@ -211,17 +214,25 @@ void DRouter::nodeConnectedData(unsigned id,bool state)
       exit(256);
     }
     SyLwrpClient *lwrp=node(QHostAddress(id));
-    for(unsigned i=0;i<lwrp->srcSlots();i++) {
-      lwrp->setClipMonitor(i,SyLwrpClient::InputMeter,DROUTER_CLIP_THRESHOLD,
-			   DROUTER_CLIP_TIMEOUT);
-      lwrp->setSilenceMonitor(i,SyLwrpClient::InputMeter,
-			      DROUTER_SILENCE_THRESHOLD,
-			      DROUTER_SILENCE_TIMEOUT);
-      lwrp->setClipMonitor(i,SyLwrpClient::OutputMeter,DROUTER_CLIP_THRESHOLD,
-			   DROUTER_CLIP_TIMEOUT);
-      lwrp->setSilenceMonitor(i,SyLwrpClient::OutputMeter,
-			      DROUTER_SILENCE_THRESHOLD,
-			      DROUTER_SILENCE_TIMEOUT);
+    if(drouter_config->configureAudioAlarms(lwrp->deviceName())) {
+      for(unsigned i=0;i<lwrp->srcSlots();i++) {
+	if(lwrp->src(i)->exists()) {
+	  lwrp->setClipMonitor(i,SyLwrpClient::InputMeter,DROUTER_CLIP_THRESHOLD,
+			       DROUTER_CLIP_TIMEOUT);
+	  lwrp->setSilenceMonitor(i,SyLwrpClient::InputMeter,
+				  DROUTER_SILENCE_THRESHOLD,
+				  DROUTER_SILENCE_TIMEOUT);
+	}
+      }
+      for(unsigned i=0;i<lwrp->dstSlots();i++) {
+	if(lwrp->dst(i)->exists()) {
+	  lwrp->setClipMonitor(i,SyLwrpClient::OutputMeter,DROUTER_CLIP_THRESHOLD,
+	  		       DROUTER_CLIP_TIMEOUT);
+	  lwrp->setSilenceMonitor(i,SyLwrpClient::OutputMeter,
+				  DROUTER_SILENCE_THRESHOLD,
+				  DROUTER_SILENCE_TIMEOUT);
+	}
+      }
     }
     LockTables();
     sql=QString("insert into NODES set ")+
@@ -664,7 +675,8 @@ void DRouter::advtReadyReadData(int ifnum)
 	      this,SLOT(audioSilenceAlarmData(unsigned,SyLwrpClient::MeterType,
 					      unsigned,int,bool)));
       drouter_nodes[addr.toIPv4Address()]=node;
-      node->connectToHost(addr,SWITCHYARD_LWRP_PORT,"",false);
+      node->connectToHost(addr,SWITCHYARD_LWRP_PORT,
+			  drouter_config->lwrpPassword(),false);
     }
   }
 }

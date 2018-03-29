@@ -1,0 +1,21 @@
+; drouter.conf
+;
+; This is the sample configuration file for the DRouter system.
+;
+
+[Drouterd]
+; LwrpPassword=<passwd>
+;
+; Password to use when logging in to LWRP on nodes.
+;
+; It is seldom necessary to change this.
+;
+LwrpPassword=
+
+; NoAudioAlarmDevices=<dev-type1>, <dev-type2> ...
+;
+; Comma-separated list of device type upon which to *not* configure
+; audio monitors. Devices types are from the 'VER' LWRP command.
+;
+NoAudioAlarmDevices=VX Engine, Engine
+

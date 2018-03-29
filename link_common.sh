@@ -4,7 +4,7 @@
 
 # Create symlinks for common elements.
 #
-#   (C) Copyright 2017 Fred Gleason <fredg@paravelsystems.com>
+#   (C) Copyright 2017-2018 Fred Gleason <fredg@paravelsystems.com>
 #
 #   This program is free software; you can redistribute it and/or modify
 #   it under the terms of the GNU General Public License version 2 as
@@ -26,6 +26,11 @@ rm -f src/$DESTDIR/combobox.cpp
 ln -s ../../src/common/combobox.cpp src/$DESTDIR/combobox.cpp
 rm -f src/$DESTDIR/combobox.h
 ln -s ../../src/common/combobox.h src/$DESTDIR/combobox.h
+
+rm -f src/$DESTDIR/config.cpp
+ln -s ../../src/common/config.cpp src/$DESTDIR/config.cpp
+rm -f src/$DESTDIR/config.h
+ln -s ../../src/common/config.h src/$DESTDIR/config.h
 
 rm -f src/$DESTDIR/dparser.cpp
 ln -s ../../src/common/dparser.cpp src/$DESTDIR/dparser.cpp

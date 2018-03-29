@@ -46,6 +46,7 @@ CLEANFILES = *~\
              *ilk
 
 DISTCLEANFILES = combobox.cpp combobox.h\
+                 config.cpp config.h\
                  dparser.cpp dparser.h\
                  endpointmap.cpp endpointmap.h\
                  logindialog.cpp logindialog.h\

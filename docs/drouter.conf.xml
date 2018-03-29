@@ -1,0 +1,110 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<refentry id="stdin" xmlns="http://docbook.org/ns/docbook" version="5.0">
+  <!--
+      Header
+  -->
+  <refmeta>
+    <refentrytitle>drouter.conf</refentrytitle>
+    <manvolnum>5</manvolnum>
+    <refmiscinfo class='source'>March 2018</refmiscinfo>
+    <refmiscinfo class='manual'>Linux Audio Manual</refmiscinfo>
+  </refmeta>
+  <refnamediv>
+    <refname>drouter.conf</refname>
+    <refpurpose>Main configuraton file for DRouter</refpurpose>
+  </refnamediv>
+  <info>
+    <author>
+      <personname>
+	<firstname>Fred</firstname>
+	<surname>Gleason</surname>
+	<email>fredg@paravelsystems.com</email>
+      </personname>
+      <contrib>Application Author</contrib>
+    </author>
+  </info>
+
+  <!--
+      Body
+  -->
+  <refsect1 id='description'><title>Description</title>
+  <para>
+    The <command>drouter.conf</command><manvolnum>5</manvolnum> file
+    (located at &quot;/etc/drouter.d/drouter.conf&quot;)
+    is the main configuration file for the DRouter system.
+  </para>
+  </refsect1>
+
+  <refsect1 id='file_format'>
+    <title>File Format</title>
+    <para>
+      The file format consists of sections, each of which contain
+      configuration  information  in  the  form  of keyword/value pairs.
+      Each section begins with with the name of the section in []  brackets,
+      followed  by zero  or more keyword/value pairs, with the keyword and value
+      seperated by an '=' sign. Lines starting with ; (semi-colon) are ignored,
+      as are blank lines.
+    </para>
+    <para>
+       For example:
+    </para>
+    <programlisting>
+       [Section1]
+       Keyword1=value1
+       Keyword2=value2
+       Keyword3=value3
+    </programlisting>
+  </refsect1>
+
+  <refsect1 id='file_sections'>
+    <title>File Sections</title>
+    <refsect2 id='drouterd_section'>
+      <title>The [Drouterd] Section</title>
+      <para>
+	The <userinput>[Drouter]</userinput> section configures operation of
+	the <command>drouterd</command><manvolnum>8</manvolnum> service
+	daemon. It contains the following parameters:
+      </para>
+      <variablelist>
+	<varlistentry>
+	  <term>
+	    <userinput>LwrpPassword=<replaceable>passwd</replaceable></userinput>
+	  </term>
+	  <listitem>
+	    <para>
+	      Where <replaceable>passwd</replaceable> is the password that
+	      <command>drouterd</command><manvolnum>8</manvolnum> will use
+	      when attempting to log in to the LWRP service on each node.
+	    </para>
+	  </listitem>
+	</varlistentry>
+	<varlistentry>
+	  <term>
+	    <userinput>NoAudioAlarmDevices=<replaceable>dev-name1</replaceable>, 
+	    <replaceable>dev-name2</replaceable> ... </userinput>
+	  </term>
+	  <listitem>
+	    <para>
+	      Where <replaceable>dev-name</replaceable> is the device name
+	      of a class of device (taken from the VER LWRP command)for which
+	      audio alarms should <emphasis>not</emphasis> be configured.
+	      This is to deal with certain devices --e.g. Telos Vx systems --
+	      that throw spurious protocol errors when an LWRP client attempts
+	      to configure audio alarms.
+	    </para>
+	  </listitem>
+	</varlistentry>
+      </variablelist>
+    </refsect2>
+
+  </refsect1>
+
+  <refsect1 id='see_also'><title>See Also</title>
+  <para>
+  <citerefentry>
+    <refentrytitle>drouterd</refentrytitle><manvolnum>8</manvolnum>
+  </citerefentry>
+  </para>
+  </refsect1>
+</refentry>
+

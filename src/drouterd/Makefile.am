@@ -36,7 +36,8 @@ dist_drouterd_SOURCES = drouter.cpp drouter.h\
                         protoipc.h\
                         scriptengine.cpp scriptengine.h
 
-nodist_drouterd_SOURCES = endpointmap.cpp endpointmap.h\
+nodist_drouterd_SOURCES = config.cpp config.h\
+                          endpointmap.cpp endpointmap.h\
                           moc_drouter.cpp\
                           moc_drouterd.cpp\
                           moc_scriptengine.cpp\
@@ -66,6 +67,7 @@ CLEANFILES = *~\
              *ilk
 
 DISTCLEANFILES = combobox.cpp combobox.h\
+                 config.cpp config.h\
                  dparser.cpp dparser.h\
                  endpointmap.cpp endpointmap.h\
                  logindialog.cpp logindialog.h\

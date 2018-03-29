@@ -27,14 +27,6 @@
   <!--
       Body
   -->
-  <refsynopsisdiv id='synopsis'>
-    <cmdsynopsis>
-      <command>drouter.map</command>
-      <arg choice='opt'><replaceable>OPTIONS</replaceable></arg>
-      <sbr/>
-    </cmdsynopsis>
-  </refsynopsisdiv>
-
   <refsect1 id='description'><title>Description</title>
   <para>
     <command>drouter.map</command><manvolnum>5</manvolnum> files define

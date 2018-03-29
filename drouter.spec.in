@@ -79,10 +79,12 @@ cp ChangeLog $RPM_BUILD_ROOT/%{_datadir}/doc/drouter-%{version}/
 cp COPYING $RPM_BUILD_ROOT/%{_datadir}/doc/drouter-%{version}/
 cp NEWS $RPM_BUILD_ROOT/%{_datadir}/doc/drouter-%{version}/
 cp README $RPM_BUILD_ROOT/%{_datadir}/doc/drouter-%{version}/
+cp conf/drouter.conf-sample $RPM_BUILD_ROOT/%{_datadir}/doc/drouter-%{version}/
 mkdir -p $RPM_BUILD_ROOT/%{_datadir}/doc/drouter-%{version}/protocols
 cp docs/protocol_d.pdf $RPM_BUILD_ROOT/%{_datadir}/doc/drouter-%{version}/protocols/
 mkdir -p $RPM_BUILD_ROOT/%{_datadir}/doc/drouter-%{version}/examples
 cp python/examples/*.py $RPM_BUILD_ROOT/%{_datadir}/doc/drouter-%{version}/examples/
+
 
 %post
 if [ -x %{_bindir}/systemctl ] ; then
@@ -97,6 +99,10 @@ if test "@DISTRO@" = "suse" ; then
 fi
 if test "@DISTRO@" = "redhat" ; then
   PACKAGE_DOC_DIR=%_docdir/%{name}-@VERSION@
+fi
+if test ! -e /etc/drouter.d/drouter.conf ; then
+  mkdir -p /etc/drouter.d
+  cp $PACKAGE_DOC_DIR/drouter.conf-sample /etc/drouter.d/drouter.conf
 fi
 
 
@@ -126,6 +132,7 @@ rm -rf $RPM_BUILD_ROOT
 %{_sbindir}/drouterd
 %{_sbindir}/dprotod
 %{_datadir}/man/man1/dmap.1.gz
+%{_datadir}/man/man5/drouter.conf.5.gz
 %{_datadir}/man/man5/drouter.map.5.gz
 %{_datadir}/man/man8/drouterd.8.gz
 /lib/systemd/system/drouter.service
@@ -138,6 +145,7 @@ rm -rf $RPM_BUILD_ROOT
 %{_datadir}/doc/drouter-%{version}/COPYING
 %{_datadir}/doc/drouter-%{version}/NEWS
 %{_datadir}/doc/drouter-%{version}/README
+%{_datadir}/doc/drouter-%{version}/drouter.conf-sample
 
 
 %files panels
