@@ -25,9 +25,9 @@ Version: @VERSION@
 Release: @RPM_RELEASE@%{?dist}
 License: GPLv2
 Source: %{name}-@VERSION@.tar.gz
-BuildRequires: qt-devel systemd-devel python
+BuildRequires: qt-devel, systemd-devel, python
 BuildRoot: /var/tmp/%{name}-@VERSION@
-Requires: drouter-python mariadb-server
+Requires: drouter-python = @VERSION@, mariadb-server, qt-mysql
 
 
 %package panels
