@@ -386,3 +386,5 @@
 2018-03-29 Fred Gleason <fredg@paravelsystems.com>
 	* Fixed a bug in drouterd(8) that caused incomplete RouteStat
 	updates to be generated with Software Authority protocol.
+2018-03-30 Fred Gleason <fredg@paravelsystems.com>
+	* Optimized SQL queries in drouterd(8) and dprotod(8).

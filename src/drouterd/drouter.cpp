@@ -1037,9 +1037,9 @@ bool DRouter::StartDb(QString *err_msg)
     "SOURCE_ID int not null,"+
     "NAME char(32),"+
     "STREAM_ADDRESS char(15),"+
-    "index ROUTER_IDX(ROUTER_NUMBER,SOURCE_NUMBER),"+
     "index HOST_ADDRESS_IDX(HOST_ADDRESS,SLOT),"+
-    "index SOURCE_ID_IDX(SOURCE_ID)) "+
+    "index STREAM_ADDRESS_IDX(ROUTER_NUMBER,STREAM_ADDRESS),"+
+    "index ROUTER_NUMBER_IDX(ROUTER_NUMBER)) "+
     "engine MEMORY character set utf8 collate utf8_general_ci";
   q=new QSqlQuery(sql);
   delete q;
@@ -1053,9 +1053,8 @@ bool DRouter::StartDb(QString *err_msg)
     "DESTINATION_ID int not null,"+
     "NAME char(32),"+
     "STREAM_ADDRESS char(15),"+
-    "index ROUTER_IDX_TEST(ROUTER_NUMBER),"
-    "index ROUTER_IDX(ROUTER_NUMBER,SOURCE_NUMBER),"+
-    "index HOST_ADDRESS_IDX(HOST_ADDRESS,SLOT)) "+
+    "index HOST_ADDRESS_IDX(HOST_ADDRESS,SLOT),"+
+    "index ROUTER_NUMBER_IDX(ROUTER_NUMBER)) "+
     "engine MEMORY character set utf8 collate utf8_general_ci";
   q=new QSqlQuery(sql);
   delete q;
@@ -1068,9 +1067,8 @@ bool DRouter::StartDb(QString *err_msg)
     "SOURCE_NUMBER int not null,"
     "GPI_ID int not null,"+
     "NAME char(32),"+
-    "index ROUTER_IDX(ROUTER_NUMBER,SOURCE_NUMBER),"+
     "index HOST_ADDRESS_IDX(HOST_ADDRESS,SLOT),"+
-    "index GPI_ID_IDX(GPI_ID)) "+
+    "index ROUTER_IDX(ROUTER_NUMBER))"+
     "engine MEMORY character set utf8 collate utf8_general_ci";
   q=new QSqlQuery(sql);
   delete q;
@@ -1085,9 +1083,9 @@ bool DRouter::StartDb(QString *err_msg)
     "NAME char(32),"+
     "SOURCE_ADDRESS char(22),"+
     "SOURCE_SLOT int default -1,"+
-    "index ROUTER_IDX(ROUTER_NUMBER,SOURCE_NUMBER),"+
     "index HOST_ADDRESS_IDX(HOST_ADDRESS,SLOT),"+
-    "index GPO_ID_IDX(GPO_ID)) "+
+    "index ROUTER_IDX(ROUTER_NUMBER),"+
+    "index ROUTER_SOURCE_IDX(ROUTER_NUMBER,SOURCE_NUMBER))"+
     "engine MEMORY character set utf8 collate utf8_general_ci";
   q=new QSqlQuery(sql);
   delete q;

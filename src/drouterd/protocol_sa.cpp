@@ -380,7 +380,8 @@ QString ProtocolSa::SourceNamesSqlFields(EndPointMap::RouterType type) const
       "SOURCES.SLOT,"+              // 04
       "SOURCES.STREAM_ADDRESS,"+    // 05
       "SA_SOURCES.NAME "+           // 06
-      "from "+"SOURCES left join SA_"+"SOURCES on "+"SOURCES.ID=SA_"+"SOURCES."+"SOURCE_ID ";
+      "from "+"SOURCES left join SA_"+"SOURCES "+
+      "on SOURCES.ID=SA_"+"SOURCES."+"SOURCE_ID ";
   }
   return QString("select ")+
     "SA_GPIS.SOURCE_NUMBER,"+  // 00
@@ -388,7 +389,8 @@ QString ProtocolSa::SourceNamesSqlFields(EndPointMap::RouterType type) const
     "GPIS.HOST_NAME,"+         // 02
     "GPIS.SLOT,"+              // 03
     "SA_GPIS.NAME "+           // 04
-    "from "+"GPIS left join SA_"+"GPIS on "+"GPIS.ID=SA_"+"GPIS."+"GPI_ID ";
+    "from "+"GPIS left join SA_"+"GPIS "+
+    "on GPIS.ID=SA_GPIS.GPI_ID ";
 }
 
 
@@ -647,14 +649,6 @@ QString ProtocolSa::RouteStatSqlFields(EndPointMap::RouterType type)
       "on SA_GPOS.SOURCE_ADDRESS=SA_GPIS.HOST_ADDRESS && "+
       "SA_GPOS.SOURCE_SLOT=SA_GPIS.SLOT && "+
       "SA_GPIS.ROUTER_NUMBER=SA_GPOS.ROUTER_NUMBER where ";
-
-
-      /*
-      "from GPOS right join SA_GPOS on GPOS.ID=SA_GPOS.GPO_ID "+
-      "left join GPIS on GPIS.HOST_ADDRESS=GPOS.SOURCE_ADDRESS && "+
-      "GPIS.SLOT=GPOS.SOURCE_SLOT "+
-      "left join SA_GPIS on SA_GPIS.GPI_ID=GPIS.ID where ";
-      */
   }
   return QString();
 }
