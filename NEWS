@@ -1,6 +1,20 @@
 This is the NEWS file for the drouter package.
 
 -------------------------------------------------------------------------------
+v0.6.5 - 3/30/2018
+
+Beta Release
+
+Changes:
+   Drouterd Service. A major refactoring of drouterd(8) was done to enable
+   multithreaded operation with consequent improvements in performance
+   and latency.
+
+   New Dependency. MySQL/MAriaDB is now required for operation of drouterd(8).
+
+   Custom Endpoint Names. It is now possible to define custom names for endpoints on
+   a per-router basis in Software Authority protocol.
+-------------------------------------------------------------------------------
 v0.6.4 - 3/13/2018
 
 Beta Release

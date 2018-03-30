@@ -388,3 +388,6 @@
 	updates to be generated with Software Authority protocol.
 2018-03-30 Fred Gleason <fredg@paravelsystems.com>
 	* Optimized SQL queries in drouterd(8) and dprotod(8).
+2018-03-30 Fred Gleason <fredg@paravelsystems.com>
+	* Updated 'NEWS'.
+	* Incremented the package version to 0.6.5.
