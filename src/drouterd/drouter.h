@@ -33,11 +33,6 @@
 #include "config.h"
 #include "endpointmap.h"
 
-#define DROUTER_CLIP_THRESHOLD -20
-#define DROUTER_CLIP_TIMEOUT 1000
-#define DROUTER_SILENCE_THRESHOLD -500
-#define DROUTER_SILENCE_TIMEOUT 10000
-
 class DRouter : public QObject
 {
  Q_OBJECT;

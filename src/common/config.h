@@ -25,17 +25,29 @@
 #include <QStringList>
 
 #define DROUTER_CONF_FILE "/etc/drouter.d/drouter.conf"
+#define DROUTER_DEFAULT_CLIP_THRESHOLD -20
+#define DROUTER_DEFAULT_CLIP_TIMEOUT 1000
+#define DROUTER_DEFAULT_SILENCE_THRESHOLD -500
+#define DROUTER_DEFAULT_SILENCE_TIMEOUT 10000
 
 class Config
 {
  public:
   Config();
-  QString lwrpPassword() const;
+  int clipAlarmThreshold() const;
+  int clipAlarmTimeout() const;
+  int silenceAlarmThreshold() const;
+  int silenceAlarmTimeout() const;
   bool configureAudioAlarms(const QString &dev_name) const;
+  QString lwrpPassword() const;
   void load();
 
  private:
   QString conf_lwrp_password;
+  int conf_clip_alarm_threshold;
+  int conf_clip_alarm_timeout;
+  int conf_silence_alarm_threshold;
+  int conf_silence_alarm_timeout;
   QStringList conf_no_audio_alarm_devices;
 };
 

@@ -40,7 +40,7 @@
     <para>
       The file format consists of sections, each of which contain
       configuration  information  in  the  form  of keyword/value pairs.
-      Each section begins with with the name of the section in []  brackets,
+      Each section begins with the name of the section in []  brackets,
       followed  by zero  or more keyword/value pairs, with the keyword and value
       seperated by an '=' sign. Lines starting with ; (semi-colon) are ignored,
       as are blank lines.
@@ -68,6 +68,30 @@
       <variablelist>
 	<varlistentry>
 	  <term>
+	    <userinput>ClipAlarmThreshold=<replaceable>level</replaceable></userinput>
+	  </term>
+	  <listitem>
+	    <para>
+	      Where <replaceable>level</replaceable> is the audio level
+	      (in tenths of a dBFS) above which to treat an audio port as
+	      being in a 'clipping' state.
+	    </para>
+	  </listitem>
+	</varlistentry>
+	<varlistentry>
+	  <term>
+	    <userinput>ClipAlarmTimeout=<replaceable>msecs</replaceable></userinput>
+	  </term>
+	  <listitem>
+	    <para>
+	      Where <replaceable>msecs</replaceable> is the period of time
+	      for which an audio port must be above the clip threshold
+	      before a clip alarm will be generated.
+	    </para>
+	  </listitem>
+	</varlistentry>
+	<varlistentry>
+	  <term>
 	    <userinput>LwrpPassword=<replaceable>passwd</replaceable></userinput>
 	  </term>
 	  <listitem>
@@ -91,6 +115,30 @@
 	      This is to deal with certain devices --e.g. Telos Vx systems --
 	      that throw spurious protocol errors when an LWRP client attempts
 	      to configure audio alarms.
+	    </para>
+	  </listitem>
+	</varlistentry>
+	<varlistentry>
+	  <term>
+	    <userinput>SilenceAlarmThreshold=<replaceable>level</replaceable></userinput>
+	  </term>
+	  <listitem>
+	    <para>
+	      Where <replaceable>level</replaceable> is the audio level
+	      (in tenths of a dBFS) below which to treat an audio port as
+	      being in a 'silence' state.
+	    </para>
+	  </listitem>
+	</varlistentry>
+	<varlistentry>
+	  <term>
+	    <userinput>SilenceAlarmTimeout=<replaceable>msecs</replaceable></userinput>
+	  </term>
+	  <listitem>
+	    <para>
+	      Where <replaceable>msecs</replaceable> is the period of time
+	      for which an audio port must be below the silence threshold
+	      before a silence alarm will be generated.
 	    </para>
 	  </listitem>
 	</varlistentry>

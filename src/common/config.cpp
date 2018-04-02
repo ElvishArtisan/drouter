@@ -27,9 +27,27 @@ Config::Config()
 }
 
 
-QString Config::lwrpPassword() const
+int Config::clipAlarmThreshold() const
 {
-  return conf_lwrp_password;
+  return conf_clip_alarm_threshold;
+}
+
+
+int Config::clipAlarmTimeout() const
+{
+  return conf_clip_alarm_timeout;
+}
+
+
+int Config::silenceAlarmThreshold() const
+{
+  return conf_silence_alarm_threshold;
+}
+
+
+int Config::silenceAlarmTimeout() const
+{
+  return conf_silence_alarm_timeout;
 }
 
 
@@ -44,17 +62,31 @@ bool Config::configureAudioAlarms(const QString &dev_name) const
 }
 
 
+QString Config::lwrpPassword() const
+{
+  return conf_lwrp_password;
+}
+
+
 void Config::load()
 {
   SyProfile *p=new SyProfile();
   p->setSource(DROUTER_CONF_FILE);
 
-  conf_lwrp_password=p->stringValue("Drouterd","LwrpPassword");
+  conf_clip_alarm_threshold=
+    p->intValue("Drouterd","ClipAlarmThreshold",DROUTER_DEFAULT_CLIP_THRESHOLD);
+  conf_clip_alarm_timeout=
+    p->intValue("Drouterd","ClipAlarmTimeout",DROUTER_DEFAULT_CLIP_TIMEOUT);
+  conf_silence_alarm_threshold=
+    p->intValue("Drouterd","SilenceAlarmThreshold",DROUTER_DEFAULT_SILENCE_THRESHOLD);
+  conf_silence_alarm_timeout=
+    p->intValue("Drouterd","SilenceAlarmTimeout",DROUTER_DEFAULT_SILENCE_TIMEOUT);
   QStringList f0=p->stringValue("Drouterd","NoAudioAlarmDevices").
     split(",",QString::SkipEmptyParts);
   for(int i=0;i<f0.size();i++) {
     conf_no_audio_alarm_devices.push_back(f0.at(i).toLower().trimmed());
   }
+  conf_lwrp_password=p->stringValue("Drouterd","LwrpPassword");
 
   delete p;
 }

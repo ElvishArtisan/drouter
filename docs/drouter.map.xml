@@ -44,7 +44,7 @@
     <para>
       The file format consists of sections, each of which contain
       configuration  information  in  the  form  of keyword/value pairs.
-      Each section begins with with the name of the section in []  brackets,
+      Each section begins with the name of the section in []  brackets,
       followed  by zero  or more keyword/value pairs, with the keyword and value
       seperated by an '=' sign. Lines starting with ; (semi-colon) are ignored,
       as are blank lines.

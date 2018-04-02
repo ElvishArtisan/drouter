@@ -217,20 +217,34 @@ void DRouter::nodeConnectedData(unsigned id,bool state)
     if(drouter_config->configureAudioAlarms(lwrp->deviceName())) {
       for(unsigned i=0;i<lwrp->srcSlots();i++) {
 	if(lwrp->src(i)->exists()) {
-	  lwrp->setClipMonitor(i,SyLwrpClient::InputMeter,DROUTER_CLIP_THRESHOLD,
-			       DROUTER_CLIP_TIMEOUT);
-	  lwrp->setSilenceMonitor(i,SyLwrpClient::InputMeter,
-				  DROUTER_SILENCE_THRESHOLD,
-				  DROUTER_SILENCE_TIMEOUT);
+	  if((drouter_config->clipAlarmThreshold()<0)&&
+	     (drouter_config->clipAlarmTimeout()>0)) {
+	    lwrp->setClipMonitor(i,SyLwrpClient::InputMeter,
+				 drouter_config->clipAlarmThreshold(),
+				 drouter_config->clipAlarmTimeout());
+	  }
+	  if((drouter_config->silenceAlarmThreshold()<0)&&
+	     (drouter_config->silenceAlarmTimeout()>0)) {
+	    lwrp->setSilenceMonitor(i,SyLwrpClient::InputMeter,
+				    drouter_config->silenceAlarmThreshold(),
+				    drouter_config->silenceAlarmTimeout());
+	  }
 	}
       }
       for(unsigned i=0;i<lwrp->dstSlots();i++) {
 	if(lwrp->dst(i)->exists()) {
-	  lwrp->setClipMonitor(i,SyLwrpClient::OutputMeter,DROUTER_CLIP_THRESHOLD,
-	  		       DROUTER_CLIP_TIMEOUT);
-	  lwrp->setSilenceMonitor(i,SyLwrpClient::OutputMeter,
-				  DROUTER_SILENCE_THRESHOLD,
-				  DROUTER_SILENCE_TIMEOUT);
+	  if((drouter_config->clipAlarmThreshold()<0)&&
+	     (drouter_config->clipAlarmTimeout()>0)) {
+	    lwrp->setClipMonitor(i,SyLwrpClient::OutputMeter,
+				 drouter_config->clipAlarmThreshold(),
+				 drouter_config->clipAlarmTimeout());
+	  }
+	  if((drouter_config->silenceAlarmThreshold()<0)&&
+	     (drouter_config->silenceAlarmTimeout()>0)) {
+	    lwrp->setSilenceMonitor(i,SyLwrpClient::OutputMeter,
+				    drouter_config->silenceAlarmThreshold(),
+				    drouter_config->silenceAlarmTimeout());
+	  }
 	}
       }
     }
