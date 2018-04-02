@@ -402,3 +402,6 @@
 	drouter.conf(5).
 	* Added support for the SilenceAlarmTimeout=' directive in
 	drouter.conf(5).
+2018-04-02 Fred Gleason <fredg@paravelsystems.com>
+	* Updated 'NEWS'.
+	* Incremented the package version to 0.7.0.
