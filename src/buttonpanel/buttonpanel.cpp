@@ -144,8 +144,6 @@ MainWidget::MainWidget(QWidget *parent)
   }
   connect(panel_parser,SIGNAL(connected(bool,SaParser::ConnectionState)),
 	  this,SLOT(changeConnectionState(bool,SaParser::ConnectionState)));
-  connect(panel_parser,SIGNAL(error(QAbstractSocket::SocketError)),
-	  this,SLOT(errorData(QAbstractSocket::SocketError)));
   panel_resize_timer=new QTimer(this);
   panel_resize_timer->setSingleShot(true);
   connect(panel_resize_timer,SIGNAL(timeout()),this,SLOT(resizeData()));
@@ -186,15 +184,6 @@ void MainWidget::changeConnectionState(bool state,
   if(state) {
     panel_resize_timer->start(0);  // So the widgets can create buttons first
   }
-}
-
-
-void MainWidget::errorData(QAbstractSocket::SocketError err)
-{
-  QMessageBox::warning(this,"ButtonPanel - "+tr("Error"),
-		       tr("Network Error")+": "+
-		       SyMcastSocket::socketErrorText(err));
-  exit(1);
 }
 
 

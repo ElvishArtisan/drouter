@@ -48,7 +48,6 @@ class MainWidget : public QWidget
 
  private slots:
   void changeConnectionState(bool state,SaParser::ConnectionState cstate);
-  void errorData(QAbstractSocket::SocketError err);
   void resizeData();
 
  protected:

@@ -124,7 +124,7 @@ void ButtonWidget::armButtonClickedData()
 void ButtonWidget::changeConnectionState(bool state,
 				       SaParser::ConnectionState cstate)
 {
-  //  printf("changeConnectionState(%d)\n",state);
+  printf("changeConnectionState(%d)\n",state);
   if(state) {
     for(QMap<int,AutoPushButton *>::const_iterator it=panel_buttons.begin();
 	it!=panel_buttons.end();it++) {
@@ -155,7 +155,8 @@ void ButtonWidget::changeConnectionState(bool state,
   }
   else {
     for(int i=0;i<panel_buttons.size();i++) {
-      panel_buttons[i]->setDisabled(true);
+      delete panel_buttons[i];
+      panel_buttons.clear();
     }
   }
 
@@ -170,6 +171,7 @@ void ButtonWidget::changeConnectionState(bool state,
   }
 
   resize(sizeHint());
+
 }
 
 
