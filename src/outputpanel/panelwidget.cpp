@@ -129,6 +129,10 @@ void PanelWidget::changeConnectionState(bool state,
       exit(256);
     }
   }
+  else {
+    widget_input_names.clear();
+    widget_input_box->clear();
+  }
   widget_output_label->setEnabled(widget_xpoint_synced);
   widget_input_box->setEnabled(widget_xpoint_synced);
 }
