@@ -24,7 +24,7 @@
 #include "buttonwidget.h"
 
 ButtonWidget::ButtonWidget(int router,int output,int columns,SaParser *parser,
-			   QWidget *parent)
+			   bool arm_button,QWidget *parent)
   : QWidget(parent)
 {
   panel_columns=columns;
@@ -32,6 +32,7 @@ ButtonWidget::ButtonWidget(int router,int output,int columns,SaParser *parser,
   panel_rows=1;
   panel_router=router;
   panel_parser=parser;
+  panel_armed=false;
 
   //
   // Fonts
@@ -46,9 +47,22 @@ ButtonWidget::ButtonWidget(int router,int output,int columns,SaParser *parser,
   panel_title_label->setAlignment(Qt::AlignLeft|Qt::AlignVCenter);
 
   //
+  // Arm Button
+  //
+  if(arm_button) {
+    panel_arm_button=new AutoPushButton(this);
+    panel_arm_button->setText(tr("ARM"));
+    connect(panel_arm_button,SIGNAL(clicked()),
+	    this,SLOT(armButtonClickedData()));
+  }
+  else {
+    panel_arm_button=NULL;
+    panel_armed=true;
+  }
+
+  //
   // The SA Connection
   //
-  //  panel_parser=new SaParser(this);
   connect(panel_parser,SIGNAL(connected(bool,SaParser::ConnectionState)),
 	  this,SLOT(changeConnectionState(bool,SaParser::ConnectionState)));
   connect(panel_parser,
@@ -70,6 +84,9 @@ QSize ButtonWidget::sizeHint() const
   int cols=panel_columns;
   if(panel_columns==0) {
     cols=panel_buttons.size();
+    if(panel_arm_button!=NULL) {
+      cols++;
+    }
   }
   return QSize(BUTTONWIDGET_CELL_WIDTH*cols,
 	       20+BUTTONWIDGET_CELL_HEIGHT*panel_rows);
@@ -79,7 +96,28 @@ QSize ButtonWidget::sizeHint() const
 void ButtonWidget::buttonClickedData(int n)
 {
   //  printf("setOutputCrosspoint(%d,%d,%d)\n",panel_router,panel_output+1,n+1);
-  panel_parser->setOutputCrosspoint(panel_router,panel_output+1,n+1);
+  if(panel_armed) {
+    panel_parser->setOutputCrosspoint(panel_router,panel_output+1,n+1);
+    if(panel_arm_button!=NULL) {
+      panel_arm_button->setStyleSheet("");
+      panel_armed=false;
+    }
+  }
+}
+
+
+void ButtonWidget::armButtonClickedData()
+{
+  if(panel_armed) {
+    panel_arm_button->setStyleSheet("");
+    panel_armed=false;
+  }
+  else {
+    panel_arm_button->
+      setStyleSheet(QString("color: #FFFFFF;")+
+		    "background-color: #FF0000;");
+    panel_armed=true;
+  }
 }
 
 
@@ -161,6 +199,10 @@ void ButtonWidget::resizeEvent(QResizeEvent *e)
   
   if(panel_buttons.size()==0) {
     return;
+  }
+  if(panel_arm_button!=NULL) {
+    panel_arm_button->setGeometry(0,22,BUTTONWIDGET_CELL_WIDTH-10,BUTTONWIDGET_CELL_HEIGHT-10);
+    col++;
   }
   if(panel_columns==0) {
     for(QMap<int,AutoPushButton *>::const_iterator it=panel_buttons.begin();

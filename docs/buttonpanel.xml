@@ -47,6 +47,20 @@
   <variablelist remap='TP'>
     <varlistentry>
       <term>
+	<option>--arm-button</option>
+      </term>
+      <listitem>
+	<para>
+	  Display an <computeroutput>ARM</computeroutput> button in addition
+	  to the source buttons to enable two-click control.
+	</para>
+      </listitem>
+    </varlistentry>
+  </variablelist>
+
+  <variablelist remap='TP'>
+    <varlistentry>
+      <term>
 	<option>--columns=<arg choice="req"><replaceable>cols</replaceable></arg></option>
       </term>
       <listitem>

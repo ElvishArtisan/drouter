@@ -42,12 +42,13 @@ class ButtonWidget : public QWidget
   Q_OBJECT
  public:
   ButtonWidget(int router,int output,int columns,SaParser *parser,
-	       QWidget *parent=0);
+	       bool arm_button,QWidget *parent=0);
   ~ButtonWidget();
   QSize sizeHint() const;
 
  private slots:
   void buttonClickedData(int n);
+  void armButtonClickedData();
   void changeConnectionState(bool state,SaParser::ConnectionState cstate);
   void changeOutputCrosspoint(int router,int output,int input);
 
@@ -62,6 +63,8 @@ class ButtonWidget : public QWidget
   SaParser *panel_parser;
   QSignalMapper *panel_button_mapper;
   QMap<int,AutoPushButton *> panel_buttons;
+  AutoPushButton *panel_arm_button;
+  bool panel_armed;
   QLabel *panel_title_label;
 };
 

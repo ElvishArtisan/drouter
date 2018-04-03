@@ -405,3 +405,5 @@
 2018-04-02 Fred Gleason <fredg@paravelsystems.com>
 	* Updated 'NEWS'.
 	* Incremented the package version to 0.7.0.
+2018-04-03 Fred Gleason <fredg@paravelsystems.com>
+	* Added an '--arm-button' switch to buttonpanel(1).

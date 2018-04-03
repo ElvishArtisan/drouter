@@ -40,6 +40,7 @@ MainWidget::MainWidget(QWidget *parent)
   panel_height=20;
   panel_columns=0;
   panel_hostname="";
+  panel_arm_button=false;
 
   bool ok=false;
 
@@ -53,6 +54,10 @@ MainWidget::MainWidget(QWidget *parent)
     new SyCmdSwitch(qApp->argc(),qApp->argv(),"buttonpanel",VERSION,
 				   BUTTONPANEL_USAGE);
   for(unsigned i=0;i<cmd->keys();i++) {
+    if(cmd->key(i)=="--arm-button") {
+      panel_arm_button=true;
+      cmd->setProcessed(i,true);
+    }
     if(cmd->key(i)=="--columns") {
       panel_columns=cmd->value(i).toUInt(&ok);
       if(!ok) {
@@ -134,7 +139,8 @@ MainWidget::MainWidget(QWidget *parent)
   for(int i=0;i<panel_routers.size();i++) {
     panel_panels.push_back(new ButtonWidget(panel_routers.at(i),
 					    panel_outputs.at(i),
-					    panel_columns,panel_parser,this));
+					    panel_columns,panel_parser,
+					    panel_arm_button,this));
   }
   connect(panel_parser,SIGNAL(connected(bool,SaParser::ConnectionState)),
 	  this,SLOT(changeConnectionState(bool,SaParser::ConnectionState)));

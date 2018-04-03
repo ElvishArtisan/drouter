@@ -2,7 +2,7 @@
 //
 // Button applet for controlling an SA output.
 //
-//   (C) Copyright 2002-2017 Fred Gleason <fredg@paravelsystems.com>
+//   (C) Copyright 2002-2018 Fred Gleason <fredg@paravelsystems.com>
 //
 //   This program is free software; you can redistribute it and/or modify
 //   it under the terms of the GNU General Public License as
@@ -60,6 +60,7 @@ class MainWidget : public QWidget
   QString panel_hostname;
   QString panel_username;
   QString panel_password;
+  bool panel_arm_button;
   QList<int> panel_routers;
   QList<int> panel_outputs;
   QPixmap *panel_saspanels_map;
