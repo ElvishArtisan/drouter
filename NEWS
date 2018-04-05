@@ -1,6 +1,20 @@
 This is the NEWS file for the drouter package.
 
 -------------------------------------------------------------------------------
+v0.7.1 - 4/5/2018
+
+Beta Release
+
+Changes:
+   ButtonPanel. Added a '--arm-button' option to cause buttonpanel(1)
+   to add an 'ARM' button to each output panel, which must be clicked
+   before clicking on a source button will cause the route change to
+   be executed.
+
+   GUI Panels. Improved the ability of various GUI panels to reconnect
+   automatically to the Software Authority server after a network fault.
+
+-------------------------------------------------------------------------------
 v0.7.0 - 4/2/2018
 
 Beta Release
