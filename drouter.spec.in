@@ -128,6 +128,7 @@ rm -rf $RPM_BUILD_ROOT
 %files
 %defattr(-,root,root)
 %{_bindir}/dmap
+%{_bindir}/drouter_init_db.sh
 %{_bindir}/pf_import.py
 %{_sbindir}/drouterd
 %{_sbindir}/dprotod

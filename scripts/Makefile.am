@@ -22,16 +22,20 @@
 install-exec-am:	
 	mkdir -p $(DESTDIR)@prefix@/bin
 	cp dlist.py $(DESTDIR)@prefix@/bin/dlist
+	cp drouter_init_db.sh $(DESTDIR)@prefix@/bin/
 	cp pf_import.py $(DESTDIR)@prefix@/bin/
 
 uninstall-local:	
 	rm -f $(DESTDIR)@prefix@/bin/dlist
+	rm -f $(DESTDIR)@prefix@/bin/drouter_init_db.sh
 	rm -f $(DESTDIR)@prefix@/bin/pf_import.py
 
 bin_SCRIPT = dlist.py\
+             drouter_init_db.sh\
              pf_import.py
 
 EXTRA_DIST = dlist.py\
+             drouter_init_db.sh\
              pf_import.py
 
 CLEANFILES = *~
