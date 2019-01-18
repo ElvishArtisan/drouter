@@ -22,6 +22,7 @@ install-sh
 missing
 moc_*
 py-compile
+scripts/install_python.sh
 src/buttonpanel/buttonpanel
 src/buttonpanel/combobox.cpp
 src/buttonpanel/combobox.h
