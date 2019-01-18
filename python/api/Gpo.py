@@ -1,10 +1,8 @@
-#! /usr/bin/python
-
 # Gpo.py
 #
 # Container class for a Protocol D GPO
 #
-#   (C) Copyright 2018 Fred Gleason <fredg@paravelsystems.com>
+#   (C) Copyright 2018-2019 Fred Gleason <fredg@paravelsystems.com>
 #
 #   This program is free software; you can redistribute it and/or modify
 #   it under the terms of the GNU General Public License version 2 as
@@ -79,6 +77,13 @@ class Gpo(object):
 
     def __ne__(self,other):
         return not self.__eq__(other)
+
+    def __lt__(self,other):
+        if self.__hostAddress>other.hostAddress():
+            return False
+        if self.__hostAddress==other.hostAddress() and self.__slotNumber>other.slotNumber():
+            return False
+        return True
 
     def __str__(self):
         return "slotNumber: "+str(self.__slotNumber)+"\n"+"name: "+self.__name+"\n"+"hostName: "+self.__hostName+"\n"+"hostAddress: "+self.__hostAddress+"\n"+"code: "+self.__code+"\n"+"sourceAddress: "+self.__sourceAddress+"\n"+"sourceSlot: "+str(self.__sourceSlot)+"\n"

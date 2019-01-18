@@ -1,10 +1,10 @@
-#!/usr/bin/python
+#!%PYTHON_BANGPATH%
 
 # pf_import.py
 #
 # Generate a drouter map from an existing Software Authority Protocol service
 #
-# (C) Copyright 2018 Fred Gleason <fredg@paravelsystems.com>
+# (C) Copyright 2018-2019 Fred Gleason <fredg@paravelsystems.com>
 #
 #   This program is free software; you can redistribute it and/or modify
 #   it under the terms of the GNU General Public License version 2 as
@@ -72,7 +72,7 @@ class SAParser(object):
                 self.istate=1
                 return
             else:
-                print "Login failed!"
+                print("Login failed!")
                 sys.exit(1)
 
         if self.istate==1:  # Start of sources
@@ -80,7 +80,7 @@ class SAParser(object):
                 self.istate=2
                 return
             else:
-                print "Parser error (istate="+str(self.istate)+", cmd=\""+cmd+"\")"
+                print("Parser error (istate="+str(self.istate)+", cmd=\""+cmd+"\")")
                 sys.exit(1)
 
         if self.istate==2:  # Sources
@@ -99,7 +99,7 @@ class SAParser(object):
                 self.istate=4
                 return
             else:
-                print "Parser error (istate="+str(self.istate)+", cmd=\""+cmd+"\")"
+                print("Parser error (istate="+str(self.istate)+", cmd=\""+cmd+"\")")
                 sys.exit(1)
 
         if self.istate==4:  # destinations

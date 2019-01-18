@@ -21,6 +21,7 @@ depcomp
 install-sh
 missing
 moc_*
+py-compile
 src/buttonpanel/buttonpanel
 src/buttonpanel/combobox.cpp
 src/buttonpanel/combobox.h

@@ -416,3 +416,5 @@
 	* Incremented the package version to 0.7.1.
 2018-11-17 Fred Gleason <fredg@paravelsystems.com>
 	* Added 'drouter_init_db.sh'.
+2019-01-18 Fred Gleason <fredg@paravelsystems.com>
+	* Upgrade Python scripts to use Python 3.

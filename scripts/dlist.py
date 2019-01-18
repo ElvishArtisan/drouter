@@ -1,10 +1,10 @@
-#!/usr/bin/python
+#!%PYTHON_BANGPATH%
 
 # dlist.py
 #
 # Generate a printable list of Livewire resources
 #
-# (C) Copyright 2018 Fred Gleason <fredg@paravelsystems.com>
+# (C) Copyright 2018-2019 Fred Gleason <fredg@paravelsystems.com>
 #
 #   This program is free software; you can redistribute it and/or modify
 #   it under the terms of the GNU General Public License version 2 as
@@ -26,69 +26,69 @@ import Drouter.StateEngine
 
 def PrintSources(sources,csv):
     if csv:
-        print "Host_Address,Slot_Number,Host_Name,Name,Stream_Address,Stream_Number,Stream_Enabled,Channels,Block_Size"
+        print("Host_Address,Slot_Number,Host_Name,Name,Stream_Address,Stream_Number,Stream_Enabled,Channels,Block_Size")
         for source in sources:
-            print "\""+source.hostAddress()+"\","+str(source.slotNumber())+",\""+source.hostName()+"\",\""+source.name()+"\",\""+source.streamAddress()+"\","+str(source.streamNumber())+","+str(source.streamEnabled())+","+str(source.channels())+","+str(source.blockSize())
+            print("\""+source.hostAddress()+"\","+str(source.slotNumber())+",\""+source.hostName()+"\",\""+source.name()+"\",\""+source.streamAddress()+"\","+str(source.streamNumber())+","+str(source.streamEnabled())+","+str(source.channels())+","+str(source.blockSize()))
     else:
-        print "----------------------------------------------------------------------------------------------------------------------"
-        print "| SOURCES                                                                                                            |"
-        print "|--------------------------------------------------------------------------------------------------------------------|"
-        print "| Host Address    | Slot | Host Name       | Name             | Stream Address  | Src Num | Enabled | Chans | Blk Sz |"
-        print "|-----------------|------|-----------------|------------------|-----------------|---------|---------|-------|--------|"
+        print("----------------------------------------------------------------------------------------------------------------------")
+        print("| SOURCES                                                                                                            |")
+        print("|--------------------------------------------------------------------------------------------------------------------|")
+        print("| Host Address    | Slot | Host Name       | Name             | Stream Address  | Src Num | Enabled | Chans | Blk Sz |")
+        print("|-----------------|------|-----------------|------------------|-----------------|---------|---------|-------|--------|")
         for source in sources:
             enabled="No "
             if source.streamEnabled():
                 enabled="Yes"
-                print "| %-15s | %4d | %-15s | %-16s | %-15s |  %5d  |   %s   |  %2d   |  %3d   |" % (source.hostAddress(),source.slotNumber(),source.hostName(),source.name(),source.streamAddress(),source.streamNumber(),enabled,source.channels(),source.blockSize())
-                print "|-----------------|------|-----------------|------------------|-----------------|---------|---------|-------|--------|"
+                print("| %-15s | %4d | %-15s | %-16s | %-15s |  %5d  |   %s   |  %2d   |  %3d   |" % (source.hostAddress(),source.slotNumber(),source.hostName(),source.name(),source.streamAddress(),source.streamNumber(),enabled,source.channels(),source.blockSize()))
+                print("|-----------------|------|-----------------|------------------|-----------------|---------|---------|-------|--------|")
 
 
 def PrintDestinations(destinations,csv):
     if csv:
-        print "Host_Address,Slot_Number,Host_Name,Name,Stream_Address,Stream_Number,Channels"
+        print("Host_Address,Slot_Number,Host_Name,Name,Stream_Address,Stream_Number,Channels")
         for destination in destinations:
-            print "\""+destination.hostAddress()+"\","+str(destination.slotNumber())+",\""+destination.hostName()+"\",\""+destination.name()+"\",\""+destination.streamAddress()+"\","+str(destination.streamNumber())+","+str(destination.channels())
+            print("\""+destination.hostAddress()+"\","+str(destination.slotNumber())+",\""+destination.hostName()+"\",\""+destination.name()+"\",\""+destination.streamAddress()+"\","+str(destination.streamNumber())+","+str(destination.channels()))
     else:
-        print "---------------------------------------------------------------------------------------------------"
-        print "| DESTINATIONS                                                                                    |"
-        print "|-------------------------------------------------------------------------------------------------|"
-        print "| Host Address    | Slot | Host Name       | Name             | Stream Address  | Stm Num | Chans |"
-        print "|-----------------|------|-----------------|------------------|-----------------|---------|-------|"
+        print("---------------------------------------------------------------------------------------------------")
+        print("| DESTINATIONS                                                                                    |")
+        print("|-------------------------------------------------------------------------------------------------|")
+        print("| Host Address    | Slot | Host Name       | Name             | Stream Address  | Stm Num | Chans |")
+        print("|-----------------|------|-----------------|------------------|-----------------|---------|-------|")
         for destination in destinations:
-            print "| %-15s | %4d | %-15s | %-16s | %-15s |  %5d  |  %2d   |" % (destination.hostAddress(),destination.slotNumber(),destination.hostName(),destination.name(),destination.streamAddress(),destination.streamNumber(),destination.channels())
-            print "|-----------------|------|-----------------|------------------|-----------------|---------|-------|"
+            print("| %-15s | %4d | %-15s | %-16s | %-15s |  %5d  |  %2d   |" % (destination.hostAddress(),destination.slotNumber(),destination.hostName(),destination.name(),destination.streamAddress(),destination.streamNumber(),destination.channels()))
+            print("|-----------------|------|-----------------|------------------|-----------------|---------|-------|")
 
 
 def PrintGpis(gpis,csv):
     if csv:
-        print "Host_Address,Slot_Number,Host_Name,Code"
+        print("Host_Address,Slot_Number,Host_Name,Code")
         for gpi in gpis:
-            print "\""+gpi.hostAddress()+"\","+str(gpi.slotNumber())+",\""+gpi.hostName()+"\",\""+gpi.code()+"\""
+            print("\""+gpi.hostAddress()+"\","+str(gpi.slotNumber())+",\""+gpi.hostName()+"\",\""+gpi.code()+"\"")
     else:
-        print "----------------------------------------------------"
-        print "| GPIS                                             |"
-        print "|--------------------------------------------------|"
-        print "| Host Address    | Slot | Host Name       | Code  |"
-        print "|-----------------|------|-----------------|-------|"
+        print("----------------------------------------------------")
+        print("| GPIS                                             |")
+        print("|--------------------------------------------------|")
+        print("| Host Address    | Slot | Host Name       | Code  |")
+        print("|-----------------|------|-----------------|-------|")
         for gpi in gpis:
-            print "| %-15s | %4d | %-15s | %-5s |" % (gpi.hostAddress(),gpi.slotNumber(),gpi.hostName(),gpi.code())
-            print "|-----------------|------|-----------------|-------|"
+            print("| %-15s | %4d | %-15s | %-5s |" % (gpi.hostAddress(),gpi.slotNumber(),gpi.hostName(),gpi.code()))
+            print("|-----------------|------|-----------------|-------|")
 
 
 def PrintGpos(gpos,csv):
     if csv:
-        print "Host_Address,Slot_Number,Host_Name,Code,Source_Address,Source_Slot"
+        print("Host_Address,Slot_Number,Host_Name,Code,Source_Address,Source_Slot")
         for gpo in gpos:
-            print "\""+gpo.hostAddress()+"\","+str(gpo.slotNumber())+",\""+gpo.hostName()+"\",\""+gpo.code()+"\",\""+gpo.sourceAddress()+"\","+str(gpo.sourceSlot())
+            print("\""+gpo.hostAddress()+"\","+str(gpo.slotNumber())+",\""+gpo.hostName()+"\",\""+gpo.code()+"\",\""+gpo.sourceAddress()+"\","+str(gpo.sourceSlot()))
     else:
-        print "---------------------------------------------------------------------------------"
-        print "| GPOS                                                                          |"
-        print "|-------------------------------------------------------------------------------|"
-        print "| Host Address    | Slot | Host Name       | Code  | Src Address     | Src Slot |"
-        print "|-----------------|------|-----------------|-------|-----------------|----------|"
+        print("---------------------------------------------------------------------------------")
+        print("| GPOS                                                                          |")
+        print("|-------------------------------------------------------------------------------|")
+        print("| Host Address    | Slot | Host Name       | Code  | Src Address     | Src Slot |")
+        print("|-----------------|------|-----------------|-------|-----------------|----------|")
         for gpo in gpos:
-            print "| %-15s | %4d | %-15s | %-5s | %-15s |   %4d   |" % (gpo.hostAddress(),gpo.slotNumber(),gpo.hostName(),gpo.code(),gpo.sourceAddress(),gpo.sourceSlot())
-            print "|-----------------|------|-----------------|-------|-----------------|----------|"
+            print("| %-15s | %4d | %-15s | %-5s | %-15s |   %4d   |" % (gpo.hostAddress(),gpo.slotNumber(),gpo.hostName(),gpo.code(),gpo.sourceAddress(),gpo.sourceSlot()))
+            print("|-----------------|------|-----------------|-------|-----------------|----------|")
 
 
 # ############################################################################
@@ -115,7 +115,7 @@ def EngineReady(engine,priv):
         if len(sources)>0:
             PrintSources(sources,priv.csv)
             if priv.all:
-                print
+                print()
 
     if priv.destinations or priv.all:
         destinations=[]
@@ -126,7 +126,7 @@ def EngineReady(engine,priv):
         if len(destinations)>0:
             PrintDestinations(destinations,priv.csv)
             if priv.all:
-                print
+                print()
 
     if priv.gpis or priv.all:
         gpis=[]
@@ -137,7 +137,7 @@ def EngineReady(engine,priv):
         if len(gpis)>0:
             PrintGpis(gpis,priv.csv)
             if priv.all:
-                print
+                print()
 
     if priv.gpos or priv.all:
         gpos=[]

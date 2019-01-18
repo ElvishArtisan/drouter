@@ -1,10 +1,10 @@
-#!/usr/bin/python
+#!%PYTHON_BANGPATH%
 
 # show_sources.py
 #
 # Drouter state script to enumerate all sources
 #
-# (C) Copyright 2018 Fred Gleason <fredg@paravelsystems.com>
+# (C) Copyright 2018-2019 Fred Gleason <fredg@paravelsystems.com>
 #
 #   This program is free software; you can redistribute it and/or modify
 #   it under the terms of the GNU General Public License version 2 as
@@ -40,9 +40,9 @@ def EngineReady(engine,priv):
     sources=engine.Sources()
 
     for source in sources:
-        print "*********************************"
-        print source
-        print "*********************************"
+        print("*********************************")
+        print(source)
+        print("*********************************")
 
     exit(0)
 

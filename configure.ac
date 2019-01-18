@@ -64,7 +64,7 @@ PKG_CHECK_MODULES(SWITCHYARD,switchyard,[],[AC_MSG_ERROR([*** Switchyard not fou
 #
 # Check for Python (Mandatory)
 #
-AM_PATH_PYTHON([2.7])
+AM_PATH_PYTHON([3])
 
 #
 # Check for SystemD (Optional)
@@ -119,6 +119,7 @@ AC_CONFIG_FILES([ \
     python/api/Makefile \
     python/examples/Makefile \
     python/Makefile \
+    scripts/install_python.sh \
     scripts/Makefile \
     src/Makefile \
     src/buttonpanel/Makefile \
@@ -135,6 +136,7 @@ AC_CONFIG_FILES([ \
     drouter.spec \
     Makefile ])
 AC_OUTPUT()
+chmod 755 scripts/install_python.sh
 
 #
 # Link Common Elements

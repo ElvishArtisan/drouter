@@ -1,10 +1,10 @@
-#!/usr/bin/python
+#!%PYTHON_BANGPATH%
 
 # show_changes.py
 #
 # Drouter state script to show changes in a Livewire network in realtime.
 #
-# (C) Copyright 2018 Fred Gleason <fredg@paravelsystems.com>
+# (C) Copyright 2018-2019 Fred Gleason <fredg@paravelsystems.com>
 #
 #   This program is free software; you can redistribute it and/or modify
 #   it under the terms of the GNU General Public License version 2 as
@@ -35,7 +35,7 @@ import Drouter.StateEngine
 # (create objects, open connections, etc).
 #
 def EngineReady(engine,priv):
-    print "EngineReady() ran!"
+    print("EngineReady() ran!")
 
 
 #
@@ -44,24 +44,24 @@ def EngineReady(engine,priv):
 #
 def ObjectAdded(engine,priv,type,object):
     if type=="NODE":
-        print "ADDED NODE"
-        print object
+        print("ADDED NODE")
+        print(object)
 
     if type=="SRC":
-        print "ADDED SRC"
-        print object
+        print("ADDED SRC")
+        print(object)
 
     if type=="DST":
-        print "ADDED DST"
-        print object
+        print("ADDED DST")
+        print(object)
 
     if type=="GPI":
-        print "ADDED GPI"
-        print object
+        print("ADDED GPI")
+        print(object)
 
     if type=="GPO":
-        print "ADDED GPO"
-        print object
+        print("ADDED GPO")
+        print(object)
 
 #
 # Called immediately before an object -- a node, source, destination or GPIO
@@ -69,24 +69,24 @@ def ObjectAdded(engine,priv,type,object):
 #
 def ObjectDeleted(engine,priv,type,object):
     if type=="NODE":
-        print "DELETED NODE"
-        print object
+        print("DELETED NODE")
+        print(object)
 
     if type=="SRC":
-        print "DELETED SRC"
-        print object
+        print("DELETED SRC")
+        print(object)
 
     if type=="DST":
-        print "DELETED DST"
-        print object
+        print("DELETED DST")
+        print(object)
 
     if type=="GPI":
-        print "DELETED GPI"
-        print object
+        print("DELETED GPI")
+        print(object)
 
     if type=="GPO":
-        print "DELETED GPO"
-        print object
+        print("DELETED GPO")
+        print(object)
 
 #
 # Called whenever an object -- a node, source, destination or GPIO resource --
@@ -94,41 +94,41 @@ def ObjectDeleted(engine,priv,type,object):
 #
 def ObjectChanged(engine,priv,type,old,new):
     if type=="NODE":
-        print "OLD NODE"
-        print old
-        print "NEW NODE"
-        print new
+        print("OLD NODE")
+        print(old)
+        print("NEW NODE")
+        print(new)
 
     if type=="SRC":
-        print "OLD SRC"
-        print old
-        print "NEW SRC"
-        print new
+        print("OLD SRC")
+        print(old)
+        print("NEW SRC")
+        print(new)
 
     if type=="DST":
-        print "OLD DST"
-        print old
-        print "NEW DST"
-        print new
+        print("OLD DST")
+        print(old)
+        print("NEW DST")
+        print(new)
 
     if type=="GPI":
-        print "OLD GPI"
-        print old
-        print "NEW GPI"
-        print new
+        print("OLD GPI")
+        print(old)
+        print("NEW GPI")
+        print(new)
 
     if type=="GPO":
-        print "OLD GPO"
-        print old
-        print "NEW GPO"
-        print new
+        print("OLD GPO")
+        print(old)
+        print("NEW GPO")
+        print(new)
 
 #
 # Called whenever an audio alarm -- a SILENCE or a CLIP -- changes state.
 #
 def Alarm(engine,priv,alarm):
-    print "ALARM"
-    print alarm 
+    print("ALARM")
+    print(alarm) 
 
 # ############################################################################
 #

@@ -64,7 +64,7 @@ of the Livewire network.
 
 
 %build
-%configure --libexecdir=%{_libdir}/python@PYTHON_VERSION@/site-packages
+%configure
 make
 
 
@@ -83,7 +83,13 @@ cp conf/drouter.conf-sample $RPM_BUILD_ROOT/%{_datadir}/doc/drouter-%{version}/
 mkdir -p $RPM_BUILD_ROOT/%{_datadir}/doc/drouter-%{version}/protocols
 cp docs/protocol_d.pdf $RPM_BUILD_ROOT/%{_datadir}/doc/drouter-%{version}/protocols/
 mkdir -p $RPM_BUILD_ROOT/%{_datadir}/doc/drouter-%{version}/examples
-cp python/examples/*.py $RPM_BUILD_ROOT/%{_datadir}/doc/drouter-%{version}/examples/
+scripts/install_python.sh python/examples/show_changes.py $RPM_BUILD_ROOT/%{_datadir}/doc/drouter-%{version}/examples/show_changes.py
+scripts/install_python.sh python/examples/show_destinations.py $RPM_BUILD_ROOT/%{_datadir}/doc/drouter-%{version}/examples/show_destinations.py
+scripts/install_python.sh python/examples/show_gpis.py $RPM_BUILD_ROOT/%{_datadir}/doc/drouter-%{version}/examples/show_gpis.py
+scripts/install_python.sh python/examples/show_gpos.py $RPM_BUILD_ROOT/%{_datadir}/doc/drouter-%{version}/examples/show_gpos.py
+scripts/install_python.sh python/examples/show_nodes.py $RPM_BUILD_ROOT/%{_datadir}/doc/drouter-%{version}/examples/show_nodes.py
+scripts/install_python.sh python/examples/show_sources.py $RPM_BUILD_ROOT/%{_datadir}/doc/drouter-%{version}/examples/show_sources.py
+scripts/install_python.sh python/examples/silence_alarm.py $RPM_BUILD_ROOT/%{_datadir}/doc/drouter-%{version}/examples/silence_alarm.py
 
 
 %post

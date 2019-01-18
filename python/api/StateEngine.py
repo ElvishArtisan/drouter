@@ -1,10 +1,8 @@
-#! /usr/bin/python
-
 # StateEngine.py
 #
 # Protocol D engine for executing state scripts.
 #
-#   (C) Copyright 2018 Fred Gleason <fredg@paravelsystems.com>
+#   (C) Copyright 2019 Fred Gleason <fredg@paravelsystems.com>
 #
 #   This program is free software; you can redistribute it and/or modify
 #   it under the terms of the GNU General Public License version 2 as
@@ -238,7 +236,7 @@ class StateEngine(object):
 
                 out_slot: Number of the destination slot (integer, zero-based)
         """
-        self.__sock.send("ClearCrosspoint "+out_host_addr+" "+str(out_slot)+"\r\n")
+        self.__sock.send(("ClearCrosspoint "+out_host_addr+" "+str(out_slot)+"\r\n").encode('latin-1'))
         
     def setCrosspoint(self,out_host_addr,out_slot,in_host_addr,in_slot):
         """
@@ -255,7 +253,7 @@ class StateEngine(object):
 
                  in_slot: Number of the source slot (integer, zero-based)
         """
-        self.__sock.send("SetCrosspoint "+out_host_addr+" "+str(out_slot)+" "+in_host_addr+" "+str(in_slot)+"\r\n")
+        self.__sock.send(("SetCrosspoint "+out_host_addr+" "+str(out_slot)+" "+in_host_addr+" "+str(in_slot)+"\r\n").encode('latin-1'))
 
     def clearGpioCrosspoint(self,out_host_addr,out_slot):
         """
@@ -266,7 +264,7 @@ class StateEngine(object):
 
                 out_slot: Number of the GPO slot (integer, zero-based)
         """
-        self.__sock.send("ClearGpioCrosspoint "+out_host_addr+" "+str(out_slot)+"\r\n")
+        self.__sock.send(("ClearGpioCrosspoint "+out_host_addr+" "+str(out_slot)+"\r\n").encode('latin-1'))
         
     def setGpioCrosspoint(self,out_host_addr,out_slot,in_host_addr,in_slot):
         """
@@ -282,7 +280,7 @@ class StateEngine(object):
 
                  in_slot: Number of the GPI slot (integer, zero-based)
         """
-        self.__sock.send("SetGpioCrosspoint "+out_host_addr+" "+str(out_slot)+" "+in_host_addr+" "+str(in_slot)+"\r\n")
+        self.__sock.send(("SetGpioCrosspoint "+out_host_addr+" "+str(out_slot)+" "+in_host_addr+" "+str(in_slot)+"\r\n").encode('latin-1'))
 
     def setGpoCode(self,host_addr,slot,code):
         """
@@ -296,7 +294,7 @@ class StateEngine(object):
                 code: String representing desired state, in the form "xxxxx",
                       where 'h' indicates "OFF" and 'l' indicates "ON".
         """
-        self.__sock.send("SetGpoState "+host_addr+" "+str(slot)+" "+code+"\r\n")
+        self.__sock.send(("SetGpoState "+host_addr+" "+str(slot)+" "+code+"\r\n").encode('latin-1'))
 
     def setGpoBitState(self,host_addr,slot,bit,state):
         """
@@ -330,7 +328,7 @@ class StateEngine(object):
                  associated with a software node, such a Linux or Windows
                  software driver.
         """
-        self.__sock.send("SetGpiState "+host_addr+" "+str(slot)+" "+code+"\r\n")
+        self.__sock.send(("SetGpiState "+host_addr+" "+str(slot)+" "+code+"\r\n").encode('latin-1'))
 
     def setGpiBitState(self,host_addr,slot,bit,state):
         """
@@ -366,9 +364,9 @@ class StateEngine(object):
         self.__conn=self.__sock.connect((hostname,23883))
         self.__accum=""
         c=""
-        self.__sock.send("SubscribeNodes\r\n")
+        self.__sock.send(("SubscribeNodes\r\n").encode('latin-1'))
         while 1<2:
-            c=self.__sock.recv(1)
+            c=self.__sock.recv(1).decode('latin-1')
             if c[0]=="\r":
                 self.__processMessage()
                 self.__accum=""
@@ -474,32 +472,32 @@ class StateEngine(object):
         if cmds[0]=="ok":
             if not self.__nodes_loaded:
                 self.__nodes_loaded=True
-                self.__sock.send("SubscribeSources\r\n")
+                self.__sock.send(("SubscribeSources\r\n").encode('latin-1'))
                 return;
 
             if not self.__sources_loaded:
                 self.__sources_loaded=True
-                self.__sock.send("SubscribeDestinations\r\n")
+                self.__sock.send("SubscribeDestinations\r\n".encode('latin-1'))
                 return;
 
             if not self.__destinations_loaded:
                 self.__destinations_loaded=True
-                self.__sock.send("SubscribeGpis\r\n")
+                self.__sock.send("SubscribeGpis\r\n".encode('latin-1'))
                 return;
 
             if not self.__gpis_loaded:
                 self.__gpis_loaded=True
-                self.__sock.send("SubscribeGpos\r\n")
+                self.__sock.send("SubscribeGpos\r\n".encode('latin-1'))
                 return;
 
             if not self.__gpos_loaded:
                 self.__gpos_loaded=True
-                self.__sock.send("SubscribeSilences\r\n")
+                self.__sock.send("SubscribeSilences\r\n".encode('latin-1'))
                 return;
 
             if not self.__silences_loaded:
                 self.__silences_loaded=True
-                self.__sock.send("SubscribeClips\r\n")
+                self.__sock.send("SubscribeClips\r\n".encode('latin-1'))
 
             if not self.__clips_loaded:
                 self.__clips_loaded=True

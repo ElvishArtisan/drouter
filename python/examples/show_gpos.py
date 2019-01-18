@@ -1,10 +1,10 @@
-#!/usr/bin/python
+#!%PYTHON_BANGPATH%
 
 # show_gpos.py
 #
 # Drouter state script to enumerate all gpos
 #
-# (C) Copyright 2018 Fred Gleason <fredg@paravelsystems.com>
+# (C) Copyright 2018-2019 Fred Gleason <fredg@paravelsystems.com>
 #
 #   This program is free software; you can redistribute it and/or modify
 #   it under the terms of the GNU General Public License version 2 as
@@ -40,9 +40,9 @@ def EngineReady(engine,priv):
     gpos=engine.Gpos()
 
     for gpo in gpos:
-        print "*********************************"
-        print gpo
-        print "*********************************"
+        print("*********************************")
+        print(gpo)
+        print("*********************************")
 
     exit(0)
 
