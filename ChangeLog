@@ -420,3 +420,5 @@
 	* Upgrade Python scripts to use Python 3.
 2019-01-19 Fred Gleason <fredg@paravelsystems.com>
 	* Added a 'python34' depedency to the RPM spec.
+2019-01-19 Fred Gleason <fredg@paravelsystems.com>
+	* Updated 'INSTALL'.

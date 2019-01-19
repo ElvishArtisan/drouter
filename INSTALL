@@ -7,7 +7,7 @@ system before building GlassCoder:
 
 Qt4 Toolkit, v4.6 or better (http://www.qt.io/).
 
-Python 2.7 or better.
+Python 3.4 or better.
 
 MySQL or MariaDB RDBMS.
 
@@ -55,6 +55,10 @@ the following privileges for the database:
     Index
     Lock Tables
 
-BUILDING ON RHEL 7
-------------------
-./configure --prefix=/usr --libexecdir=/usr/lib/python2.7/site-packages
+For conveience, a 'drouter_init_db.sh' script is provided that will
+create and configure the DB correctly when invoked as follows:
+
+       drouter_init_db.sh <admin-name> <admin-pw>
+
+Where <admin-name> and <admin-pw> are the user username/password of
+a MySQL account with GRANT prvileges.
