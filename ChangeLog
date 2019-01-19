@@ -418,3 +418,5 @@
 	* Added 'drouter_init_db.sh'.
 2019-01-18 Fred Gleason <fredg@paravelsystems.com>
 	* Upgrade Python scripts to use Python 3.
+2019-01-19 Fred Gleason <fredg@paravelsystems.com>
+	* Added a 'python34' depedency to the RPM spec.

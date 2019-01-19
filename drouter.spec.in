@@ -36,7 +36,7 @@ Summary: GUI control panels for DRouter
 
 %package python
 Summary: Python API for using state scripts with Drouter
-Requires: python
+Requires: python34
 
 
 %description
