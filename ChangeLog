@@ -422,3 +422,5 @@
 	* Added a 'python34' depedency to the RPM spec.
 2019-01-19 Fred Gleason <fredg@paravelsystems.com>
 	* Updated 'INSTALL'.
+2019-01-19 Fred Gleason <fredg@paravelsystems.com>
+	* Incremented the package version to 0.8.0.
