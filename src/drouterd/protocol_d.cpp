@@ -2,7 +2,7 @@
 //
 // Protocol D handler for DRouter.
 //
-//   (C) Copyright 2018 Fred Gleason <fredg@paravelsystems.com>
+//   (C) Copyright 2018-2019Fred Gleason <fredg@paravelsystems.com>
 //
 //   This program is free software; you can redistribute it and/or modify
 //   it under the terms of the GNU General Public License version 2 as
@@ -39,6 +39,8 @@ ProtocolD::ProtocolD(int sock,QObject *parent)
   proto_sources_subscribed=false;
   proto_clips_subscribed=false;
   proto_silences_subscribed=false;
+  proto_mgpis_subscribed=false;
+  proto_mgpos_subscribed=false;
 
   //
   // The ProtocolD Server
@@ -349,6 +351,26 @@ void ProtocolD::silenceChanged(const QHostAddress &host_addr,int slotnum,
 }
 
 
+void ProtocolD::multicastGpiCodeChanged(const QHostAddress &orig_addr,
+					int srcnum,const QString &code)
+{
+  if(proto_mgpis_subscribed) {
+    proto_socket->
+      write(MulticastGpioRecord("MGPI",orig_addr,srcnum,code).toUtf8());
+  }
+}
+
+
+void ProtocolD::multicastGpoCodeChanged(const QHostAddress &orig_addr,
+					int srcnum,const QString &code)
+{
+  if(proto_mgpos_subscribed) {
+    proto_socket->
+      write(MulticastGpioRecord("MGPO",orig_addr,srcnum,code).toUtf8());
+  }
+}
+
+
 void ProtocolD::ProcessCommand(const QString &cmd)
 {
   QStringList cmds=cmd.split(" ");
@@ -582,6 +604,18 @@ void ProtocolD::ProcessCommand(const QString &cmd)
       }
       delete q;
     }
+    proto_socket->write("ok\r\n");
+    return;
+  }
+
+  if(keyword=="subscribemulticastgpis") {
+    proto_mgpis_subscribed=true;
+    proto_socket->write("ok\r\n");
+    return;
+  }
+
+  if(keyword=="subscribemulticastgpos") {
+    proto_mgpos_subscribed=true;
     proto_socket->write("ok\r\n");
     return;
   }
@@ -891,6 +925,22 @@ QString ProtocolD::SourceRecord(const QString &keyword,QSqlQuery *q)
   ret+=QString().sprintf("%u\t",q->value(5).toInt());
   ret+=QString().sprintf("%u\t",q->value(6).toInt());
   ret+=QString().sprintf("%u",q->value(7).toInt());
+  ret+="\r\n";
+
+  return ret;
+}
+
+
+QString ProtocolD::MulticastGpioRecord(const QString &keyword,
+				       const QHostAddress &orig_addr,
+				       int srcnum,const QString &code)
+{
+  QString ret="";
+
+  ret+=keyword+"\t";
+  ret+=orig_addr.toString()+"\t";
+  ret+=QString().sprintf("%d\t",srcnum);
+  ret+=code;
   ret+="\r\n";
 
   return ret;

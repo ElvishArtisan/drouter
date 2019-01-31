@@ -2,7 +2,7 @@
 //
 // Base class for drouterd(8) protocols
 //
-//   (C) Copyright 2018 Fred Gleason <fredg@paravelsystems.com>
+//   (C) Copyright 2018-2019 Fred Gleason <fredg@paravelsystems.com>
 //
 //   This program is free software; you can redistribute it and/or modify
 //   it under the terms of the GNU General Public License version 2 as
@@ -68,6 +68,10 @@ class Protocol : public QObject
   virtual void silenceChanged(const QHostAddress &host_addr,int slotnum,
 			      SyLwrpClient::MeterType meter_type,
 			      const QString &tbl_name,int chan);
+  virtual void multicastGpiCodeChanged(const QHostAddress &orig_addr,int srcnum,
+				       const QString &code);
+  virtual void multicastGpoCodeChanged(const QHostAddress &orig_addr,int srcnum,
+				       const QString &code);
   void quit();
 
  private:

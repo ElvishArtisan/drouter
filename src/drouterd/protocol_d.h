@@ -2,7 +2,7 @@
 //
 // Protocol D handler for DRouter.
 //
-//   (C) Copyright 2018 Fred Gleason <fredg@paravelsystems.com>
+//   (C) Copyright 2018-2019 Fred Gleason <fredg@paravelsystems.com>
 //
 //   This program is free software; you can redistribute it and/or modify
 //   it under the terms of the GNU General Public License version 2 as
@@ -57,6 +57,10 @@ class ProtocolD : public Protocol
   void silenceChanged(const QHostAddress &host_addr,int slotnum,
 		      SyLwrpClient::MeterType meter_type,
 		      const QString &tbl_name,int chan);
+  void multicastGpiCodeChanged(const QHostAddress &orig_addr,int srcnum,
+			       const QString &code);
+  void multicastGpoCodeChanged(const QHostAddress &orig_addr,int srcnum,
+			       const QString &code);
 
  private:
   void ProcessCommand(const QString &cmd);
@@ -73,6 +77,9 @@ class ProtocolD : public Protocol
   QString NodeRecord(const QString &keyword,QSqlQuery *q) const;
   QString SourceSqlFields() const;
   QString SourceRecord(const QString &keyword,QSqlQuery *q);
+  QString MulticastGpioRecord(const QString &keyword,
+			      const QHostAddress &orig_addr,
+			      int srcnum,const QString &code);
   QTcpSocket *proto_socket;
   QTcpServer *proto_server;
   QString proto_accum;
@@ -83,6 +90,8 @@ class ProtocolD : public Protocol
   bool proto_sources_subscribed;
   bool proto_clips_subscribed;
   bool proto_silences_subscribed;
+  bool proto_mgpis_subscribed;
+  bool proto_mgpos_subscribed;
 };
 
 

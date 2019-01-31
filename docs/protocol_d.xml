@@ -504,14 +504,14 @@
     </variablelist>
   </sect2>
 
-  <sect2 id="sect.information.list_gpis">
-    <title>List GPIs</title>
+  <sect2 id="sect.information.list_node_gpis">
+    <title>List Node GPIs</title>
     <para>
       <command>ListGpis</command>
     </para>
     <para>
-      Return a list of records delinieating the currently available
-      GPIs, terminated by <computeroutput>CR/LF</computeroutput>.
+      Return a list of records delineating the currently available
+      node-hosted GPIs, terminated by <computeroutput>CR/LF</computeroutput>.
       Each record contains the following fields, delimited by
       <computeroutput>TAB</computeroutput> (ASCII 9):
     </para>
@@ -573,14 +573,14 @@
     </variablelist>
   </sect2>
 
-  <sect2 id="sect.inormation.list_gpos">
-    <title>List GPOs</title>
+  <sect2 id="sect.inormation.list_node_gpos">
+    <title>List Node GPOs</title>
     <para>
       <command>ListGpos</command>
     </para>
     <para>
       Return a list of records delinieating the currently available
-      GPOs, terminated by <computeroutput>CR/LF</computeroutput>.
+      node-hosted GPOs, terminated by <computeroutput>CR/LF</computeroutput>.
       Each record contains the following fields, delimited by
       <computeroutput>TAB</computeroutput> (ASCII 9):
     </para>
@@ -942,14 +942,14 @@
     </variablelist>
   </sect2>
 
-  <sect2 id="sect.information.subscribe_gpis">
-    <title>Subscribe GPIs</title>
+  <sect2 id="sect.information.subscribe_node_gpis">
+    <title>Subscribe Node GPIs</title>
     <para>
       <command>SubscribeGpis</command>
     </para>
     <para>
       Return a list of <computeroutput>GPIADD</computeroutput> records
-      delinieating the currently available GPIs, each record
+      delinieating the currently available node-hosted GPIs, each record
       terminated by <computeroutput>CR/LF</computeroutput> (see the
       description of the <computeroutput>GPI</computeroutput> message in the 
       <command>ListGpis</command> command for a breakdown of the
@@ -996,14 +996,14 @@
     </variablelist>
   </sect2>
 
-  <sect2 id="sect.information.subscribe_gpos">
-    <title>Subscribe GPOs</title>
+  <sect2 id="sect.information.subscribe_node_gpos">
+    <title>Subscribe Node GPOs</title>
     <para>
       <command>SubscribeGpos</command>
     </para>
     <para>
       Return a list of <computeroutput>GPOADD</computeroutput> records
-      delinieating the currently available GPOs, each record
+      delinieating the currently available node-hosted GPOs, each record
       terminated by <computeroutput>CR/LF</computeroutput> (see the
       description of the <computeroutput>GPO</computeroutput> message in the 
       <command>ListGpos</command> command for a breakdown of the
@@ -1044,6 +1044,64 @@
 	  <para>
 	    The slot position number of the GPO on the parent node
 	    (zero-based).
+	  </para>
+	</listitem>
+      </varlistentry>
+    </variablelist>
+  </sect2>
+
+  <sect2 id="sect.information.subscribe_multicast_gpis">
+    <title>Subscribe Multicast GPIs</title>
+    <para>
+      <command>SubscribeMulticastGpis</command>
+    </para>
+    <para>
+      Enable the generation of a message each time a multicast GPI event
+      --i.e. an event intended for reception by a Livewire control
+      surface -- is received. Each message will consist of the following
+      fields, delimited by <computeroutput>TAB</computeroutput> (ASCII 9)
+      and terminated by <computeroutput>CR/LF</computeroutput>:
+    </para>
+    <variablelist>
+      <varlistentry>
+	<term>
+	  <computeroutput>MGPI</computeroutput>
+	</term>
+	<listitem>
+	  <para>
+	    The string <computeroutput>MGPI</computeroutput>.
+	  </para>
+	</listitem>
+      </varlistentry>
+      <varlistentry>
+	<term>
+	  <replaceable>orig-addr</replaceable>
+	</term>
+	<listitem>
+	  <para>
+	    The IPv4 address of the originating device, in dotted-quad
+	    notation.
+	  </para>
+	</listitem>
+      </varlistentry>
+      <varlistentry>
+	<term>
+	  <replaceable>src-num</replaceable>
+	</term>
+	<listitem>
+	  <para>
+	    The Livewire source number (1 - 32767) associated with the event.
+	  </para>
+	</listitem>
+      </varlistentry>
+      <varlistentry>
+	<term>
+	  <replaceable>code</replaceable>
+	</term>
+	<listitem>
+	  <para>
+	    A string representing the state of the GPI lines,
+	    in the format <computeroutput>xxxxx</computeroutput>.
 	  </para>
 	</listitem>
       </varlistentry>
@@ -1188,8 +1246,8 @@
     </variablelist>
   </sect2>
 
-  <sect2 id="sect.commands.clear_gpio_crosspoint">
-    <title>Clear GPIO Crosspoint</title>
+  <sect2 id="sect.commands.clear_node_gpio_crosspoint">
+    <title>Clear Node GPIO Crosspoint</title>
     <para>
       <command>ClearGpioCrosspoint 
       <replaceable>gpo-host-addr</replaceable>
@@ -1197,7 +1255,8 @@
       </command>
     </para>
     <para>
-      Clear the source to be received by a GPO.
+      Clear the node-hosted GPI source to be received by a node-hosted GPO
+      destination.
     </para>
     <variablelist>
       <varlistentry>
@@ -1283,8 +1342,8 @@
     </variablelist>
   </sect2>
 
-  <sect2 id="sect.commands.set_gpio_crosspoint">
-    <title>Set GPIO Crosspoint</title>
+  <sect2 id="sect.commands.set_node_gpio_crosspoint">
+    <title>Set Node GPIO Crosspoint</title>
     <para>
       <command>SetGpioCrosspoint 
       <replaceable>gpo-host-addr</replaceable>
@@ -1294,7 +1353,8 @@
       </command>
     </para>
     <para>
-      Set the source to be received by a GPO.
+      Set the node-hosted GPI source to be received by a node-hosted GPO
+      destination.
     </para>
     <variablelist>
       <varlistentry>
@@ -1342,8 +1402,8 @@
     </variablelist>
   </sect2>
 
-  <sect2 id="sect.commands.set_gpo_state">
-    <title>Set GPO State</title>
+  <sect2 id="sect.commands.set_node_gpo_state">
+    <title>Set Node GPO State</title>
     <para>
       <command>SetGpoState 
       <replaceable>gpo-host-addr</replaceable>
@@ -1352,7 +1412,7 @@
       </command>
     </para>
     <para>
-      Set the state of a GPO device.
+      Set the state of a node-hosted GPO device.
     </para>
     <variablelist>
       <varlistentry>

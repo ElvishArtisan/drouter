@@ -2,7 +2,7 @@
 //
 // Base class for drouterd(8) protocols
 //
-//   (C) Copyright 2018 Fred Gleason <fredg@paravelsystems.com>
+//   (C) Copyright 2018-2019 Fred Gleason <fredg@paravelsystems.com>
 //
 //   This program is free software; you can redistribute it and/or modify
 //   it under the terms of the GNU General Public License version 2 as
@@ -108,8 +108,6 @@ bool Protocol::startIpc(QString *err_msg)
   //
   // Set Signals
   //
-  //  ::signal(SIGINT,SigHandler);
-  //  ::signal(SIGTERM,SigHandler);
   proto_shutdown_timer->start(500);
 
   return true;
@@ -229,7 +227,8 @@ void Protocol::destinationChanged(const QHostAddress &host_addr,int slotnum)
 }
 
 
-void Protocol::destinationCrosspointChanged(const QHostAddress &host_addr,int slotnum)
+void Protocol::destinationCrosspointChanged(const QHostAddress &host_addr,
+					    int slotnum)
 {
 }
 
@@ -269,6 +268,18 @@ void Protocol::clipChanged(const QHostAddress &host_addr,int slotnum,
 void Protocol::silenceChanged(const QHostAddress &host_addr,int slotnum,
 			      SyLwrpClient::MeterType meter_type,
 			      const QString &tbl_name,int chan)
+{
+}
+
+
+void Protocol::multicastGpiCodeChanged(const QHostAddress &orig_addr,int srcnum,
+				       const QString &code)
+{
+}
+
+
+void Protocol::multicastGpoCodeChanged(const QHostAddress &orig_addr,int srcnum,
+				       const QString &code)
 {
 }
 
@@ -350,4 +361,13 @@ void Protocol::ProcessIpcCommand(const QString &cmd)
     silenceChanged(QHostAddress(cmds.at(3)),cmds.at(4).toInt(),meter_type,table_name,cmds.at(2).toInt());
   }
 
+  if((cmds.at(0)=="MGPI")&&(cmds.size()==4)) {
+    multicastGpiCodeChanged(QHostAddress(cmds.at(1)),cmds.at(2).toInt(),
+			    cmds.at(3));
+  }
+
+  if((cmds.at(0)=="MGPO")&&(cmds.size()==4)) {
+    multicastGpoCodeChanged(QHostAddress(cmds.at(1)),cmds.at(2).toInt(),
+			    cmds.at(3));
+  }
 }

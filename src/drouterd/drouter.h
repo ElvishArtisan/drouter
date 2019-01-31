@@ -2,7 +2,7 @@
 //
 // Dynamic router database component for Drouter
 //
-//   (C) Copyright 2018 Fred Gleason <fredg@paravelsystems.com>
+//   (C) Copyright 2018-2019 Fred Gleason <fredg@paravelsystems.com>
 //
 //   This program is free software; you can redistribute it and/or modify
 //   it under the terms of the GNU General Public License version 2 as
@@ -27,8 +27,10 @@
 #include <QSignalMapper>
 #include <QTcpServer>
 
+#include <sy/sygpio_server.h>
 #include <sy/sylwrp_client.h>
 #include <sy/symcastsocket.h>
+#include <sy/syrouting.h>
 
 #include "config.h"
 #include "endpointmap.h"
@@ -67,6 +69,8 @@ class DRouter : public QObject
 			  unsigned slotnum,int chan,bool state);
   void audioSilenceAlarmData(unsigned id,SyLwrpClient::MeterType type,
 			     unsigned slotnum,int chan,bool state);
+  void gpioReceivedData(SyGpioBundleEvent *e);
+  void gpioReceivedData(SyGpioEvent *e);
   void advtReadyReadData(int ifnum);
   void newIpcConnectionData(int listen_sock);
   void ipcReadyReadData(int sock);
@@ -83,6 +87,8 @@ class DRouter : public QObject
   void LoadMaps();
   void SendProtoSocket(int dest_sock,int proto_sock);
   QMap<unsigned,SyLwrpClient *> drouter_nodes;
+  SyRouting *drouter_routing;
+  SyGpioServer *drouter_gpio_server;
   QList<SyMcastSocket *> drouter_advt_sockets;
   QMap<int,QTcpSocket *> drouter_ipc_sockets;
   QMap<int,QString> drouter_ipc_accums;

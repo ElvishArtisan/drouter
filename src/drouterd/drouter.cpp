@@ -2,7 +2,7 @@
 //
 // Dynamic router database component for Drouter
 //
-//   (C) Copyright 2018 Fred Gleason <fredg@paravelsystems.com>
+//   (C) Copyright 2018-2019 Fred Gleason <fredg@paravelsystems.com>
 //
 //   This program is free software; you can redistribute it and/or modify
 //   it under the terms of the GNU General Public License version 2 as
@@ -46,8 +46,21 @@ DRouter::DRouter(int *proto_socks,QObject *parent)
 {
   drouter_proto_socks=proto_socks;
 
+  //
+  // Configuration
+  //
   drouter_config=new Config();
   drouter_config->load();
+
+  //
+  // Multicast GPIO Server
+  //
+  drouter_routing=new SyRouting(0,0,0,0);
+  drouter_gpio_server=new SyGpioServer(drouter_routing,this);
+  connect(drouter_gpio_server,SIGNAL(gpioReceived(SyGpioBundleEvent *)),
+	  this,SLOT(gpioReceivedData(SyGpioBundleEvent *)));
+  connect(drouter_gpio_server,SIGNAL(gpioReceived(SyGpioEvent *)),
+	  this,SLOT(gpioReceivedData(SyGpioEvent *)));
 }
 
 
@@ -542,6 +555,9 @@ void DRouter::destinationChangedData(unsigned id,int slotnum,const SyNode &node,
 void DRouter::gpiChangedData(unsigned id,int slotnum,const SyNode &node,
 			     const SyGpioBundle &gpi)
 {
+  //
+  // This handles GPI changes received via LWRP
+  //
   QString sql;
   QSqlQuery *q;
   bool code_changed=false;
@@ -575,6 +591,9 @@ void DRouter::gpiChangedData(unsigned id,int slotnum,const SyNode &node,
 void DRouter::gpoChangedData(unsigned id,int slotnum,const SyNode &node,
 			     const SyGpo &gpo)
 {
+  //
+  // This handles GPO changes received via LWRP
+  //
   QString sql;
   QSqlQuery *q;
   bool xpoint_changed=false;
@@ -676,6 +695,38 @@ void DRouter::audioSilenceAlarmData(unsigned id,SyLwrpClient::MeterType type,
     q=new QSqlQuery(sql);
     delete q;
     NotifyProtocols("SILENCE",QString().sprintf("%d:%d:",type,chan)+QHostAddress(id).toString()+QString().sprintf(":%d",slotnum));
+  }
+}
+
+
+void DRouter::gpioReceivedData(SyGpioBundleEvent *e)
+{
+  //
+  // This handles GPI changes received via multicast
+  //
+  if(e->type()==SyGpioBundleEvent::TypeGpi) {
+    NotifyProtocols("MGPI",e->originAddress().toString()+":"+
+		    QString().sprintf("%d",e->sourceNumber())+":"+
+		    e->code());
+  }
+}
+
+
+void DRouter::gpioReceivedData(SyGpioEvent *e)
+{
+  //
+  // This handles GPO changes received via multicast
+  //
+  if(e->type()==SyGpioEvent::TypeGpo) {
+    QString code="xxxxx";
+    if(e->state()) {
+      code=code.replace(e->line(),1,"L");
+    }
+    else {
+      code=code.replace(e->line(),1,"H");
+    }
+    NotifyProtocols("MGPO",e->originAddress().toString()+":"+
+		    QString().sprintf("%d",e->sourceNumber())+":"+code);
   }
 }
 
