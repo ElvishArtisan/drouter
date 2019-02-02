@@ -44,6 +44,8 @@ class Protocol : public QObject
 		   const QString &code);
   void setGpoState(const QHostAddress &gpo_node_addr,int gpo_slotnum,
 		   const QString &code);
+  void setMulticastGpiState(int srcnum,const QString code);
+  void setMulticastGpoState(int srcnum,const QString code,bool pulse);
 
  private slots:
   void ipcReadyReadData();

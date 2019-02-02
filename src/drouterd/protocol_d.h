@@ -80,6 +80,7 @@ class ProtocolD : public Protocol
   QString MulticastGpioRecord(const QString &keyword,
 			      const QHostAddress &orig_addr,
 			      int srcnum,const QString &code);
+  QString InvertCode(const QString &code) const;
   QTcpSocket *proto_socket;
   QTcpServer *proto_server;
   QString proto_accum;

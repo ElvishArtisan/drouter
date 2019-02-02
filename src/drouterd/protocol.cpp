@@ -168,6 +168,22 @@ void Protocol::setGpoState(const QHostAddress &gpo_node_addr,int gpo_slotnum,
 }
 
 
+void Protocol::setMulticastGpiState(int srcnum,const QString code)
+{
+  proto_ipc_socket->write(("SetMGpiState "+QString().sprintf("%d ",srcnum)+
+			   code+"\r\n").toUtf8());
+}
+
+
+void Protocol::setMulticastGpoState(int srcnum,const QString code,bool pulse)
+{
+  proto_ipc_socket->write(("SetMGpoState "+
+			   QString().sprintf("%d ",srcnum)+
+			   code+
+			   QString().sprintf(" %d",pulse)+"\r\n").toUtf8());
+}
+
+
 void Protocol::ipcReadyReadData()
 {
   char data[1501];

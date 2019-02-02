@@ -427,3 +427,8 @@
 2019-01-31 Fred Gleason <fredg@paravelsystems.com>
 	* Added a 'SubscribeMulticastGpis' command to ProtocolD.
 	* Added a 'SubscribeMulticastGpos' command to ProtocolD.
+2019-02-02 Fred Gleason <fredg@paravelsystems.com>
+	* Added a 'SendMulticastGpiPulse' command to ProtocolD.
+	* Added a 'SendMulticastGpoPulse' command to ProtocolD.
+	* Added a 'SendMulticastGpiState' command to ProtocolD.
+	* Added a 'SendMulticastGpoState' command to ProtocolD.

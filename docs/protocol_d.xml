@@ -942,6 +942,122 @@
     </variablelist>
   </sect2>
 
+  <sect2 id="sect.information.subscribe_multicast_gpis">
+    <title>Subscribe Multicast GPIs</title>
+    <para>
+      <command>SubscribeMulticastGpis</command>
+    </para>
+    <para>
+      Enable the generation of a message each time a multicast GPI event
+      --i.e. an event intended for reception by a Livewire control
+      surface -- is received. Each message will consist of the following
+      fields, delimited by <computeroutput>TAB</computeroutput> (ASCII 9)
+      and terminated by <computeroutput>CR/LF</computeroutput>:
+    </para>
+    <variablelist>
+      <varlistentry>
+	<term>
+	  <computeroutput>MGPI</computeroutput>
+	</term>
+	<listitem>
+	  <para>
+	    The string <computeroutput>MGPI</computeroutput>.
+	  </para>
+	</listitem>
+      </varlistentry>
+      <varlistentry>
+	<term>
+	  <replaceable>orig-addr</replaceable>
+	</term>
+	<listitem>
+	  <para>
+	    The IPv4 address of the originating device, in dotted-quad
+	    notation.
+	  </para>
+	</listitem>
+      </varlistentry>
+      <varlistentry>
+	<term>
+	  <replaceable>src-num</replaceable>
+	</term>
+	<listitem>
+	  <para>
+	    The Livewire source number (1 - 32767) associated with the event.
+	  </para>
+	</listitem>
+      </varlistentry>
+      <varlistentry>
+	<term>
+	  <replaceable>code</replaceable>
+	</term>
+	<listitem>
+	  <para>
+	    A string representing the state of the GPI lines,
+	    in the format <computeroutput>xxxxx</computeroutput>.
+	  </para>
+	</listitem>
+      </varlistentry>
+    </variablelist>
+  </sect2>
+
+  <sect2 id="sect.information.subscribe_multicast_gpos">
+    <title>Subscribe Multicast GPOs</title>
+    <para>
+      <command>SubscribeMulticastGpos</command>
+    </para>
+    <para>
+      Enable the generation of a message each time a multicast GPO event
+      --i.e. an event emitted by a Livewire control
+      surface -- is received. Each message will consist of the following
+      fields, delimited by <computeroutput>TAB</computeroutput> (ASCII 9)
+      and terminated by <computeroutput>CR/LF</computeroutput>:
+    </para>
+    <variablelist>
+      <varlistentry>
+	<term>
+	  <computeroutput>MGPO</computeroutput>
+	</term>
+	<listitem>
+	  <para>
+	    The string <computeroutput>MGPO</computeroutput>.
+	  </para>
+	</listitem>
+      </varlistentry>
+      <varlistentry>
+	<term>
+	  <replaceable>orig-addr</replaceable>
+	</term>
+	<listitem>
+	  <para>
+	    The IPv4 address of the originating device, in dotted-quad
+	    notation.
+	  </para>
+	</listitem>
+      </varlistentry>
+      <varlistentry>
+	<term>
+	  <replaceable>src-num</replaceable>
+	</term>
+	<listitem>
+	  <para>
+	    The Livewire source number (1 - 32767) associated with the event.
+	  </para>
+	</listitem>
+      </varlistentry>
+      <varlistentry>
+	<term>
+	  <replaceable>code</replaceable>
+	</term>
+	<listitem>
+	  <para>
+	    A string representing the state of the GPO lines,
+	    in the format <computeroutput>xxxxx</computeroutput>.
+	  </para>
+	</listitem>
+      </varlistentry>
+    </variablelist>
+  </sect2>
+
   <sect2 id="sect.information.subscribe_node_gpis">
     <title>Subscribe Node GPIs</title>
     <para>
@@ -1044,64 +1160,6 @@
 	  <para>
 	    The slot position number of the GPO on the parent node
 	    (zero-based).
-	  </para>
-	</listitem>
-      </varlistentry>
-    </variablelist>
-  </sect2>
-
-  <sect2 id="sect.information.subscribe_multicast_gpis">
-    <title>Subscribe Multicast GPIs</title>
-    <para>
-      <command>SubscribeMulticastGpis</command>
-    </para>
-    <para>
-      Enable the generation of a message each time a multicast GPI event
-      --i.e. an event intended for reception by a Livewire control
-      surface -- is received. Each message will consist of the following
-      fields, delimited by <computeroutput>TAB</computeroutput> (ASCII 9)
-      and terminated by <computeroutput>CR/LF</computeroutput>:
-    </para>
-    <variablelist>
-      <varlistentry>
-	<term>
-	  <computeroutput>MGPI</computeroutput>
-	</term>
-	<listitem>
-	  <para>
-	    The string <computeroutput>MGPI</computeroutput>.
-	  </para>
-	</listitem>
-      </varlistentry>
-      <varlistentry>
-	<term>
-	  <replaceable>orig-addr</replaceable>
-	</term>
-	<listitem>
-	  <para>
-	    The IPv4 address of the originating device, in dotted-quad
-	    notation.
-	  </para>
-	</listitem>
-      </varlistentry>
-      <varlistentry>
-	<term>
-	  <replaceable>src-num</replaceable>
-	</term>
-	<listitem>
-	  <para>
-	    The Livewire source number (1 - 32767) associated with the event.
-	  </para>
-	</listitem>
-      </varlistentry>
-      <varlistentry>
-	<term>
-	  <replaceable>code</replaceable>
-	</term>
-	<listitem>
-	  <para>
-	    A string representing the state of the GPI lines,
-	    in the format <computeroutput>xxxxx</computeroutput>.
 	  </para>
 	</listitem>
       </varlistentry>
@@ -1277,6 +1335,152 @@
 	  <para>
 	    The slot position number of the GPO on the parent node
 	    (zero-based).
+	  </para>
+	</listitem>
+      </varlistentry>
+    </variablelist>
+  </sect2>
+
+  <sect2 id="sect.commands.send_multicast_gpi_pulse">
+    <title>Send Multicast GPI Pulse</title>
+    <para>
+      <command>SendMulticastGpiPulse 
+      <replaceable>src-num</replaceable>
+      <replaceable>code</replaceable>
+      </command>
+    </para>
+    <para>
+      Send a pair of multicast GPI messages, effectively &quot;pulsing&quot;
+      the state of any asserted bits.
+    </para>
+    <variablelist>
+      <varlistentry>
+	<term>
+	  <replaceable>src-num</replaceable>
+	</term>
+	<listitem>
+	  <para>
+	    The source number (1 - 32767) associated with the message.
+	  </para>
+	</listitem>
+      </varlistentry>
+      <varlistentry>
+	<term>
+	  <replaceable>code</replaceable>
+	</term>
+	<listitem>
+	  <para>
+	    A string representing the state of the GPI lines,
+	    in the format <computeroutput>xxxxx</computeroutput>.
+	  </para>
+	</listitem>
+      </varlistentry>
+    </variablelist>
+  </sect2>
+
+  <sect2 id="sect.commands.send_multicast_gpo_pulse">
+    <title>Send Multicast GPO Pulse</title>
+    <para>
+      <command>SendMulticastGpoPulse 
+      <replaceable>src-num</replaceable>
+      <replaceable>code</replaceable>
+      </command>
+    </para>
+    <para>
+      Send a multicast GPO message to &quot;pulse&quot; the state of
+      any asserted bits.
+    </para>
+    <variablelist>
+      <varlistentry>
+	<term>
+	  <replaceable>src-num</replaceable>
+	</term>
+	<listitem>
+	  <para>
+	    The source number (1 - 32767) associated with the message.
+	  </para>
+	</listitem>
+      </varlistentry>
+      <varlistentry>
+	<term>
+	  <replaceable>code</replaceable>
+	</term>
+	<listitem>
+	  <para>
+	    A string representing the state of the GPO lines,
+	    in the format <computeroutput>xxxxx</computeroutput>.
+	  </para>
+	</listitem>
+      </varlistentry>
+    </variablelist>
+  </sect2>
+
+  <sect2 id="sect.commands.send_multicast_gpi_state">
+    <title>Send Multicast GPI State</title>
+    <para>
+      <command>SendMulticastGpiState 
+      <replaceable>src-num</replaceable>
+      <replaceable>code</replaceable>
+      </command>
+    </para>
+    <para>
+      Send a multicast GPI message
+    </para>
+    <variablelist>
+      <varlistentry>
+	<term>
+	  <replaceable>src-num</replaceable>
+	</term>
+	<listitem>
+	  <para>
+	    The source number (1 - 32767) associated with the message.
+	  </para>
+	</listitem>
+      </varlistentry>
+      <varlistentry>
+	<term>
+	  <replaceable>code</replaceable>
+	</term>
+	<listitem>
+	  <para>
+	    A string representing the state of the GPI lines,
+	    in the format <computeroutput>xxxxx</computeroutput>.
+	  </para>
+	</listitem>
+      </varlistentry>
+    </variablelist>
+  </sect2>
+
+  <sect2 id="sect.commands.send_multicast_gpo_state">
+    <title>Send Multicast GPO State</title>
+    <para>
+      <command>SendMulticastGpoState 
+      <replaceable>src-num</replaceable>
+      <replaceable>code</replaceable>
+      </command>
+    </para>
+    <para>
+      Send a multicast GPO message
+    </para>
+    <variablelist>
+      <varlistentry>
+	<term>
+	  <replaceable>src-num</replaceable>
+	</term>
+	<listitem>
+	  <para>
+	    The source number (1 - 32767) associated with the message.
+	  </para>
+	</listitem>
+      </varlistentry>
+      <varlistentry>
+	<term>
+	  <replaceable>code</replaceable>
+	</term>
+	<listitem>
+	  <para>
+	    A string representing the state of the GPO lines,
+	    in the format <computeroutput>xxxxx</computeroutput>.
 	  </para>
 	</listitem>
       </varlistentry>

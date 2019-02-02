@@ -716,6 +716,51 @@ void ProtocolD::ProcessCommand(const QString &cmd)
     }
   }
 
+  if((keyword=="sendmulticastgpipulse")&&(cmds.size()==3)) {
+    bool ok;
+
+    int srcnum=cmds.at(1).toInt(&ok);
+    if(ok) {
+      setMulticastGpiState(srcnum,cmds.at(2));
+      setMulticastGpiState(srcnum,InvertCode(cmds.at(2)));
+      proto_socket->write("ok\r\n");
+      return;
+    }
+  }
+
+  if((keyword=="sendmulticastgpistate")&&(cmds.size()==3)) {
+    bool ok;
+
+    int srcnum=cmds.at(1).toInt(&ok);
+    if(ok) {
+      setMulticastGpiState(srcnum,cmds.at(2));
+      proto_socket->write("ok\r\n");
+      return;
+    }
+  }
+
+  if((keyword=="sendmulticastgpopulse")&&(cmds.size()==3)) {
+    bool ok;
+
+    int srcnum=cmds.at(1).toInt(&ok);
+    if(ok) {
+      setMulticastGpoState(srcnum,cmds.at(2),true);
+      proto_socket->write("ok\r\n");
+      return;
+    }
+  }
+
+  if((keyword=="sendmulticastgpostate")&&(cmds.size()==3)) {
+    bool ok;
+
+    int srcnum=cmds.at(1).toInt(&ok);
+    if(ok) {
+      setMulticastGpoState(srcnum,cmds.at(2),false);
+      proto_socket->write("ok\r\n");
+      return;
+    }
+  }
+
   proto_socket->write("error\r\n");
 }
 
@@ -942,6 +987,28 @@ QString ProtocolD::MulticastGpioRecord(const QString &keyword,
   ret+=QString().sprintf("%d\t",srcnum);
   ret+=code;
   ret+="\r\n";
+
+  return ret;
+}
+
+
+QString ProtocolD::InvertCode(const QString &code) const
+{
+  QString ret;
+
+  for(int i=0;i<code.length();i++) {
+    if(code.at(i)==QChar('L')) {
+      ret+="H";
+    }
+    else {
+      if(code.at(i)==QChar('H')) {
+	ret+="L";
+      }
+      else {
+	ret+="x";
+      }
+    }
+  }
 
   return ret;
 }

@@ -980,6 +980,14 @@ bool DRouter::ProcessIpcCommand(int sock,const QString &cmd)
     }
   }
 
+  if((cmds.at(0)=="SetMGpiState")&&(cmds.size()==3)) {
+    drouter_gpio_server->sendGpi(cmds.at(1).toInt(),cmds.at(2));
+  }
+
+  if((cmds.at(0)=="SetMGpoState")&&(cmds.size()==4)) {
+    drouter_gpio_server->sendGpo(cmds.at(1).toInt(),cmds.at(2),cmds.at(3)!="0");
+  }
+
   return true;
 }
 
