@@ -25,6 +25,8 @@ drouter_PYTHON = __init__.py\
                  Destination.py\
                  Gpi.py\
                  Gpo.py\
+                 MGpi.py\
+                 MGpo.py\
                  Node.py\
                  Source.py\
                  StateEngine.py

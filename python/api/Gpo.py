@@ -1,6 +1,6 @@
 # Gpo.py
 #
-# Container class for a Protocol D GPO
+# Container class for a Protocol D Node GPO
 #
 #   (C) Copyright 2018-2019 Fred Gleason <fredg@paravelsystems.com>
 #

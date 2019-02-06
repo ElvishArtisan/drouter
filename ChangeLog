@@ -432,3 +432,9 @@
 	* Added a 'SendMulticastGpoPulse' command to ProtocolD.
 	* Added a 'SendMulticastGpiState' command to ProtocolD.
 	* Added a 'SendMulticastGpoState' command to ProtocolD.
+2019-02-06 Fred Gleason <fredg@paravelsystems.com>
+	* Added a 'Drouter.StateEngine.setMulticastReceivedCallback()'
+	method.
+	* Added a 'Drouter.MGpi' class.
+	* Added a 'Drouter.MGpo' class.
+	* Added a 'show_multicast.py' example script.

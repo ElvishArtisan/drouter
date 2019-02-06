@@ -1,8 +1,8 @@
-# Gpi.py
+# MGpi.py
 #
-# Container class for a Protocol D Node GPI
+# Container class for a Protocol D Multicast GPI
 #
-#   (C) Copyright 2018-2019 Fred Gleason <fredg@paravelsystems.com>
+#   (C) Copyright 2019 Fred Gleason <fredg@paravelsystems.com>
 #
 #   This program is free software; you can redistribute it and/or modify
 #   it under the terms of the GNU General Public License version 2 as
@@ -18,30 +18,23 @@
 #   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
 #
 
-class Gpi(object):
+class MGpi(object):
     def __init__(self,cmds):
-        self.__slotNumber=int(cmds[2])
-        self.__hostName=cmds[3]
-        self.__hostAddress=cmds[1]
-        self.__code=cmds[4]
+        self.__originAddress=cmds[1]
+        self.__sourceNumber=int(cmds[2])
+        self.__code=cmds[3]
 
-    def slotNumber(self):
+    def originAddress(self):
         """
-           Returns the slot number (integer, zero-based). 
+           Returns the IPv4 address of the originating device.
         """
-        return self.__slotNumber
+        return self.__originAddress
 
-    def hostAddress(self):
+    def sourceNumber(self):
         """
-           Returns the IP address of the node (string).
+           Returns the Livewire source number (integer, 1 - 32767). 
         """
-        return self.__hostAddress
-
-    def hostName(self):
-        """
-           Returns the host name of the node (string).
-        """
-        return self.__hostName
+        return self.__sourceNumber
 
     def code(self):
         """
@@ -56,17 +49,15 @@ class Gpi(object):
         return self.__code[bit].lower()=="l"
 
     def __eq__(self,other):
-        return self.__slotNumber==other.__slotNumber and self.__hostName==other.__hostName and self.__hostAddress==other.__hostAddress and self.__code==other.__code
+        return self.__sourceNumber==other.__sourceNumber and self.__code==other.__code and self.__originAddress==other.__originAddress
 
     def __ne__(self,other):
         return not self.__eq__(other)
 
     def __lt__(self,other):
-        if self.__hostAddress>other.hostAddress():
-            return False
-        if self.__hostAddress==other.hostAddress() and self.__slotNumber>other.slotNumber():
+        if self.__sourceNumber>other.sourceNumber():
             return False
         return True
 
     def __str__(self):
-        return "slotNumber: "+str(self.__slotNumber)+"\n"+"hostName: "+self.__hostName+"\n"+"hostAddress: "+self.__hostAddress+"\n"+"code: "+self.__code+"\n"
+        return "sourceNumber: "+str(self.__sourceNumber)+"\n"+"originAddress: "+self.__originAddress+"\n"+"code: "+self.__code+"\n"

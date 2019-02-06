@@ -2,7 +2,7 @@
 ##
 ## Automake.am for drouter example status scripts
 ##
-##   (C) Copyright 2018 Fred Gleason <fredg@paravelsystems.com>
+##   (C) Copyright 2018-2019 Fred Gleason <fredg@paravelsystems.com>
 ##
 ##   This program is free software; you can redistribute it and/or modify
 ##   it under the terms of the GNU General Public License version 2 as
@@ -23,6 +23,7 @@ EXTRA_DIST = show_changes.py\
              show_destinations.py\
              show_gpis.py\
              show_gpos.py\
+             show_multicast.py\
              show_nodes.py\
              show_sources.py\
              silence_alarm.py

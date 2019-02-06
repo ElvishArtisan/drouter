@@ -24,6 +24,8 @@ import Drouter.Alarm
 import Drouter.Destination
 import Drouter.Gpi
 import Drouter.Gpo
+import Drouter.MGpi
+import Drouter.MGpo
 import Drouter.Node
 import Drouter.Source
 
@@ -42,6 +44,7 @@ class StateEngine(object):
         self.__add_callback=None
         self.__delete_callback=None
         self.__change_callback=None
+        self.__multicast_change_callback=None
         self.__alarm_callback=None
         self.__sock=socket.socket(socket.AF_INET)
         self.__nodes_loaded=False
@@ -212,6 +215,24 @@ class StateEngine(object):
         """
         self.__change_callback=cb
 
+    def setMulticastReceivedCallback(self,cb):
+        """
+        Set the 'multicast received' callback, called by StateEngine
+        immediately after a multicast state change message has been
+        received. The callback should be of the form:
+
+           def callback(self,engine,priv,type,object)
+
+        where:
+             engine: reference to the calling StateEngine
+ 
+               type: string, giving the type of object being referenced.
+                     Possible values are "MGPI" or "MGPO".
+
+             object: reference to the object. Possible types are MGpi or MGpo.
+        """
+        self.__multicast_received_callback=cb
+
     def setAlarmCallback(self,cb):
      """
         Set the 'alarm' callback, called by StateEngine immediately after
@@ -364,6 +385,8 @@ class StateEngine(object):
         self.__conn=self.__sock.connect((hostname,23883))
         self.__accum=""
         c=""
+        self.__sock.send(("SubscribeMulticastGpis\r\n").encode('latin-1'))
+        self.__sock.send(("SubscribeMulticastGpos\r\n").encode('latin-1'))
         self.__sock.send(("SubscribeNodes\r\n").encode('latin-1'))
         while 1<2:
             c=self.__sock.recv(1).decode('latin-1')
@@ -467,6 +490,16 @@ class StateEngine(object):
         if cmds[0]=="SILENCE" or cmds[0]=="CLIP":
             if (self.__alarm_callback!=None) and self.__loaded:
                 self.__alarm_callback(self,self.__callback_priv,Drouter.Alarm.Alarm(cmds))
+            return
+
+        if cmds[0]=="MGPI":
+            if self.__multicast_received_callback!=None:
+                self.__multicast_received_callback(self,self.__callback_priv,"MGPI",Drouter.MGpi.MGpi(cmds))
+            return
+
+        if cmds[0]=="MGPO":
+            if self.__multicast_received_callback!=None:
+                self.__multicast_received_callback(self,self.__callback_priv,"MGPO",Drouter.MGpo.MGpo(cmds))
             return
 
         if cmds[0]=="ok":
