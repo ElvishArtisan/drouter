@@ -28,6 +28,8 @@
 
 #include <sy/sylwrp_client.h>
 
+#include "config.h"
+
 class Protocol : public QObject
 {
  Q_OBJECT;
@@ -68,6 +70,7 @@ class Protocol : public QObject
   virtual void silenceChanged(const QHostAddress &host_addr,int slotnum,
 			      SyLwrpClient::MeterType meter_type,
 			      const QString &tbl_name,int chan);
+  void logIpc(const QString &msg);
   void quit();
 
  private:
@@ -75,6 +78,7 @@ class Protocol : public QObject
   QTcpSocket *proto_ipc_socket;
   QString proto_ipc_accum;
   QTimer *proto_shutdown_timer;
+  Config *proto_config;
 };
 
 

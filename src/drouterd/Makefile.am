@@ -51,7 +51,8 @@ dist_dprotod_SOURCES = dprotod.cpp dprotod.h\
                        protocol_sa.cpp protocol_sa.h\
                        protoipc.h
 
-nodist_dprotod_SOURCES = endpointmap.cpp endpointmap.h\
+nodist_dprotod_SOURCES = config.cpp config.h\
+                         endpointmap.cpp endpointmap.h\
                          moc_dprotod.cpp\
                          moc_protocol.cpp\
                          moc_protocol_d.cpp\

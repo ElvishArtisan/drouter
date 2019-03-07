@@ -62,6 +62,18 @@ bool Config::configureAudioAlarms(const QString &dev_name) const
 }
 
 
+int Config::ipcLogPriority() const
+{
+  return conf_ipc_log_priority;
+}
+
+
+int Config::nodeLogPriority() const
+{
+  return conf_node_log_priority;
+}
+
+
 QString Config::lwrpPassword() const
 {
   return conf_lwrp_password;
@@ -86,6 +98,10 @@ void Config::load()
   for(int i=0;i<f0.size();i++) {
     conf_no_audio_alarm_devices.push_back(f0.at(i).toLower().trimmed());
   }
+  conf_ipc_log_priority=
+    p->intValue("Drouterd","IpcLogPriority",DROUTER_DEFAULT_IPC_LOG_PRIORITY);
+  conf_node_log_priority=
+    p->intValue("Drouterd","NodeLogPriority",DROUTER_DEFAULT_NODE_LOG_PRIORITY);
   conf_lwrp_password=p->stringValue("Drouterd","LwrpPassword");
 
   delete p;

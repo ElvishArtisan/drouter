@@ -46,9 +46,14 @@ MainObject::MainObject(QObject *parent)
   int n;
   bool no_protocols=false;
   QString err_msg;
+  int log_options=0;
   SyCmdSwitch *cmd=
     new SyCmdSwitch(qApp->argc(),qApp->argv(),"drouterd",VERSION,DROUTERD_USAGE);
   for(unsigned i=0;i<(cmd->keys());i++) {
+    if(cmd->key(i)=="-d") {
+      log_options=log_options|LOG_PERROR;;
+      cmd->setProcessed(i,true);
+    }
     if(cmd->key(i)=="--no-scripts") {
       main_no_scripts=true;
       cmd->setProcessed(i,true);
@@ -66,7 +71,7 @@ MainObject::MainObject(QObject *parent)
   //
   // Open Syslog
   //
-  openlog("drouterd",LOG_PERROR,LOG_DAEMON);
+  openlog("drouterd",log_options,LOG_DAEMON);
 
 
 #ifdef LIBSYSTEMD

@@ -41,7 +41,7 @@ ProtocolD::ProtocolD(int sock,QObject *parent)
   proto_clips_subscribed=false;
   proto_silences_subscribed=false;
 
-  openlog("dprotod(D)",LOG_PERROR|LOG_PID,LOG_DAEMON);
+  openlog("dprotod(D)",LOG_PID,LOG_DAEMON);
 
   //
   // The ProtocolD Server

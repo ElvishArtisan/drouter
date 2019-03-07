@@ -29,6 +29,8 @@
 #define DROUTER_DEFAULT_CLIP_TIMEOUT 1000
 #define DROUTER_DEFAULT_SILENCE_THRESHOLD -500
 #define DROUTER_DEFAULT_SILENCE_TIMEOUT 10000
+#define DROUTER_DEFAULT_IPC_LOG_PRIORITY -1
+#define DROUTER_DEFAULT_NODE_LOG_PRIORITY 5
 
 class Config
 {
@@ -39,6 +41,8 @@ class Config
   int silenceAlarmThreshold() const;
   int silenceAlarmTimeout() const;
   bool configureAudioAlarms(const QString &dev_name) const;
+  int ipcLogPriority() const;
+  int nodeLogPriority() const;
   QString lwrpPassword() const;
   void load();
 
@@ -48,6 +52,8 @@ class Config
   int conf_clip_alarm_timeout;
   int conf_silence_alarm_threshold;
   int conf_silence_alarm_timeout;
+  int conf_ipc_log_priority;
+  int conf_node_log_priority;
   QStringList conf_no_audio_alarm_devices;
 };
 

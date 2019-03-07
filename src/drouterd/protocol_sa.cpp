@@ -43,7 +43,7 @@ ProtocolSa::ProtocolSa(int sock,QObject *parent)
   proto_clips_subscribed=false;
   proto_silences_subscribed=false;
 
-  openlog("dprotod(SA)",LOG_PERROR|LOG_PID,LOG_DAEMON);
+  openlog("dprotod(SA)",LOG_PID,LOG_DAEMON);
 
   //
   // The ProtocolSa Server

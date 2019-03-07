@@ -82,6 +82,7 @@ class DRouter : public QObject
   void UnlockTables() const;
   void LoadMaps();
   void SendProtoSocket(int dest_sock,int proto_sock);
+  void Log(int prio,const QString &msg) const;
   QMap<unsigned,SyLwrpClient *> drouter_nodes;
   QList<SyMcastSocket *> drouter_advt_sockets;
   QMap<int,QTcpSocket *> drouter_ipc_sockets;

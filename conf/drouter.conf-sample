@@ -39,6 +39,41 @@ SilenceAlarmTimeout=10000
 ;
 NoAudioAlarmDevices=VX Engine, Engine
 
+; IpcLogPriority=<prio>
+;
+; Integer indicating the priority to use when logging internal IPC
+; messages between the DRouter core and protocol modules. The following
+; values are recognized:
+;
+;  0 - Emergency (system is unusable)
+;  1 - Alert (action must be taken immediately)
+;  2 - Critical (critical conditions)
+;  3 - Error (error conditions)
+;  4 - Warning (warning conditions)
+;  5 - Notice (normal but significant condition)
+;  6 - Info (informational)
+;  7 - Debug (debug-level messages)
+; -1 - Disable (disable logging)
+IpcLogPriority=-1
+
+
+; NodeLogPriority=<prio>
+;
+; Integer indicating the priority to use when logging node connect/disconnect
+; messages from the DRouter core. The following values are recognized:
+;
+;  0 - Emergency (system is unusable)
+;  1 - Alert (action must be taken immediately)
+;  2 - Critical (critical conditions)
+;  3 - Error (error conditions)
+;  4 - Warning (warning conditions)
+;  5 - Notice (normal but significant condition)
+;  6 - Info (informational)
+;  7 - Debug (debug-level messages)
+; -1 - Disable (disable logging)
+NodeLogPriority=5
+
+
 ; LwrpPassword=<passwd>
 ;
 ; Password to use when logging in to LWRP on nodes.

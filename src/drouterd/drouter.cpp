@@ -213,6 +213,8 @@ void DRouter::nodeConnectedData(unsigned id,bool state)
       syslog(LOG_ERR,"DRouter::nodeConnectedData() - received connect signal from unknown node, aborting");
       exit(256);
     }
+    Log(drouter_config->nodeLogPriority(),
+	"node connected from "+QHostAddress(id).toString());
     SyLwrpClient *lwrp=node(QHostAddress(id));
     if(drouter_config->configureAudioAlarms(lwrp->deviceName())) {
       for(unsigned i=0;i<lwrp->srcSlots();i++) {
@@ -413,6 +415,8 @@ void DRouter::nodeConnectedData(unsigned id,bool state)
       syslog(LOG_ERR,"DRouter::nodeConnectedData() - received disconnect signal from unknown node, aborting");
       exit(256);
     }
+    Log(drouter_config->nodeLogPriority(),
+	"node disconnected from "+QHostAddress(id).toString());
     LockTables();
     sql=QString("select ")+
       "SOURCE_SLOTS,"+       // 00
@@ -1204,5 +1208,13 @@ void DRouter::SendProtoSocket(int dest_sock,int proto_sock)
   if(sendmsg(dest_sock,&msg,0)<0) {
     syslog(LOG_ERR,"error sending protocol socket [%s]",strerror(errno));
     exit(1);
+  }
+}
+
+
+void DRouter::Log(int prio,const QString &msg) const
+{
+  if(prio>=0) {
+    syslog(prio,msg.toUtf8());
   }
 }

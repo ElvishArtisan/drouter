@@ -64,6 +64,9 @@ Protocol::Protocol(QObject *parent)
   connect(proto_shutdown_timer,SIGNAL(timeout()),
 	  this,SLOT(shutdownTimerData()));
 
+  proto_config=new Config();
+  proto_config->load();
+
   ::signal(SIGCHLD,SigHandler);
 }
 
@@ -273,6 +276,14 @@ void Protocol::silenceChanged(const QHostAddress &host_addr,int slotnum,
 }
 
 
+void Protocol::logIpc(const QString &msg)
+{
+  if(proto_config->ipcLogPriority()>=0) {
+    syslog(proto_config->ipcLogPriority(),msg.toUtf8());
+  }
+}
+
+
 void Protocol::quit()
 {
   proto_ipc_socket->write("QUIT\r\n",6);
@@ -283,7 +294,7 @@ void Protocol::quit()
 
 void Protocol::ProcessIpcCommand(const QString &cmd)
 {
-  syslog(LOG_DEBUG,"received IPC cmd: \"%s\"",(const char *)cmd.toUtf8());
+  logIpc("received IPC cmd: \""+cmd+"\"");
 
   QStringList cmds=cmd.split(":");
 
