@@ -2,7 +2,7 @@
 //
 // Software Authority protocol handler for DRouter.
 //
-//   (C) Copyright 2018 Fred Gleason <fredg@paravelsystems.com>
+//   (C) Copyright 2018-2019 Fred Gleason <fredg@paravelsystems.com>
 //
 //   This program is free software; you can redistribute it and/or modify
 //   it under the terms of the GNU General Public License version 2 as
@@ -43,6 +43,8 @@ ProtocolSa::ProtocolSa(int sock,QObject *parent)
   proto_clips_subscribed=false;
   proto_silences_subscribed=false;
 
+  openlog("dprotod(SA)",LOG_PERROR|LOG_PID,LOG_DAEMON);
+
   //
   // The ProtocolSa Server
   //
@@ -56,7 +58,7 @@ ProtocolSa::ProtocolSa(int sock,QObject *parent)
   }
   flags=flags|FD_CLOEXEC;
   if((flags=fcntl(proto_server->socketDescriptor(),F_SETFD,&flags))<0) {
-    fprintf(stderr,"dprotod: socket error [%s]\n",(const char *)strerror(errno));
+    syslog(LOG_ERR,"socket error [%s], aborting",(const char *)strerror(errno));
     exit(1);
   }
 
@@ -75,12 +77,12 @@ void ProtocolSa::newConnectionData()
   //
   proto_socket=proto_server->nextPendingConnection();
   if((flags=fcntl(proto_socket->socketDescriptor(),F_GETFD,NULL))<0) {
-    fprintf(stderr,"dprotod: socket error [%s]\n",(const char *)strerror(errno));
+    syslog(LOG_ERR,"socket error [%s], aborting",(const char *)strerror(errno));
     exit(1);
   }
   flags=flags|FD_CLOEXEC;
   if((flags=fcntl(proto_socket->socketDescriptor(),F_SETFD,&flags))<0) {
-    fprintf(stderr,"dprotod: socket error [%s]\n",(const char *)strerror(errno));
+    syslog(LOG_ERR,"socket error [%s], aborting",(const char *)strerror(errno));
     exit(1);
   }
   
@@ -888,7 +890,8 @@ void ProtocolSa::LoadMaps()
   //
   QStringList msgs;
   if(!EndPointMap::loadSet(&proto_maps,&msgs)) {
-    fprintf(stderr,"dprotod: %s\n",(const char *)msgs.join("\n").toUtf8());
+    syslog(LOG_ERR,"map load error: %s, aborting",
+	   (const char *)msgs.join("\n").toUtf8());
     exit(1);
   }
 }

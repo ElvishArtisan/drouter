@@ -2,7 +2,7 @@
 //
 // Protocol D handler for DRouter.
 //
-//   (C) Copyright 2018 Fred Gleason <fredg@paravelsystems.com>
+//   (C) Copyright 2018-2019 Fred Gleason <fredg@paravelsystems.com>
 //
 //   This program is free software; you can redistribute it and/or modify
 //   it under the terms of the GNU General Public License version 2 as
@@ -20,6 +20,7 @@
 
 #include <errno.h>
 #include <fcntl.h>
+#include <syslog.h>
 #include <unistd.h>
 
 #include <QStringList>
@@ -40,6 +41,8 @@ ProtocolD::ProtocolD(int sock,QObject *parent)
   proto_clips_subscribed=false;
   proto_silences_subscribed=false;
 
+  openlog("dprotod(D)",LOG_PERROR|LOG_PID,LOG_DAEMON);
+
   //
   // The ProtocolD Server
   //
@@ -53,7 +56,7 @@ ProtocolD::ProtocolD(int sock,QObject *parent)
   }
   flags=flags|FD_CLOEXEC;
   if((flags=fcntl(proto_server->socketDescriptor(),F_SETFD,&flags))<0) {
-    fprintf(stderr,"dprotod: socket error [%s]\n",(const char *)strerror(errno));
+    syslog(LOG_ERR,"socket error [%s], aborting",(const char *)strerror(errno));
     exit(1);
   }
 }
@@ -69,12 +72,12 @@ void ProtocolD::newConnectionData()
   //
   proto_socket=proto_server->nextPendingConnection();
   if((flags=fcntl(proto_socket->socketDescriptor(),F_GETFD,NULL))<0) {
-    fprintf(stderr,"dprotod: socket error [%s]\n",(const char *)strerror(errno));
+    syslog(LOG_ERR,"socket error [%s], aborting",(const char *)strerror(errno));
     exit(1);
   }
   flags=flags|FD_CLOEXEC;
   if((flags=fcntl(proto_socket->socketDescriptor(),F_SETFD,&flags))<0) {
-    fprintf(stderr,"dprotod: socket error [%s]\n",(const char *)strerror(errno));
+    syslog(LOG_ERR,"socket error [%s], aborting",(const char *)strerror(errno));
     exit(1);
   }
   

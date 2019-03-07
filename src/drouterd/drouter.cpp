@@ -2,7 +2,7 @@
 //
 // Dynamic router database component for Drouter
 //
-//   (C) Copyright 2018 Fred Gleason <fredg@paravelsystems.com>
+//   (C) Copyright 2018-2019 Fred Gleason <fredg@paravelsystems.com>
 //
 //   This program is free software; you can redistribute it and/or modify
 //   it under the terms of the GNU General Public License version 2 as
@@ -210,7 +210,7 @@ void DRouter::nodeConnectedData(unsigned id,bool state)
 
   if(state) {
     if(node(QHostAddress(id))==NULL) {
-      fprintf(stderr,"DRouter::nodeConnectedData() - received connect signal from unknown node\n");
+      syslog(LOG_ERR,"DRouter::nodeConnectedData() - received connect signal from unknown node, aborting");
       exit(256);
     }
     SyLwrpClient *lwrp=node(QHostAddress(id));
@@ -410,7 +410,7 @@ void DRouter::nodeConnectedData(unsigned id,bool state)
   else {
     SyLwrpClient *lwrp=node(QHostAddress(id));
     if(lwrp==NULL) {
-      fprintf(stderr,"DRouter::nodeConnectedData() - received disconnect signal from unknown node\n");
+      syslog(LOG_ERR,"DRouter::nodeConnectedData() - received disconnect signal from unknown node, aborting");
       exit(256);
     }
     LockTables();
@@ -728,7 +728,7 @@ void DRouter::newIpcConnectionData(int listen_sock)
   int sock;
 
   if((sock=accept(listen_sock,NULL,NULL))<0) {
-    fprintf(stderr,"accept failed [%s]\n",strerror(errno));
+    syslog(LOG_WARNING,"DRouter::newIpcConnectionData - accept failed [%s]",strerror(errno));
     return;
   }
   drouter_ipc_sockets[sock]=new QTcpSocket(this);
@@ -1117,7 +1117,7 @@ bool DRouter::StartLivewire(QString *err_msg)
   connect(mapper,SIGNAL(mapped(int)),this,SLOT(advtReadyReadData(int)));
   SyInterfaces *ifaces=new SyInterfaces();
   if(!ifaces->update()) {
-    fprintf(stderr,"drouterd: unable to get network interface information\n");
+    syslog(LOG_ERR,"unable to get network interface information, aborting");
     exit(1);
   }
   for(int i=0;i<ifaces->quantity();i++) {
@@ -1125,7 +1125,7 @@ bool DRouter::StartLivewire(QString *err_msg)
       push_back(new SyMcastSocket(SyMcastSocket::ReadOnly,this));
     if(!drouter_advt_sockets.back()->
        bind(ifaces->ipv4Address(i),SWITCHYARD_ADVERTS_PORT)) {
-      fprintf(stderr,"drouterd: unable to bind %s:%d\n",
+      syslog(LOG_ERR,"unable to bind %s:%d, aborting",
 	      (const char *)ifaces->ipv4Address(i).toString().toUtf8(),
 	      SWITCHYARD_ADVERTS_PORT);
       exit(1);
@@ -1173,7 +1173,7 @@ void DRouter::LoadMaps()
   //
   QStringList msgs;
   if(!EndPointMap::loadSet(&drouter_maps,&msgs)) {
-    fprintf(stderr,"drouterd: %s\n",(const char *)msgs.join("\n").toUtf8());
+    syslog(LOG_ERR,"SA map load error: %s\n",(const char *)msgs.join("\n").toUtf8());
     exit(1);
   }
   for(int i=0;i<msgs.size();i++) {

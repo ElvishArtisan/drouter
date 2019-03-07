@@ -80,7 +80,7 @@ MainObject::MainObject(QObject *parent)
       main_protocol_socks[1]=SD_LISTEN_FDS_START+1;
     }
     else {
-      fprintf(stderr,"drouterd: error receiving sockets from SystemD\n");
+      syslog(LOG_ERR,"error receiving sockets from Systemd, aborting");
       exit(1);
     }
   }
@@ -100,7 +100,8 @@ MainObject::MainObject(QObject *parent)
   //
   main_drouter=new DRouter(main_protocol_socks,this);
   if(!main_drouter->start(&err_msg)) {
-    fprintf(stderr,"drouterd: %s\n",(const char *)err_msg.toUtf8());
+    syslog(LOG_ERR,"core router startup error: %s, aborting",
+	   (const char *)err_msg.toUtf8());
     exit(1);
   }
 
