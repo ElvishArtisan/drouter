@@ -432,3 +432,5 @@
 	of drouter.conf(5).
 	* Added a 'NodeLogPriority=' directive to the '[Drouterd]' section
 	of drouter.conf(5).
+2019-03-11 Fred Gleason <fredg@paravelsystems.com>
+	Incremented the package version to 0.9.0.
