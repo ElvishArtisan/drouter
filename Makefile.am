@@ -57,7 +57,8 @@ DISTCLEANFILES = *.service\
                  *.spec\
                  config.guess\
                  config.sub\
-                 ltmain.sh
+                 ltmain.sh\
+                 py-compile
 
 MAINTAINERCLEANFILES = *~\
                        *.spec\
