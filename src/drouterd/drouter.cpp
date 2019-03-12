@@ -213,9 +213,10 @@ void DRouter::nodeConnectedData(unsigned id,bool state)
       syslog(LOG_ERR,"DRouter::nodeConnectedData() - received connect signal from unknown node, aborting");
       exit(256);
     }
-    Log(drouter_config->nodeLogPriority(),
-	"node connected from "+QHostAddress(id).toString());
     SyLwrpClient *lwrp=node(QHostAddress(id));
+    Log(drouter_config->nodeLogPriority(),
+	"node connected from "+QHostAddress(id).toString()+
+	" ["+lwrp->hostName()+" / "+lwrp->deviceName()+"]");
     if(drouter_config->configureAudioAlarms(lwrp->deviceName())) {
       for(unsigned i=0;i<lwrp->srcSlots();i++) {
 	if(lwrp->src(i)->exists()) {
@@ -416,7 +417,8 @@ void DRouter::nodeConnectedData(unsigned id,bool state)
       exit(256);
     }
     Log(drouter_config->nodeLogPriority(),
-	"node disconnected from "+QHostAddress(id).toString());
+	"node disconnected from "+QHostAddress(id).toString()+
+	" ["+lwrp->hostName()+" / "+lwrp->deviceName()+"]");
     LockTables();
     sql=QString("select ")+
       "SOURCE_SLOTS,"+       // 00
