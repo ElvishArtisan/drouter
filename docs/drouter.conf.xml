@@ -6,7 +6,7 @@
   <refmeta>
     <refentrytitle>drouter.conf</refentrytitle>
     <manvolnum>5</manvolnum>
-    <refmiscinfo class='source'>March 2018</refmiscinfo>
+    <refmiscinfo class='source'>March 2019</refmiscinfo>
     <refmiscinfo class='manual'>Linux Audio Manual</refmiscinfo>
   </refmeta>
   <refnamediv>
@@ -92,6 +92,53 @@
 	</varlistentry>
 	<varlistentry>
 	  <term>
+	    <userinput>IpcLogPriority=<replaceable>prio</replaceable></userinput>
+	  </term>
+	  <listitem>
+	    <para>
+	      Where <replaceable>prio</replaceable> is an integer indicating
+	      the priority to use when logging internal IPC messages
+	      between the DRouter core and protocol modules. Mostly useful
+	      for debugging purposes. Default value is
+	      <userinput>7</userinput> (&quot;Debug&quot;).
+	    </para>
+	    <para>
+	      The following values for <replaceable>prio</replaceable>
+	      are recognized:
+	      <simplelist columns="1" type="vert">
+		<member>
+		  <userinput>0</userinput> - Emergency (system is unusable)
+		</member>
+		<member>
+		  <userinput>1</userinput> - Alert (action must be taken immediately)
+		</member>
+		<member>
+		  <userinput>2</userinput> - Critical (critical conditions)
+		</member>
+		<member>
+		  <userinput>3</userinput> - Error (error conditions)
+		</member>
+		<member>
+		  <userinput>4</userinput> - Warning (warning conditions)
+		</member>
+		<member>
+		  <userinput>5</userinput> - Notice (normal but significant condition)
+		</member>
+		<member>
+		  <userinput>6</userinput> - Info (informational)
+		</member>
+		<member>
+		  <userinput>7</userinput> - Debug (debug-level messages)
+		</member>
+		<member>
+		  <userinput>-1</userinput> - Disable (disable logging)
+		</member>
+	      </simplelist>
+	    </para>
+	  </listitem>
+	</varlistentry>
+	<varlistentry>
+	  <term>
 	    <userinput>LwrpPassword=<replaceable>passwd</replaceable></userinput>
 	  </term>
 	  <listitem>
@@ -99,6 +146,7 @@
 	      Where <replaceable>passwd</replaceable> is the password that
 	      <command>drouterd</command><manvolnum>8</manvolnum> will use
 	      when attempting to log in to the LWRP service on each node.
+	      This option is seldom required.
 	    </para>
 	  </listitem>
 	</varlistentry>
@@ -110,7 +158,8 @@
 	  <listitem>
 	    <para>
 	      Where <replaceable>dev-name</replaceable> is the device name
-	      of a class of device (taken from the VER LWRP command)for which
+	      of a class of device (taken from the &quot;VER&quot; LWRP
+	      command) for which
 	      audio alarms should <emphasis>not</emphasis> be configured.
 	      This is to deal with certain devices --e.g. Telos Vx systems --
 	      that throw spurious protocol errors when an LWRP client attempts
@@ -118,6 +167,28 @@
 	    </para>
 	  </listitem>
 	</varlistentry>
+
+
+	<varlistentry>
+	  <term>
+	    <userinput>NodeLogPriority=<replaceable>prio</replaceable></userinput>
+	  </term>
+	  <listitem>
+	    <para>
+	      Where <replaceable>prio</replaceable> is an integer indicating
+	      the priority to use when logging node device
+	      connects and disconnects. Default value is
+	      <userinput>5</userinput> (&quot;Notice&quot;).
+	    </para>
+	    <para>
+	      See the <userinput>IpcLogPriority</userinput> entry (above)
+	      for the list of values recognized for
+	      <replaceable>prio</replaceable>.
+	    </para>
+	  </listitem>
+	</varlistentry>
+
+
 	<varlistentry>
 	  <term>
 	    <userinput>SilenceAlarmThreshold=<replaceable>level</replaceable></userinput>

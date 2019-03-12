@@ -439,3 +439,6 @@
 2019-03-12 Fred Gleason <fredg@paravelsystems.com>
 	* Added the node host and device names when logging a node
 	connect of disconnect.
+2019-03-12 Fred Gleason <fredg@paravelsystems.com>
+	* Documented the 'IpcLogPriority=' and 'NodeLogPriority='
+	directives in the drouter.conf(5) man page.
