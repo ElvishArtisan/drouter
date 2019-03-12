@@ -442,3 +442,5 @@
 2019-03-12 Fred Gleason <fredg@paravelsystems.com>
 	* Documented the 'IpcLogPriority=' and 'NodeLogPriority='
 	directives in the drouter.conf(5) man page.
+2019-03-12 Fred Gleason <fredg@paravelsystems.com>
+	* Updated the package version to 0.9.1.
