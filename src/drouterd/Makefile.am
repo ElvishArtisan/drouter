@@ -2,7 +2,7 @@
 ##
 ## Makefile for the drouterd(8) routing service
 ##
-## (C) Copyright 2017 Fred Gleason <fredg@paravelsystems.com>
+## (C) Copyright 2017-2019 Fred Gleason <fredg@paravelsystems.com>
 ##
 ##   This program is free software; you can redistribute it and/or modify
 ##   it under the terms of the GNU General Public License version 2 as
@@ -31,16 +31,22 @@ moc_%.cpp:	%.h
 sbin_PROGRAMS = dprotod\
                 drouterd
 
+noinst_PROGRAMS = tethertest
+
 dist_drouterd_SOURCES = drouter.cpp drouter.h\
                         drouterd.cpp drouterd.h\
                         protoipc.h\
-                        scriptengine.cpp scriptengine.h
+                        scriptengine.cpp scriptengine.h\
+                        tether.cpp tether.h\
+                        ttydevice.cpp ttydevice.h
 
 nodist_drouterd_SOURCES = config.cpp config.h\
                           endpointmap.cpp endpointmap.h\
                           moc_drouter.cpp\
                           moc_drouterd.cpp\
                           moc_scriptengine.cpp\
+                          moc_tether.cpp\
+                          moc_ttydevice.cpp\
                           protoipc.h
 
 drouterd_LDADD = @QT4CLI_LIBS@ @SWITCHYARD_LIBS@ @LIBSYSTEMD_LIBS@
@@ -59,6 +65,17 @@ nodist_dprotod_SOURCES = config.cpp config.h\
                          moc_protocol_sa.cpp
 
 dprotod_LDADD = @QT4CLI_LIBS@ @SWITCHYARD_LIBS@ @LIBSYSTEMD_LIBS@
+
+dist_tethertest_SOURCES = tether.cpp tether.h\
+                          tethertest.cpp tethertest.h\
+                          ttydevice.cpp ttydevice.h
+
+nodist_tethertest_SOURCES = config.cpp config.h\
+                            moc_tether.cpp\
+                            moc_tethertest.cpp\
+                            moc_ttydevice.cpp
+
+tethertest_LDADD = @QT4CLI_LIBS@ @SWITCHYARD_LIBS@ @LIBSYSTEMD_LIBS@
 
 CLEANFILES = *~\
              moc_*\

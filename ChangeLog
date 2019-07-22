@@ -444,3 +444,5 @@
 	directives in the drouter.conf(5) man page.
 2019-03-12 Fred Gleason <fredg@paravelsystems.com>
 	* Updated the package version to 0.9.1.
+2019-07-22 Fred Gleason <fredg@paravelsystems.com>
+	* Stubbed out a 'Tether' class in drouterd(8).

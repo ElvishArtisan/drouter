@@ -61,6 +61,7 @@ src/drouterd/endpointmap.cpp
 src/drouterd/endpointmap.h
 src/drouterd/logindialog.cpp
 src/drouterd/logindialog.h
+src/drouterd/tethertest
 src/drouterd/saparser.cpp
 src/drouterd/saparser.h
 src/outputpanel/combobox.cpp

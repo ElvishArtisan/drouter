@@ -82,3 +82,29 @@ NodeLogPriority=5
 ;
 LwrpPassword=
 
+
+[Tether]
+; SystemAHostname=<hostname>
+; SystemBHostname=<hostname>
+;
+; The name of each of the hosts constituting the Drouter cluster.
+SystemAHostname=incredible
+SystemBHostname=elastigirl
+
+
+; SystemAIpAddress=<ip-addr>
+; SystemBIpAddress=<ip-addr>
+;
+; The IPv4 address, in dotted-quad notation, of the Livewire interfaces on
+; each of the hosts constituting the Drouter cluster.
+SystemAIpAddress=192.168.21.22
+SystemBIpAddress=192.168.21.21
+
+
+; SystemASerialDevice=<dev-name>
+; SystemBSerialDevice=<dev-name>
+;
+; The serial device used for heartbeat communcations on each of the hosts
+; constituting the Drouter cluster.
+SystemASerialDevice=/dev/ttyUSB0
+SystemBSerialDevice=/dev/ttyUSB0

@@ -21,6 +21,7 @@
 #ifndef CONFIG_H
 #define CONFIG_H
 
+#include <QHostAddress>
 #include <QString>
 #include <QStringList>
 
@@ -31,10 +32,18 @@
 #define DROUTER_DEFAULT_SILENCE_TIMEOUT 10000
 #define DROUTER_DEFAULT_IPC_LOG_PRIORITY -1
 #define DROUTER_DEFAULT_NODE_LOG_PRIORITY 5
+#define DROUTER_TETHER_UDP_PORT 6245
+#define DROUTER_TETHER_TTY_SPEED 9600
+#define DROUTER_TETHER_TTY_PARITY TTYDevice::None
+#define DROUTER_TETHER_TTY_WORD_LENGTH 8
+#define DROUTER_TETHER_TTY_FLOW_CONTROL TTYDevice::FlowNone
+#define DROUTER_TETHER_BASE_INTERVAL 10000
+#define DROUTER_TETHER_WINDOW_INTERVAL 1000
 
 class Config
 {
  public:
+  enum TetherRole {This=0,That=1};
   Config();
   int clipAlarmThreshold() const;
   int clipAlarmTimeout() const;
@@ -44,6 +53,10 @@ class Config
   int ipcLogPriority() const;
   int nodeLogPriority() const;
   QString lwrpPassword() const;
+  QString tetherHostname(TetherRole role) const;
+  QHostAddress tetherIpAddress(TetherRole role) const;
+  QString tetherSerialDevice(TetherRole role) const;
+  bool tetherIsSane() const;
   void load();
 
  private:
@@ -55,6 +68,10 @@ class Config
   int conf_ipc_log_priority;
   int conf_node_log_priority;
   QStringList conf_no_audio_alarm_devices;
+  QString conf_tether_hostnames[2];
+  QHostAddress conf_tether_ip_addresses[2];
+  QString conf_tether_serial_devices[2];
+  bool conf_tether_is_sane;
 };
 
 
