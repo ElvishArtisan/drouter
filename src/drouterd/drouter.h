@@ -52,6 +52,10 @@ class DRouter : public QObject
   SyGpioBundle *gpi(const QHostAddress &hostaddr,int slot) const;
   SyGpo *gpo(const QHostAddress &hostaddr,int slot) const;
   bool start(QString *err_msg);
+  bool isWriteable() const;
+
+ public slots:
+   void setWriteable(bool state);
 
  private slots:
   void nodeConnectedData(unsigned id,bool state);
@@ -91,6 +95,7 @@ class DRouter : public QObject
   QSignalMapper *drouter_ipc_ready_mapper;
   QTcpServer *drouter_ipc_server;
   int *drouter_proto_socks;
+  bool drouter_writeable;
   Config *drouter_config;
 };
 

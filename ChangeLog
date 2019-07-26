@@ -446,3 +446,7 @@
 	* Updated the package version to 0.9.1.
 2019-07-22 Fred Gleason <fredg@paravelsystems.com>
 	* Stubbed out a 'Tether' class in drouterd(8).
+2019-07-26 Fred Gleason <fredg@paravelsystems.com>
+	* Implemented auto-failover between two Drouter instances
+	using the tether mechanism.
+	* Added a dstate(1) command.

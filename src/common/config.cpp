@@ -86,6 +86,24 @@ QString Config::lwrpPassword() const
 }
 
 
+bool Config::tetherIsActivated() const
+{
+  return conf_tether_is_activated;
+}
+
+
+QHostAddress Config::tetherSharedIpAddress() const
+{
+  return conf_tether_shared_ip_address;
+}
+
+
+QString Config::tetherHostId(TetherRole role) const
+{
+  return conf_tether_host_ids[role];
+}
+
+
 QString Config::tetherHostname(Config::TetherRole role) const
 {
   return conf_tether_hostnames[role];
@@ -113,7 +131,6 @@ bool Config::tetherIsSane() const
 void Config::load()
 {
   char hostname[HOST_NAME_MAX];
-  QString letters[2];
   SyProfile *p=new SyProfile();
   p->setSource(DROUTER_CONF_FILE);
 
@@ -136,48 +153,62 @@ void Config::load()
     p->intValue("Drouterd","NodeLogPriority",DROUTER_DEFAULT_NODE_LOG_PRIORITY);
   conf_lwrp_password=p->stringValue("Drouterd","LwrpPassword");
 
-  if(gethostname(hostname,HOST_NAME_MAX)==0) {
-    QStringList f0=QString(hostname).split(".");
-    if(p->stringValue("Tether","SystemAHostname").toLower()==f0.first().toLower()) {
-      letters[Config::This]="A";
-      letters[Config::That]="B";
+  conf_tether_is_activated=p->boolValue("Tether","IsActivated",false);
+
+  if(conf_tether_is_activated) {
+    conf_tether_shared_ip_address.
+      setAddress(p->stringValue("Tether","SharedIpAddress"));
+    if(gethostname(hostname,HOST_NAME_MAX)==0) {
+      QStringList f0=QString(hostname).split(".");
+      if(p->stringValue("Tether","SystemAHostname").toLower()==f0.first().toLower()) {
+	conf_tether_host_ids[Config::This]="A";
+	conf_tether_host_ids[Config::That]="B";
+      }
+      if(p->stringValue("Tether","SystemBHostname").toLower()==f0.first().toLower()) {
+	conf_tether_host_ids[Config::This]="B";
+	conf_tether_host_ids[Config::That]="A";
+      }
+      if(conf_tether_host_ids[Config::This].isEmpty()) {
+	syslog(LOG_WARNING,
+	       "system name matches no configured tethered hostnames");
+	conf_tether_is_sane=false;
+	delete p;
+	return;
+      }
+      syslog(LOG_DEBUG,"we are System%s",
+	     (const char *)conf_tether_host_ids[Config::This].toUtf8());
+      conf_tether_is_sane=!conf_tether_shared_ip_address.toString().isEmpty();
+      for(int i=0;i<2;i++) {
+	conf_tether_hostnames[i]=
+	  p->stringValue("Tether","System"+conf_tether_host_ids[i]+"Hostname");
+	conf_tether_is_sane=
+	  conf_tether_is_sane&&(!conf_tether_hostnames[i].isEmpty());
+	conf_tether_ip_addresses[i].
+	  setAddress(p->stringValue("Tether","System"+conf_tether_host_ids[i]+
+				    "IpAddress"));
+	conf_tether_is_sane=
+	  conf_tether_is_sane&&(!conf_tether_ip_addresses[i].toString().
+				isEmpty());
+	conf_tether_serial_devices[i]=
+	  p->stringValue("Tether","System"+conf_tether_host_ids[i]+
+			 "SerialDevice");
+	conf_tether_is_sane=
+	  conf_tether_is_sane&&(!conf_tether_serial_devices[i].isEmpty());
+      }
+      if(!conf_tether_is_sane) {
+	syslog(LOG_WARNING,
+	       "tether data is not sane, disabling cluster support");
+      }
     }
-    if(p->stringValue("Tether","SystemBHostname").toLower()==f0.first().toLower()) {
-      letters[Config::This]="B";
-      letters[Config::That]="A";
-    }
-    if(letters[Config::This].isEmpty()) {
-      syslog(LOG_WARNING,
-	     "system name matches no configured tethered hostnames");
+    else {
+      syslog(LOG_WARNING,"unable to read hostname [%s]",strerror(errno));
       conf_tether_is_sane=false;
-      delete p;
-      return;
     }
-    syslog(LOG_DEBUG,"we are System%s",
-	   (const char *)letters[Config::This].toUtf8());
-    conf_tether_is_sane=true;
-    for(int i=0;i<2;i++) {
-      conf_tether_hostnames[i]=
-	p->stringValue("Tether","System"+letters[i]+"Hostname");
-      conf_tether_is_sane=
-	conf_tether_is_sane&&(!conf_tether_hostnames[i].isEmpty());
-      conf_tether_ip_addresses[i].
-	setAddress(p->stringValue("Tether","System"+letters[i]+"IpAddress"));
-      conf_tether_is_sane=
-      	conf_tether_is_sane&&(!conf_tether_ip_addresses[i].toString().isEmpty());
-      conf_tether_serial_devices[i]=
-	p->stringValue("Tether","System"+letters[i]+"SerialDevice");
-      conf_tether_is_sane=
-      	conf_tether_is_sane&&(!conf_tether_serial_devices[i].isEmpty());
-    }
-    if(!conf_tether_is_sane) {
-      syslog(LOG_WARNING,"tether data is not sane, disabling cluster support");
-    }
+    
+    delete p;
   }
   else {
-    syslog(LOG_WARNING,"unable to read hostname [%s]",strerror(errno));
     conf_tether_is_sane=false;
+    syslog(LOG_INFO,"tethering is deactivated");
   }
-
-  delete p;
 }

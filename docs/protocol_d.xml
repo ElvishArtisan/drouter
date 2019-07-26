@@ -250,6 +250,50 @@
       </varlistentry>
     </variablelist>
   </sect2>
+
+  <sect2 id="sect.alarms.list_tether">
+    <title>List Tether</title>
+    <para>
+      <command>ListTether</command>
+    </para>
+    <para>
+      Return a record delinieating the current state of the
+      tethering system, terminated by <computeroutput>CR/LF</computeroutput>.
+      The record contains the following fields, delimited by
+      <computeroutput>TAB</computeroutput> (ASCII 9):
+    </para>
+    <variablelist>
+      <varlistentry>
+	<term>
+	  <computeroutput>TETHER</computeroutput>
+	</term>
+	<listitem>
+	  <para>
+	    The string <computeroutput>TETHER</computeroutput>.
+	  </para>
+	</listitem>
+      </varlistentry>
+      <varlistentry>
+	<term>
+	  <computeroutput>Y</computeroutput>|<computeroutput>N</computeroutput>
+	</term>
+	<listitem>
+	  <para>
+	    Indicates if the local
+	    <command>drouterd</command><manvolnum>8</manvolnum> instance
+	    is (<computeroutput>Y</computeroutput>) or 
+	    is not (<computeroutput>N</computeroutput>) active.
+	  </para>
+	</listitem>
+      </varlistentry>
+    </variablelist>
+    <note>
+      If tethering has been disabled in
+      <command>drouter.conf</command><manvolnum>5</manvolnum>, then
+      this command will always return <computeroutput>Y</computeroutput>.
+    </note>
+  </sect2>
+
   <sect2 id="sect.alarms.subscribe_clips">
     <title>Subscribe Clips</title>
     <para>
@@ -404,6 +448,24 @@
       </varlistentry>
     </variablelist>
   </sect2>
+
+  <sect2 id="sect.alarms.subscribe_tether">
+    <title>Subscribe Tether</title>
+    <para>
+      <command>SubscribeTether</command>
+    </para>
+    <para>
+      Return a record delinieating the current state of the
+      tethering system, terminated by <computeroutput>CR/LF</computeroutput>
+      (see the description of the <computeroutput>ListTether</computeroutput>
+      message in the section
+      <xref linkend="sect.alarms.list_tether"/> for a breakdown of the
+      supplied fields). Whenever the state of the tethering system changes,
+      a corresponding <computeroutput>TETHER</computeroutput> message will
+      be sent.
+    </para>
+  </sect2>
+
 </sect1>
 
 <sect1 id="sect.information">

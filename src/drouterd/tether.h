@@ -26,20 +26,16 @@
 #include <QTimer>
 #include <QUdpSocket>
 
+#include "config.h"
 #include "ttydevice.h"
 
 class Tether : public QObject
 {
   Q_OBJECT;
-  public:
+ public:
   Tether(QObject *parent=0);
-  ~Tether();
-  QHostAddress peerAddress() const;
-  void setPeerAddress(const QHostAddress &addr);
-  QString serialDevice() const;
-  void setSerialDevice(const QString &str);
   bool instanceIsActive() const;
-  bool start(QString *err_msg);
+  bool start(Config *config,QString *err_msg);
 
  signals:
   void instanceStateChanged(bool state);
@@ -53,7 +49,7 @@ class Tether : public QObject
  private:
   void Backoff();
   int GetInterval() const;
-  QHostAddress tether_peer_address;
+  bool ModifySharedAddress(const QString &keyword) const;
   QUdpSocket *tether_udp_socket;
   char tether_udp_state;
   bool tether_udp_replied;
@@ -63,6 +59,7 @@ class Tether : public QObject
   QTimer *tether_interval_timer;
   QTimer *tether_window_timer;
   bool tether_active_state;
+  Config *tether_config;
 };
 
 

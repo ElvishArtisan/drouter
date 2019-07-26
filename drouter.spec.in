@@ -173,8 +173,10 @@ rm -rf $RPM_BUILD_ROOT
 
 %files python
 %{_bindir}/dlist
+%{_bindir}/dstate
 %{_libdir}/python@PYTHON_VERSION@/site-packages/Drouter
 %{_datadir}/man/man1/dlist.1.gz
+%{_datadir}/man/man1/dstate.1.gz
 %{_datadir}/doc/drouter-%{version}/examples/*
 
 

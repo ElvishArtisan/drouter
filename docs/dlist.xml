@@ -208,7 +208,10 @@
       <refentrytitle>dmap</refentrytitle><manvolnum>8</manvolnum>
       </citerefentry>,
       <citerefentry>
-	<refentrytitle>drouterd</refentrytitle><manvolnum>8</manvolnum>
+      <refentrytitle>drouterd</refentrytitle><manvolnum>8</manvolnum>
+      </citerefentry>,
+      <citerefentry>
+	<refentrytitle>dstate</refentrytitle><manvolnum>1</manvolnum>
       </citerefentry>
   </para>
   </refsect1>

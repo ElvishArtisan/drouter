@@ -33,16 +33,19 @@ MainObject::MainObject(QObject *parent)
   Config *config=new Config();
   config->load();
 
+  if(!config->tetherIsActivated()) {
+    printf("Tethering is deactivated in the configuration.\n");
+    exit(0);
+  }
+
   if(!config->tetherIsSane()) {
     fprintf(stderr,"tethertest: tether configuration is not sane\n");
     exit(256);
   }
   Tether *tether=new Tether(this);
-  tether->setPeerAddress(config->tetherIpAddress(Config::That));
-  tether->setSerialDevice(config->tetherSerialDevice(Config::This));
   connect(tether,SIGNAL(instanceStateChanged(bool)),
 	  this,SLOT(instanceStateChangedData(bool)));
-  if(!tether->start(&err_msg)) {
+  if(!tether->start(config,&err_msg)) {
     fprintf(stderr,"tethertest: start() failed [%s]\n",
 	    (const char *)err_msg.toUtf8());
     exit(256);

@@ -206,6 +206,11 @@ void Protocol::shutdownTimerData()
 }
 
 
+void Protocol::tetherStateUpdated(bool state)
+{
+}
+
+
 void Protocol::nodeAdded(const QHostAddress &host_addr)
 {
 }
@@ -276,6 +281,12 @@ void Protocol::silenceChanged(const QHostAddress &host_addr,int slotnum,
 }
 
 
+Config *Protocol::config()
+{
+  return proto_config;
+}
+
+
 void Protocol::logIpc(const QString &msg)
 {
   if(proto_config->ipcLogPriority()>=0) {
@@ -297,6 +308,14 @@ void Protocol::ProcessIpcCommand(const QString &cmd)
   logIpc("received IPC cmd: \""+cmd+"\"");
 
   QStringList cmds=cmd.split(":");
+
+  if((cmds.at(0)=="TETHER")&&(cmds.size()==2)){
+    tetherStateUpdated(cmds.at(1)=="Y");
+  }
+
+  if((cmds.at(0)=="NODEADD")&&(cmds.size()==2)){
+    nodeAdded(QHostAddress(cmds.at(1)));
+  }
 
   if((cmds.at(0)=="NODEADD")&&(cmds.size()==2)){
     nodeAdded(QHostAddress(cmds.at(1)));

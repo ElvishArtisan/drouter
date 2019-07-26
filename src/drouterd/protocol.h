@@ -52,6 +52,7 @@ class Protocol : public QObject
   void shutdownTimerData();
 
  protected:
+  virtual void tetherStateUpdated(bool state);
   virtual void nodeAdded(const QHostAddress &host_addr);
   virtual void nodeRemoved(const QHostAddress &host_addr,
 			   int srcs,int dsts,int gpis,int gpos);
@@ -70,6 +71,7 @@ class Protocol : public QObject
   virtual void silenceChanged(const QHostAddress &host_addr,int slotnum,
 			      SyLwrpClient::MeterType meter_type,
 			      const QString &tbl_name,int chan);
+  Config *config();
   void logIpc(const QString &msg);
   void quit();
 

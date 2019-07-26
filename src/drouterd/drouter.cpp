@@ -45,6 +45,7 @@ DRouter::DRouter(int *proto_socks,QObject *parent)
   : QObject(parent)
 {
   drouter_proto_socks=proto_socks;
+  drouter_writeable=false;
 
   drouter_config=new Config();
   drouter_config->load();
@@ -198,6 +199,31 @@ bool DRouter::start(QString *err_msg)
   }
 
   return true;
+}
+
+
+bool DRouter::isWriteable() const
+{
+  return drouter_writeable;
+}
+
+
+void DRouter::setWriteable(bool state)
+{
+  QString sql;
+  QSqlQuery *q;
+
+  if(drouter_writeable!=state) {
+    QString letter="N";
+    if(state) {
+      letter="Y";
+    }
+    sql=QString("update TETHER set IS_ACTIVE='"+letter+"'");
+    q=new QSqlQuery(sql);
+    delete q;
+    drouter_writeable=state;
+    NotifyProtocols("TETHER",letter);
+  }
 }
 
 
@@ -870,7 +896,16 @@ bool DRouter::ProcessIpcCommand(int sock,const QString &cmd)
     return false;
   }
 
+  //
+  // All operations below here require that we be the active instance!
+  // (drouter_writeable==true)
+  //
+  if(!drouter_writeable) {
+    return true;
+  }
+
   QStringList cmds=cmd.split(" ");
+
   if((cmds.at(0)=="ClearCrosspoint")&&(cmds.size()==3)) {
     SyLwrpClient *lwrp=drouter_nodes[QHostAddress(cmds.at(1)).toIPv4Address()];
     unsigned slotnum=cmds.at(2).toUInt(&ok);
@@ -1107,6 +1142,15 @@ bool DRouter::StartDb(QString *err_msg)
     "index ROUTER_IDX(ROUTER_NUMBER),"+
     "index ROUTER_SOURCE_IDX(ROUTER_NUMBER,SOURCE_NUMBER))"+
     "engine MEMORY character set utf8 collate utf8_general_ci";
+  q=new QSqlQuery(sql);
+  delete q;
+
+  sql=QString("create table if not exists TETHER (")+
+    "IS_ACTIVE enum('N','Y') not null default 'N') "+
+    "engine MEMORY character set utf8 collate utf8_general_ci";
+  q=new QSqlQuery(sql);
+  delete q;
+  sql=QString("insert into TETHER set IS_ACTIVE='N'");
   q=new QSqlQuery(sql);
   delete q;
 

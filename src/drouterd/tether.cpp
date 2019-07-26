@@ -18,16 +18,46 @@
 //   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
 //
 
+#include <signal.h>
 #include <stdlib.h>
 #include <time.h>
 
+#include <QProcess>
+#include <QStringList>
+
+#include <sy/syinterfaces.h>
+
 #include "config.h"
 #include "tether.h"
+
+QStringList global_exit_args;
+
+void __Tether_atexit()
+{
+  if(global_exit_args.size()>0) {
+    QProcess *proc=new QProcess();
+    proc->start("/sbin/ip",global_exit_args);
+    proc->waitForFinished();
+  }
+}
+
+
+void SigHandler(int signo)
+{
+  switch(signo) {
+  case SIGINT:
+  case SIGTERM:
+    exit(0);
+    break;
+  }
+}
+
 
 Tether::Tether(QObject *parent)
   : QObject(parent)
 {
   tether_active_state=false;
+  tether_config=NULL;
 
   srandom(time(NULL));
 
@@ -53,52 +83,40 @@ Tether::Tether(QObject *parent)
 }
 
 
-Tether::~Tether()
-{
-}
-
-
-QHostAddress Tether::peerAddress() const
-{
-  return tether_peer_address;
-}
-
-
-void Tether::setPeerAddress(const QHostAddress &addr)
-{
-  tether_peer_address=addr;
-}
-
-
-QString Tether::serialDevice() const
-{
-  return tether_tty_device->name();
-}
-
-
-void Tether::setSerialDevice(const QString &str)
-{
-  tether_tty_device->setName(str);
-}
-
-
 bool Tether::instanceIsActive() const
 {
+  if(!tether_config->tetherIsActivated()) {
+    return true;
+  }
+  if(!tether_config->tetherIsSane()) {
+    return false;
+  }
   return tether_active_state;
 }
 
 
-bool Tether::start(QString *err_msg)
+bool Tether::start(Config *config,QString *err_msg)
 {
+  tether_config=config;
+
+  if(!tether_config->tetherIsActivated()) {
+    emit instanceStateChanged(true);
+    return true;
+  }
+
   if(!tether_udp_socket->bind(DROUTER_TETHER_UDP_PORT)) {
     *err_msg=QString().
       sprintf("unable to bind tether udp port %u",DROUTER_TETHER_UDP_PORT);
     return false;
   }
+  tether_tty_device->setName(tether_config->tetherSerialDevice(Config::This));
   if(!tether_tty_device->open(QIODevice::ReadWrite)) {
     *err_msg="unable to open tether tty port \""+tether_tty_device->name()+"\"";
     return false;
   }
+  atexit(__Tether_atexit);
+  signal(SIGINT,SigHandler);
+  signal(SIGTERM,SigHandler);
   tether_interval_timer->start(GetInterval());
 
   return true;
@@ -112,7 +130,7 @@ void Tether::udpReadyReadData()
   int n;
 
   while((n=tether_udp_socket->readDatagram(data,1,&addr))>0) {
-    if(addr==tether_peer_address) {
+    if(addr==tether_config->tetherIpAddress(Config::That)) {
       if(tether_window_timer->isActive()) {
 	if(data[0]=='?') {
 	  Backoff();
@@ -125,11 +143,13 @@ void Tether::udpReadyReadData()
 	if(data[0]=='?') {
 	  if(tether_active_state) {
 	    tether_udp_socket->
-	      writeDatagram("+",1,tether_peer_address,DROUTER_TETHER_UDP_PORT);
+	      writeDatagram("+",1,tether_config->tetherIpAddress(Config::That),
+			    DROUTER_TETHER_UDP_PORT);
 	  }
 	  else {
 	    tether_udp_socket->
-	      writeDatagram("-",1,tether_peer_address,DROUTER_TETHER_UDP_PORT);
+	      writeDatagram("-",1,tether_config->tetherIpAddress(Config::That),
+			    DROUTER_TETHER_UDP_PORT);
 	  }
 	}	
       }
@@ -171,7 +191,8 @@ void Tether::intervalTimeoutData()
   tether_udp_state='-';
   tether_udp_replied=false;
   tether_udp_socket->
-    writeDatagram("?",1,tether_peer_address,DROUTER_TETHER_UDP_PORT);
+    writeDatagram("?",1,tether_config->tetherIpAddress(Config::That),
+		  DROUTER_TETHER_UDP_PORT);
 
   tether_tty_state='-';
   tether_tty_replied=false;
@@ -186,12 +207,14 @@ void Tether::windowTimeoutData()
   if(tether_active_state) {
     if((tether_udp_state=='+')||(tether_tty_state=='+')) {
       tether_active_state=false;
+      ModifySharedAddress("del");
       emit instanceStateChanged(false);
     }
   }
   else {
     if((tether_udp_state!='+')&&(tether_tty_state!='+')) {
       tether_active_state=true;
+      ModifySharedAddress("add");
       emit instanceStateChanged(true);
     }
   }
@@ -214,4 +237,47 @@ int Tether::GetInterval() const
   val+=DROUTER_TETHER_BASE_INTERVAL*random()/RAND_MAX;
 
   return val;
+}
+
+
+bool Tether::ModifySharedAddress(const QString &keyword) const
+{
+  QStringList args;
+  QString iface_name;
+  uint32_t iface_mask;
+  SyInterfaces *ifaces=new SyInterfaces();
+
+  ifaces->update();
+  for(int i=0;i<ifaces->quantity();i++) {
+    if(ifaces->ipv4Address(i)==tether_config->tetherIpAddress(Config::This)) {
+      iface_name=ifaces->name(i);
+      iface_mask=SyInterfaces::toCidrMask(ifaces->ipv4Netmask(i));
+
+      args.push_back("addr");
+      args.push_back(keyword);
+      args.push_back(tether_config->tetherSharedIpAddress().toString()+
+		     QString().sprintf("/%u",iface_mask));
+      args.push_back("dev");
+      args.push_back(iface_name);
+
+      if(keyword=="add") {
+	global_exit_args.clear();
+	global_exit_args.push_back("addr");
+	global_exit_args.push_back("del");
+	global_exit_args.
+	  push_back(tether_config->tetherSharedIpAddress().toString()+
+		    QString().sprintf("/%u",iface_mask));
+	global_exit_args.push_back("dev");
+	global_exit_args.push_back(iface_name);
+      }
+      QProcess *proc=new QProcess();
+      proc->start("/sbin/ip",args);
+      proc->waitForFinished();
+      delete ifaces;
+      return true;
+    }
+  }
+  delete ifaces;
+
+  return false;
 }

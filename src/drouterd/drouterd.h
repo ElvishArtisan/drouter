@@ -25,8 +25,10 @@
 #include <QObject>
 #include <QTimer>
 
+#include "config.h"
 #include "drouter.h"
 #include "scriptengine.h"
+#include "tether.h"
 
 #define DROUTERD_PROTOCOL_START_INTERVAL 30000
 #define DROUTERD_USAGE "[--no-scripts]\n"
@@ -40,6 +42,7 @@ class MainObject : public QObject
  private slots:
   void protocolData();
   void scriptsData();
+  void instanceStateChangedData(bool this_state);
 
  private:
   DRouter *main_drouter;
@@ -49,6 +52,8 @@ class MainObject : public QObject
   bool main_no_scripts;
   QTimer *main_scripts_timer;
   ScriptEngine *main_script_engine;
+  Tether *main_tether;
+  Config *main_config;
 };
 
 

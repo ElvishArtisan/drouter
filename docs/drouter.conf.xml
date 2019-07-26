@@ -216,6 +216,92 @@
       </variablelist>
     </refsect2>
 
+    <refsect2 id='tether_section'>
+      <title>The [Tether] Section</title>
+      <para>
+	The <userinput>[Tether]</userinput> section configures operation of
+	a pair of Drouter instances operating in an auto-failover
+	configuration. It contains the following parameters:
+      </para>
+      <variablelist>
+	<varlistentry>
+	  <term>
+	    <userinput>IsActivated=Yes</userinput>|<userinput>No</userinput>
+	  </term>
+	  <listitem>
+	    <para>
+	      The &quot;master switch&quot; that turns the tethered redundant
+	      hosts feature on or off. If <userinput>No</userinput>
+	      (the default), the tethering features are completely deactivated,
+	      and none of the other parameters in this section have any effect.
+	    </para>
+	  </listitem>
+	</varlistentry>
+	<varlistentry>
+	  <term>
+	    <userinput>SharedIpAddress=<replaceable>ip-addr</replaceable></userinput>
+	  </term>
+	  <listitem>
+	    <para>
+	      The IPv4 address, in dotted quad format, to be used as the
+	      primary service address for the cluster.  This
+	      addresses should be on the same subnet as that specified in the
+	      <userinput>SystemAAddress=</userinput> and
+	      <userinput>SystemBAddress=</userinput>
+	      parameters (see below).
+	    </para>
+	    <para>
+	      This address will be
+	      automatically assigned to whichever cluster instance is active.
+	    </para>
+	  </listitem>
+	</varlistentry>
+	<varlistentry>
+	  <term>
+	    <userinput>SystemAHostname=<replaceable>host-name</replaceable></userinput>
+	  </term>
+	  <term>
+	      <userinput>SystemBHostname=<replaceable>host-name</replaceable></userinput>
+	  </term>
+	  <listitem>
+	    <para>
+	      The name of each of the hosts constituting the Drouter cluster.
+	    </para>
+	  </listitem>
+	</varlistentry>
+	<varlistentry>
+	  <term>
+	    <userinput>SystemAIpAddress=<replaceable>host-name</replaceable></userinput>
+	  </term>
+	  <term>
+	      <userinput>SystemBIpAddress=<replaceable>host-name</replaceable></userinput>
+	  </term>
+	  <listitem>
+	    <para>
+	      The dedicated IPv4 address, in dotted-quad format, for each of
+	      the hosts constituting the Drouter cluster. These
+	      addresses should be on the same subnet as that specified in the
+	      <userinput>SharedIpAddress=</userinput> parameter (see above).
+	    </para>
+	  </listitem>
+	</varlistentry>
+	<varlistentry>
+	  <term>
+	    <userinput>SystemASerialDevice<replaceable>dev-name</replaceable></userinput>
+	  </term>
+	  <term>
+	      <userinput>SystemBSerialDevice=<replaceable>dev-name</replaceable></userinput>
+	  </term>
+	  <listitem>
+	    <para>
+	      The name of the serial device --e.g.
+	      <userinput>/dev/ttyS0</userinput> -- to be used for the
+	      heartbeat connection to the opposite member of the cluster.
+	    </para>
+	  </listitem>
+	</varlistentry>
+      </variablelist>
+    </refsect2>
   </refsect1>
 
   <refsect1 id='see_also'><title>See Also</title>

@@ -45,6 +45,8 @@ all-local:	buttonpanel.1\
                 drouter.map.xml\
                 drouterd.8\
                 drouterd.xml\
+                dstate.1\
+                dstate.xml\
                 outputpanel.1\
                 outputpanel.xml\
                 xpointpanel.1\
@@ -66,6 +68,8 @@ EXTRA_DIST = buttonpanel.1\
              drouter.map.xml\
              drouterd.8\
              drouterd.xml\
+             dstate.1\
+             dstate.xml\
              outputpanel.1\
              outputpanel.xml\
              xpointpanel.1\
@@ -82,6 +86,7 @@ man_MANS = buttonpanel.1\
            drouter.conf.5\
            drouter.map.5\
            drouterd.8\
+           dstate.1\
            outputpanel.1\
            xpointpanel.1\
            xypanel.1

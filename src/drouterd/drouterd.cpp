@@ -69,6 +69,12 @@ MainObject::MainObject(QObject *parent)
   }
 
   //
+  // Configuration
+  //
+  main_config=new Config();
+  main_config->load();
+
+  //
   // Open Syslog
   //
   openlog("drouterd",log_options,LOG_DAEMON);
@@ -101,9 +107,18 @@ MainObject::MainObject(QObject *parent)
   connect(main_scripts_timer,SIGNAL(timeout()),this,SLOT(scriptsData()));
 
   //
+  // Tethering
+  //
+  main_tether=new Tether(this);
+  connect(main_tether,SIGNAL(instanceStateChanged(bool)),
+	  this,SLOT(instanceStateChangedData(bool)));
+
+  //
   // Start Router Process
   //
   main_drouter=new DRouter(main_protocol_socks,this);
+  connect(main_tether,SIGNAL(instanceStateChanged(bool)),
+	  main_drouter,SLOT(setWriteable(bool)));
   if(!main_drouter->start(&err_msg)) {
     syslog(LOG_ERR,"core router startup error: %s, aborting",
 	   (const char *)err_msg.toUtf8());
@@ -124,6 +139,7 @@ MainObject::MainObject(QObject *parent)
 
 void MainObject::protocolData()
 {
+  QString err_msg;
   pid_t pid=0;
 
   if((pid=fork())==0) {
@@ -152,12 +168,25 @@ void MainObject::protocolData()
   if(!main_no_scripts) {
     main_scripts_timer->start(5000);
   }
+  if(!main_tether->start(main_config,&err_msg)) {
+    fprintf(stderr,"drouterd: tethering system failed to start [%s]\n",
+	    (const char *)err_msg.toUtf8());
+    exit(1);
+  }
 }
 
 
 void MainObject::scriptsData()
 {
   main_script_engine->start();
+}
+
+
+void MainObject::instanceStateChangedData(bool state)
+{
+  if(state) {
+    syslog(LOG_INFO,"we are now the active instance");
+  }
 }
 
 

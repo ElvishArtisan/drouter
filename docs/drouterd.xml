@@ -159,13 +159,16 @@
   <refsect1 id='see_also'><title>See Also</title>
   <para>
   <citerefentry>
-    <refentrytitle>drouter.map</refentrytitle><manvolnum>5</manvolnum>
-  </citerefentry>,
-  <citerefentry>
     <refentrytitle>dlist</refentrytitle><manvolnum>1</manvolnum>
   </citerefentry>,
   <citerefentry>
     <refentrytitle>dmap</refentrytitle><manvolnum>1</manvolnum>
+  </citerefentry>,
+  <citerefentry>
+    <refentrytitle>drouter.map</refentrytitle><manvolnum>5</manvolnum>
+  </citerefentry>,
+  <citerefentry>
+    <refentrytitle>dstate</refentrytitle><manvolnum>1</manvolnum>
   </citerefentry>
   </para>
   </refsect1>

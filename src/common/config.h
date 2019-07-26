@@ -53,6 +53,9 @@ class Config
   int ipcLogPriority() const;
   int nodeLogPriority() const;
   QString lwrpPassword() const;
+  bool tetherIsActivated() const;
+  QHostAddress tetherSharedIpAddress() const;
+  QString tetherHostId(TetherRole role) const;
   QString tetherHostname(TetherRole role) const;
   QHostAddress tetherIpAddress(TetherRole role) const;
   QString tetherSerialDevice(TetherRole role) const;
@@ -68,6 +71,9 @@ class Config
   int conf_ipc_log_priority;
   int conf_node_log_priority;
   QStringList conf_no_audio_alarm_devices;
+  bool conf_tether_is_activated;
+  QHostAddress conf_tether_shared_ip_address;
+  QString conf_tether_host_ids[2];
   QString conf_tether_hostnames[2];
   QHostAddress conf_tether_ip_addresses[2];
   QString conf_tether_serial_devices[2];

@@ -84,6 +84,20 @@ LwrpPassword=
 
 
 [Tether]
+; IsActivated=Yes|No
+;
+; The 'master switch' that turns the tethered redundant hosts feature on
+; or off. If 'No' (the default), the tethering features are completely
+; deactivated.
+IsActivated=No
+
+; SharedIpAddress=<addr>
+;
+; The IPv4 address (in dotted-quad notation) to be used as the primary
+; control address for the cluster. This address will be automatically
+; assigned to whichever cluster instance is active.
+SharedIpAddress=192.168.21.20
+
 ; SystemAHostname=<hostname>
 ; SystemBHostname=<hostname>
 ;
@@ -95,7 +109,7 @@ SystemBHostname=elastigirl
 ; SystemAIpAddress=<ip-addr>
 ; SystemBIpAddress=<ip-addr>
 ;
-; The IPv4 address, in dotted-quad notation, of the Livewire interfaces on
+; The IPv4 address, in dotted-quad notation, of the control interfaces on
 ; each of the hosts constituting the Drouter cluster.
 SystemAIpAddress=192.168.21.22
 SystemBIpAddress=192.168.21.21

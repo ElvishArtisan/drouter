@@ -1,0 +1,123 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<refentry id="stdin" xmlns="http://docbook.org/ns/docbook" version="5.0">
+  <!--
+      Header
+  -->
+  <refmeta>
+    <refentrytitle>dstate</refentrytitle>
+    <manvolnum>1</manvolnum>
+    <refmiscinfo class='source'>July 2019</refmiscinfo>
+    <refmiscinfo class='manual'>Linux Audio Manual</refmiscinfo>
+  </refmeta>
+  <refnamediv>
+    <refname>dstate</refname>
+    <refpurpose>Get the active state of a Drouter instance</refpurpose>
+  </refnamediv>
+  <info>
+    <author>
+      <personname>
+	<firstname>Fred</firstname>
+	<surname>Gleason</surname>
+	<email>fredg@paravelsystems.com</email>
+      </personname>
+      <contrib>Application Author</contrib>
+    </author>
+  </info>
+
+  <!--
+      Body
+  -->
+  <refsynopsisdiv id='synopsis'>
+    <cmdsynopsis>
+      <command>dstate</command>
+      <arg choice='opt'><replaceable>OPTIONS</replaceable></arg>
+      <sbr/>
+    </cmdsynopsis>
+  </refsynopsisdiv>
+
+  <refsect1 id='description'>
+    <title>Description</title>
+    <para>
+      <command>dstate</command><manvolnum>1</manvolnum> is a utility for
+      determining the active state of a Drouter instance.
+    </para>
+    <para>
+      When invoked with no arguments,
+      <command>dstate</command><manvolnum>1</manvolnum>
+      will attempt to connect to a drouter server located at
+      <userinput>localhost</userinput> and print the active state of
+      the Drouter instance reported there. (But see the section
+      ENVIRONMENTAL VARIABLES, below).
+    </para>
+  </refsect1>
+
+  <refsect1 id='options'>
+    <title>Options</title>
+    <variablelist remap='TP'>
+      <varlistentry>
+	<term>
+	  <option>-h</option>, <option>--help</option>
+	</term>
+	<listitem>
+	  <para>
+	    Print a short usage message and then exit.
+	  </para>
+	</listitem>
+      </varlistentry>
+    </variablelist>
+
+    <variablelist remap='TP'>
+      <varlistentry>
+	<term>
+	  <option>--hostname <replaceable>host-name</replaceable></option>
+	</term>
+	<listitem>
+	  <para>
+	    Use the Drouter server at <replaceable>host-name</replaceable>.
+	    Default value is <userinput>localhost</userinput>. See also the
+	    section ENVIRONMENTAL VARIABLES, below.
+	  </para>
+	</listitem>
+      </varlistentry>
+    </variablelist>
+  </refsect1>
+
+  <refsect1 id='environmental_variables'>
+    <title>Environmental Variables</title>
+    <para>
+      The following environmental variables can be used to influence
+      the behavior of <command>dstate</command><manvolnum>1</manvolnum>: 
+    </para>
+    <variablelist>
+      <varlistentry>
+	<term><userinput>$DROUTER_HOSTNAME</userinput></term>
+	<listitem>
+	  <para>
+	    If no <option>--hostname</option> option is given,
+	    <command>dstate</command><manvolnum>1</manvolnum> will
+	    attempt to use the Drouter server referenced in
+	    <userinput>$DROUTER_HOSTNAME</userinput>. If
+	    <userinput>$DROUTER_HOSTNAME</userinput> is not defined,
+	    then the Drouter server at <userinput>localhost</userinput>
+	    will be used.
+	  </para>
+	</listitem>
+      </varlistentry>
+    </variablelist>
+  </refsect1>
+
+  <refsect1 id='see_also'><title>See Also</title>
+  <para>
+    <citerefentry>
+      <refentrytitle>dlist</refentrytitle><manvolnum>1</manvolnum>
+      </citerefentry>,
+      <citerefentry>
+      <refentrytitle>dmap</refentrytitle><manvolnum>8</manvolnum>
+      </citerefentry>,
+      <citerefentry>
+	<refentrytitle>drouterd</refentrytitle><manvolnum>8</manvolnum>
+      </citerefentry>
+  </para>
+  </refsect1>
+</refentry>
+
