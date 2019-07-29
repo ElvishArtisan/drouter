@@ -23,6 +23,7 @@
 
 #include <QHostAddress>
 #include <QObject>
+#include <QStringList>
 #include <QTimer>
 #include <QUdpSocket>
 
@@ -37,6 +38,9 @@ class Tether : public QObject
   bool instanceIsActive() const;
   bool start(Config *config,QString *err_msg);
 
+ public slots:
+  void cleanup();
+
  signals:
   void instanceStateChanged(bool state);
 
@@ -49,7 +53,7 @@ class Tether : public QObject
  private:
   void Backoff();
   int GetInterval() const;
-  bool ModifySharedAddress(const QString &keyword) const;
+  bool ModifySharedAddress(const QString &keyword);
   QUdpSocket *tether_udp_socket;
   char tether_udp_state;
   bool tether_udp_replied;
@@ -60,6 +64,7 @@ class Tether : public QObject
   QTimer *tether_window_timer;
   bool tether_active_state;
   Config *tether_config;
+  QStringList tether_exit_args;
 };
 
 

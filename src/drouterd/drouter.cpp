@@ -210,10 +210,35 @@ bool DRouter::isWriteable() const
 
 void DRouter::setWriteable(bool state)
 {
+  QString code;
   QString sql;
   QSqlQuery *q;
+  SyLwrpClient *lwrp=NULL;
 
   if(drouter_writeable!=state) {
+    //
+    // Update Livewire GPIO
+    //
+    if((lwrp=drouter_nodes.value(drouter_config->tetherGpioIpAddress(Config::This).toIPv4Address()))!=NULL) {
+      code=drouter_config->tetherGpioCode(Config::This);
+      if(!state) {
+	code=SyGpioBundle::invertCode(code);
+      }
+      printf("Sending %s\n",(const char *)code.toUtf8());
+      lwrp->setGpiCode(drouter_config->tetherGpioSlot(Config::This),code);
+    }
+    if((lwrp=drouter_nodes.value(drouter_config->tetherGpioIpAddress(Config::That).toIPv4Address()))!=NULL) {
+      if(state) {
+	code=SyGpioBundle::invertCode(drouter_config->
+				      tetherGpioCode(Config::That));
+	lwrp->setGpiCode(drouter_config->tetherGpioSlot(Config::That),code);
+      }
+    }
+    qApp->processEvents();
+
+    //
+    // Update Protocols
+    //
     QString letter="N";
     if(state) {
       letter="Y";

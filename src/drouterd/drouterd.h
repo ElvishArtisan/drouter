@@ -27,6 +27,7 @@
 
 #include "config.h"
 #include "drouter.h"
+#include "exitnotifier.h"
 #include "scriptengine.h"
 #include "tether.h"
 
@@ -43,6 +44,7 @@ class MainObject : public QObject
   void protocolData();
   void scriptsData();
   void instanceStateChangedData(bool this_state);
+  void exitData();
 
  private:
   DRouter *main_drouter;
@@ -52,6 +54,7 @@ class MainObject : public QObject
   bool main_no_scripts;
   QTimer *main_scripts_timer;
   ScriptEngine *main_script_engine;
+  ExitNotifier *main_exit_notifier;
   Tether *main_tether;
   Config *main_config;
 };

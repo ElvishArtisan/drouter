@@ -122,6 +122,24 @@ QString Config::tetherSerialDevice(Config::TetherRole role) const
 }
 
 
+QHostAddress Config::tetherGpioIpAddress(Config::TetherRole role) const
+{
+  return conf_tether_gpio_ip_addresses[role];
+}
+
+
+int Config::tetherGpioSlot(Config::TetherRole role) const
+{
+  return conf_tether_gpio_slots[role];
+}
+
+
+QString Config::tetherGpioCode(Config::TetherRole role) const
+{
+  return conf_tether_gpio_codes[role];
+}
+
+
 bool Config::tetherIsSane() const
 {
   return conf_tether_is_sane;
@@ -194,6 +212,13 @@ void Config::load()
 			 "SerialDevice");
 	conf_tether_is_sane=
 	  conf_tether_is_sane&&(!conf_tether_serial_devices[i].isEmpty());
+	conf_tether_gpio_ip_addresses[i].
+	  setAddress(p->stringValue("Tether","System"+conf_tether_host_ids[i]+"GpioIpAddress"));
+	conf_tether_gpio_slots[i]=
+	  p->intValue("Tether","System"+conf_tether_host_ids[i]+"GpioSlot")-1;
+	conf_tether_gpio_codes[i]=
+	  p->stringValue("Tether","System"+conf_tether_host_ids[i]+"GpioCode",
+			 "xxxxx");
       }
       if(!conf_tether_is_sane) {
 	syslog(LOG_WARNING,

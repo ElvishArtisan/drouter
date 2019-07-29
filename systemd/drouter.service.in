@@ -6,6 +6,7 @@ Documentation=man:drouterd(8) man:dmap(1) man:dlist(1)
 [Service]
 Type=simple
 ExecStart=@prefix@/sbin/drouterd
+TimeoutStopSec=10
 PrivateTmp=true
 Restart=always
 

@@ -98,6 +98,12 @@ MainObject::MainObject(QObject *parent)
 #endif  // LIBSYSTEMD
 
   //
+  // Exit Notifier
+  //
+  main_exit_notifier=new ExitNotifier(this);
+  connect(main_exit_notifier,SIGNAL(aboutToExit()),this,SLOT(exitData()));
+
+  //
   // State Scripts
   //
   main_script_engine=new ScriptEngine();
@@ -112,6 +118,7 @@ MainObject::MainObject(QObject *parent)
   main_tether=new Tether(this);
   connect(main_tether,SIGNAL(instanceStateChanged(bool)),
 	  this,SLOT(instanceStateChangedData(bool)));
+  connect(main_exit_notifier,SIGNAL(aboutToExit()),main_tether,SLOT(cleanup()));
 
   //
   // Start Router Process
@@ -187,6 +194,13 @@ void MainObject::instanceStateChangedData(bool state)
   if(state) {
     syslog(LOG_INFO,"we are now the active instance");
   }
+}
+
+
+void MainObject::exitData()
+{
+  main_drouter->disconnect();
+  main_drouter->setWriteable(false);
 }
 
 

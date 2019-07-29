@@ -18,40 +18,15 @@
 //   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
 //
 
-#include <signal.h>
 #include <stdlib.h>
 #include <time.h>
 
 #include <QProcess>
-#include <QStringList>
 
 #include <sy/syinterfaces.h>
 
 #include "config.h"
 #include "tether.h"
-
-QStringList global_exit_args;
-
-void __Tether_atexit()
-{
-  if(global_exit_args.size()>0) {
-    QProcess *proc=new QProcess();
-    proc->start("/sbin/ip",global_exit_args);
-    proc->waitForFinished();
-  }
-}
-
-
-void SigHandler(int signo)
-{
-  switch(signo) {
-  case SIGINT:
-  case SIGTERM:
-    exit(0);
-    break;
-  }
-}
-
 
 Tether::Tether(QObject *parent)
   : QObject(parent)
@@ -114,12 +89,19 @@ bool Tether::start(Config *config,QString *err_msg)
     *err_msg="unable to open tether tty port \""+tether_tty_device->name()+"\"";
     return false;
   }
-  atexit(__Tether_atexit);
-  signal(SIGINT,SigHandler);
-  signal(SIGTERM,SigHandler);
   tether_interval_timer->start(GetInterval());
 
   return true;
+}
+
+
+void Tether::cleanup()
+{
+  if(tether_exit_args.size()>0) {
+    QProcess *proc=new QProcess();
+    proc->start("/sbin/ip",tether_exit_args);
+    proc->waitForFinished();
+  }
 }
 
 
@@ -240,7 +222,7 @@ int Tether::GetInterval() const
 }
 
 
-bool Tether::ModifySharedAddress(const QString &keyword) const
+bool Tether::ModifySharedAddress(const QString &keyword)
 {
   QStringList args;
   QString iface_name;
@@ -261,14 +243,14 @@ bool Tether::ModifySharedAddress(const QString &keyword) const
       args.push_back(iface_name);
 
       if(keyword=="add") {
-	global_exit_args.clear();
-	global_exit_args.push_back("addr");
-	global_exit_args.push_back("del");
-	global_exit_args.
+	tether_exit_args.clear();
+	tether_exit_args.push_back("addr");
+	tether_exit_args.push_back("del");
+	tether_exit_args.
 	  push_back(tether_config->tetherSharedIpAddress().toString()+
 		    QString().sprintf("/%u",iface_mask));
-	global_exit_args.push_back("dev");
-	global_exit_args.push_back(iface_name);
+	tether_exit_args.push_back("dev");
+	tether_exit_args.push_back(iface_name);
       }
       QProcess *proc=new QProcess();
       proc->start("/sbin/ip",args);

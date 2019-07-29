@@ -114,7 +114,6 @@ SystemBHostname=elastigirl
 SystemAIpAddress=192.168.21.22
 SystemBIpAddress=192.168.21.21
 
-
 ; SystemASerialDevice=<dev-name>
 ; SystemBSerialDevice=<dev-name>
 ;
@@ -122,3 +121,28 @@ SystemBIpAddress=192.168.21.21
 ; constituting the Drouter cluster.
 SystemASerialDevice=/dev/ttyUSB0
 SystemBSerialDevice=/dev/ttyUSB0
+
+; SystemAGpioIpAddress=<addr>
+; SystemBGpioIpAddress=<addr>
+;
+; The IPv4 address (in dotted-quad notation) of the node to which to send
+; GPIO notifications of each instance's active state.
+;
+SystemAGpioIpAddress=172.30.4.211
+SystemBGpioIpAddress=172.30.4.211
+
+; SystemAGpioSlot=<slot>
+; SystemBGpioSlot=<slot>
+;
+; Ths slot number of the GPIO to use on the specified node.
+;
+SystemAGpioSlot=2
+SystemBGpioSlot=2
+
+; SystemAGpioCode=<code-str>
+; SystemBGpioCode=<code-str>
+;
+; Ths code string of the GPIO to use on the specified node/slot.
+;
+SystemAGpioBit=Lxxxx
+SystemBGpioBit=xLxxx

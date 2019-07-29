@@ -450,3 +450,7 @@
 	* Implemented auto-failover between two Drouter instances
 	using the tether mechanism.
 	* Added a dstate(1) command.
+2019-07-29 Fred Gleason <fredg@paravelsystems.com>
+	* Added 'System<n>GpioAddress=', 'System<n>GpioAddressSlot=' and
+	'System<n>GpioCode=' directives to the '[Tether]' section of
+	drouter.conf(5).

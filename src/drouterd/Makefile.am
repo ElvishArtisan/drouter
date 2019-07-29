@@ -35,6 +35,7 @@ noinst_PROGRAMS = tethertest
 
 dist_drouterd_SOURCES = drouter.cpp drouter.h\
                         drouterd.cpp drouterd.h\
+                        exitnotifier.cpp exitnotifier.h\
                         protoipc.h\
                         scriptengine.cpp scriptengine.h\
                         tether.cpp tether.h\
@@ -44,6 +45,7 @@ nodist_drouterd_SOURCES = config.cpp config.h\
                           endpointmap.cpp endpointmap.h\
                           moc_drouter.cpp\
                           moc_drouterd.cpp\
+                          moc_exitnotifier.cpp\
                           moc_scriptengine.cpp\
                           moc_tether.cpp\
                           moc_ttydevice.cpp\

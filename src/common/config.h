@@ -59,6 +59,9 @@ class Config
   QString tetherHostname(TetherRole role) const;
   QHostAddress tetherIpAddress(TetherRole role) const;
   QString tetherSerialDevice(TetherRole role) const;
+  QHostAddress tetherGpioIpAddress(TetherRole role) const;
+  int tetherGpioSlot(TetherRole role) const;
+  QString tetherGpioCode(TetherRole role) const;
   bool tetherIsSane() const;
   void load();
 
@@ -77,6 +80,9 @@ class Config
   QString conf_tether_hostnames[2];
   QHostAddress conf_tether_ip_addresses[2];
   QString conf_tether_serial_devices[2];
+  QHostAddress conf_tether_gpio_ip_addresses[2];
+  int conf_tether_gpio_slots[2];
+  QString conf_tether_gpio_codes[2];
   bool conf_tether_is_sane;
 };
 
