@@ -28,7 +28,7 @@
 #include <QString>
 #include <QStringList>
 
-#define ENDPOINTMAP_MAP_DIRECTORY "/etc/drouter.d/maps"
+#define ENDPOINTMAP_MAP_DIRECTORY "/etc/drouter/maps.d"
 #define ENDPOINTMAP_MAP_FILTER QString("*.map")
 
 class Snapshot

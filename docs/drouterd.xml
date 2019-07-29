@@ -91,7 +91,7 @@
       <listitem>
 	<para>
 	  Do not start any state scripts found in
-	  <userinput>/etc/drouter.d/scripts</userinput>. Mostly useful
+	  <userinput>/etc/drouter/scripts.d</userinput>. Mostly useful
 	  for debugging.
 	</para>
       </listitem>
@@ -117,7 +117,7 @@
   <para>
     Configuration of <command>drouterd</command><manvolnum>8</manvolnum>
     is done by means of textual configuration files placed in various
-    subdirectories below <userinput>/etc/drouter.d/</userinput>.
+    subdirectories below <userinput>/etc/drouter/</userinput>.
     These files are read by
     <command>drouterd</command><manvolnum>8</manvolnum> upon startup.
   </para>
@@ -125,7 +125,7 @@
     <title>State Scripts</title>
     <para>
       Python state scripts should be placed in
-      <userinput>/etc/drouter.d/scripts/</userinput>, with each script
+      <userinput>/etc/drouter/scripts.d/</userinput>, with each script
       named with a <userinput>.py</userinput> extension and set with
       mode <userinput>0755</userinput>. Documentation of the Python
       API can be found by executing the following statements at an
@@ -145,7 +145,7 @@
     <title>Software Authority Routers</title>
     <para>
       Maps for generating routers to be exported via Software Authority
-      Protocol should be placed in <userinput>/etc/drouter.d/maps/</userinput>,
+      Protocol should be placed in <userinput>/etc/drouter/maps.d/</userinput>,
       with each map file named with a <userinput>.map</userinput> extension.
       See the <command>dmap</command><manvolnum>1</manvolnum> man page for
       information on generating such maps, as well as the

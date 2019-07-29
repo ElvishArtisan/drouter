@@ -454,3 +454,7 @@
 	* Added 'System<n>GpioAddress=', 'System<n>GpioAddressSlot=' and
 	'System<n>GpioCode=' directives to the '[Tether]' section of
 	drouter.conf(5).
+2019-07-29 Fred Gleason <fredg@paravelsystems.com>
+	* Changed the base configuration directory to '/etc/drouter/'.
+	* Changed the maps directory to '/etc/drouter/maps.d/'.
+	* Changed the script directory to '/etc/drouter/scripts.d/'.

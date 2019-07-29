@@ -71,8 +71,8 @@ make
 %install
 rm -rf $RPM_BUILD_ROOT
 make install DESTDIR=$RPM_BUILD_ROOT
-mkdir -p $RPM_BUILD_ROOT/etc/drouter.d/maps
-mkdir -p $RPM_BUILD_ROOT/etc/drouter.d/scripts
+mkdir -p $RPM_BUILD_ROOT/etc/drouter/maps.d
+mkdir -p $RPM_BUILD_ROOT/etc/drouter/scripts.d
 mkdir -p $RPM_BUILD_ROOT/%{_datadir}/doc/drouter-%{version}
 cp AUTHORS $RPM_BUILD_ROOT/%{_datadir}/doc/drouter-%{version}/
 cp ChangeLog $RPM_BUILD_ROOT/%{_datadir}/doc/drouter-%{version}/
@@ -106,9 +106,9 @@ fi
 if test "@DISTRO@" = "redhat" ; then
   PACKAGE_DOC_DIR=%_docdir/%{name}-@VERSION@
 fi
-if test ! -e /etc/drouter.d/drouter.conf ; then
-  mkdir -p /etc/drouter.d
-  cp $PACKAGE_DOC_DIR/drouter.conf-sample /etc/drouter.d/drouter.conf
+if test ! -e /etc/drouter/drouter.conf ; then
+  mkdir -p /etc/drouter
+  cp $PACKAGE_DOC_DIR/drouter.conf-sample /etc/drouter/drouter.conf
 fi
 
 
@@ -144,8 +144,8 @@ rm -rf $RPM_BUILD_ROOT
 %{_datadir}/man/man8/drouterd.8.gz
 /lib/systemd/system/drouter.service
 /lib/systemd/system/drouter.socket
-%dir /etc/drouter.d/maps
-%dir /etc/drouter.d/scripts
+%dir /etc/drouter/maps.d
+%dir /etc/drouter/scripts.d
 %{_datadir}/doc/drouter-%{version}/protocols/*
 %{_datadir}/doc/drouter-%{version}/AUTHORS
 %{_datadir}/doc/drouter-%{version}/ChangeLog

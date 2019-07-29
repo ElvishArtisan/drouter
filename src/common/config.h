@@ -25,7 +25,7 @@
 #include <QString>
 #include <QStringList>
 
-#define DROUTER_CONF_FILE "/etc/drouter.d/drouter.conf"
+#define DROUTER_CONF_FILE "/etc/drouter/drouter.conf"
 #define DROUTER_DEFAULT_CLIP_THRESHOLD -20
 #define DROUTER_DEFAULT_CLIP_TIMEOUT 1000
 #define DROUTER_DEFAULT_SILENCE_THRESHOLD -500

@@ -34,7 +34,7 @@
     <command>drouterd</command><manvolnum>8</manvolnum> service via
     Software Authority protocol, one file per router to be defined. Map
     files must end with a <userinput>.map</userinput> extension and be
-    placed in the <userinput>/etc/drouter.d/maps/</userinput> subdirectory
+    placed in the <userinput>/etc/drouter/maps.d/</userinput> subdirectory
     on the system running <command>drouterd</command><manvolnum>8</manvolnum>.
   </para>
   </refsect1>

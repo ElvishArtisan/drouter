@@ -26,7 +26,7 @@
 #include <QTimer>
 
 #define SCRIPTENGINE_RESTART_INTERVAL 1000
-#define SCRIPTENGINE_SCRIPTS_DIRECTORY QString("/etc/drouter.d/scripts")
+#define SCRIPTENGINE_SCRIPTS_DIRECTORY QString("/etc/drouter/scripts.d")
 #define SCRIPTENGINE_SCRIPTS_FILTER QString("*.py")
 
 class ScriptEngine : public QObject

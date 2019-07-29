@@ -30,7 +30,7 @@
   <refsect1 id='description'><title>Description</title>
   <para>
     The <command>drouter.conf</command><manvolnum>5</manvolnum> file
-    (located at &quot;/etc/drouter.d/drouter.conf&quot;)
+    (located at &quot;/etc/drouter/drouter.conf&quot;)
     is the main configuration file for the DRouter system.
   </para>
   </refsect1>
