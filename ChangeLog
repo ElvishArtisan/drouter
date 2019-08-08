@@ -466,3 +466,5 @@
 	* Added a '--no-creds' switch to shotpanel(1).
 	* Added a '--no-creds' switch to xpointpanel(1).
 	* Added a '--no-creds' switch to xypanel(1).
+2019-08-08 Fred Gleason <fredg@paravelsystems.com>
+	* Added a shotpanel(1) man page.

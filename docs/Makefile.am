@@ -49,6 +49,8 @@ all-local:	buttonpanel.1\
                 dstate.xml\
                 outputpanel.1\
                 outputpanel.xml\
+                shotpanel.1\
+                shotpanel.xml\
                 xpointpanel.1\
                 xpointpanel.xml\
                 xypanel.1\
@@ -72,6 +74,8 @@ EXTRA_DIST = buttonpanel.1\
              dstate.xml\
              outputpanel.1\
              outputpanel.xml\
+             shotpanel.1\
+             shotpanel.xml\
              xpointpanel.1\
              xpointpanel.xml\
              xypanel.1\
@@ -88,6 +92,7 @@ man_MANS = buttonpanel.1\
            drouterd.8\
            dstate.1\
            outputpanel.1\
+           shotpanel.1\
            xpointpanel.1\
            xypanel.1
 
