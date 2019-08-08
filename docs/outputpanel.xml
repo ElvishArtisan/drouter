@@ -89,6 +89,17 @@
 
   <varlistentry>
     <term>
+      <option>--no-creds</option>
+    </term>
+    <listitem>
+      <para>
+	Skip the &quot;Login&quot; step when connecting to the server.
+      </para>
+    </listitem>
+  </varlistentry>
+
+  <varlistentry>
+    <term>
       <option>--output=<arg coice="opt"><replaceable>router-num</replaceable></arg>:<arg choice="req"><replaceable>output-num</replaceable></arg></option>
     </term>
     <listitem>

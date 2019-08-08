@@ -51,6 +51,7 @@ MainWidget::MainWidget(QWidget *parent)
   bool ok;
   unsigned cols=0;
   int ypos=0;
+  bool no_creds=false;
   panel_quantity=0;
   panel_columns=0;
   panel_rows=0;
@@ -69,6 +70,10 @@ MainWidget::MainWidget(QWidget *parent)
     }
     if(cmd->key(i)=="--hostname") {
       panel_hostname=cmd->value(i);
+      cmd->setProcessed(i,true);
+    }
+    if(cmd->key(i)=="--no-creds") {
+      no_creds=true;
       cmd->setProcessed(i,true);
     }
     if(cmd->key(i)=="--username") {
@@ -208,7 +213,7 @@ MainWidget::MainWidget(QWidget *parent)
   //
   // Fire up the SAP connection
   //
-  if(panel_password.isEmpty()) {
+  if((!no_creds)&&panel_password.isEmpty()) {
     if(!panel_login_dialog->exec(&panel_username,&panel_password)) {
       exit(1);
     }

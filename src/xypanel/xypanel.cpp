@@ -44,6 +44,7 @@ MainWidget::MainWidget(QWidget *parent)
   :QWidget(parent)
 {
   QString config_filename;
+  bool no_creds=false;
   panel_clock_state=false;
   panel_current_input=0;
   panel_initial_connected=false;
@@ -72,6 +73,10 @@ MainWidget::MainWidget(QWidget *parent)
     }
     if(cmd->key(i)=="--password") {
       panel_password=cmd->value(i);
+      cmd->setProcessed(i,true);
+    }
+    if(cmd->key(i)=="--no-creds") {
+      no_creds=true;
       cmd->setProcessed(i,true);
     }
     if(!cmd->processed(i)) {
@@ -187,7 +192,7 @@ MainWidget::MainWidget(QWidget *parent)
 
   setWindowTitle("XYPanel ["+tr("Server")+": "+panel_hostname+"]");
 
-  if(panel_password.isEmpty()) {
+  if((!no_creds)&&panel_password.isEmpty()) {
     if(!panel_login_dialog->exec(&panel_username,&panel_password)) {
       exit(1);
     }

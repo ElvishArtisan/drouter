@@ -44,6 +44,7 @@ MainWidget::MainWidget(QWidget *parent)
   :QWidget(parent)
 {
   QString config_filename;
+  bool no_creds=false;
   panel_initial_connected=false;
 
   //
@@ -62,6 +63,10 @@ MainWidget::MainWidget(QWidget *parent)
   for(unsigned i=0;i<cmd->keys();i++) {
     if(cmd->key(i)=="--hostname") {
       panel_hostname=cmd->value(i);
+      cmd->setProcessed(i,true);
+    }
+    if(cmd->key(i)=="--no-creds") {
+      no_creds=true;
       cmd->setProcessed(i,true);
     }
     if(cmd->key(i)=="--username") {
@@ -154,7 +159,7 @@ MainWidget::MainWidget(QWidget *parent)
 
   setWindowTitle("ShotPanel ["+tr("Server")+": "+panel_hostname+"]");
 
-  if(panel_password.isEmpty()) {
+  if((!no_creds)&&panel_password.isEmpty()) {
     if(!panel_login_dialog->exec(&panel_username,&panel_password)) {
       exit(1);
     }
