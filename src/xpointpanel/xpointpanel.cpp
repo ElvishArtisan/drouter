@@ -22,6 +22,7 @@
 #include <stdlib.h>
 
 #include <QApplication>
+#include <QDesktopWidget>
 #include <QGraphicsProxyWidget>
 #include <QGraphicsTextItem>
 #include <QIcon>
@@ -48,7 +49,9 @@ MainWidget::MainWidget(QWidget *parent)
 {
   QString config_filename;
   bool no_creds=false;
+  bool ok=false;
   panel_initial_connected=false;
+  panel_initial_router=-1;
 
   //
   // Initialize Variables
@@ -64,6 +67,16 @@ MainWidget::MainWidget(QWidget *parent)
     new SyCmdSwitch(qApp->argc(),qApp->argv(),"xpointpanel",VERSION,
 		    XPOINTPANEL_USAGE);
   for(unsigned i=0;i<cmd->keys();i++) {
+    if(cmd->key(i)=="--initial-router") {
+      panel_initial_router=cmd->value(i).toInt(&ok);
+      if(!ok) {
+	QMessageBox::warning(this,"XPointPanel - "+tr("Error"),
+			     tr("Invalid --initial-router value")+
+			     " \""+cmd->value(i)+"\".");
+	exit(1);
+      }
+      cmd->setProcessed(i,true);
+    }
     if(cmd->key(i)=="--hostname") {
       panel_hostname=cmd->value(i);
       cmd->setProcessed(i,true);
@@ -153,7 +166,7 @@ MainWidget::MainWidget(QWidget *parent)
   //
   // Fix the Window Size
   //
-  //  setMinimumSize(sizeHint());
+  //  setMinimumSize(QSize(440,400));
 
   //
   // The SA Connection
@@ -185,7 +198,7 @@ MainWidget::~MainWidget()
 
 QSize MainWidget::sizeHint() const
 {
-  return QSize(800,600);
+  return QSize(440,400);
 }
 
 
@@ -266,7 +279,19 @@ void MainWidget::routerBoxActivatedData(int n)
       }
     }
   }
-  resizeEvent(NULL);
+  QRect screen=QApplication::desktop()->availableGeometry();
+  QSize panel(15+panel_view->sizeHint().width()+
+	      panel_input_list->sizeHint().width(),
+	      15+panel_view->sizeHint().height()+
+	      panel_output_list->sizeHint().width());
+  if(panel.width()>screen.width()) {
+    panel.setWidth(screen.width()-10);
+  }
+  if(panel.height()>screen.height()) {
+    panel.setHeight(screen.height());
+  }
+  resize(panel);
+  show();
 }
 
 
@@ -280,10 +305,12 @@ void MainWidget::connectedData(bool state,SaParser::ConnectionState cstate)
       panel_router_box->
 	insertItem(panel_router_box->count(),
 		   QString().sprintf("%d - ",it.key())+it.value(),it.key());
+      if(it.key()==panel_initial_router) {
+	panel_router_box->setCurrentIndex(panel_router_box->count()-1);
+      }
     }
     panel_router_label->setEnabled(true);
     panel_router_box->setEnabled(true);
-    panel_router_box->setCurrentIndex(0);
     routerBoxActivatedData(panel_router_box->currentIndex());
     panel_initial_connected=true;
   }
@@ -370,8 +397,8 @@ void MainWidget::resizeEvent(QResizeEvent *e)
     setGeometry(15,10,panel_input_list->sizeHint().width()-10,20);
   panel_router_box->
     setGeometry(10,32,panel_input_list->sizeHint().width()-10,20);
-  panel_input_list->setGeometry(10,panel_output_list->sizeHint().width()+10,panel_input_list->sizeHint().width()-0,size().height()-(panel_output_list->sizeHint().width()-45));
-  panel_output_list->setGeometry(panel_input_list->sizeHint().width()+10,10,size().width()-10,panel_output_list->sizeHint().width()+1);
+  panel_input_list->setGeometry(10,panel_output_list->sizeHint().width()+10,panel_input_list->sizeHint().width()-0,e->size().height()-(panel_output_list->sizeHint().width()-45));
+  panel_output_list->setGeometry(panel_input_list->sizeHint().width()+10,10,e->size().width()-10,panel_output_list->sizeHint().width()+1);
   
   int view_width=3+26*panel_output_list->endpointQuantity();
   int bar_width=0;
@@ -379,13 +406,13 @@ void MainWidget::resizeEvent(QResizeEvent *e)
   int bar_height=0;
   int bar_x=0;
   int bar_y=0;
-  if(view_width>(size().width()-(panel_input_list->sizeHint().width()+10))) {
-      view_width=size().width()-(panel_input_list->sizeHint().width()+10);
+  if(view_width>(e->size().width()-(panel_input_list->sizeHint().width()+10))) {
+      view_width=e->size().width()-(panel_input_list->sizeHint().width()+10);
       bar_x=1;
       bar_height=15;
   }
-  if(view_height>(size().height()-(panel_output_list->sizeHint().width()+15))) {
-    view_height=size().height()-(panel_output_list->sizeHint().width()+15);
+  if(view_height>(e->size().height()-(panel_output_list->sizeHint().width()+15))) {
+    view_height=e->size().height()-(panel_output_list->sizeHint().width()+15);
     bar_y=1;
     bar_width=15;
   }
@@ -406,6 +433,6 @@ int main(int argc,char *argv[])
   //
   MainWidget *w=new MainWidget(NULL);
   w->setGeometry(w->geometry().x(),w->geometry().y(),w->sizeHint().width(),w->sizeHint().height());
-  w->show();
+  //  w->show();
   return a.exec();
 }

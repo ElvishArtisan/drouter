@@ -468,3 +468,5 @@
 	* Added a '--no-creds' switch to xypanel(1).
 2019-08-08 Fred Gleason <fredg@paravelsystems.com>
 	* Added a shotpanel(1) man page.
+2019-08-08 Fred Gleason <fredg@paravelsystems.com>
+	* Added a '--initial-router=' switch to xpointpanel(1).

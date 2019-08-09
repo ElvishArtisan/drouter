@@ -62,6 +62,7 @@ class MainWidget : public QWidget
   QString panel_hostname;
   QString panel_username;
   QString panel_password;
+  int panel_initial_router;
   QLabel *panel_router_label;
   ComboBox *panel_router_box;
   SaParser *panel_parser;
