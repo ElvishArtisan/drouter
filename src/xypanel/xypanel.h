@@ -77,6 +77,7 @@ class MainWidget : public QWidget
   QTimer *panel_clock_timer;
   bool panel_clock_state;
   bool panel_initial_connected;
+  int panel_initial_router;
 };
 
 

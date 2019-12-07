@@ -45,9 +45,12 @@ MainWidget::MainWidget(QWidget *parent)
 {
   QString config_filename;
   bool no_creds=false;
+  bool ok=false;
+
   panel_clock_state=false;
   panel_current_input=0;
   panel_initial_connected=false;
+  panel_initial_router=-1;
 
   //
   // Initialize Variables
@@ -65,6 +68,16 @@ MainWidget::MainWidget(QWidget *parent)
   for(unsigned i=0;i<cmd->keys();i++) {
     if(cmd->key(i)=="--hostname") {
       panel_hostname=cmd->value(i);
+      cmd->setProcessed(i,true);
+    }
+    if(cmd->key(i)=="--initial-router") {
+      panel_initial_router=cmd->value(i).toInt(&ok);
+      if(!ok) {
+	QMessageBox::warning(this,"XYPanel - "+tr("Error"),
+			     tr("Invalid --initial-router value")+
+			     " \""+cmd->value(i)+"\".");
+	exit(1);
+      }
       cmd->setProcessed(i,true);
     }
     if(cmd->key(i)=="--username") {
@@ -301,8 +314,13 @@ void MainWidget::connectedData(bool state,SaParser::ConnectionState cstate)
 	it++) {
       panel_router_box->
 	insertItem(panel_router_box->count(),it.value(),it.key());
+      if(it.key()==panel_initial_router) {
+	panel_router_box->setCurrentIndex(panel_router_box->count()-1);
+      }
     }
-    panel_router_box->setCurrentIndex(0);
+    if(panel_initial_router<0) {
+      panel_router_box->setCurrentIndex(0);
+    }
     routerBoxActivatedData(panel_router_box->currentIndex());
     panel_initial_connected=true;
   }

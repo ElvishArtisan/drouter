@@ -72,6 +72,21 @@
     </varlistentry>
   </variablelist>
 
+  <variablelist remap='TP'>
+    <varlistentry>
+      <term>
+	<option>--initial-router=<replaceable>router-num</replaceable></option>
+      </term>
+      <listitem>
+	<para>
+	  Display router number <replaceable>router-num</replaceable> after
+	  startup. Default is to display the first router listed by the
+	  <userinput>RouterNames</userinput> command.
+	</para>
+      </listitem>
+    </varlistentry>
+  </variablelist>
+
   <varlistentry>
     <term>
       <option>--no-creds</option>
