@@ -313,7 +313,8 @@ void MainWidget::connectedData(bool state,SaParser::ConnectionState cstate)
     for(QMap<int,QString>::const_iterator it=routers.begin();it!=routers.end();
 	it++) {
       panel_router_box->
-	insertItem(panel_router_box->count(),it.value(),it.key());
+	insertItem(panel_router_box->count(),
+		   QString().sprintf("%d - ",it.key())+it.value(),it.key());
       if(it.key()==panel_initial_router) {
 	panel_router_box->setCurrentIndex(panel_router_box->count()-1);
       }

@@ -476,3 +476,6 @@
 	* Fixed a typo in the xypanel(1) man page.
 2019-12-06 Fred Gleason <fredg@paravelsystems.com>
 	* Added a '--initial-router=' switch to xypanel(1).
+2019-12-06 Fred Gleason <fredg@paravelsystems.com>
+	* Added the router number to the name of the router in the
+	'Router' dropdown in xypanel(1).
