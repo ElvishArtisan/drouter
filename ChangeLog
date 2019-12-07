@@ -470,3 +470,7 @@
 	* Added a shotpanel(1) man page.
 2019-08-08 Fred Gleason <fredg@paravelsystems.com>
 	* Added a '--initial-router=' switch to xpointpanel(1).
+2019-12-06 Fred Gleason <fredg@paravelsystems.com>
+	* Fixed a typo in the shotpanel(1) man page.
+	* Fixed a typo in the xpointpanel(1) man page.
+	* Fixed a typo in the xypanel(1) man page.

@@ -90,7 +90,7 @@
     <listitem>
       <para>
 	Password to use when authenticating on the server. If not
-	given, buttonpanel<manvolnum>1</manvolnum> will prompt for one
+	given, xypanel<manvolnum>1</manvolnum> will prompt for one
 	at startup.
       </para>
     </listitem>
