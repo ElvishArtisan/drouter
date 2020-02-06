@@ -484,3 +484,5 @@
 	in the router to be hidden if the '--arm-button' switch was given
 	and the the number of buttons was an integer ratio of the value of
 	the '--columns=' switch.
+2020-02-06 Fred Gleason <fredg@paravelsystems.com>
+	* Switched from MM/DD/YYYY to DD MMM YYYY date formats in 'NEWS'.
