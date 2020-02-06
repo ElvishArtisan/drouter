@@ -1,5 +1,18 @@
 This is the NEWS file for the drouter package.
 
+v0.9.3 - 6 February 2020
+
+Beta Release
+
+Changes:
+   New panel switches. Added '--no-creds' and '--initial-router' switches
+   to the panel applets. See the respective man pages for details.
+
+   buttonpanel(1). Fixed a bug in buttonpanel(1) that caused the final
+   button in a router to be hidden if the '--arm-button' switch was given
+   and the number of buttons in the router was an integer ratio of the
+   '--columns' switch.
+-------------------------------------------------------------------------------
 v0.9.2 - 29 July 2019
 
 Beta Release
