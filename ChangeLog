@@ -479,3 +479,8 @@
 2019-12-06 Fred Gleason <fredg@paravelsystems.com>
 	* Added the router number to the name of the router in the
 	'Router' dropdown in xypanel(1).
+2020-02-06 Fred Gleason <fredg@paravelsystems.com>
+	* Fixed a bug in buttonpanel(1) that caused the final button
+	in the router to be hidden if the '--arm-button' switch was given
+	and the the number of buttons was an integer ratio of the value of
+	the '--columns=' switch.

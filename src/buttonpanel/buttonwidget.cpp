@@ -2,7 +2,7 @@
 //
 // Button container for a single output.
 //
-//   (C) Copyright 2002-2018 Fred Gleason <fredg@paravelsystems.com>
+//   (C) Copyright 2002-2020 Fred Gleason <fredg@paravelsystems.com>
 //
 //   This program is free software; you can redistribute it and/or modify
 //   it under the terms of the GNU General Public License as
@@ -124,7 +124,7 @@ void ButtonWidget::armButtonClickedData()
 void ButtonWidget::changeConnectionState(bool state,
 				       SaParser::ConnectionState cstate)
 {
-  printf("changeConnectionState(%d)\n",state);
+  // printf("changeConnectionState(%d)\n",state);
   if(state) {
     for(QMap<int,AutoPushButton *>::const_iterator it=panel_buttons.begin();
 	it!=panel_buttons.end();it++) {
@@ -169,7 +169,11 @@ void ButtonWidget::changeConnectionState(bool state,
     }
     col++;
   }
-
+  if(panel_columns>1) {
+    if((panel_arm_button!=NULL)&&((panel_buttons.size()%panel_columns)==0)) {
+      panel_rows++;
+    }
+  }
   resize(sizeHint());
 
 }
@@ -219,7 +223,7 @@ void ButtonWidget::resizeEvent(QResizeEvent *e)
       it.value()->setGeometry(0+BUTTONWIDGET_CELL_WIDTH*col,0+22+BUTTONWIDGET_CELL_HEIGHT*(row),
 			      BUTTONWIDGET_CELL_WIDTH-10,BUTTONWIDGET_CELL_HEIGHT-10);
       col++;
-      if((panel_columns>0)&&(col==panel_columns)) {
+      if((panel_columns>0)&&(col>=panel_columns)) {
 	col=0;
 	row++;
       }
