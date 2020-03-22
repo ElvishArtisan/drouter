@@ -53,6 +53,10 @@ class SaParser : public QObject
   QString outputLongName(int router,int output) const;
   int outputCrosspoint(int router,int output) const;
   void setOutputCrosspoint(int router,int output,int input);
+  QString gpiState(int router,int input) const;
+  void setGpiState(int router,int input,const QString &code,int msec=-1);
+  QString gpoState(int router,int output) const;
+  void setGpoState(int router,int output,const QString &code,int msec=-1);
   int snapshotQuantity(int router) const;
   QString snapshotName(int router,int n) const;
   void activateSnapshot(int router,const QString &snapshot);
@@ -67,6 +71,8 @@ class SaParser : public QObject
   void inputListChanged();
   void outputListChanged();
   void outputCrosspointChanged(int router,int output,int input);
+  void gpiStateChanged(int router,int input,const QString &code);
+  void gpoStateChanged(int router,int output,const QString &code);
 
  private slots:
   void connectedData();
@@ -108,6 +114,8 @@ class SaParser : public QObject
   QMap<int,QMap<int,QString> > sa_output_names;
   QMap<int,QMap<int,QString> > sa_output_long_names;
   QMap<int,QMap<int,int> > sa_output_xpoints;
+  QMap<int,QMap<int,QString> > sa_gpi_states;
+  QMap<int,QMap<int,QString> > sa_gpo_states;
   QMap<int,QStringList> sa_snapshot_names;
   QTimer *sa_holdoff_timer;
 };

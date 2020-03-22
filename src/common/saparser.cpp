@@ -115,6 +115,44 @@ void SaParser::setOutputCrosspoint(int router,int output,int input)
 }
 
 
+QString SaParser::gpiState(int router,int input) const
+{
+  return sa_gpi_states[router][input];
+}
+
+
+void SaParser::setGpiState(int router,int input,const QString &code,int msec)
+{
+  if(msec<0) {
+    SendCommand(QString().sprintf("TriggerGPI %d %d %s",router,input,
+				  code.toUtf8().constData()));
+  }
+  else {
+    SendCommand(QString().sprintf("TriggerGPI %d %d %s %d",router,input,
+				  code.toUtf8().constData(),msec));
+  }
+}
+
+
+QString SaParser::gpoState(int router,int output) const
+{
+  return sa_gpo_states[router][output];
+}
+
+
+void SaParser::setGpoState(int router,int output,const QString &code,int msec)
+{
+  if(msec<0) {
+    SendCommand(QString().sprintf("TriggerGPO %d %d %s",router,output,
+				  code.toUtf8().constData()));
+  }
+  else {
+    SendCommand(QString().sprintf("TriggerGPO %d %d %s %d",router,output,
+				  code.toUtf8().constData(),msec));
+  }
+}
+
+
 int SaParser::snapshotQuantity(int router) const
 {
   return sa_snapshot_names[router].size();
@@ -363,6 +401,36 @@ void SaParser::DispatchCommand(QString cmd)
 	    emit connected(true,SaParser::Ok);
 	  }
 	}
+      }
+    }
+  }
+
+  //
+  // Process GPI State Changes
+  //
+  if((f0[0]=="gpistat")&&(f0.size()==4)) {
+    int router=f0[1].toUInt(&ok);
+    if(ok) {
+      int input=f0[2].toInt(&ok);
+      if(ok) {
+	sa_gpi_states[router][input]=f0[3];
+	emit gpiStateChanged(router,input,f0[3]);
+	printf("gpiStateChanged(%d,%d,%s)\n",router,input,f0[3].toUtf8().constData());
+      }
+    }
+  }
+
+  //
+  // Process GPO State Changes
+  //
+  if((f0[0]=="gpostat")&&(f0.size()==4)) {
+    int router=f0[1].toUInt(&ok);
+    if(ok) {
+      int output=f0[2].toInt(&ok);
+      if(ok) {
+	sa_gpo_states[router][output]=f0[3];
+	emit gpoStateChanged(router,output,f0[3]);
+	printf("gpoStateChanged(%d,%d,%s)\n",router,output,f0[3].toUtf8().constData());
       }
     }
   }
