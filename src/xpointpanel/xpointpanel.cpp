@@ -2,7 +2,7 @@
 //
 // Full graphical crosspoint panel for SA devices.
 //
-//   (C) Copyright 2017 Fred Gleason <fredg@paravelsystems.com>
+//   (C) Copyright 2017-2020 Fred Gleason <fredg@paravelsystems.com>
 //
 //   This program is free software; you can redistribute it and/or modify
 //   it under the terms of the GNU General Public License as
@@ -146,8 +146,8 @@ MainWidget::MainWidget(QWidget *parent)
   //
   // Endpoint Lists
   //
-  panel_input_list=new EndpointList(EndpointList::Horizontal,this);
-  panel_output_list=new EndpointList(EndpointList::Vertical,this);
+  panel_input_list=new EndpointList(Qt::Horizontal,this);
+  panel_output_list=new EndpointList(Qt::Vertical,this);
 
   //
   // Scroll Area
@@ -164,11 +164,6 @@ MainWidget::MainWidget(QWidget *parent)
 	  panel_output_list,SLOT(setPosition(int)));
 
   //
-  // Fix the Window Size
-  //
-  //  setMinimumSize(QSize(440,400));
-
-  //
   // The SA Connection
   //
   panel_parser=new SaParser(this);
@@ -178,6 +173,10 @@ MainWidget::MainWidget(QWidget *parent)
 	  this,SLOT(errorData(QAbstractSocket::SocketError)));
   connect(panel_parser,SIGNAL(outputCrosspointChanged(int,int,int)),
 	  this,SLOT(outputCrosspointChangedData(int,int,int)));
+  connect(panel_parser,SIGNAL(gpiStateChanged(int,int,const QString &)),
+	  panel_input_list,SLOT(setGpioState(int,int,const QString &)));
+  connect(panel_parser,SIGNAL(gpoStateChanged(int,int,const QString &)),
+	  panel_output_list,SLOT(setGpioState(int,int,const QString &)));
 
   setWindowTitle("XPointPanel ["+tr("Server")+": "+panel_hostname+"]");
 
@@ -228,12 +227,16 @@ void MainWidget::routerBoxActivatedData(int n)
   //
   // Populate Inputs
   //
+  panel_input_list->setShowGpio(panel_parser->gpioSupported(router));
   QMap<int,QString> endpts;
   while(count<panel_parser->inputQuantity(router)) {
     name=panel_parser->inputLongName(router,endpt+1);
     if(!name.isEmpty()) {
-      panel_input_list->addEndpoint(endpt,QString().sprintf("%d - ",endpt+1)+
+      panel_input_list->addEndpoint(router,endpt,
+				    QString().sprintf("%d - ",endpt+1)+
 				  panel_parser->inputLongName(router,endpt+1));
+      panel_input_list->
+	setGpioState(router,endpt,panel_parser->gpiState(router,endpt));
       count++;
     }
     endpt++;
@@ -245,6 +248,7 @@ void MainWidget::routerBoxActivatedData(int n)
   count=0;
   endpt=0;
   endpts.clear();
+  panel_output_list->setShowGpio(panel_parser->gpioSupported(router));
   while(count<panel_parser->outputQuantity(router)) {
     name=panel_parser->outputLongName(router,endpt+1);
     if(!name.isEmpty()) {
@@ -254,7 +258,12 @@ void MainWidget::routerBoxActivatedData(int n)
     }
     endpt++;
   }
-  panel_output_list->addEndpoints(endpts);
+  panel_output_list->addEndpoints(router,endpts);
+  for(int i=0;i<panel_output_list->endpointQuantity();i++) {
+    int endpt=panel_output_list->endpoint(i);
+    panel_output_list->
+      setGpioState(router,endpt,panel_parser->gpoState(router,endpt));
+  }
 
   //
   // Populate Crosspoints

@@ -34,6 +34,7 @@
 #include <QTcpSocket>
 #include <QTimer>
 
+#define SAPARSER_STARTUP_INTERVAL 1000
 #define SAPARSER_HOLDOFF_INTERVAL 5000
 
 class SaParser : public QObject
@@ -44,6 +45,7 @@ class SaParser : public QObject
   SaParser(QObject *parent=0);
   ~SaParser();
   QMap<int,QString> routers() const;
+  bool gpioSupported(int router) const;
   int inputQuantity(int router) const;
   QString inputNodeName(int router,int input) const;
   QString inputName(int router,int input) const;
@@ -77,6 +79,7 @@ class SaParser : public QObject
  private slots:
   void connectedData();
   void connectionClosedData();
+  void startupData();
   void holdoffReconnectData();
   void readyReadData();
   void errorData(QAbstractSocket::SocketError err);
@@ -116,7 +119,9 @@ class SaParser : public QObject
   QMap<int,QMap<int,int> > sa_output_xpoints;
   QMap<int,QMap<int,QString> > sa_gpi_states;
   QMap<int,QMap<int,QString> > sa_gpo_states;
+  QMap<int,bool> sa_gpio_supporteds;
   QMap<int,QStringList> sa_snapshot_names;
+  QTimer *sa_startup_timer;
   QTimer *sa_holdoff_timer;
 };
 

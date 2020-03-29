@@ -2,7 +2,7 @@
 ##
 ## Makefile for the xpointpanel(1) applet
 ##
-## (C) Copyright 2017 Fred Gleason <fredg@paravelsystems.com>
+## (C) Copyright 2017-2020 Fred Gleason <fredg@paravelsystems.com>
 ##
 ##   This program is free software; you can redistribute it and/or modify
 ##   it under the terms of the GNU General Public License as
@@ -31,6 +31,7 @@ moc_%.cpp:	%.h
 bin_PROGRAMS = xpointpanel
 
 dist_xpointpanel_SOURCES = endpointlist.cpp endpointlist.h\
+                           multistatewidget.cpp multistatewidget.h\
                            xpointpanel.cpp xpointpanel.h\
                            xpointview.cpp xpointview.h
 
@@ -40,6 +41,7 @@ nodist_xpointpanel_SOURCES = combobox.cpp combobox.h\
                              moc_combobox.cpp\
                              moc_endpointlist.cpp\
                              moc_logindialog.cpp\
+                             moc_multistatewidget.cpp\
                              moc_saparser.cpp\
                              moc_xpointpanel.cpp\
                              moc_xpointview.cpp

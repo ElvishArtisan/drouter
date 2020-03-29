@@ -2,7 +2,7 @@
 //
 // Input/Output labels for xpointpanel(1)
 //
-//   (C) Copyright 2017 Fred Gleason <fredg@paravelsystems.com>
+//   (C) Copyright 2017-2020 Fred Gleason <fredg@paravelsystems.com>
 //
 //   This program is free software; you can redistribute it and/or modify
 //   it under the terms of the GNU General Public License as
@@ -25,33 +25,40 @@
 #include <QMap>
 #include <QWidget>
 
+#include "multistatewidget.h"
+
 class EndpointList : public QWidget
 {
   Q_OBJECT
  public:
-  enum Orientation {Horizontal=0,Vertical=1};
-  EndpointList(Orientation orient,QWidget *parent=0);
+  EndpointList(Qt::Orientation orient,QWidget *parent=0);
   ~EndpointList();
   QSize sizeHint() const;
   QSizePolicy sizePolicy() const;
+  bool showGpio() const;
+  void setShowGpio(bool state);
   int endpoint(int slot) const;
   QList<int> endpoints() const;
   int slot(int endpt) const;
-  void addEndpoint(int endpt,const QString &name);
-  void addEndpoints(const QMap<int,QString> &endpts);
+  void addEndpoint(int router,int endpt,const QString &name);
+  void addEndpoints(int router,const QMap<int,QString> &endpts);
   void clearEndpoints();
   int endpointQuantity() const;
 
  public slots:
   void setPosition(int pixels);
+  void setGpioState(int router,int linenum,const QString &code);
 
  protected:
   void paintEvent(QPaintEvent *e);
+  void resizeEvent(QResizeEvent *e);
 
  private:
   QMap<int,QString> list_labels;
+  QMap<int,MultiStateWidget *> list_gpio_widgets;
   int list_position;
-  Orientation list_orientation;
+  Qt::Orientation list_orientation;
+  bool list_show_gpio;
   int list_width;
 };
 

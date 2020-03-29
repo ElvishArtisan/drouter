@@ -41,6 +41,13 @@ SaParser::SaParser(QObject *parent)
   sa_socket=NULL;
 
   //
+  // Startup Timer
+  //
+  sa_startup_timer=new QTimer(this);
+  sa_startup_timer->setSingleShot(true);
+  connect(sa_startup_timer,SIGNAL(timeout()),this,SLOT(startupData()));
+
+  //
   // Watchdog Timers
   //
   sa_holdoff_timer=new QTimer(this);
@@ -58,6 +65,12 @@ SaParser::~SaParser()
 QMap<int,QString> SaParser::routers() const
 {
   return sa_router_names;
+}
+
+
+bool SaParser::gpioSupported(int router) const
+{
+  return sa_gpio_supporteds.value(router);
 }
 
 
@@ -215,6 +228,12 @@ void SaParser::connectionClosedData()
 {
   emit connected(false,SaParser::WatchdogActive);
   sa_holdoff_timer->start(SAPARSER_HOLDOFF_INTERVAL);
+}
+
+
+void SaParser::startupData()
+{
+  emit connected(true,SaParser::Ok);
 }
 
 
@@ -398,7 +417,13 @@ void SaParser::DispatchCommand(QString cmd)
 	  if((router==sa_last_xpoint_router)&&(output==sa_last_xpoint_output)) {
 	    sa_last_xpoint_router=-1;
 	    sa_last_xpoint_output=-1;
-	    emit connected(true,SaParser::Ok);
+
+	    for(QMap<int,QString>::const_iterator it=sa_router_names.begin();
+		it!=sa_router_names.end();it++) {
+	      SendCommand(QString().sprintf("GPIStat %d",it.key()));
+	      SendCommand(QString().sprintf("GPOStat %d",it.key()));
+	    }
+	    sa_startup_timer->start(SAPARSER_STARTUP_INTERVAL);
 	  }
 	}
       }
@@ -410,12 +435,12 @@ void SaParser::DispatchCommand(QString cmd)
   //
   if((f0[0]=="gpistat")&&(f0.size()==4)) {
     int router=f0[1].toUInt(&ok);
+    sa_gpio_supporteds[router]=true;
     if(ok) {
       int input=f0[2].toInt(&ok);
       if(ok) {
 	sa_gpi_states[router][input]=f0[3];
 	emit gpiStateChanged(router,input,f0[3]);
-	printf("gpiStateChanged(%d,%d,%s)\n",router,input,f0[3].toUtf8().constData());
       }
     }
   }
@@ -430,7 +455,6 @@ void SaParser::DispatchCommand(QString cmd)
       if(ok) {
 	sa_gpo_states[router][output]=f0[3];
 	emit gpoStateChanged(router,output,f0[3]);
-	printf("gpoStateChanged(%d,%d,%s)\n",router,output,f0[3].toUtf8().constData());
       }
     }
   }

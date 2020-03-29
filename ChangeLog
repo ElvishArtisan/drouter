@@ -488,8 +488,10 @@
 	* Switched from MM/DD/YYYY to DD MMM YYYY date formats in 'NEWS'.
 2020-02-06 Fred Gleason <fredg@paravelsystems.com>
 	* Incremented the package version to 0.9.3.
-2020-03-22 Fred Gleason <fredg@paravelsystems.com>
+2020-03-29 Fred Gleason <fredg@paravelsystems.com>
 	* Added 'SaParser::gpiState()', 'SaParser::setGpiState()',
 	'SaParser::gpoState()' and 'SaParser::setGpoState()' methods.
 	* Added 'SaParser::gpiStateChanged()' and
 	'SaParser::gpoStateChanged()' signals.
+	* Added GPIO state indicators to the line items in
+	xpointpanel(1).
