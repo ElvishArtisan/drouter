@@ -223,6 +223,8 @@ void MainWidget::routerBoxActivatedData(int n)
   panel_scene=scene;
   panel_output_list->clearEndpoints();
   panel_input_list->clearEndpoints();
+  panel_input_list->setRouter(router);
+  panel_output_list->setRouter(router);
   
   //
   // Populate Inputs
@@ -318,6 +320,8 @@ void MainWidget::connectedData(bool state,SaParser::ConnectionState cstate)
 	panel_router_box->setCurrentIndex(panel_router_box->count()-1);
       }
     }
+    panel_input_list->setParser(panel_parser);
+    panel_output_list->setParser(panel_parser);
     panel_router_label->setEnabled(true);
     panel_router_box->setEnabled(true);
     routerBoxActivatedData(panel_router_box->currentIndex());
@@ -406,7 +410,10 @@ void MainWidget::resizeEvent(QResizeEvent *e)
     setGeometry(15,10,panel_input_list->sizeHint().width()-10,20);
   panel_router_box->
     setGeometry(10,32,panel_input_list->sizeHint().width()-10,20);
-  panel_input_list->setGeometry(10,panel_output_list->sizeHint().width()+10,panel_input_list->sizeHint().width()-0,e->size().height()-(panel_output_list->sizeHint().width()-45));
+  panel_input_list->setGeometry(10,
+				panel_output_list->sizeHint().width()+10,
+				panel_input_list->sizeHint().width()-0,
+				e->size().height()-(panel_output_list->sizeHint().width()-45));
   panel_output_list->setGeometry(panel_input_list->sizeHint().width()+10,10,e->size().width()-10,panel_output_list->sizeHint().width()+1);
   
   int view_width=3+26*panel_output_list->endpointQuantity();

@@ -22,6 +22,7 @@
 #include <stdio.h>
 
 #include <QFontMetrics>
+#include <QMouseEvent>
 #include <QPainter>
 
 #include "endpointlist.h"
@@ -33,6 +34,27 @@ EndpointList::EndpointList(Qt::Orientation orient,QWidget *parent)
   list_show_gpio=false;
   list_position=0;
   list_width=0;
+  list_mouse_endpoint=-1;
+  list_router=0;
+
+  //
+  // Dialogs
+  //
+  switch(orient) {
+  case Qt::Horizontal:
+    list_gpio_type=EndPointMap::Input;
+    break;
+
+  case Qt::Vertical:
+    list_gpio_type=EndPointMap::Output;
+    break;
+  }
+
+  list_mouse_menu=new QMenu(this);
+  list_state_dialog_action=list_mouse_menu->
+    addAction(tr("Alter GPIO State"),this,SLOT(showStateDialogData()));
+  connect(list_mouse_menu,SIGNAL(aboutToShow()),
+	  this,SLOT(aboutToShowMenuData()));
 }
 
 
@@ -53,6 +75,24 @@ QSize EndpointList::sizeHint() const
 QSizePolicy EndpointList::sizePolicy() const
 {
   return QSizePolicy(QSizePolicy::Fixed,QSizePolicy::Fixed);
+}
+
+
+int EndpointList::router() const
+{
+  return list_router;
+}
+
+
+void EndpointList::setRouter(int router)
+{
+  list_router=router;
+}
+
+
+void EndpointList::setParser(SaParser *psr)
+{
+  list_parser=psr;
 }
 
 
@@ -148,6 +188,12 @@ void EndpointList::clearEndpoints()
   }
   list_gpio_widgets.clear();
 
+  for(QMap<int,StateDialog *>::const_iterator it=list_state_dialogs.begin();
+      it!=list_state_dialogs.end();it++) {
+    delete it.value();
+  }
+  list_state_dialogs.clear();
+
   update();
 }
 
@@ -171,6 +217,46 @@ void EndpointList::setGpioState(int router,int linenum,const QString &code)
       it!=list_gpio_widgets.end();it++) {
     it.value()->setState(router,linenum,code);
   }
+}
+
+
+void EndpointList::aboutToShowMenuData()
+{
+  list_state_dialog_action->setEnabled(list_show_gpio);
+}
+
+
+void EndpointList::showStateDialogData()
+{
+  QRect geo;
+
+  if(list_state_dialogs.value(list_mouse_endpoint)==NULL) {
+    list_state_dialogs[list_mouse_endpoint]=
+      new StateDialog(list_router,list_mouse_endpoint,list_gpio_type,
+		      list_parser,this);
+    geo=QRect(list_mouse_position.x(),list_mouse_position.y(),
+	   list_state_dialogs.value(list_mouse_endpoint)->sizeHint().width(),
+	   list_state_dialogs.value(list_mouse_endpoint)->sizeHint().height());
+  }
+  else {
+    geo=list_state_dialogs.value(list_mouse_endpoint)->geometry();
+  }
+  list_state_dialogs.value(list_mouse_endpoint)->show();
+  if(!geo.isNull()) {
+    list_state_dialogs.value(list_mouse_endpoint)->setGeometry(geo);
+  }
+}
+
+
+void EndpointList::mousePressEvent(QMouseEvent *e)
+{
+  //  printf("mousePressEvent(%d)\n",e->type());
+
+  if((list_mouse_endpoint=LocalEndpoint(e))>=0) {
+    list_mouse_position=e->globalPos();
+    list_mouse_menu->popup(e->globalPos());
+  }
+  QWidget::mousePressEvent(e);
 }
 
 
@@ -257,4 +343,33 @@ void EndpointList::resizeEvent(QResizeEvent *e)
       ypos+=26;
     }
   }
+}
+
+
+int EndpointList::LocalEndpoint(QMouseEvent *e) const
+{
+  int slot=-1;
+  int endpt=-1;
+
+  if(e->button()==Qt::RightButton) {
+    switch(list_orientation) {
+    case Qt::Horizontal:
+      slot=(e->pos().y()+list_position)/26;
+      endpt=endpoint(1+endpoint(slot+1));
+      break;
+
+    case Qt::Vertical:
+      slot=(e->pos().x()+list_position)/26;
+      endpt=endpoint(1+endpoint(slot+1));
+      break;
+    }
+    if((slot<0)||(slot>=list_labels.size())) {
+      endpt=-1;
+    }
+  }
+  else {
+    endpt=-1;
+  }
+
+  return endpt;
 }

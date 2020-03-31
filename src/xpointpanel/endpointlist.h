@@ -23,9 +23,12 @@
 #define ENDPOINTLIST_H
 
 #include <QMap>
+#include <QMenu>
 #include <QWidget>
 
 #include "multistatewidget.h"
+#include "saparser.h"
+#include "statedialog.h"
 
 class EndpointList : public QWidget
 {
@@ -35,6 +38,9 @@ class EndpointList : public QWidget
   ~EndpointList();
   QSize sizeHint() const;
   QSizePolicy sizePolicy() const;
+  int router() const;
+  void setRouter(int router);
+  void setParser(SaParser *psr);
   bool showGpio() const;
   void setShowGpio(bool state);
   int endpoint(int slot) const;
@@ -49,17 +55,32 @@ class EndpointList : public QWidget
   void setPosition(int pixels);
   void setGpioState(int router,int linenum,const QString &code);
 
+ private slots:
+  void showStateDialogData();
+  void aboutToShowMenuData();
+
  protected:
+  void mousePressEvent(QMouseEvent *e);
   void paintEvent(QPaintEvent *e);
   void resizeEvent(QResizeEvent *e);
 
  private:
+  int LocalEndpoint(QMouseEvent *e) const;
   QMap<int,QString> list_labels;
   QMap<int,MultiStateWidget *> list_gpio_widgets;
+  EndPointMap::Type list_gpio_type;
+  int list_router;
   int list_position;
+  SaParser *list_parser;
   Qt::Orientation list_orientation;
   bool list_show_gpio;
   int list_width;
+  QMenu *list_mouse_menu;
+  int list_mouse_endpoint;
+  QPoint list_mouse_position;
+  QAction *list_state_dialog_action;
+  QMap<int,StateDialog *> list_state_dialogs;
+  Qt::MouseButtons list_mouse_buttons;
 };
 
 
