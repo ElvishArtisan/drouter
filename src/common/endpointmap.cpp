@@ -443,8 +443,10 @@ bool EndPointMap::loadSet(QMap<int,EndPointMap *> *maps,QStringList *msgs)
 	  it!=maps->end();it++) {
 	if(it.key()==map->routerNumber()) {
 	  msgs->clear();
-	  msgs->push_back(QString().sprintf("duplicate SA router number \"%d\"",
-					    map->routerNumber()+1));
+	  msgs->push_back(QString("duplicate SA router number ")+
+			  QString().sprintf("\"%d\" ",map->routerNumber()+1)+
+			  "in maps \""+it.value()->routerName()+"\" and \""+
+			  map->routerName()+"\"");
 	  return false;
 	}
 	if(it.value()->routerName()==map->routerName()) {
