@@ -153,8 +153,10 @@ void ButtonWidget::changeConnectionState(bool state,
 	}
       }
     }
+    show();
   }
   else {
+    hide();
     for(QMap<int,AutoPushButton *>::const_iterator it=panel_buttons.begin();
 	it!=panel_buttons.end();it++) {
       delete it.value();

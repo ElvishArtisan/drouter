@@ -2,7 +2,7 @@
 //
 // Button applet for controlling an SA output.
 //
-//   (C) Copyright 2002-2018 Fred Gleason <fredg@paravelsystems.com>
+//   (C) Copyright 2002-2020 Fred Gleason <fredg@paravelsystems.com>
 //
 //   This program is free software; you can redistribute it and/or modify
 //   it under the terms of the GNU General Public License as
@@ -22,7 +22,7 @@
 #ifndef BUTTONPANEL_H
 #define BUTTONPANEL_H
 
-
+#include <QLabel>
 #include <QList>
 #include <QPixmap>
 #include <QPushButton>
@@ -65,6 +65,7 @@ class MainWidget : public QWidget
   QPixmap *panel_saspanels_map;
   SaParser *panel_parser;
   QSignalMapper *panel_button_mapper;
+  QLabel *panel_connecting_label;
   QList<ButtonWidget *> panel_panels;
   LoginDialog *panel_login_dialog;
   QTimer *panel_resize_timer;

@@ -503,3 +503,5 @@
 	at startup.
 2020-04-28 Fred Gleason <fredg@paravelsystems.com>
 	* Fixed a memory leak in buttonpanel(1).
+2020-04-28 Fred Gleason <fredg@paravelsystems.com>
+	* Added a 'Reconnecting...' message in buttonpanel(1).

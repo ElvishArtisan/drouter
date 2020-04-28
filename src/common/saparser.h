@@ -45,6 +45,7 @@ class SaParser : public QObject
   SaParser(QObject *parent=0);
   ~SaParser();
   QMap<int,QString> routers() const;
+  bool isConnected() const;
   bool gpioSupported(int router) const;
   int inputQuantity(int router) const;
   QString inputNodeName(int router,int input) const;
@@ -99,6 +100,7 @@ class SaParser : public QObject
   uint16_t sa_port;
   QString sa_username;
   QString sa_password;
+  bool sa_connected;
   QString sa_accum;
   bool sa_reading_routers;
   bool sa_reading_sources;

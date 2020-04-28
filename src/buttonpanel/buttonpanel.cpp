@@ -160,6 +160,14 @@ MainWidget::MainWidget(QWidget *parent)
   panel_login_dialog=new LoginDialog("ButtonPanel",this);
 
   //
+  // Connecting Label
+  //
+  panel_connecting_label=new QLabel(tr("Connecting..."),this);
+  panel_connecting_label->setAlignment(Qt::AlignCenter|Qt::AlignVCenter);
+  panel_connecting_label->
+    setFont(QFont(font().family(),font().pixelSize(),QFont::Bold));
+
+  //
   // Fire up the SAP connection
   //
   if((!no_creds)&&panel_password.isEmpty()) {
@@ -189,6 +197,13 @@ void MainWidget::changeConnectionState(bool state,
   //  printf("changeConnectionState(%d)\n",state);
   if(state) {
     panel_resize_timer->start(0);  // So the widgets can create buttons first
+    panel_connecting_label->hide();
+  }
+  else {
+    panel_connecting_label->setText(tr("Reconnecting..."));
+    panel_connecting_label->
+      setFont(QFont(font().family(),36,QFont::Bold));
+    panel_connecting_label->show();
   }
 }
 
@@ -219,6 +234,8 @@ void MainWidget::resizeEvent(QResizeEvent *e)
 {
   int prev_y=10;
 
+  panel_connecting_label->setGeometry(0,0,size().width(),size().height());
+
   for(int i=0;i<panel_panels.size();i++) {
     ButtonWidget *widget=panel_panels.at(i);
     panel_panels.at(i)->setGeometry(10,prev_y,widget->size().width(),
@@ -230,19 +247,21 @@ void MainWidget::resizeEvent(QResizeEvent *e)
 
 void MainWidget::paintEvent(QPaintEvent *e)
 {
-  QPainter *p=new QPainter(this);
+  if(panel_parser->isConnected()) {
+    QPainter *p=new QPainter(this);
 
-  p->setPen(Qt::black);
-  p->setBrush(Qt::black);
+    p->setPen(Qt::black);
+    p->setBrush(Qt::black);
 
-  for(int i=0;i<panel_panels.size()-1;i++) {
-    p->drawLine(0,
-		(i+1)*(5+panel_panels.at(i)->sizeHint().height())+1,
-		size().width(),
-		(i+1)*(5+panel_panels.at(i)->sizeHint().height())+1);
+    for(int i=0;i<panel_panels.size()-1;i++) {
+      p->drawLine(0,
+		  (i+1)*(5+panel_panels.at(i)->sizeHint().height())+1,
+		  size().width(),
+		  (i+1)*(5+panel_panels.at(i)->sizeHint().height())+1);
+    }
+
+    delete p;
   }
-
-  delete p;
 }
 
 

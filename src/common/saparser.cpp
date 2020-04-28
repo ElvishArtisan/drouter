@@ -26,6 +26,7 @@
 SaParser::SaParser(QObject *parent)
   : QObject(parent)
 {
+  sa_connected=false;
   sa_reading_routers=false;
   sa_reading_sources=false;
   sa_reading_dests=false;
@@ -65,6 +66,12 @@ SaParser::~SaParser()
 QMap<int,QString> SaParser::routers() const
 {
   return sa_router_names;
+}
+
+
+bool SaParser::isConnected() const
+{
+  return sa_connected;
 }
 
 
@@ -226,6 +233,7 @@ void SaParser::connectedData()
 
 void SaParser::connectionClosedData()
 {
+  sa_connected=false;
   emit connected(false,SaParser::WatchdogActive);
   sa_holdoff_timer->start(SAPARSER_HOLDOFF_INTERVAL);
 }
@@ -233,6 +241,7 @@ void SaParser::connectionClosedData()
 
 void SaParser::startupData()
 {
+  sa_connected=true;
   emit connected(true,SaParser::Ok);
 }
 
@@ -297,6 +306,7 @@ void SaParser::DispatchCommand(QString cmd)
     else {
       sa_socket->deleteLater();
       sa_socket=NULL;
+      sa_connected=false;
       emit connected(false,SaParser::InvalidLogin);
     }
     return;
