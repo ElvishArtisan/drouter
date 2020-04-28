@@ -234,6 +234,7 @@ void SaParser::connectedData()
 void SaParser::connectionClosedData()
 {
   sa_connected=false;
+  Clear();
   emit connected(false,SaParser::WatchdogActive);
   sa_holdoff_timer->start(SAPARSER_HOLDOFF_INTERVAL);
 }
@@ -288,6 +289,23 @@ void SaParser::errorData(QAbstractSocket::SocketError err)
 }
 
 
+void SaParser::Clear()
+{
+  sa_router_names.clear();
+  sa_input_node_names.clear();
+  sa_input_names.clear();
+  sa_input_long_names.clear();
+  sa_output_node_names.clear();
+  sa_output_names.clear();
+  sa_output_long_names.clear();
+  sa_output_xpoints.clear();
+  sa_gpi_states.clear();
+  sa_gpo_states.clear();
+  sa_gpio_supporteds.clear();
+  sa_snapshot_names.clear();
+}
+
+
 void SaParser::DispatchCommand(QString cmd)
 {
   //printf("RECV: %s\n",(const char *)cmd.toUtf8());
@@ -307,6 +325,7 @@ void SaParser::DispatchCommand(QString cmd)
       sa_socket->deleteLater();
       sa_socket=NULL;
       sa_connected=false;
+      Clear();
       emit connected(false,SaParser::InvalidLogin);
     }
     return;

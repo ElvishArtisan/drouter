@@ -86,6 +86,7 @@ class SaParser : public QObject
   void errorData(QAbstractSocket::SocketError err);
 
  private:
+  void Clear();
   void DispatchCommand(QString cmd);
   void ReadRouterName(const QString &cmd);
   void ReadSourceName(const QString &cmd);
