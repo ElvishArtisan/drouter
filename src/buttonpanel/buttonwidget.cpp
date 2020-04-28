@@ -142,22 +142,24 @@ void ButtonWidget::changeConnectionState(bool state,
     for(int i=0;i<panel_parser->inputQuantity(panel_router);i++) {
       if(!panel_parser->inputName(panel_router,i+1).isEmpty()) {
 	panel_buttons[i]=new AutoPushButton(this);
-	panel_buttons[i]->setText(panel_parser->inputName(panel_router,i+1));
-	panel_buttons[i]->show();
-	connect(panel_buttons[i],SIGNAL(clicked()),
+	panel_buttons.value(i)->
+	  setText(panel_parser->inputName(panel_router,i+1));
+	panel_buttons.value(i)->show();
+	connect(panel_buttons.value(i),SIGNAL(clicked()),
 		panel_button_mapper,SLOT(map()));
-	panel_button_mapper->setMapping(panel_buttons[i],i);
+	panel_button_mapper->setMapping(panel_buttons.value(i),i);
 	if(panel_parser->outputCrosspoint(panel_router,panel_output+1)==(i+1)) {
-	  panel_buttons[i]->setStyleSheet(BUTTONWIDGET_ACTIVE_STYLESHEET);
+	  panel_buttons.value(i)->setStyleSheet(BUTTONWIDGET_ACTIVE_STYLESHEET);
 	}
       }
     }
   }
   else {
-    for(int i=0;i<panel_buttons.size();i++) {
-      delete panel_buttons[i];
-      panel_buttons.clear();
+    for(QMap<int,AutoPushButton *>::const_iterator it=panel_buttons.begin();
+	it!=panel_buttons.end();it++) {
+      delete it.value();
     }
+    panel_buttons.clear();
   }
 
   panel_rows=1;
