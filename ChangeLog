@@ -508,3 +508,5 @@
 2020-04-28 Fred Gleason <fredg@paravelsystems.com>
 	* Fixed a bug in the Software Authority protocol buffer that
 	caused it to retain stale state across a reconnect.
+2020-04-29 Fred Gleason <fredg@paravelsystems.com>
+	* Incremented the package version to 0.9.4.

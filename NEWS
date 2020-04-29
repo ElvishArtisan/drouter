@@ -1,5 +1,15 @@
 This is the NEWS file for the drouter package.
 
+v0.9.4 -29 April 2020
+
+Beta Release
+
+Changes:
+   xpointpanel(1). Added support for observing and setting GPIO line state
+   for endpoints on GPIO routers.
+
+   buttonpanel(1). Bugfixes to allow better handling of server restarts.
+-------------------------------------------------------------------------------
 v0.9.3 - 6 February 2020
 
 Beta Release
