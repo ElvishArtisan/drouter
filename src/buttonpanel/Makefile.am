@@ -2,7 +2,7 @@
 ##
 ## Makefile for the buttonpanel(1) applet
 ##
-## (C) Copyright 2016-2017 Fred Gleason <fredg@paravelsystems.com>
+## (C) Copyright 2016-2020 Fred Gleason <fredg@paravelsystems.com>
 ##
 ##   This program is free software; you can redistribute it and/or modify
 ##   it under the terms of the GNU General Public License as
@@ -32,15 +32,19 @@ bin_PROGRAMS = buttonpanel
 
 dist_buttonpanel_SOURCES = autopushbutton.cpp autopushbutton.h\
                            buttonpanel.cpp buttonpanel.h\
-                           buttonwidget.cpp buttonwidget.h
+                           buttonwidget.cpp buttonwidget.h\
+                           statelight.cpp statelight.h\
+                           stripwidget.cpp stripwidget.h
 
 nodist_buttonpanel_SOURCES = logindialog.cpp logindialog.h\
                              saparser.cpp saparser.h\
                              moc_autopushbutton.cpp\
+                             moc_buttonpanel.cpp\
                              moc_buttonwidget.cpp\
                              moc_logindialog.cpp\
                              moc_saparser.cpp\
-                             moc_buttonpanel.cpp
+                             moc_statelight.cpp\
+                             moc_stripwidget.cpp
 
 buttonpanel_LDADD = @QT4GUI_LIBS@ @SWITCHYARD_LIBS@
 

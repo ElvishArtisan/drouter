@@ -88,8 +88,9 @@ QSize ButtonWidget::sizeHint() const
       cols++;
     }
   }
-  return QSize(BUTTONWIDGET_CELL_WIDTH*cols,
-	       20+BUTTONWIDGET_CELL_HEIGHT*panel_rows);
+  QSize sz(BUTTONWIDGET_CELL_WIDTH*cols-10,
+	   25+BUTTONWIDGET_CELL_HEIGHT*panel_rows);
+  return sz;
 }
 
 
@@ -179,6 +180,7 @@ void ButtonWidget::changeConnectionState(bool state,
     }
   }
   resize(sizeHint());
+  updateGeometry();
 
 }
 

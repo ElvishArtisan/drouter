@@ -510,3 +510,5 @@
 	caused it to retain stale state across a reconnect.
 2020-04-29 Fred Gleason <fredg@paravelsystems.com>
 	* Incremented the package version to 0.9.4.
+2020-04-29 Fred Gleason <fredg@paravelsystems.com>
+	* Refactored buttonpanel(1) to use Qt's layout engine.

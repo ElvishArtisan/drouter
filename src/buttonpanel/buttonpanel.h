@@ -28,6 +28,7 @@
 #include <QPushButton>
 #include <QSignalMapper>
 #include <QTimer>
+#include <QVBoxLayout>
 #include <QWidget>
 
 #include "autopushbutton.h"
@@ -66,11 +67,10 @@ class MainWidget : public QWidget
   SaParser *panel_parser;
   QSignalMapper *panel_button_mapper;
   QLabel *panel_connecting_label;
-  QList<ButtonWidget *> panel_panels;
+  QVBoxLayout *panel_vlayout;
   LoginDialog *panel_login_dialog;
   QTimer *panel_resize_timer;
-  int panel_width;
-  int panel_height;
+  QWidget *panel_canvas;
 };
 
 

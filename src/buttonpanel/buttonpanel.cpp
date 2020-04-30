@@ -2,7 +2,7 @@
 //
 // Button applet for controlling an lwpath output.
 //
-//   (C) Copyright 2002-2018 Fred Gleason <fredg@paravelsystems.com>
+//   (C) Copyright 2002-2020 Fred Gleason <fredg@paravelsystems.com>
 //
 //   This program is free software; you can redistribute it and/or modify
 //   it under the terms of the GNU General Public License as
@@ -36,8 +36,6 @@
 MainWidget::MainWidget(QWidget *parent)
   : QWidget(parent)
 {
-  panel_width=400;
-  panel_height=20;
   panel_columns=0;
   panel_hostname="";
   panel_username="Admin";
@@ -142,12 +140,16 @@ MainWidget::MainWidget(QWidget *parent)
   // The SA Connection
   //
   panel_parser=new SaParser(this);
+  panel_vlayout=new QVBoxLayout();
   for(int i=0;i<panel_routers.size();i++) {
-    panel_panels.push_back(new ButtonWidget(panel_routers.at(i),
-					    panel_outputs.at(i),
-					    panel_columns,panel_parser,
-					    panel_arm_button,this));
+    panel_vlayout->addWidget(new ButtonWidget(panel_routers.at(i),
+					      panel_outputs.at(i),
+					      panel_columns,panel_parser,
+					      panel_arm_button));
   }
+  panel_canvas=new QWidget(this);
+  panel_canvas->setLayout(panel_vlayout);
+  panel_canvas->hide();
   connect(panel_parser,SIGNAL(connected(bool,SaParser::ConnectionState)),
 	  this,SLOT(changeConnectionState(bool,SaParser::ConnectionState)));
   panel_resize_timer=new QTimer(this);
@@ -187,7 +189,10 @@ MainWidget::~MainWidget()
 
 QSize MainWidget::sizeHint() const
 {
-  return QSize(panel_width,panel_height);
+  if(panel_vlayout->sizeHint().width()<BUTTONWIDGET_CELL_WIDTH) {
+    return QSize(200,30);
+  }
+  return panel_vlayout->sizeHint();
 }
 
 
@@ -197,12 +202,14 @@ void MainWidget::changeConnectionState(bool state,
   //  printf("changeConnectionState(%d)\n",state);
   if(state) {
     panel_resize_timer->start(0);  // So the widgets can create buttons first
+    panel_canvas->show();
     panel_connecting_label->hide();
   }
   else {
     panel_connecting_label->setText(tr("Reconnecting..."));
     panel_connecting_label->
       setFont(QFont(font().family(),36,QFont::Bold));
+    panel_canvas->hide();
     panel_connecting_label->show();
   }
 }
@@ -210,38 +217,15 @@ void MainWidget::changeConnectionState(bool state,
 
 void MainWidget::resizeData()
 {
-  //
-  // Calculate overall size
-  //
-  panel_width=0;
-  panel_height=5;
-  for(int i=0;i<panel_panels.size();i++) {
-    QSize size=panel_panels.at(i)->size();
-    if(size.width()>panel_width) {
-      panel_width=size.width();
-    }
-    panel_height+=size.height()+5;
-  }
-  panel_width+=5;
-
-  resizeEvent(NULL);
-  repaint();
-  setGeometry(geometry().x(),geometry().y(),panel_width,panel_height);
+  setMinimumSize(sizeHint());
+  setMaximumSize(sizeHint());
 }
 
 
 void MainWidget::resizeEvent(QResizeEvent *e)
 {
-  int prev_y=10;
-
+  panel_canvas->setGeometry(0,0,size().width(),size().height());
   panel_connecting_label->setGeometry(0,0,size().width(),size().height());
-
-  for(int i=0;i<panel_panels.size();i++) {
-    ButtonWidget *widget=panel_panels.at(i);
-    panel_panels.at(i)->setGeometry(10,prev_y,widget->size().width(),
-				    widget->size().height());
-    prev_y+=widget->size().height()+5;
-  }
 }
 
 
@@ -253,11 +237,11 @@ void MainWidget::paintEvent(QPaintEvent *e)
     p->setPen(Qt::black);
     p->setBrush(Qt::black);
 
-    for(int i=0;i<panel_panels.size()-1;i++) {
+    for(int i=0;i<panel_vlayout->count()-1;i++) {
       p->drawLine(0,
-		  (i+1)*(5+panel_panels.at(i)->sizeHint().height())+1,
+		  (i+1)*(5+panel_vlayout->itemAt(i)->sizeHint().height())+1,
 		  size().width(),
-		  (i+1)*(5+panel_panels.at(i)->sizeHint().height())+1);
+		  (i+1)*(5+panel_vlayout->itemAt(i)->sizeHint().height())+1);
     }
 
     delete p;
