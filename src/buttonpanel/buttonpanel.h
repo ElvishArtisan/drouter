@@ -28,11 +28,11 @@
 #include <QPushButton>
 #include <QSignalMapper>
 #include <QTimer>
-#include <QVBoxLayout>
 #include <QWidget>
 
 #include "autopushbutton.h"
 #include "buttonwidget.h"
+#include "endpointmap.h"
 #include "logindialog.h"
 #include "saparser.h"
 
@@ -48,6 +48,7 @@ class MainWidget : public QWidget
   QSize sizeHint() const;
 
  private slots:
+  void processError(const QString err_msg);
   void changeConnectionState(bool state,SaParser::ConnectionState cstate);
   void resizeData();
 
@@ -61,16 +62,23 @@ class MainWidget : public QWidget
   QString panel_username;
   QString panel_password;
   bool panel_arm_button;
-  QList<int> panel_routers;
-  QList<int> panel_outputs;
   QPixmap *panel_saspanels_map;
   SaParser *panel_parser;
   QSignalMapper *panel_button_mapper;
   QLabel *panel_connecting_label;
-  QVBoxLayout *panel_vlayout;
   LoginDialog *panel_login_dialog;
   QTimer *panel_resize_timer;
-  QWidget *panel_canvas;
+  QList<QWidget *> panel_widgets;
+
+  QList<EndPointMap::RouterType> panel_arg_types;
+  QList<int> panel_arg_audio_routers;
+  QList<int> panel_arg_audio_outputs;
+
+  QList<QStringList> panel_arg_gpio_types;
+  QList<QList <QChar> > panel_arg_gpio_dirs;
+  QList<QList<int> > panel_arg_gpio_routers;
+  QList<QList<int> > panel_arg_gpio_endpts;
+  QList<QStringList> panel_arg_gpio_masks;
 };
 
 

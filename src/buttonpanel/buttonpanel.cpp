@@ -27,6 +27,7 @@
 #include <sy/symcastsocket.h>
 
 #include "buttonpanel.h"
+#include "gpiowidget.h"
 
 //
 // Icons
@@ -61,9 +62,7 @@ MainWidget::MainWidget(QWidget *parent)
     if(cmd->key(i)=="--columns") {
       panel_columns=cmd->value(i).toUInt(&ok);
       if(!ok) {
-	QMessageBox::warning(this,"ButtonPanel - "+tr("Error"),
-			     tr("Invalid --columns value specified!"));
-	exit(1);
+	processError(tr("Invalid --columns value specified!"));
       }
       cmd->setProcessed(i,true);
     }
@@ -83,45 +82,86 @@ MainWidget::MainWidget(QWidget *parent)
       panel_password=cmd->value(i);
       cmd->setProcessed(i,true);
     }
-    if(cmd->key(i)=="--output") {  // Defer processing on these
-      panel_routers.push_back(1);
+    if(cmd->key(i)=="--gpio") {
+      panel_arg_types.push_back(EndPointMap::GpioRouter);
+      QStringList types;
+      QList<QChar> dirs;
+      QList<int> routers;
+      QList<int> endpts;
+      QStringList masks;
+      QStringList f0=cmd->value(i).split("/",QString::SkipEmptyParts);
+      for(int j=0;j<f0.size();j++) {
+	QStringList f1=f0.at(j).split(":",QString::SkipEmptyParts);
+	if(f1.size()!=5) {
+	  processError(tr("Invalid --gpio argument")+" \""+f0.at(j)+"\".");
+	}
+	types.push_back(f1.at(0).toLower());
+
+	if((f1.at(1).length()!=1)||
+	   ((f1.at(1).toLower().at(0)!=QChar('i'))&&
+	    (f1.at(1).toLower().at(0)!=QChar('o')))) {
+	  processError(tr("Invalid --gpio argument direction")+
+		       " \""+f1.at(1)+"\".");
+	}
+	dirs.push_back(f1.at(1).toLower().at(0));
+
+	unsigned router=f1.at(2).toUInt(&ok);
+	if(!ok) {
+	  processError(tr("Invalid --gpio argument router")+
+		       " \""+f1.at(2)+"\".");
+	}
+	routers.push_back(router);
+
+	unsigned endpt=f1.at(3).toUInt(&ok);
+	if(!ok) {
+	  processError(tr("Invalid --gpio argument endpt")+
+		       " \""+f1.at(3)+"\".");
+	}
+	endpts.push_back(endpt);
+	
+	QString mask=f1.at(4).toLower();
+	if(mask.length()!=5) {
+	  processError(tr("Invalid --gpio argument mask")+" \""+f1.at(4)+"\".");
+	}
+	masks.push_back(mask);
+      }
+      panel_arg_gpio_types.push_back(types);
+      panel_arg_gpio_dirs.push_back(dirs);
+      panel_arg_gpio_routers.push_back(routers);
+      panel_arg_gpio_endpts.push_back(endpts);
+      panel_arg_gpio_masks.push_back(masks);
+      cmd->setProcessed(i,true);
+    }
+
+    if(cmd->key(i)=="--output") {
+      panel_arg_types.push_back(EndPointMap::AudioRouter);
+      panel_arg_audio_routers.push_back(1);
       QStringList f0=cmd->value(i).split(":");
       if(f0.size()>2) {
-	QMessageBox::warning(this,"ButtonPanel - "+tr("Error"),
-			     tr("Invalid output")+" \""+cmd->value(i)+
-			     "\" specified!");
-	exit(1);
+	processError(tr("Invalid output")+" \""+cmd->value(i)+"\" specified!");
       }
       if(f0.size()==2) {
-	panel_routers.back()=f0.at(0).toInt(&ok);
-	if((!ok)||(panel_routers.back()<1)) {
-	  QMessageBox::warning(this,"ButtonPanel - "+tr("Error"),
-			       tr("Invalid router specified!"));
-	  exit(1);
+	panel_arg_audio_routers.back()=f0.at(0).toInt(&ok);
+	if((!ok)||(panel_arg_audio_routers.back()<1)) {
+	  processError(tr("Invalid router specified!"));
 	}
       }
-      panel_outputs.push_back(f0.back().toInt(&ok));
-      if((!ok)||(panel_outputs.back()<0)) {
-	QMessageBox::warning(this,"ButtonPanel - "+tr("Error"),
-			     tr("Invalid output specified!"));
-	exit(1);
+      panel_arg_audio_outputs.push_back(f0.back().toInt(&ok));
+      if((!ok)||(panel_arg_audio_outputs.back()<0)) {
+	processError(tr("Invalid output specified!"));
       }      
       cmd->setProcessed(i,true);
     }
     if(!cmd->processed(i)) {
-      QMessageBox::warning(this,"Buttonpanel - "+tr("Error"),
-			   tr("Unknown option")+": "+cmd->key(i)+"!");
-      exit(256);
+      processError(tr("Unknown option")+": "+cmd->key(i)+"!");
     }
   }
 
   //
   // Sanity Checks
   //
-  if(panel_outputs.size()==0) {
-    QMessageBox::warning(this,"ButtonPanel - "+tr("Error"),
-			 tr("No output specified."));
-    exit(1);
+  if(panel_arg_types.size()==0) {
+    processError(tr("At least one --output or --gpio argment must be specified."));
   }
 
   //
@@ -140,16 +180,29 @@ MainWidget::MainWidget(QWidget *parent)
   // The SA Connection
   //
   panel_parser=new SaParser(this);
-  panel_vlayout=new QVBoxLayout();
-  for(int i=0;i<panel_routers.size();i++) {
-    panel_vlayout->addWidget(new ButtonWidget(panel_routers.at(i),
-					      panel_outputs.at(i),
-					      panel_columns,panel_parser,
-					      panel_arm_button));
+  int audionum=0;
+  int gpionum=0;
+  for(int i=0;i<panel_arg_types.size();i++) {
+    if(panel_arg_types[i]==EndPointMap::AudioRouter) {
+      panel_widgets.
+	push_back(new ButtonWidget(panel_arg_audio_routers.at(audionum),
+				   panel_arg_audio_outputs.at(audionum),
+				   panel_columns,panel_parser,
+				   panel_arm_button,this));
+      audionum++;
+    }
+    if(panel_arg_types[i]==EndPointMap::GpioRouter) {
+      GpioWidget *w=NULL;
+      w=new GpioWidget(panel_arg_gpio_types.at(gpionum),
+		       panel_arg_gpio_dirs.at(gpionum),
+		       panel_arg_gpio_routers.at(gpionum),
+		       panel_arg_gpio_endpts.at(gpionum),
+		       panel_arg_gpio_masks.at(gpionum),
+		       panel_parser,this);
+      panel_widgets.push_back(w);
+      gpionum++;
+    }
   }
-  panel_canvas=new QWidget(this);
-  panel_canvas->setLayout(panel_vlayout);
-  panel_canvas->hide();
   connect(panel_parser,SIGNAL(connected(bool,SaParser::ConnectionState)),
 	  this,SLOT(changeConnectionState(bool,SaParser::ConnectionState)));
   panel_resize_timer=new QTimer(this);
@@ -189,27 +242,50 @@ MainWidget::~MainWidget()
 
 QSize MainWidget::sizeHint() const
 {
-  if(panel_vlayout->sizeHint().width()<BUTTONWIDGET_CELL_WIDTH) {
-    return QSize(200,30);
+  if((panel_parser!=NULL)&&panel_parser->isConnected()) {
+    int width=0;
+    int height=0;
+
+    for(int i=0;i<panel_widgets.size();i++) {
+      QWidget *w=panel_widgets.at(i);
+      if(w->sizeHint().width()>width) {
+	width=w->sizeHint().width();
+      }
+      height+=10+w->sizeHint().height();
+    }
+    width+=10;
+    height-=10;
+
+    return QSize(width,height);
   }
-  return panel_vlayout->sizeHint();
+  return QSize(200,22);
+}
+
+
+void MainWidget::processError(const QString err_msg)
+{
+  QMessageBox::warning(this,"ButtonPanel - "+tr("Error"),err_msg);;
+  exit(1);
 }
 
 
 void MainWidget::changeConnectionState(bool state,
 				       SaParser::ConnectionState cstate)
 {
-  //  printf("changeConnectionState(%d)\n",state);
   if(state) {
     panel_resize_timer->start(0);  // So the widgets can create buttons first
-    panel_canvas->show();
     panel_connecting_label->hide();
+    for(int i=0;i<panel_widgets.size();i++) {
+      panel_widgets.at(i)->show();
+    }
   }
   else {
     panel_connecting_label->setText(tr("Reconnecting..."));
     panel_connecting_label->
       setFont(QFont(font().family(),36,QFont::Bold));
-    panel_canvas->hide();
+    for(int i=0;i<panel_widgets.size();i++) {
+      panel_widgets.at(i)->hide();
+    }
     panel_connecting_label->show();
   }
 }
@@ -217,6 +293,9 @@ void MainWidget::changeConnectionState(bool state,
 
 void MainWidget::resizeData()
 {
+  QSize sz=sizeHint();
+
+  //  setGeometry(geometry().x(),geometry().y(),sz.width(),sz.height());
   setMinimumSize(sizeHint());
   setMaximumSize(sizeHint());
 }
@@ -224,24 +303,31 @@ void MainWidget::resizeData()
 
 void MainWidget::resizeEvent(QResizeEvent *e)
 {
-  panel_canvas->setGeometry(0,0,size().width(),size().height());
+  int ypos=0;
+
+  for(int i=0;i<panel_widgets.size();i++) {
+    QWidget *w=panel_widgets.at(i);
+    w->setGeometry(5,ypos,w->sizeHint().width(),w->sizeHint().height());
+    ypos+=10+w->sizeHint().height();
+  }
   panel_connecting_label->setGeometry(0,0,size().width(),size().height());
 }
 
 
 void MainWidget::paintEvent(QPaintEvent *e)
 {
+  int ypos=0;
+
   if(panel_parser->isConnected()) {
     QPainter *p=new QPainter(this);
 
     p->setPen(Qt::black);
     p->setBrush(Qt::black);
 
-    for(int i=0;i<panel_vlayout->count()-1;i++) {
-      p->drawLine(0,
-		  (i+1)*(5+panel_vlayout->itemAt(i)->sizeHint().height())+1,
-		  size().width(),
-		  (i+1)*(5+panel_vlayout->itemAt(i)->sizeHint().height())+1);
+    for(int i=0;i<panel_widgets.size()-1;i++) {
+      QWidget *w=panel_widgets.at(i);
+      ypos+=10+w->sizeHint().height();
+      p->drawLine(0,ypos-5,size().width(),ypos-5);
     }
 
     delete p;

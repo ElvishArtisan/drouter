@@ -88,15 +88,14 @@ QSize ButtonWidget::sizeHint() const
       cols++;
     }
   }
-  QSize sz(BUTTONWIDGET_CELL_WIDTH*cols-10,
-	   25+BUTTONWIDGET_CELL_HEIGHT*panel_rows);
+  QSize sz(BUTTONWIDGET_CELL_WIDTH*cols-5,
+	   22+BUTTONWIDGET_CELL_HEIGHT*panel_rows);
   return sz;
 }
 
 
 void ButtonWidget::buttonClickedData(int n)
 {
-  //  printf("setOutputCrosspoint(%d,%d,%d)\n",panel_router,panel_output+1,n+1);
   if(panel_armed) {
     panel_parser->setOutputCrosspoint(panel_router,panel_output+1,n+1);
     if(panel_arm_button!=NULL) {
@@ -125,7 +124,6 @@ void ButtonWidget::armButtonClickedData()
 void ButtonWidget::changeConnectionState(bool state,
 				       SaParser::ConnectionState cstate)
 {
-  // printf("changeConnectionState(%d)\n",state);
   if(state) {
     for(QMap<int,AutoPushButton *>::const_iterator it=panel_buttons.begin();
 	it!=panel_buttons.end();it++) {
@@ -134,10 +132,14 @@ void ButtonWidget::changeConnectionState(bool state,
     panel_buttons.clear();
 
     if(panel_parser->outputName(panel_router,panel_output+1).isEmpty()) {
-      QMessageBox::warning(this,"ButtonPanel - "+tr("Error"),
-			   tr("No such output!"));
+      QMessageBox::
+	warning(this,"ButtonPanel - "+tr("Error"),
+		tr("Output")+
+		QString().sprintf(" %d:%d ",panel_router,panel_output+1)+
+		tr("does not exist!"));
       exit(1);
     }
+
     panel_title_label->
       setText(panel_parser->outputName(panel_router,panel_output+1));
     for(int i=0;i<panel_parser->inputQuantity(panel_router);i++) {
@@ -163,9 +165,9 @@ void ButtonWidget::changeConnectionState(bool state,
       delete it.value();
     }
     panel_buttons.clear();
+    panel_rows=1;
   }
 
-  panel_rows=1;
   int col=0;
   for(int i=0;i<panel_buttons.size();i++) {
     if((panel_columns>0)&&(col==panel_columns)) {
@@ -179,15 +181,13 @@ void ButtonWidget::changeConnectionState(bool state,
       panel_rows++;
     }
   }
-  resize(sizeHint());
-  updateGeometry();
 
+  resize(sizeHint());
 }
 
 
 void ButtonWidget::changeOutputCrosspoint(int router,int output,int input)
 {
-  //  printf("changeOutputCrosspoint(%d,%d,%d)\n",router,output,input);
   if((router==panel_router)&&((output-1)==panel_output)) {
     for(QMap<int,AutoPushButton *>::const_iterator it=panel_buttons.begin();
 	it!=panel_buttons.end();it++) {
@@ -213,21 +213,26 @@ void ButtonWidget::resizeEvent(QResizeEvent *e)
     return;
   }
   if(panel_arm_button!=NULL) {
-    panel_arm_button->setGeometry(0,22,BUTTONWIDGET_CELL_WIDTH-10,BUTTONWIDGET_CELL_HEIGHT-10);
+    panel_arm_button->setGeometry(0,22,BUTTONWIDGET_CELL_WIDTH-5,BUTTONWIDGET_CELL_HEIGHT-5);
     col++;
   }
   if(panel_columns==0) {
     for(QMap<int,AutoPushButton *>::const_iterator it=panel_buttons.begin();
 	it!=panel_buttons.end();it++) {
-      it.value()->setGeometry(0+BUTTONWIDGET_CELL_WIDTH*col,0+22,BUTTONWIDGET_CELL_WIDTH-10,BUTTONWIDGET_CELL_HEIGHT-10);
+      it.value()->setGeometry(BUTTONWIDGET_CELL_WIDTH*col,
+			      22,
+			      BUTTONWIDGET_CELL_WIDTH-5,
+			      BUTTONWIDGET_CELL_HEIGHT-5);
       col++;
     }
   }
   else {
     for(QMap<int,AutoPushButton *>::const_iterator it=panel_buttons.begin();
 	it!=panel_buttons.end();it++) {
-      it.value()->setGeometry(0+BUTTONWIDGET_CELL_WIDTH*col,0+22+BUTTONWIDGET_CELL_HEIGHT*(row),
-			      BUTTONWIDGET_CELL_WIDTH-10,BUTTONWIDGET_CELL_HEIGHT-10);
+      it.value()->setGeometry(BUTTONWIDGET_CELL_WIDTH*col,
+			      22+BUTTONWIDGET_CELL_HEIGHT*row,
+			      BUTTONWIDGET_CELL_WIDTH-5,
+			      BUTTONWIDGET_CELL_HEIGHT-5);
       col++;
       if((panel_columns>0)&&(col>=panel_columns)) {
 	col=0;

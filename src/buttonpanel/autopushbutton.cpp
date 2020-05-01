@@ -18,6 +18,10 @@
 //   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
 //
 
+#include <stdio.h>
+
+#include <QEvent>
+
 #include "autopushbutton.h"
 
 AutoPushButton::AutoPushButton(QWidget *parent)
@@ -69,8 +73,8 @@ void AutoPushButton::ComposeText()
   QString text;
   int height;
   bool singleton;
-  int w=90*size().width()/100;
-  int h=90*size().height()/100;
+  int w=90*sizeHint().width()/100;
+  int h=90*sizeHint().height()/100;
 
   do {
     singleton=false;

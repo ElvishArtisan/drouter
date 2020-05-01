@@ -30,21 +30,23 @@ moc_%.cpp:	%.h
 
 bin_PROGRAMS = buttonpanel
 
-dist_buttonpanel_SOURCES = autopushbutton.cpp autopushbutton.h\
+dist_buttonpanel_SOURCES = autolabel.cpp autolabel.h\
+                           autopushbutton.cpp autopushbutton.h\
                            buttonpanel.cpp buttonpanel.h\
                            buttonwidget.cpp buttonwidget.h\
-                           statelight.cpp statelight.h\
-                           stripwidget.cpp stripwidget.h
+                           gpiowidget.cpp gpiowidget.h\
+                           statelight.cpp statelight.h
 
 nodist_buttonpanel_SOURCES = logindialog.cpp logindialog.h\
                              saparser.cpp saparser.h\
+                             moc_autolabel.cpp\
                              moc_autopushbutton.cpp\
                              moc_buttonpanel.cpp\
                              moc_buttonwidget.cpp\
+                             moc_gpiowidget.cpp\
                              moc_logindialog.cpp\
                              moc_saparser.cpp\
-                             moc_statelight.cpp\
-                             moc_stripwidget.cpp
+                             moc_statelight.cpp
 
 buttonpanel_LDADD = @QT4GUI_LIBS@ @SWITCHYARD_LIBS@
 
