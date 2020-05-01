@@ -526,3 +526,6 @@
 	* Added 'button','redbutton', 'greenbutton', 'bluebutton',
 	'cyanbutton', 'magentabutton' and 'yellowbutton' GPIO widgets to
 	buttonpanel(1).
+2020-05-01 Fred Gleason <fredg@paravelsystems.com>
+	* Added a field to supply the strip title to the '--gpio='
+	directive in buttonpanel(1).

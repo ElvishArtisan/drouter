@@ -90,8 +90,9 @@ MainWidget::MainWidget(QWidget *parent)
       QList<int> endpts;
       QStringList legends;
       QStringList masks;
-      QStringList f0=cmd->value(i).split("/",QString::SkipEmptyParts);
-      for(int j=0;j<f0.size();j++) {
+      QStringList f0=cmd->value(i).split("/",QString::KeepEmptyParts);
+      panel_arg_titles.push_back(f0.at(1));
+      for(int j=2;j<f0.size();j++) {
 	QStringList f1=f0.at(j).split(":",QString::SkipEmptyParts);
 	if(f1.size()!=6) {
 	  processError(tr("Invalid --gpio argument")+" \""+f0.at(j)+"\".");
@@ -204,6 +205,7 @@ MainWidget::MainWidget(QWidget *parent)
 		       panel_arg_gpio_legends.at(gpionum),
 		       panel_arg_gpio_masks.at(gpionum),
 		       panel_parser,this);
+      w->setTitle(panel_arg_titles.at(gpionum));
       panel_widgets.push_back(w);
       gpionum++;
     }
@@ -311,7 +313,8 @@ void MainWidget::resizeEvent(QResizeEvent *e)
 
   for(int i=0;i<panel_widgets.size();i++) {
     QWidget *w=panel_widgets.at(i);
-    w->setGeometry(5,ypos,w->sizeHint().width(),w->sizeHint().height());
+    w->setGeometry(5,ypos,size().width()-5,w->sizeHint().height());
+    //    w->setGeometry(5,ypos,w->sizeHint().width(),w->sizeHint().height());
     ypos+=10+w->sizeHint().height();
   }
   panel_connecting_label->setGeometry(0,0,size().width(),size().height());

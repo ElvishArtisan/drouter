@@ -41,6 +41,8 @@ class GpioWidget : public QWidget
 	     SaParser *parser,QWidget *parent=0);
   ~GpioWidget();
   QSize sizeHint() const;
+  QString title() const;
+  void setTitle(const QString &str);
 
  protected:
   void processError(const QString &err_msg);

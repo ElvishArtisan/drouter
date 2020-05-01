@@ -37,7 +37,7 @@ ButtonWidget::ButtonWidget(int router,int output,int columns,SaParser *parser,
   //
   // Fonts
   //
-  QFont title_font("helvetica",14,QFont::Bold);
+  QFont title_font(font().family(),14,QFont::Bold);
 
   //
   // Title

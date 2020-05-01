@@ -74,6 +74,7 @@ class MainWidget : public QWidget
   QList<int> panel_arg_audio_routers;
   QList<int> panel_arg_audio_outputs;
 
+  QStringList panel_arg_titles;
   QList<QStringList> panel_arg_gpio_types;
   QList<QList <QChar> > panel_arg_gpio_dirs;
   QList<QList<int> > panel_arg_gpio_routers;

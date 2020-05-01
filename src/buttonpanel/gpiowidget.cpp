@@ -38,7 +38,7 @@ GpioWidget::GpioWidget(const QStringList &types,const QList<QChar> &dirs,
   //
   // Fonts
   //
-  QFont title_font("helvetica",14,QFont::Bold);
+  QFont title_font(font().family(),14,QFont::Bold);
 
   //
   // Title
@@ -46,6 +46,7 @@ GpioWidget::GpioWidget(const QStringList &types,const QList<QChar> &dirs,
   c_title_label=new QLabel(this);
   c_title_label->setFont(title_font);
   c_title_label->setAlignment(Qt::AlignLeft|Qt::AlignVCenter);
+  c_title_label->hide();
 
   //
   // Create Widgets
@@ -136,9 +137,9 @@ GpioWidget::GpioWidget(const QStringList &types,const QList<QChar> &dirs,
     else {
       processError(tr("Invalid --gpio argument type")+" \""+types.at(i)+"\".");
     }
+    c_widgets.back()->hide();
   }
   c_hint_width-=5;    // Remove unused space after last widget
-  c_hint_height+=22;  // Title Height
 
   //
   // The SA Connection
@@ -152,13 +153,34 @@ GpioWidget::GpioWidget(const QStringList &types,const QList<QChar> &dirs,
 
 GpioWidget::~GpioWidget()
 {
-  //  delete c_title_label;
+  for(int i=0;i<c_widgets.size();i++) {
+    delete c_widgets.at(i);
+  }
+  c_widgets.clear();
+  delete c_title_label;
 }
 
 
 QSize GpioWidget::sizeHint() const
 {
-  return QSize(c_hint_width,c_hint_height);
+  int height=c_hint_height;
+  if(!c_title_label->text().isEmpty()) {
+    height+=22;  // Title Height
+  }
+
+  return QSize(c_hint_width,height);
+}
+
+
+QString GpioWidget::title() const
+{
+  return c_title_label->text();
+}
+
+
+void GpioWidget::setTitle(const QString &str)
+{
+  c_title_label->setText(str);
 }
 
 
@@ -171,12 +193,18 @@ void GpioWidget::processError(const QString &err_msg)
 
 void GpioWidget::resizeEvent(QResizeEvent *e)
 {
+  int label_height=22;
+
+  if(c_title_label->text().isEmpty()) {
+    label_height=0;
+  }
   c_title_label->setGeometry(10,0,size().width(),20);
 
   int xpos=0;
   for(int i=0;i<c_widgets.size();i++) {
     QWidget *w=c_widgets.at(i);
-    w->setGeometry(xpos,22,w->sizeHint().width(),w->sizeHint().height());
+    w->setGeometry(xpos,label_height,
+		   w->sizeHint().width(),w->sizeHint().height());
     xpos+=w->sizeHint().width()+5;
   }
 }
@@ -185,9 +213,8 @@ void GpioWidget::resizeEvent(QResizeEvent *e)
 void GpioWidget::changeConnectionState(bool state,
 					SaParser::ConnectionState cstate)
 {
-  if(state) {
-    c_title_label->setText("Test Strip");
-  }
-  else {
+  c_title_label->setVisible(state);
+  for(int i=0;i<c_widgets.size();i++) {
+    c_widgets.at(i)->setVisible(state);
   }
 }
