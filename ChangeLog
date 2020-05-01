@@ -522,3 +522,7 @@
 	* Removed the 'statelight' GPIO widget from buttonpanel(1).
 	* Added 'redlight', 'greenlight', 'bluelight', 'cyanlight',
 	'magentalight' and 'yellowlight' GPIO widgets to buttonpanel(1).
+2020-05-01 Fred Gleason <fredg@paravelsystems.com>
+	* Added 'button','redbutton', 'greenbutton', 'bluebutton',
+	'cyanbutton', 'magentabutton' and 'yellowbutton' GPIO widgets to
+	buttonpanel(1).

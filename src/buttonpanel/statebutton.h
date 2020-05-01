@@ -1,6 +1,6 @@
-// gpiowidget.h
+// statebutton.h
 //
-// Strip container for GPIO controls.
+// Set state of a single GPIO bit.
 //
 //   (C) Copyright 2020 Fred Gleason <fredg@paravelsystems.com>
 //
@@ -19,44 +19,41 @@
 //   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
 //
 
-#ifndef GPIOWIDGET_H
-#define GPIOWIDGET_H
+#ifndef STATEBUTTON_H
+#define STATEBUTTON_H
 
-#include <QLabel>
-#include <QList>
-#include <QStringList>
-
+#include "autopushbutton.h"
 #include "saparser.h"
 
-#define GPIOWIDGET_CELL_WIDTH 90
-#define GPIOWIDGET_CELL_HEIGHT 60
-
-class GpioWidget : public QWidget
+class StateButton : public AutoPushButton
 {
   Q_OBJECT
  public:
-  GpioWidget(const QStringList &types,const QList<QChar> &dirs,
-	     const QList<int> &routers,const QList<int> &endpts,
-	     const QStringList &legends,const QStringList &masks,
-	     SaParser *parser,QWidget *parent=0);
-  ~GpioWidget();
+  StateButton(int router,int endpt,const QString &legend,const QString &mask,
+	     const QChar &dir,SaParser *parser,QWidget *parent=0);
   QSize sizeHint() const;
-
- protected:
-  void processError(const QString &err_msg);
-  void resizeEvent(QResizeEvent *e);
+  QSizePolicy sizePolicy() const;
+  QColor textColor() const;
+  void setTextColor(const QColor &color);
 
  private slots:
   void changeConnectionState(bool state,SaParser::ConnectionState cstate);
+  void pressedData();
+  void releasedData();
+
+ protected:
+  void processError(const QString &err_msg);
 
  private:
   int c_router;
+  int c_endpt;
+  QString c_mask;
+  QString c_inverted_mask;
+  int c_mask_bit;
+  QChar c_dir;
   SaParser *c_parser;
-  QLabel *c_title_label;
-  QList<QWidget *> c_widgets;
-  int c_hint_width;
-  int c_hint_height;
+  QColor c_text_color;
 };
 
 
-#endif  // GPIOWIDGET_H
+#endif  // STATEBUTTON_H

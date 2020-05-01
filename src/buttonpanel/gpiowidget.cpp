@@ -22,6 +22,8 @@
 #include <QMessageBox>
 
 #include "gpiowidget.h"
+#include "statebutton.h"
+#include "statelight.h"
 
 GpioWidget::GpioWidget(const QStringList &types,const QList<QChar> &dirs,
 		       const QList<int> &routers,const QList<int> &endpts,
@@ -84,6 +86,43 @@ GpioWidget::GpioWidget(const QStringList &types,const QList<QChar> &dirs,
       if(colorstr=="yellow") {
 	w->setTextColor("#000000");
 	w->setBackgroundColor("#FFFF00");
+	matched=true;
+      }
+    }
+
+    if(types.at(i).right(6)=="button") {
+      StateButton *w=NULL;
+      w=new StateButton(routers.at(i),endpts.at(i),legends.at(i),masks.at(i),
+			dirs.at(i),c_parser,this);
+      c_widgets.push_back(w);
+      QString colorstr=types.at(i).left(types.at(i).length()-6);
+
+      if(colorstr.isEmpty()||(colorstr=="black")) {
+	w->setTextColor("#000000");
+	matched=true;
+      }
+      if(colorstr=="blue") {
+	w->setTextColor("#0000FF");
+	matched=true;
+      }
+      if(colorstr=="cyan") {
+	w->setTextColor("#008888");
+	matched=true;
+      }
+      if(colorstr=="green") {
+	w->setTextColor("#008800");
+	matched=true;
+      }
+      if(colorstr=="magenta") {
+	w->setTextColor("#880088");
+	matched=true;
+      }
+      if(colorstr=="red") {
+	w->setTextColor("#CC0000");
+	matched=true;
+      }
+      if(colorstr=="yellow") {
+	w->setTextColor("#FFFF00");
 	matched=true;
       }
     }
