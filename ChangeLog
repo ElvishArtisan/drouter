@@ -518,3 +518,7 @@
 2020-05-01 Fred Gleason <fredg@paravelsystems.com>
 	* Fixed a bug in buttonpanel(1) that could cause StateLight and
 	Button widgets to display no text.
+2020-05-01 Fred Gleason <fredg@paravelsystems.com>
+	* Removed the 'statelight' GPIO widget from buttonpanel(1).
+	* Added 'redlight', 'greenlight', 'bluelight', 'cyanlight',
+	'magentalight' and 'yellowlight' GPIO widgets to buttonpanel(1).

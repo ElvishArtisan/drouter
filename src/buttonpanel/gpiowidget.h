@@ -37,8 +37,9 @@ class GpioWidget : public QWidget
   Q_OBJECT
  public:
   GpioWidget(const QStringList &types,const QList<QChar> &dirs,
-	      const QList<int> &routers,const QList<int> &endpts,
-	      const QStringList &masks,SaParser *parser,QWidget *parent=0);
+	     const QList<int> &routers,const QList<int> &endpts,
+	     const QStringList &legends,const QStringList &masks,
+	     SaParser *parser,QWidget *parent=0);
   ~GpioWidget();
   QSize sizeHint() const;
 

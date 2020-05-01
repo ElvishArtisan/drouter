@@ -88,11 +88,12 @@ MainWidget::MainWidget(QWidget *parent)
       QList<QChar> dirs;
       QList<int> routers;
       QList<int> endpts;
+      QStringList legends;
       QStringList masks;
       QStringList f0=cmd->value(i).split("/",QString::SkipEmptyParts);
       for(int j=0;j<f0.size();j++) {
 	QStringList f1=f0.at(j).split(":",QString::SkipEmptyParts);
-	if(f1.size()!=5) {
+	if(f1.size()!=6) {
 	  processError(tr("Invalid --gpio argument")+" \""+f0.at(j)+"\".");
 	}
 	types.push_back(f1.at(0).toLower());
@@ -119,9 +120,11 @@ MainWidget::MainWidget(QWidget *parent)
 	}
 	endpts.push_back(endpt);
 	
-	QString mask=f1.at(4).toLower();
+	legends.push_back(f1.at(4));
+
+	QString mask=f1.at(5).toLower();
 	if(mask.length()!=5) {
-	  processError(tr("Invalid --gpio argument mask")+" \""+f1.at(4)+"\".");
+	  processError(tr("Invalid --gpio argument mask")+" \""+f1.at(5)+"\".");
 	}
 	masks.push_back(mask);
       }
@@ -129,6 +132,7 @@ MainWidget::MainWidget(QWidget *parent)
       panel_arg_gpio_dirs.push_back(dirs);
       panel_arg_gpio_routers.push_back(routers);
       panel_arg_gpio_endpts.push_back(endpts);
+      panel_arg_gpio_legends.push_back(legends);
       panel_arg_gpio_masks.push_back(masks);
       cmd->setProcessed(i,true);
     }
@@ -197,6 +201,7 @@ MainWidget::MainWidget(QWidget *parent)
 		       panel_arg_gpio_dirs.at(gpionum),
 		       panel_arg_gpio_routers.at(gpionum),
 		       panel_arg_gpio_endpts.at(gpionum),
+		       panel_arg_gpio_legends.at(gpionum),
 		       panel_arg_gpio_masks.at(gpionum),
 		       panel_parser,this);
       panel_widgets.push_back(w);
@@ -293,8 +298,7 @@ void MainWidget::changeConnectionState(bool state,
 
 void MainWidget::resizeData()
 {
-  QSize sz=sizeHint();
-
+  //  QSize sz=sizeHint();
   //  setGeometry(geometry().x(),geometry().y(),sz.width(),sz.height());
   setMinimumSize(sizeHint());
   setMaximumSize(sizeHint());

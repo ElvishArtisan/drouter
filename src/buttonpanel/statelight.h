@@ -25,18 +25,21 @@
 #include "autolabel.h"
 #include "saparser.h"
 
-#define STATELIGHT_ON_STYLESHEET "color: #FFFFFF; background-color: #008800;"
-#define STATELIGHT_OFF_STYLESHEET "color: #FFFFFF; background-color: #111111;"
+#define STATELIGHT_OFF_STYLESHEET "color: #444444; background-color: #111111;"
 
 class StateLight : public AutoLabel
 {
   Q_OBJECT
  public:
-  StateLight(int router,int endpt,const QString &mask,const QChar &dir,
-	     SaParser *parser,QWidget *parent=0);
+  StateLight(int router,int endpt,const QString &legend,const QString &mask,
+	     const QChar &dir,SaParser *parser,QWidget *parent=0);
   ~StateLight();
   QSize sizeHint() const;
   QSizePolicy sizePolicy() const;
+  QColor backgroundColor() const;
+  void setBackgroundColor(const QColor &color);
+  QColor textColor() const;
+  void setTextColor(const QColor &color);
 
  private slots:
   void changeConnectionState(bool state,SaParser::ConnectionState cstate);
@@ -52,6 +55,9 @@ class StateLight : public AutoLabel
   QString c_mask;
   int c_mask_bit;
   QChar c_dir;
+  QColor c_text_color;
+  QColor c_background_color;
+  QString c_on_stylesheet;
   SaParser *c_parser;
 };
 

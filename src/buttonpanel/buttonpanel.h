@@ -78,6 +78,7 @@ class MainWidget : public QWidget
   QList<QList <QChar> > panel_arg_gpio_dirs;
   QList<QList<int> > panel_arg_gpio_routers;
   QList<QList<int> > panel_arg_gpio_endpts;
+  QList<QStringList> panel_arg_gpio_legends;
   QList<QStringList> panel_arg_gpio_masks;
 };
 

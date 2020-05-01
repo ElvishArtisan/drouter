@@ -24,9 +24,9 @@
 #include "gpiowidget.h"
 
 GpioWidget::GpioWidget(const QStringList &types,const QList<QChar> &dirs,
-			  const QList<int> &routers,const QList<int> &endpts,
-			  const QStringList &masks,SaParser *parser,
-			  QWidget *parent)
+		       const QList<int> &routers,const QList<int> &endpts,
+		       const QStringList &legends,const QStringList &masks,
+		       SaParser *parser,QWidget *parent)
   : QWidget(parent)
 {
   c_parser=parser;
@@ -50,12 +50,42 @@ GpioWidget::GpioWidget(const QStringList &types,const QList<QChar> &dirs,
   //
   for(int i=0;i<types.size();i++) {
     bool matched=false;
-    if(types.at(i)=="statelight") {
+    if(types.at(i).right(5)=="light") {
       StateLight *w=NULL;
-      w=new StateLight(routers.at(i),endpts.at(i),masks.at(i),dirs.at(i),
-		       c_parser,this);
+      w=new StateLight(routers.at(i),endpts.at(i),legends.at(i),masks.at(i),
+		       dirs.at(i),c_parser,this);
       c_widgets.push_back(w);
-      matched=true;
+      QString colorstr=types.at(i).left(types.at(i).length()-5);
+      if(colorstr=="blue") {
+	w->setTextColor("#FFFFFF");
+	w->setBackgroundColor("#0000FF");
+	matched=true;
+      }
+      if(colorstr=="cyan") {
+	w->setTextColor("#FFFFFF");
+	w->setBackgroundColor("#008888");
+	matched=true;
+      }
+      if(colorstr=="green") {
+	w->setTextColor("#FFFFFF");
+	w->setBackgroundColor("#008800");
+	matched=true;
+      }
+      if(colorstr=="magenta") {
+	w->setTextColor("#FFFFFF");
+	w->setBackgroundColor("#880088");
+	matched=true;
+      }
+      if(colorstr=="red") {
+	w->setTextColor("#FFFFFF");
+	w->setBackgroundColor("#CC0000");
+	matched=true;
+      }
+      if(colorstr=="yellow") {
+	w->setTextColor("#000000");
+	w->setBackgroundColor("#FFFF00");
+	matched=true;
+      }
     }
 
     if(matched) {

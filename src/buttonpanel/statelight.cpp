@@ -23,8 +23,9 @@
 
 #include "statelight.h"
 
-StateLight::StateLight(int router,int endpt,const QString &mask,
-		       const QChar &dir,SaParser *parser,QWidget *parent)
+StateLight::StateLight(int router,int endpt,const QString &legend,
+		       const QString &mask,const QChar &dir,SaParser *parser,
+		       QWidget *parent)
   : AutoLabel(parent)
 {
   c_router=router;
@@ -32,6 +33,7 @@ StateLight::StateLight(int router,int endpt,const QString &mask,
   c_dir=dir;
   c_parser=parser;
   c_mask=mask;
+  c_on_stylesheet="";
 
   if(c_mask.count("x")<4) {
     processError(tr("gpio mask is not unique")+" ["+c_mask+"]");
@@ -47,6 +49,7 @@ StateLight::StateLight(int router,int endpt,const QString &mask,
     processError(tr("invalid gpio mask")+" ["+c_mask+"]");
   }
 
+  setText(legend);
   setAlignment(Qt::AlignCenter|Qt::AlignVCenter);
 
   //
@@ -84,21 +87,37 @@ QSizePolicy StateLight::sizePolicy() const
 }
 
 
+QColor StateLight::textColor() const
+{
+  return c_text_color;
+}
+
+
+void StateLight::setTextColor(const QColor &color)
+{
+  c_text_color=color;
+  c_on_stylesheet="color: "+c_text_color.name()+"; background-color: "+
+    c_background_color.name()+";";
+}
+
+
+QColor StateLight::backgroundColor() const
+{
+  return c_background_color;
+}
+
+
+void StateLight::setBackgroundColor(const QColor &color)
+{
+  c_background_color=color;
+  c_on_stylesheet="color: "+c_text_color.name()+"; background-color: "+
+    c_background_color.name()+";";
+}
+
+
 void StateLight::changeConnectionState(bool state,
 				       SaParser::ConnectionState cstate)
 {
-  if(state) {
-    if(c_dir==QChar('i')) {
-      setText(c_parser->inputName(c_router,c_endpt)+
-	      QString().sprintf("-%d",c_mask_bit+1));
-    }
-    else {
-      setText(c_parser->outputName(c_router,c_endpt)+
-	      QString().sprintf("-%d",c_mask_bit+1));
-    }
-  }
-  else {
-  }
   setEnabled(state);
   updateGeometry();
 }
@@ -108,7 +127,7 @@ void StateLight::setState(int router,int endpt,const QString &code)
 {
   if((router==c_router)&&(endpt==c_endpt)) {
     if(code.at(c_mask_bit)==c_mask.at(c_mask_bit)) {
-      setStyleSheet(STATELIGHT_ON_STYLESHEET);
+      setStyleSheet(c_on_stylesheet);
     }
     else {
       setStyleSheet(STATELIGHT_OFF_STYLESHEET);
