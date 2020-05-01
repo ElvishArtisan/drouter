@@ -76,6 +76,7 @@ class MainWidget : public QWidget
 
   QStringList panel_arg_titles;
   QList<QStringList> panel_arg_gpio_types;
+  QList<QStringList> panel_arg_gpio_colors;
   QList<QList <QChar> > panel_arg_gpio_dirs;
   QList<QList<int> > panel_arg_gpio_routers;
   QList<QList<int> > panel_arg_gpio_endpts;

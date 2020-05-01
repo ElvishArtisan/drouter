@@ -25,10 +25,11 @@
 #include "statebutton.h"
 #include "statelight.h"
 
-GpioWidget::GpioWidget(const QStringList &types,const QList<QChar> &dirs,
-		       const QList<int> &routers,const QList<int> &endpts,
-		       const QStringList &legends,const QStringList &masks,
-		       SaParser *parser,QWidget *parent)
+GpioWidget::GpioWidget(const QStringList &types,const QStringList &colors,
+		       const QList<QChar> &dirs,const QList<int> &routers,
+		       const QList<int> &endpts,const QStringList &legends,
+		       const QStringList &masks,SaParser *parser,
+		       QWidget *parent)
   : QWidget(parent)
 {
   c_parser=parser;
@@ -53,12 +54,17 @@ GpioWidget::GpioWidget(const QStringList &types,const QList<QChar> &dirs,
   //
   for(int i=0;i<types.size();i++) {
     bool matched=false;
-    if(types.at(i).right(5)=="light") {
+    if(types.at(i)=="lamp") {
       StateLight *w=NULL;
       w=new StateLight(routers.at(i),endpts.at(i),legends.at(i),masks.at(i),
 		       dirs.at(i),c_parser,this);
       c_widgets.push_back(w);
-      QString colorstr=types.at(i).left(types.at(i).length()-5);
+      QString colorstr=colors.at(i);
+      if(colorstr=="black") {
+	w->setTextColor("#000000");
+	w->setBackgroundColor("#FFFFFF");
+	matched=true;
+      }
       if(colorstr=="blue") {
 	w->setTextColor("#FFFFFF");
 	w->setBackgroundColor("#0000FF");
@@ -91,14 +97,14 @@ GpioWidget::GpioWidget(const QStringList &types,const QList<QChar> &dirs,
       }
     }
 
-    if(types.at(i).right(6)=="button") {
+    if(types.at(i)=="button") {
       StateButton *w=NULL;
       w=new StateButton(routers.at(i),endpts.at(i),legends.at(i),masks.at(i),
 			dirs.at(i),c_parser,this);
       c_widgets.push_back(w);
-      QString colorstr=types.at(i).left(types.at(i).length()-6);
+      QString colorstr=colors.at(i);
 
-      if(colorstr.isEmpty()||(colorstr=="black")) {
+      if(colorstr=="black") {
 	w->setTextColor("#000000");
 	matched=true;
       }
