@@ -515,3 +515,6 @@
 2020-05-01 Fred Gleason <fredg@paravelsystems.com>
 	* Reverted buttonpanel(1) not to use Qt's layout engine.
 	* Added a '--gpio=' directive to buttonpanel(1).
+2020-05-01 Fred Gleason <fredg@paravelsystems.com>
+	* Fixed a bug in buttonpanel(1) that could cause StateLight and
+	Button widgets to display no text.

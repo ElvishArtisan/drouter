@@ -123,6 +123,9 @@ void AutoLabel::ComposeText()
     height=lines*fm.lineSpacing();
   } while((singleton&&(font.pointSize()>auto_minimum_point_size))||
 	  (((height>size().height()))&&(font.pointSize()>auto_minimum_point_size)));
+  if(text.isEmpty()) {  // Back out if no solution found
+    text=auto_plain_text;
+  }
   QLabel::setText(text.trimmed());
   QLabel::setFont(font);
 }

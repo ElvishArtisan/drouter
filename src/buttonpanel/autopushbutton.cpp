@@ -101,6 +101,9 @@ void AutoPushButton::ComposeText()
     height=lines*fm.lineSpacing();
   } while(singleton||(((height>h))&&
 		      (font.pointSize()>auto_minimum_point_size)));
+  if(text.isEmpty()) {  // Back out if no solution found
+    text=auto_plain_text;
+  }
   QPushButton::setText(text.trimmed());
   QPushButton::setFont(font);
 }
