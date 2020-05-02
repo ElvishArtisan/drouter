@@ -38,8 +38,9 @@
   <refsect1 id='description'><title>Description</title>
   <para>
     <command>buttonpanel</command><manvolnum>1</manvolnum> is a button-based
-    control applet that can be used to control audio routing with systems
-    using Software Authority control protocol (such as PathFinder or DRouter).
+    control applet that can be used to control audio routing and GPIO devices
+    with systems using Software Authority control protocol (such as PathFinder
+    or Drouter).
   </para>
   </refsect1>
 
@@ -71,6 +72,115 @@
     </varlistentry>
   </variablelist>
 
+  <varlistentry>
+    <term>
+      <option>--gpio=/<arg choice="req"><replaceable>title</replaceable></arg><arg choice="req"><replaceable>widget-spec</replaceable></arg><arg choice="opt"><replaceable>widget-spec</replaceable></arg><arg choice="opt">...</arg></option>
+    </term>
+    <listitem>
+      <para>
+	Insert a strip containing a <replaceable>title</replaceable> and one
+	or more GPIO widgets. This option may be given multiple times.
+      </para>
+      <para>
+	A <replaceable>widget-spec</replaceable> consists of the following:
+      </para>
+      <para>
+	/<replaceable>type</replaceable>:<replaceable>color</replaceable>:<replaceable>direction</replaceable>:<replaceable>router</replaceable>:<replaceable>endpoint</replaceable>:<replaceable>legend</replaceable>:<replaceable>mask</replaceable>
+      </para>
+      <para>
+	<replaceable>type</replaceable> is one of the following:
+	<variablelist>
+	  <varlistentry>
+	    <term><userinput>lamp</userinput></term>
+	    <listitem>
+	      <para>
+		An indicator for a single GPIO line.
+	      </para>
+	    </listitem>
+	  </varlistentry>
+	  <varlistentry>
+	    <term><userinput>button</userinput></term>
+	    <listitem>
+	      <para>
+		A push button that sets the state of a single GPIO line.
+	      </para>
+	    </listitem>
+	  </varlistentry>
+	</variablelist>
+      </para>
+
+      <para>
+	<replaceable>color</replaceable> specifies the color of the
+	widget. The following colors are recognized:
+      </para>
+      <para>
+	<simplelist type="vert">
+	  <member><userinput>black</userinput></member>
+	  <member><userinput>blue</userinput></member>
+	  <member><userinput>cyan</userinput></member>
+	  <member><userinput>green</userinput></member>
+	  <member><userinput>magenta</userinput></member>
+	  <member><userinput>red</userinput></member>
+	  <member><userinput>yellow</userinput></member>
+	</simplelist>
+      </para>
+      <para>
+	<replaceable>direction</replaceable> specifies the direction of the
+	specified signal, with <userinput>i</userinput> for GPI and
+	<userinput>o</userinput> for GPO.
+      </para>
+      <para>
+	<replaceable>router</replaceable> is the number of the Software
+	Authority router containing the specified GPIO, as given in the
+	<userinput>RouterNumbers</userinput> command.
+      </para>
+      <para>
+	<replaceable>endpoint</replaceable> is the Software Authroity
+	input (for GPIs) or output (for GPOs) number of the specified GPIO,
+	as given by the	<userinput>SourceNames</userinput> or
+	<userinput>DestNames</userinput> command respectively.
+      </para>
+      <para>
+	<replaceable>legend</replaceable> is the text to be associated with
+	the control.
+      </para>
+      <para>
+	<replaceable>mask</replaceable> is a five letter specifier that
+	indicates which line(s) of the specified GPIO are connected to
+	the control to indicate a <computeroutput>ON</computeroutput> state.
+	The following characters can be used:
+	<variablelist>
+	  <varlistentry>
+	    <term><userinput>h</userinput></term>
+	    <listitem>
+	      <para>
+		The specified line, in <computeroutput>HIGH</computeroutput>
+		state.
+	      </para>
+	    </listitem>
+	  </varlistentry>
+	  <varlistentry>
+	    <term><userinput>l</userinput></term>
+	    <listitem>
+	      <para>
+		The specified line, in <computeroutput>LOW</computeroutput>
+		state.
+	      </para>
+	    </listitem>
+	  </varlistentry>
+	  <varlistentry>
+	    <term><userinput>x</userinput></term>
+	    <listitem>
+	      <para>
+		The specified line has no effect with the control.
+	      </para>
+	    </listitem>
+	  </varlistentry>
+	</variablelist>
+      </para>
+    </listitem>
+  </varlistentry>
+  
   <variablelist remap='TP'>
     <varlistentry>
       <term>
@@ -112,7 +222,7 @@
 
   <varlistentry>
     <term>
-      <option>--output=<arg coice="opt"><replaceable>router-num</replaceable></arg>:<arg choice="req"><replaceable>output-num</replaceable></arg></option>
+      <option>--output=<arg choice="opt"><replaceable>router-num</replaceable></arg>:<arg choice="req"><replaceable>output-num</replaceable></arg></option>
     </term>
     <listitem>
       <para>

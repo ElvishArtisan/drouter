@@ -532,3 +532,6 @@
 2020-05-01 Fred Gleason <fredg@paravelsystems.com>
 	* Added a 'color' field to the '--gpio' widget-spec in
 	buttonpanel(1).
+2020-05-01 Fred Gleason <fredg@paravelsystems.com>
+	* Documented the '--gpio=' directive in the buttonpanel(1)
+	man page.
