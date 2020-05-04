@@ -535,3 +535,7 @@
 2020-05-01 Fred Gleason <fredg@paravelsystems.com>
 	* Documented the '--gpio=' directive in the buttonpanel(1)
 	man page.
+2020-05-04 Fred Gleason <fredg@paravelsystems.com>
+	* Added 'codeMatches()' and 'invertedMask()' methods to the 'Gpi' class
+	in the Python API.
+	* Cleaned up formatting in 'python/api/StateEngine.py'.

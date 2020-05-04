@@ -49,6 +49,32 @@ class Gpi(object):
         """
         return self.__code
 
+    def codeMatches(self,mask):
+        """
+           Returns True if the specified mask is satisfied by this gpi's
+           current state.
+        """
+        if len(mask)!=5:
+            return False
+        for i,val in enumerate(mask.lower()):
+            if val!='x' and val!=self.__code[i]:
+                return False
+        return True
+
+    def invertedMask(self,mask):
+        """
+           Returns the inversion of the specified GPIO mask.
+        """
+        ret=''
+        for i,val in enumerate(mask.lower()):
+            if val=='l':
+                ret+='h'
+            elif val=='h':
+                ret+='l'
+            else:
+                ret+=val
+        return ret
+
     def bitState(self,bit):
         """
            Returns the state of one bit (boolean).

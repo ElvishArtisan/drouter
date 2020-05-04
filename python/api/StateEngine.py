@@ -408,6 +408,7 @@ class StateEngine(object):
             if(self.__add_callback!=None) and self.__loaded:
                 self.__add_callback(self,self.__callback_priv,"NODE",self.__nodes[cmds[1]])
             return
+
         if cmds[0]=="NODEDEL":
             node=self.__nodes[cmds[1]]
             if (self.__delete_callback!=None) and self.__loaded:
@@ -420,48 +421,56 @@ class StateEngine(object):
             if(self.__add_callback!=None) and self.__loaded:
                 self.__add_callback(self,self.__callback_priv,"SRC",self.__sources[self.__key(cmds[1],int(cmds[2]))])
             return
+
         if cmds[0]=="SRCDEL":
             source=self.__sources[self.__key(cmds[1],int(cmds[2]))]
             if (self.__delete_callback!=None) and self.__loaded:
                 self.__delete_callback(self,self.__callback_priv,"SRC",source)
             del self.__sources[self.__key(cmds[1],int(cmds[2]))]
             return
+
         if cmds[0]=="SRC":
             oldsrc=self.__sources[self.__key(cmds[1],int(cmds[2]))]
             self.__sources[self.__key(cmds[1],int(cmds[2]))]=Drouter.Source.Source(cmds)
             if (self.__change_callback!=None) and self.__loaded and oldsrc != self.__sources[self.__key(cmds[1],int(cmds[2]))]:
                 self.__change_callback(self,self.__callback_priv,"SRC",oldsrc,
                                      self.__sources[self.__key(cmds[1],int(cmds[2]))])
+            return
 
         if cmds[0]=="DSTADD":
             self.__destinations[self.__key(cmds[1],int(cmds[2]))]=Drouter.Destination.Destination(cmds);
             if(self.__add_callback!=None) and self.__loaded:
                 self.__add_callback(self,self.__callback_priv,"DST",self.__destinations[self.__key(cmds[1],int(cmds[2]))])
             return
+
         if cmds[0]=="DSTDEL":
             destination=self.__destinations[self.__key(cmds[1],int(cmds[2]))]
             if (self.__delete_callback!=None) and self.__loaded:
                 self.__delete_callback(self,self.__callback_priv,"DST",destination)
             del self.__destinations[self.__key(cmds[1],int(cmds[2]))]
             return
+
         if cmds[0]=="DST":
             olddst=self.__destinations[self.__key(cmds[1],int(cmds[2]))]
             self.__destinations[self.__key(cmds[1],int(cmds[2]))]=Drouter.Destination.Destination(cmds)
             if (self.__change_callback!=None) and self.__loaded and olddst != self.__destinations[self.__key(cmds[1],int(cmds[2]))]:
                 self.__change_callback(self,self.__callback_priv,"DST",olddst,
                                      self.__destinations[self.__key(cmds[1],int(cmds[2]))])
+            return
 
         if cmds[0]=="GPIADD":
             self.__gpis[self.__key(cmds[1],int(cmds[2]))]=Drouter.Gpi.Gpi(cmds)
             if(self.__add_callback!=None) and self.__loaded:
                 self.__add_callback(self,self.__callback_priv,"GPI",self.__gpis[self.__key(cmds[1],int(cmds[2]))])
             return
+
         if cmds[0]=="GPIDEL":
             gpi=self.__gpis[self.__key(cmds[1],int(cmds[2]))]
             if (self.__delete_callback!=None) and self.__loaded:
                 self.__delete_callback(self,self.__callback_priv,"GPI",gpi)
             del self.__gpis[self.__key(cmds[1],int(cmds[2]))]
             return
+
         if cmds[0]=="GPI":
             oldgpi=self.__gpis[self.__key(cmds[1],int(cmds[2]))]
             self.__gpis[self.__key(cmds[1],int(cmds[2]))]=Drouter.Gpi.Gpi(cmds)
@@ -474,12 +483,14 @@ class StateEngine(object):
             if(self.__add_callback!=None) and self.__loaded:
                 self.__add_callback(self,self.__callback_priv,"GPO",self.__gpos[self.__key(cmds[1],int(cmds[2]))])
             return
+
         if cmds[0]=="GPODEL":
             gpo=self.__gpos[self.__key(cmds[1],int(cmds[2]))]
             if (self.__delete_callback!=None) and self.__loaded:
                 self.__delete_callback(self,self.__callback_priv,"GPO",gpo)
             del self.__gpos[self.__key(cmds[1],int(cmds[2]))]
             return
+
         if cmds[0]=="GPO":
             oldgpo=self.__gpos[self.__key(cmds[1],int(cmds[2]))]
             self.__gpos[self.__key(cmds[1],int(cmds[2]))]=Drouter.Gpo.Gpo(cmds)
