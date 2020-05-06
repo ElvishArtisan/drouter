@@ -30,6 +30,8 @@
 #include "saparser.h"
 #include "statedialog.h"
 
+#define ENDPOINTLIST_ITEM_HEIGHT 26
+
 class EndpointList : public QWidget
 {
   Q_OBJECT
@@ -55,12 +57,21 @@ class EndpointList : public QWidget
   void setPosition(int pixels);
   void setGpioState(int router,int linenum,const QString &code);
 
+ signals:
+  void hoveredEndpointChanged(int router,int endpt);
+
  private slots:
   void showStateDialogData();
+  void copySourceNumberData();
+  void copySourceStreamAddressData();
+  void copyNodeAddressData();
+  void copySlotNumberData();
   void aboutToShowMenuData();
 
  protected:
   void mousePressEvent(QMouseEvent *e);
+  void mouseMoveEvent(QMouseEvent *e);
+  void leaveEvent(QEvent *event);
   void paintEvent(QPaintEvent *e);
   void resizeEvent(QResizeEvent *e);
 
@@ -77,10 +88,16 @@ class EndpointList : public QWidget
   int list_width;
   QMenu *list_mouse_menu;
   int list_mouse_endpoint;
+  int list_move_endpoint;
   QPoint list_mouse_position;
   QAction *list_state_dialog_action;
+  QAction *list_copy_source_number_action;
+  QAction *list_copy_source_address_action;
+  QAction *list_copy_host_address_action;
+  QAction *list_copy_slot_number_action;
   QMap<int,StateDialog *> list_state_dialogs;
   Qt::MouseButtons list_mouse_buttons;
+  QString list_description_text;
 };
 
 

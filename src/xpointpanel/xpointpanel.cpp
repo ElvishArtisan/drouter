@@ -139,15 +139,30 @@ MainWidget::MainWidget(QWidget *parent)
   panel_router_label->setFont(button_font);
   panel_router_label->setDisabled(true);
   panel_router_box=new ComboBox(this);
+
   panel_router_box->setDisabled(true);
   connect(panel_router_box,SIGNAL(activated(int)),
 	  this,SLOT(routerBoxActivatedData(int)));
-
+  
   //
   // Endpoint Lists
   //
+  panel_description_name_label=new QLabel(this);
+  panel_description_name_label->setAlignment(Qt::AlignCenter|Qt::AlignVCenter);
+  panel_description_name_label->
+    setFont(QFont(font().family(),font().pointSize()-1,QFont::Normal));
+
+  panel_description_text_label=new QLabel(this);
+  panel_description_text_label->setAlignment(Qt::AlignLeft|Qt::AlignTop);
+  panel_description_text_label->
+    setFont(QFont(font().family(),font().pointSize()-2,QFont::Normal));
+
   panel_input_list=new EndpointList(Qt::Horizontal,this);
+  connect(panel_input_list,SIGNAL(hoveredEndpointChanged(int,int)),
+  	  this,SLOT(inputHoveredEndpointChangedData(int,int)));
   panel_output_list=new EndpointList(Qt::Vertical,this);
+  connect(panel_output_list,SIGNAL(hoveredEndpointChanged(int,int)),
+  	  this,SLOT(outputHoveredEndpointChangedData(int,int)));
 
   //
   // Scroll Area
@@ -404,17 +419,109 @@ void MainWidget::xpointDoubleClickedData(int x_slot,int y_slot)
 }
 
 
+void MainWidget::inputHoveredEndpointChangedData(int router,int input)
+{
+  QString tt;
+
+  if(input<0) {
+    panel_description_name_label->clear();
+    panel_description_text_label->clear();
+    return;
+  }
+
+  //
+  // Set Description Title
+  //
+  tt="";
+  tt+="<strong>"+QString().sprintf("%d - ",input);
+  tt+=panel_parser->inputName(router,input)+"</strong>";
+  tt+=" ON ";
+  tt+="<strong>"+panel_parser->inputNodeName(router,input)+"</strong>";
+  panel_description_name_label->setText(tt);
+  
+  //
+  // Set Description Text
+  //
+  tt="";
+  if(panel_parser->inputSourceNumber(router,input)>0) {
+    tt+=QString().sprintf("Source Number: <strong>%d</strong><br>",
+			  panel_parser->inputSourceNumber(router,input));
+    tt+="Stream Address: <strong>"+
+      panel_parser->inputStreamAddress(router,input).toString()+
+      "</strong><br>";
+  }
+  tt+="Node Address/Slot: <strong>"+
+    panel_parser->inputNodeAddress(router,input).toString();
+  tt+=QString().sprintf("/%d</strong>",1+panel_parser->
+			  inputNodeSlotNumber(router,input));
+  panel_description_text_label->setText(tt);
+}
+
+
+void MainWidget::outputHoveredEndpointChangedData(int router,int output)
+{
+  QString tt;
+
+  if(output<0) {
+    panel_description_name_label->clear();
+    panel_description_text_label->clear();
+    return;
+  }
+
+  //
+  // Set Description Title
+  //
+  tt="";
+  tt+="<strong>"+QString().sprintf("%d - ",output);
+  tt+=panel_parser->outputName(router,output)+"</strong>";
+  tt+=" ON ";
+  tt+="<strong>"+panel_parser->outputNodeName(router,output)+"</strong>";
+  panel_description_name_label->setText(tt);
+
+  //
+  // Set Description Text
+  //
+  tt="";
+  tt+="Node Address/Slot: <strong>"+
+    panel_parser->outputNodeAddress(router,output).toString();
+  tt+=QString().sprintf("/%d</strong>",
+			1+panel_parser->
+			outputNodeSlotNumber(router,output));
+  panel_description_text_label->setText(tt);
+}
+
+
 void MainWidget::resizeEvent(QResizeEvent *e)
 {
+  int info_width=panel_input_list->sizeHint().width();
+  if(panel_output_list->sizeHint().width()>info_width) {
+    info_width=panel_output_list->sizeHint().width();
+  }
+
   panel_router_label->
-    setGeometry(15,10,panel_input_list->sizeHint().width()-10,20);
+    setGeometry(15,10,info_width-10,20);
   panel_router_box->
-    setGeometry(10,32,panel_input_list->sizeHint().width()-10,20);
-  panel_input_list->setGeometry(10,
-				panel_output_list->sizeHint().width()+10,
-				panel_input_list->sizeHint().width()-0,
-				e->size().height()-(panel_output_list->sizeHint().width()-45));
-  panel_output_list->setGeometry(panel_input_list->sizeHint().width()+10,10,e->size().width()-10,panel_output_list->sizeHint().width()+1);
+    setGeometry(10,32,info_width-10,20);
+
+
+  panel_description_name_label->
+    setGeometry(0,64,
+		info_width+10,20);
+  panel_description_text_label->
+    setGeometry(10,90,
+		info_width,
+		panel_output_list->sizeHint().width()-90);
+
+
+
+  panel_input_list->
+    setGeometry(10,
+		panel_output_list->sizeHint().width()+10,
+		info_width-0,
+		e->size().height()-(panel_output_list->sizeHint().width()-45));
+  panel_output_list->
+    setGeometry(info_width+10,10,
+		e->size().width()-10,panel_output_list->sizeHint().width()+1);
   
   int view_width=3+26*panel_output_list->endpointQuantity();
   int bar_width=0;
@@ -422,8 +529,8 @@ void MainWidget::resizeEvent(QResizeEvent *e)
   int bar_height=0;
   int bar_x=0;
   int bar_y=0;
-  if(view_width>(e->size().width()-(panel_input_list->sizeHint().width()+10))) {
-      view_width=e->size().width()-(panel_input_list->sizeHint().width()+10);
+  if(view_width>(e->size().width()-(info_width+10))) {
+      view_width=e->size().width()-(info_width+10);
       bar_x=1;
       bar_height=15;
   }
@@ -436,7 +543,7 @@ void MainWidget::resizeEvent(QResizeEvent *e)
     bar_width=0;
     bar_height=0;
   }
-  panel_view->setGeometry(panel_input_list->sizeHint().width()+bar_x+9,panel_output_list->sizeHint().width()+bar_y+9,view_width+bar_width,view_height+bar_height);
+  panel_view->setGeometry(info_width+bar_x+9,panel_output_list->sizeHint().width()+bar_y+9,view_width+bar_width,view_height+bar_height);
 }
 
 
@@ -449,6 +556,5 @@ int main(int argc,char *argv[])
   //
   MainWidget *w=new MainWidget(NULL);
   w->setGeometry(w->geometry().x(),w->geometry().y(),w->sizeHint().width(),w->sizeHint().height());
-  //  w->show();
   return a.exec();
 }

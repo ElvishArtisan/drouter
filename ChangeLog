@@ -539,3 +539,7 @@
 	* Added 'codeMatches()' and 'invertedMask()' methods to the 'Gpi' class
 	in the Python API.
 	* Cleaned up formatting in 'python/api/StateEngine.py'.
+2020-05-06 Fred Gleason <fredg@paravelsystems.com>
+	* Added an endpoint information display in xpointpanel(1).
+	* Added the ability to copy endpoint parameters to the clipboard
+	in xpointpanel(1).

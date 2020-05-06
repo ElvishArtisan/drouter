@@ -2,7 +2,7 @@
 //
 // Parser for SoftwareAuthority Protocol
 //
-//   (C) Copyright 2016-2017 Fred Gleason <fredg@paravelsystems.com>
+//   (C) Copyright 2016-2020 Fred Gleason <fredg@paravelsystems.com>
 //
 //   This program is free software; you can redistribute it and/or modify
 //   it under the terms of the GNU General Public License as
@@ -93,6 +93,18 @@ QString SaParser::inputNodeName(int router,int input) const
 }
 
 
+QHostAddress SaParser::inputNodeAddress(int router,int input) const
+{
+  return sa_input_node_addresses[router][input];
+}
+
+
+int SaParser::inputNodeSlotNumber(int router,int input) const
+{
+  return sa_input_node_slot_numbers[router][input];
+}
+
+
 QString SaParser::inputName(int router,int input) const
 {
   return sa_input_names[router][input];
@@ -105,9 +117,39 @@ QString SaParser::inputLongName(int router,int input) const
 }
 
 
+int SaParser::inputSourceNumber(int router,int input) const
+{
+  return sa_input_source_numbers[router][input];
+}
+
+
+QHostAddress SaParser::inputStreamAddress(int router,int input) const
+{
+  return sa_input_stream_addresses[router][input];
+}
+
+
 int SaParser::outputQuantity(int router) const
 {
   return sa_output_names[router].size();
+}
+
+
+QString SaParser::outputNodeName(int router,int output) const
+{
+  return sa_output_node_names[router][output];
+}
+
+
+QHostAddress SaParser::outputNodeAddress(int router,int output) const
+{
+  return sa_output_node_addresses[router][output];
+}
+
+
+int SaParser::outputNodeSlotNumber(int router,int output) const
+{
+  return sa_output_node_slot_numbers[router][output];
 }
 
 
@@ -293,9 +335,15 @@ void SaParser::Clear()
 {
   sa_router_names.clear();
   sa_input_node_names.clear();
+  sa_input_node_slot_numbers.clear();
+  sa_input_node_addresses.clear();
   sa_input_names.clear();
   sa_input_long_names.clear();
+  sa_input_source_numbers.clear();
+  sa_input_stream_addresses.clear();
   sa_output_node_names.clear();
+  sa_output_node_addresses.clear();
+  sa_output_node_slot_numbers.clear();
   sa_output_names.clear();
   sa_output_long_names.clear();
   sa_output_xpoints.clear();
@@ -347,6 +395,8 @@ void SaParser::DispatchCommand(QString cmd)
 	if(f0[1]=="sourcenames") {
 	  sa_input_names[sa_current_router].clear();
 	  sa_input_long_names[sa_current_router].clear();
+	  sa_input_source_numbers[sa_current_router].clear();
+	  sa_input_stream_addresses[sa_current_router].clear();
 	  sa_reading_sources=true;
 	}
 	if(f0[1]=="destnames") {
@@ -514,6 +564,7 @@ void SaParser::ReadSourceName(const QString &cmd)
   bool ok=false;
   int srcnum=0;
   int input=f0.at(0).toInt(&ok);
+  QHostAddress addr;
 
   if(ok) {
     if(f0.size()==8) {
@@ -522,18 +573,39 @@ void SaParser::ReadSourceName(const QString &cmd)
     if(f0.size()>=3) {
       QStringList f1=f0.at(2).split("ON");
       sa_input_node_names[sa_current_router][input]=f1.back();
+      if(addr.setAddress(f0.at(3))) {
+	sa_input_node_addresses[sa_current_router][input]=addr;
+      }
+      int slot=f0.at(5).toUInt(&ok);
+      if(ok) {
+	sa_input_node_slot_numbers[sa_current_router][input]=slot-1;
+      }
       sa_input_names[sa_current_router][input]=f0[1];
       if(ok) {
 	if(srcnum<=0) {
-	  sa_input_long_names[sa_current_router][input]=
-	    f0[2]+" ["+tr("inactive")+"]";
+	  sa_input_long_names[sa_current_router][input]=f0[2];
+	  //sa_input_long_names[sa_current_router][input]=
+	  //  f0[2]+" ["+tr("inactive")+"]";
+	  sa_input_source_numbers[sa_current_router][input]=-1;
+	  sa_input_stream_addresses[sa_current_router][input]=QHostAddress();
 	}
 	else {
-	  sa_input_long_names[sa_current_router][input]=f0[2]+" ["+f0[6]+"]";
+	  sa_input_long_names[sa_current_router][input]=f0[2];
+	  //sa_input_long_names[sa_current_router][input]=f0[2]+" ["+f0[6]+"]";
+	  sa_input_source_numbers[sa_current_router][input]=f0.at(6).toInt();
+	  QHostAddress addr;
+	  if(addr.setAddress(f0.at(7))) {
+	    sa_input_stream_addresses[sa_current_router][input]=addr;
+	  }
+	  else {
+	    sa_input_stream_addresses[sa_current_router][input]=QHostAddress();
+	  }
 	}
       }
       else {
 	sa_input_long_names[sa_current_router][input]=f0[2];
+	sa_input_source_numbers[sa_current_router][input]=-1;
+	sa_input_stream_addresses[sa_current_router][input]=QHostAddress();
       }
     }
   }
@@ -545,13 +617,25 @@ void SaParser::ReadDestName(const QString &cmd)
   QStringList f0=cmd.split("\t");
   bool ok=false;
   int output=f0.at(0).toInt(&ok);
+  QHostAddress addr;
 
   if(f0.size()>=3) {
     if(ok) {
       QStringList f1=f0.at(2).split("ON");
       sa_output_node_names[sa_current_router][output]=f1.back();
-      sa_output_names[sa_current_router][output]=f0[1];
-      sa_output_long_names[sa_current_router][output]=f0[2];
+      sa_output_names[sa_current_router][output]=f0.at(1);
+      sa_output_long_names[sa_current_router][output]=f0.at(2);
+      if(f0.size()>=4) {
+	if(addr.setAddress(f0.at(3))) {
+	  sa_output_node_addresses[sa_current_router][output]=addr;
+	}
+	if(f0.size()>=6) {
+	  int slot=f0.at(5).toUInt(&ok);
+	  if(ok) {
+	    sa_output_node_slot_numbers[sa_current_router][output]=slot-1;
+	  }
+	}
+      }
     }
   }
 }

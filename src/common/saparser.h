@@ -27,6 +27,7 @@
 #include <map>
 #include <vector>
 
+#include <QHostAddress>
 #include <QList>
 #include <QMap>
 #include <QObject>
@@ -49,9 +50,16 @@ class SaParser : public QObject
   bool gpioSupported(int router) const;
   int inputQuantity(int router) const;
   QString inputNodeName(int router,int input) const;
+  QHostAddress inputNodeAddress(int router,int input) const;
+  int inputNodeSlotNumber(int router,int input) const;
   QString inputName(int router,int input) const;
   QString inputLongName(int router,int input) const;
+  int inputSourceNumber(int router,int input) const;
+  QHostAddress inputStreamAddress(int router,int input) const;
   int outputQuantity(int router) const;
+  QString outputNodeName(int router,int output) const;
+  QHostAddress outputNodeAddress(int router,int output) const;
+  int outputNodeSlotNumber(int router,int output) const;
   QString outputName(int router,int output) const;
   QString outputLongName(int router,int output) const;
   int outputCrosspoint(int router,int output) const;
@@ -114,9 +122,15 @@ class SaParser : public QObject
   int sa_current_router;
   int sa_last_router;
   QMap<int,QMap<int,QString> > sa_input_node_names;
+  QMap<int,QMap<int,QHostAddress> > sa_input_node_addresses;
+  QMap<int,QMap<int,int> > sa_input_node_slot_numbers;
   QMap<int,QMap<int,QString> > sa_input_names;
   QMap<int,QMap<int,QString> > sa_input_long_names;
+  QMap<int,QMap<int,int> > sa_input_source_numbers;
+  QMap<int,QMap<int,QHostAddress> > sa_input_stream_addresses;
   QMap<int,QMap<int,QString> > sa_output_node_names;
+  QMap<int,QMap<int,QHostAddress> > sa_output_node_addresses;
+  QMap<int,QMap<int,int> > sa_output_node_slot_numbers;
   QMap<int,QMap<int,QString> > sa_output_names;
   QMap<int,QMap<int,QString> > sa_output_long_names;
   QMap<int,QMap<int,int> > sa_output_xpoints;
