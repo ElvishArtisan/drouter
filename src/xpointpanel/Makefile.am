@@ -37,9 +37,11 @@ dist_xpointpanel_SOURCES = endpointlist.cpp endpointlist.h\
                            xpointview.cpp xpointview.h
 
 nodist_xpointpanel_SOURCES = combobox.cpp combobox.h\
+                             dparser.cpp dparser.h\
                              logindialog.cpp logindialog.h\
                              saparser.cpp saparser.h\
                              moc_combobox.cpp\
+                             moc_dparser.cpp\
                              moc_endpointlist.cpp\
                              moc_logindialog.cpp\
                              moc_multistatewidget.cpp\

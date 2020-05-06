@@ -296,6 +296,8 @@ void DParser::ProcessCommand(const QString &cmd)
 	node->setHostAddress(addr);
 	node->setHostName(cmds.at(2));
 	node->setDeviceName(cmds.at(3));
+	node->setProductName(SyNode::productName(cmds.at(3),cmds.at(6).toInt(),
+						 cmds.at(7).toInt()));
 	node->setSrcSlotQuantity(cmds.at(4).toInt());
 	node->setDstSlotQuantity(cmds.at(5).toInt());
 	node->setGpiSlotQuantity(cmds.at(6).toInt());

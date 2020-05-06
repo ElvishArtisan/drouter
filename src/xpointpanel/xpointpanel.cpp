@@ -35,6 +35,7 @@
 
 #include <sy/sycmdswitch.h>
 #include <sy/symcastsocket.h>
+#include <sy/synode.h>
 
 #include "xpointpanel.h"
 
@@ -193,6 +194,13 @@ MainWidget::MainWidget(QWidget *parent)
   connect(panel_parser,SIGNAL(gpoStateChanged(int,int,const QString &)),
 	  panel_output_list,SLOT(setGpioState(int,int,const QString &)));
 
+  //
+  // The ProtocolD Connection
+  //
+  panel_dparser=new DParser(this);
+  connect(panel_dparser,SIGNAL(connected(bool)),
+	  this,SLOT(protocolDConnected(bool)));
+
   setWindowTitle("XPointPanel ["+tr("Server")+": "+panel_hostname+"]");
 
   if((!no_creds)&&panel_password.isEmpty()) {
@@ -202,6 +210,7 @@ MainWidget::MainWidget(QWidget *parent)
   }
   panel_parser->
     connectToHost(panel_hostname,9500,panel_username,panel_password);
+  panel_dparser->connectToHost(panel_hostname,23883);
 }
 
 
@@ -355,6 +364,14 @@ void MainWidget::connectedData(bool state,SaParser::ConnectionState cstate)
 }
 
 
+void MainWidget::protocolDConnected(bool state)
+{
+  if(!state) {
+    fprintf(stderr,"unable to connect to protocolD server\n");
+  }
+}
+
+
 void MainWidget::errorData(QAbstractSocket::SocketError err)
 {
   if(!panel_initial_connected) {
@@ -422,6 +439,7 @@ void MainWidget::xpointDoubleClickedData(int x_slot,int y_slot)
 void MainWidget::inputHoveredEndpointChangedData(int router,int input)
 {
   QString tt;
+  SyNode *node=NULL;
 
   if(input<0) {
     panel_description_name_label->clear();
@@ -443,6 +461,10 @@ void MainWidget::inputHoveredEndpointChangedData(int router,int input)
   // Set Description Text
   //
   tt="";
+  if((node=panel_dparser->
+      node(panel_parser->inputNodeAddress(router,input)))!=NULL) {
+    tt+="Device: <strong>"+node->productName()+"</strong><br>";
+  }
   if(panel_parser->inputSourceNumber(router,input)>0) {
     tt+=QString().sprintf("Source Number: <strong>%d</strong><br>",
 			  panel_parser->inputSourceNumber(router,input));
@@ -461,6 +483,7 @@ void MainWidget::inputHoveredEndpointChangedData(int router,int input)
 void MainWidget::outputHoveredEndpointChangedData(int router,int output)
 {
   QString tt;
+  SyNode *node=NULL;
 
   if(output<0) {
     panel_description_name_label->clear();
@@ -482,6 +505,10 @@ void MainWidget::outputHoveredEndpointChangedData(int router,int output)
   // Set Description Text
   //
   tt="";
+  if((node=panel_dparser->
+      node(panel_parser->outputNodeAddress(router,output)))!=NULL) {
+    tt+="Device: <strong>"+node->productName()+"</strong><br>";
+  }
   tt+="Node Address/Slot: <strong>"+
     panel_parser->outputNodeAddress(router,output).toString();
   tt+=QString().sprintf("/%d</strong>",

@@ -31,6 +31,7 @@
 #include <QWidget>
 
 #include "combobox.h"
+#include "dparser.h"
 #include "endpointlist.h"
 #include "logindialog.h"
 #include "saparser.h"
@@ -50,6 +51,7 @@ class MainWidget : public QWidget
  private slots:
   void routerBoxActivatedData(int n);
   void connectedData(bool state,SaParser::ConnectionState cstate);
+  void protocolDConnected(bool state);
   void errorData(QAbstractSocket::SocketError err);
   void outputCrosspointChangedData(int router,int output,int input);
   void xpointDoubleClickedData(int output_num,int input_num);
@@ -69,6 +71,7 @@ class MainWidget : public QWidget
   ComboBox *panel_router_box;
   QLabel *panel_description_name_label;
   QLabel *panel_description_text_label;
+  DParser *panel_dparser;
   SaParser *panel_parser;
   bool panel_initial_connected;
   QGraphicsScene *panel_scene;
