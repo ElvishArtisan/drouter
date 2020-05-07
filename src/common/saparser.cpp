@@ -572,7 +572,7 @@ void SaParser::ReadSourceName(const QString &cmd)
     }
     if(f0.size()>=3) {
       QStringList f1=f0.at(2).split("ON");
-      sa_input_node_names[sa_current_router][input]=f1.back();
+      sa_input_node_names[sa_current_router][input]=f1.back().trimmed();
       if(addr.setAddress(f0.at(3))) {
 	sa_input_node_addresses[sa_current_router][input]=addr;
       }
@@ -622,7 +622,7 @@ void SaParser::ReadDestName(const QString &cmd)
   if(f0.size()>=3) {
     if(ok) {
       QStringList f1=f0.at(2).split("ON");
-      sa_output_node_names[sa_current_router][output]=f1.back();
+      sa_output_node_names[sa_current_router][output]=f1.back().trimmed();
       sa_output_names[sa_current_router][output]=f0.at(1);
       sa_output_long_names[sa_current_router][output]=f0.at(2);
       if(f0.size()>=4) {

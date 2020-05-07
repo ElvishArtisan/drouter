@@ -20,6 +20,7 @@
 //
 
 #include <stdio.h>
+#include <unistd.h>
 
 #include <QApplication>
 #include <QClipboard>
@@ -59,6 +60,11 @@ EndpointList::EndpointList(Qt::Orientation orient,QWidget *parent)
   list_mouse_menu=new QMenu(this);
   list_state_dialog_action=list_mouse_menu->
     addAction(tr("Set GPIO State"),this,SLOT(showStateDialogData()));
+  list_mouse_menu->addSeparator();
+  list_connect_via_http_action=list_mouse_menu->
+    addAction("",this,SLOT(connectViaHttpData()));
+  list_connect_via_lwrp_action=list_mouse_menu->
+    addAction("",this,SLOT(connectViaLwrpData()));
   list_mouse_menu->addSeparator();
   list_copy_source_number_action=list_mouse_menu->
     addAction(tr("Copy Source Number"),this,SLOT(copySourceNumberData()));
@@ -239,6 +245,31 @@ void EndpointList::setGpioState(int router,int linenum,const QString &code)
 void EndpointList::aboutToShowMenuData()
 {
   list_state_dialog_action->setEnabled(list_show_gpio);
+  switch(list_orientation) {
+  case Qt::Horizontal:
+    list_connect_via_http_action->
+      setText(tr("Connect to")+" "+
+	      list_parser->inputNodeName(list_router,1+list_mouse_endpoint)+" "+
+	      tr("via HTTP"));
+    list_connect_via_lwrp_action->
+      setText(tr("Connect to")+" "+
+	      list_parser->inputNodeName(list_router,1+list_mouse_endpoint)+" "+
+	      tr("via LWRP"));
+    break;
+
+  case Qt::Vertical:
+    list_connect_via_http_action->
+      setText(tr("Connect to")+" "+
+	      list_parser->outputNodeName(list_router,1+list_mouse_endpoint)+" "+
+	      tr("via HTTP"));
+    list_connect_via_lwrp_action->
+      setText(tr("Connect to")+" "+
+	      list_parser->outputNodeName(list_router,1+list_mouse_endpoint)+" "+
+	      tr("via LWRP"));
+    break;
+  }
+  list_connect_via_http_action->setEnabled(true);
+  list_connect_via_lwrp_action->setEnabled(true);
   list_copy_source_number_action->setEnabled(list_orientation==Qt::Horizontal);
   list_copy_source_address_action->setEnabled(list_orientation==Qt::Horizontal);
   list_copy_host_address_action->setEnabled(true);
@@ -264,6 +295,56 @@ void EndpointList::showStateDialogData()
   list_state_dialogs.value(list_mouse_endpoint)->show();
   if(!geo.isNull()) {
     list_state_dialogs.value(list_mouse_endpoint)->setGeometry(geo);
+  }
+}
+
+
+void EndpointList::connectViaHttpData()
+{
+  switch(list_orientation) {
+  case Qt::Horizontal:
+    if(fork()==0) {
+      execlp("firefox","firefox",
+	    list_parser->inputNodeAddress(list_router,list_mouse_endpoint).
+	    toString().toUtf8().constData(),(char *)NULL);
+      exit(0);
+    }
+    break;
+
+  case Qt::Vertical:
+    if(fork()==0) {
+      execlp("firefox","firefox",
+	    list_parser->outputNodeAddress(list_router,list_mouse_endpoint).
+	    toString().toUtf8().constData(),(char *)NULL);
+      exit(0);
+    }
+    break;
+  }
+}
+
+
+void EndpointList::connectViaLwrpData()
+{
+  switch(list_orientation) {
+  case Qt::Horizontal:
+    if(fork()==0) {
+      execlp("lwmon","lwmon",
+	    "--mode=lwrp",
+	    list_parser->inputNodeAddress(list_router,list_mouse_endpoint).
+	    toString().toUtf8().constData(),(char *)NULL);
+      exit(0);
+    }
+    break;
+
+  case Qt::Vertical:
+    if(fork()==0) {
+      execlp("lwmon","lwmon",
+	    "--mode=lwrp",
+	    list_parser->outputNodeAddress(list_router,list_mouse_endpoint).
+	    toString().toUtf8().constData(),(char *)NULL);
+      exit(0);
+    }
+    break;
   }
 }
 

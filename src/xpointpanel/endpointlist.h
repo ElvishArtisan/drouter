@@ -62,6 +62,8 @@ class EndpointList : public QWidget
 
  private slots:
   void showStateDialogData();
+  void connectViaHttpData();
+  void connectViaLwrpData();
   void copySourceNumberData();
   void copySourceStreamAddressData();
   void copyNodeAddressData();
@@ -91,6 +93,8 @@ class EndpointList : public QWidget
   int list_move_endpoint;
   QPoint list_mouse_position;
   QAction *list_state_dialog_action;
+  QAction *list_connect_via_http_action;
+  QAction *list_connect_via_lwrp_action;
   QAction *list_copy_source_number_action;
   QAction *list_copy_source_address_action;
   QAction *list_copy_host_address_action;

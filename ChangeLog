@@ -546,3 +546,6 @@
 2020-05-06 Fred Gleason <fredg@paravelsystems.com>
 	* Added a 'Device' field to the endpoint information display in
 	xpointpanel(1).
+2020-05-07 Fred Gleason <fredg@paravelsystems.com>
+	* Added 'Connect to <node> by HTTP' and 'Connect to <node> by LWRP'
+	options to the right-click menus in xpointpanel(1).
