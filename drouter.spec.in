@@ -32,6 +32,7 @@ Requires: drouter-python = @VERSION@, mariadb-server, qt-mysql
 
 %package panels
 Summary: GUI control panels for DRouter
+Requires: firefox lwmon
 
 
 %package python
@@ -182,6 +183,8 @@ rm -rf $RPM_BUILD_ROOT
 
 
 %changelog
+* Thu May  7 2020 Fred Gleason <fredg@paravelsystems.com>
+-- Added 'lwmon' and 'firefox' dependencies to the 'gui' subpackage.
 * Thu Aug  8 2019 Fred Gleason <fredg@paravelsystems.com>
 -- Added the shotpanel(1) man page.
 * Tue Mar  6 2018 Fred Gleason <fredg@paravelsystems.com>

@@ -549,3 +549,5 @@
 2020-05-07 Fred Gleason <fredg@paravelsystems.com>
 	* Added 'Connect to <node> by HTTP' and 'Connect to <node> by LWRP'
 	options to the right-click menus in xpointpanel(1).
+2020-05-07 Fred Gleason <fredg@paravelsystems.com>
+	* Added 'lwmon' and 'firefox' dependencies to the 'gui' subpackage.
