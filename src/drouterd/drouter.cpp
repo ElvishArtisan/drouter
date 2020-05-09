@@ -318,7 +318,8 @@ void DRouter::nodeConnectedData(unsigned id,bool state)
 	"HOST_ADDRESS=\""+QHostAddress(id).toString()+"\","+
 	QString().sprintf("SLOT=%u,",i)+
 	"HOST_NAME=\""+lwrp->hostName()+"\","+
-	"STREAM_ADDRESS=\""+lwrp->srcAddress(i).toString()+"\","+
+	"STREAM_ADDRESS=\""+
+	Config::normalizedStreamAddress(lwrp->srcAddress(i)).toString()+"\","+
 	"NAME=\""+lwrp->srcName(i)+"\","+
 	QString().sprintf("STREAM_ENABLED=%u,",lwrp->srcEnabled(i))+
 	QString().sprintf("CHANNELS=%u,",lwrp->srcChannels(i))+
@@ -338,7 +339,8 @@ void DRouter::nodeConnectedData(unsigned id,bool state)
 	      QString().sprintf("ROUTER_NUMBER=%d,",it.value()->routerNumber())+
 	      QString().sprintf("SOURCE_NUMBER=%d,",endpt)+
 	      QString().sprintf("SOURCE_ID=%d,",last_id)+
-	      "STREAM_ADDRESS=\""+lwrp->srcAddress(i).toString()+"\","+
+	      "STREAM_ADDRESS=\""+
+	      Config::normalizedStreamAddress(lwrp->srcAddress(i)).toString()+"\","+
 	      "HOST_ADDRESS=\""+QHostAddress(id).toString()+"\","+
 	      QString().sprintf("SLOT=%d",i);
 	    if(!it.value()->name(EndPointMap::Input,endpt).isEmpty()) {
@@ -355,7 +357,8 @@ void DRouter::nodeConnectedData(unsigned id,bool state)
 	"HOST_ADDRESS=\""+QHostAddress(id).toString()+"\","+
 	QString().sprintf("SLOT=%u,",i)+
 	"HOST_NAME=\""+lwrp->hostName()+"\","+
-	"STREAM_ADDRESS=\""+lwrp->dstAddress(i).toString()+"\","+
+	"STREAM_ADDRESS=\""+
+	Config::normalizedStreamAddress(lwrp->dstAddress(i)).toString()+"\","+
 	"NAME=\""+lwrp->dstName(i)+"\","+
 	QString().sprintf("CHANNELS=%u",lwrp->dstChannels(i));
       q=new QSqlQuery(sql);
@@ -373,7 +376,8 @@ void DRouter::nodeConnectedData(unsigned id,bool state)
 	      QString().sprintf("ROUTER_NUMBER=%d,",it.value()->routerNumber())+
 	      QString().sprintf("SOURCE_NUMBER=%d,",endpt)+
 	      QString().sprintf("DESTINATION_ID=%d,",last_id)+
-	      "STREAM_ADDRESS=\""+lwrp->dstAddress(i).toString()+"\","+
+	      "STREAM_ADDRESS=\""+
+	      Config::normalizedStreamAddress(lwrp->dstAddress(i)).toString()+"\","+
 	      "HOST_ADDRESS=\""+QHostAddress(id).toString()+"\","+
 	      QString().sprintf("SLOT=%d",i);
 	    if(!it.value()->name(EndPointMap::Output,endpt).isEmpty()) {
@@ -535,7 +539,8 @@ void DRouter::sourceChangedData(unsigned id,int slotnum,const SyNode &node,
 
   sql=QString("update SOURCES set ")+
     "HOST_NAME=\""+node.hostName()+"\","+
-    "STREAM_ADDRESS=\""+src.streamAddress().toString()+"\","+
+    "STREAM_ADDRESS=\""+
+    Config::normalizedStreamAddress(src.streamAddress()).toString()+"\","+
     "NAME=\""+src.name()+"\","+
     QString().sprintf("STREAM_ENABLED=%u,",src.enabled())+
     QString().sprintf("CHANNELS=%u,",src.channels())+
@@ -545,7 +550,8 @@ void DRouter::sourceChangedData(unsigned id,int slotnum,const SyNode &node,
   q=new QSqlQuery(sql);
   delete q;
   sql=QString("update SA_SOURCES set ")+
-    "STREAM_ADDRESS=\""+src.streamAddress().toString()+"\" where "+
+    "STREAM_ADDRESS=\""+
+    Config::normalizedStreamAddress(src.streamAddress()).toString()+"\" where "+
     "HOST_ADDRESS=\""+QHostAddress(id).toString()+"\" && "+
     QString().sprintf("SLOT=%u",slotnum);
   q=new QSqlQuery(sql);
@@ -574,7 +580,8 @@ void DRouter::destinationChangedData(unsigned id,int slotnum,const SyNode &node,
 
   sql=QString("update DESTINATIONS set ")+
     "HOST_NAME=\""+node.hostName()+"\","+
-    "STREAM_ADDRESS=\""+dst.streamAddress().toString()+"\","+
+    "STREAM_ADDRESS=\""+
+    Config::normalizedStreamAddress(dst.streamAddress()).toString()+"\","+
     "NAME=\""+dst.name()+"\","+
     QString().sprintf("CHANNELS=%u where ",dst.channels())+
     "HOST_ADDRESS=\""+QHostAddress(id).toString()+"\" && "+
@@ -582,7 +589,8 @@ void DRouter::destinationChangedData(unsigned id,int slotnum,const SyNode &node,
   q=new QSqlQuery(sql);
   delete q;
   sql=QString("update SA_DESTINATIONS set ")+
-    "STREAM_ADDRESS=\""+dst.streamAddress().toString()+"\" where "+
+    "STREAM_ADDRESS=\""+
+    Config::normalizedStreamAddress(dst.streamAddress()).toString()+"\" where "+
     "HOST_ADDRESS=\""+QHostAddress(id).toString()+"\" && "+
     QString().sprintf("SLOT=%u",slotnum);
   q=new QSqlQuery(sql);
@@ -935,7 +943,7 @@ bool DRouter::ProcessIpcCommand(int sock,const QString &cmd)
     SyLwrpClient *lwrp=drouter_nodes[QHostAddress(cmds.at(1)).toIPv4Address()];
     unsigned slotnum=cmds.at(2).toUInt(&ok);
     if((lwrp!=NULL)&&ok&&(slotnum<lwrp->dstSlots())) {
-      lwrp->setDstAddress(slotnum,QHostAddress("239.192.0.0"));
+      lwrp->setDstAddress(slotnum,QHostAddress(DROUTER_NULL_STREAM_ADDRESS));
     }
   }
 

@@ -2,7 +2,7 @@
 //
 // Software Authority protocol handler for DRouter.
 //
-//   (C) Copyright 2018-2019 Fred Gleason <fredg@paravelsystems.com>
+//   (C) Copyright 2018-2020 Fred Gleason <fredg@paravelsystems.com>
 //
 //   This program is free software; you can redistribute it and/or modify
 //   it under the terms of the GNU General Public License version 2 as
@@ -614,6 +614,7 @@ void ProtocolSa::SendRouteInfo(unsigned router,int output)
     if(output>=0) {
       sql+=QString().sprintf("&& SA_DESTINATIONS.SOURCE_NUMBER=%d ",output);
     }
+    sql+="&& SA_SOURCES.STREAM_ADDRESS!=\""+DROUTER_NULL_STREAM_ADDRESS+"\" ";
     sql+="order by SA_DESTINATIONS.SOURCE_NUMBER";
   }
   else {
@@ -624,8 +625,29 @@ void ProtocolSa::SendRouteInfo(unsigned router,int output)
     sql+="order by SA_GPOS.SOURCE_NUMBER";
   }
   q=new QSqlQuery(sql);
-  while(q->next()) {
-    proto_socket->write(RouteStatMessage(q).toUtf8());
+  q->first();
+  if(output<0) {  // Send all crosspoints for the router
+    for(int i=0;i<map->quantity(EndPointMap::Output);i++) {
+      if(q->isValid()&&q->value(1).toInt()==i) {
+	proto_socket->write(RouteStatMessage(q).toUtf8());
+	q->next();
+      }
+      else {
+	proto_socket->write(QString().sprintf("RouteStat %d %d 0 False\r\n",
+					      router+1,i+1).toUtf8());
+      }
+    }
+  }
+  else {  // Send just the requested crosspoint
+    if(output<map->quantity(EndPointMap::Output)) {
+      if(q->isValid()) {
+	proto_socket->write(RouteStatMessage(q).toUtf8());
+      }
+      else {
+	proto_socket->write(QString().sprintf("RouteStat %d %d 0 False\r\n",
+					      router+1,output+1).toUtf8());
+      }
+    }
   }
   delete q;
 }

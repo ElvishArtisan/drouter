@@ -26,6 +26,7 @@
 #include <QStringList>
 
 #define DROUTER_CONF_FILE "/etc/drouter/drouter.conf"
+#define DROUTER_NULL_STREAM_ADDRESS QString("239.192.0.0")
 #define DROUTER_DEFAULT_CLIP_THRESHOLD -20
 #define DROUTER_DEFAULT_CLIP_TIMEOUT 1000
 #define DROUTER_DEFAULT_SILENCE_THRESHOLD -500
@@ -64,6 +65,8 @@ class Config
   QString tetherGpioCode(TetherRole role) const;
   bool tetherIsSane() const;
   void load();
+  static QHostAddress normalizedStreamAddress(const QHostAddress &addr);
+  static QHostAddress normalizedStreamAddress(const QString &addr);
 
  private:
   QString conf_lwrp_password;

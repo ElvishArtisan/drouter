@@ -535,7 +535,10 @@
 	<listitem>
 	  <para>
 	    The IPv4 address of the stream configured to be received,
-	    in dotted-quad notation.
+	    in dotted-quad notation. A value of
+	    <computeroutput>239.192.0.0</computeroutput> indicates that
+	    no stream is currently configured to be received --i.e.
+	    the destination is muted.
 	  </para>
 	</listitem>
       </varlistentry>

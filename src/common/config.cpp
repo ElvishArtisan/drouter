@@ -237,3 +237,21 @@ void Config::load()
     syslog(LOG_INFO,"tethering is deactivated");
   }
 }
+
+
+QHostAddress Config::normalizedStreamAddress(const QHostAddress &addr)
+{
+  QHostAddress ret=addr;
+
+  if(addr.isNull()||(addr.toString()=="255.255.255.255")) {
+    ret.setAddress(DROUTER_NULL_STREAM_ADDRESS);
+  }
+
+  return ret;
+}
+
+
+QHostAddress Config::normalizedStreamAddress(const QString &addr)
+{
+  return Config::normalizedStreamAddress(QHostAddress(addr));
+}
