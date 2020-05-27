@@ -555,6 +555,6 @@
 	* Normalized the value of a 'null' multicast stream address
 	to be '239.192.0.0' uniformly throughout Drouter.
 	* Fixed a bug in drouterd(7) that could cause the Software
-	Authroity 'RouteStat' command to return invalid and/or extraneous
+	Authority 'RouteStat' command to return invalid and/or extraneous
 	results in response to a client request to enumerate the routes of
 	an entire router.
