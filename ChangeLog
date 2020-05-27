@@ -558,3 +558,6 @@
 	Authority 'RouteStat' command to return invalid and/or extraneous
 	results in response to a client request to enumerate the routes of
 	an entire router.
+2020-05-27 Fred Gleason <fredg@paravelsystems.com>
+	* Fixed a bug in xpointpanel(1) that made spawning of external
+	viewers unreliable.

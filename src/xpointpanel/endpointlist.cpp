@@ -301,21 +301,25 @@ void EndpointList::showStateDialogData()
 
 void EndpointList::connectViaHttpData()
 {
+  char c_str[256];
+
   switch(list_orientation) {
   case Qt::Horizontal:
+    strncpy(c_str,list_parser->inputNodeAddress(list_router,
+						list_mouse_endpoint).
+	    toString().toUtf8().constData(),255);
     if(fork()==0) {
-      execlp("firefox","firefox",
-	    list_parser->inputNodeAddress(list_router,list_mouse_endpoint).
-	    toString().toUtf8().constData(),(char *)NULL);
+      execlp("firefox","firefox",c_str,(char *)NULL);
       exit(0);
     }
     break;
 
   case Qt::Vertical:
+    strncpy(c_str,list_parser->outputNodeAddress(list_router,
+						 list_mouse_endpoint).
+	    toString().toUtf8().constData(),255);
     if(fork()==0) {
-      execlp("firefox","firefox",
-	    list_parser->outputNodeAddress(list_router,list_mouse_endpoint).
-	    toString().toUtf8().constData(),(char *)NULL);
+      execlp("firefox","firefox",c_str,(char *)NULL);
       exit(0);
     }
     break;
@@ -325,23 +329,25 @@ void EndpointList::connectViaHttpData()
 
 void EndpointList::connectViaLwrpData()
 {
+  char c_str[256];
+
   switch(list_orientation) {
   case Qt::Horizontal:
+    strncpy(c_str,list_parser->inputNodeAddress(list_router,
+						list_mouse_endpoint).
+	    toString().toUtf8().constData(),255);
     if(fork()==0) {
-      execlp("lwmon","lwmon",
-	    "--mode=lwrp",
-	    list_parser->inputNodeAddress(list_router,list_mouse_endpoint).
-	    toString().toUtf8().constData(),(char *)NULL);
+      execlp("lwmon","lwmon","--mode=lwrp",c_str,(char *)NULL);
       exit(0);
     }
     break;
 
   case Qt::Vertical:
+    strncpy(c_str,list_parser->outputNodeAddress(list_router,
+						 list_mouse_endpoint).
+	    toString().toUtf8().constData(),255);
     if(fork()==0) {
-      execlp("lwmon","lwmon",
-	    "--mode=lwrp",
-	    list_parser->outputNodeAddress(list_router,list_mouse_endpoint).
-	    toString().toUtf8().constData(),(char *)NULL);
+      execlp("lwmon","lwmon","--mode=lwrp",c_str,(char *)NULL);
       exit(0);
     }
     break;
