@@ -563,3 +563,5 @@
 	viewers unreliable.
 2020-05-28 Fred Gleason <fredg@paravelsystems.com>
 	* Updated 'INSTALL'.
+2020-05-28 Fred Gleason <fredg@paravelsystems.com>
+	* Incremented the package version to 1.0.0rc0.

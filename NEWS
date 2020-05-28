@@ -1,6 +1,19 @@
 This is the NEWS file for the drouter package.
 
-v0.9.4 -29 April 2020
+v1.0.0 - 28 May 2020
+
+Release Candidate
+
+Changes:
+   xpointpanel(1). Added endpoint information display as well as the
+   ability to open node connections via firefox(1) and lwrp(1) from
+   the right-click menus.
+
+   buttonpanel(1). Added new widgets to allow monitor and control of
+   GPIO states. See the '--gpio' option in the buttonpanel(1) man page
+   for details.
+-------------------------------------------------------------------------------
+v0.9.4 - 29 April 2020
 
 Beta Release
 
