@@ -561,3 +561,5 @@
 2020-05-27 Fred Gleason <fredg@paravelsystems.com>
 	* Fixed a bug in xpointpanel(1) that made spawning of external
 	viewers unreliable.
+2020-05-28 Fred Gleason <fredg@paravelsystems.com>
+	* Updated 'INSTALL'.
