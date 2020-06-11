@@ -62,6 +62,7 @@ class MainWidget : public QWidget
   QString panel_username;
   QString panel_password;
   bool panel_arm_button;
+  bool panel_no_max_size;
   QPixmap *panel_saspanels_map;
   SaParser *panel_parser;
   QSignalMapper *panel_button_mapper;

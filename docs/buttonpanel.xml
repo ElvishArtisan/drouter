@@ -222,6 +222,19 @@
 
   <varlistentry>
     <term>
+      <option>--no-max-size</option>
+    </term>
+    <listitem>
+      <para>
+	Do not apply a maximum size limit to the top-level application
+	window after calculating the widget layout. Useful only for
+	debugging.
+      </para>
+    </listitem>
+  </varlistentry>
+
+  <varlistentry>
+    <term>
       <option>--output=<arg choice="opt"><replaceable>router-num</replaceable></arg>:<arg choice="req"><replaceable>output-num</replaceable></arg></option>
     </term>
     <listitem>

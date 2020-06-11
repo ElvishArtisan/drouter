@@ -41,6 +41,7 @@ MainWidget::MainWidget(QWidget *parent)
   panel_hostname="";
   panel_username="Admin";
   panel_arm_button=false;
+  panel_no_max_size=false;
 
   bool no_creds=false;
   bool ok=false;
@@ -81,6 +82,10 @@ MainWidget::MainWidget(QWidget *parent)
     }
     if(cmd->key(i)=="--no-creds") {
       no_creds=true;
+      cmd->setProcessed(i,true);
+    }
+    if(cmd->key(i)=="--no-max-size") {
+      panel_no_max_size=true;
       cmd->setProcessed(i,true);
     }
     if(cmd->key(i)=="--username") {
@@ -318,10 +323,10 @@ void MainWidget::changeConnectionState(bool state,
 
 void MainWidget::resizeData()
 {
-  //  QSize sz=sizeHint();
-  //  setGeometry(geometry().x(),geometry().y(),sz.width(),sz.height());
   setMinimumSize(sizeHint());
-  setMaximumSize(sizeHint());
+  if(!panel_no_max_size) {
+    setMaximumSize(sizeHint());
+  }
 }
 
 

@@ -567,3 +567,5 @@
 	* Incremented the package version to 1.0.0rc0.
 2020-06-11 Fred Gleason <fredg@paravelsystems.com>
 	* Added a 'Gpo.codeMatches()' method to the Python API.
+2020-06-11 Fred Gleason <fredg@paravelsystems.com>
+	* Added a '--no-max-size' switch to buttonpanel(1).
