@@ -52,6 +52,18 @@ class Gpo(object):
         """
         return self.__code
 
+    def codeMatches(self,mask):
+        """
+           Returns True if the specified mask is satisfied by this gpo's
+           current state.
+        """
+        if len(mask)!=5:
+            return False
+        for i,val in enumerate(mask.lower()):
+            if val!='x' and val!=self.__code[i]:
+                return False
+        return True
+
     def bitState(self,bit):
         """
            Returns the state of one bit (boolean).
