@@ -33,6 +33,7 @@ SaParser::SaParser(QObject *parent)
   sa_reading_snapshots=false;
   sa_current_router=-1;
   sa_last_router=-1;
+  sa_prev_input=0;
   sa_last_xpoint_router=-1;
   sa_last_xpoint_output=-1;
 
@@ -83,7 +84,13 @@ bool SaParser::gpioSupported(int router) const
 
 int SaParser::inputQuantity(int router) const
 {
-  return sa_input_names[router].size();
+  return sa_input_is_reals[router].size();
+}
+
+
+bool SaParser::inputIsReal(int router,int input) const
+{
+  return sa_input_is_reals[router][input];
 }
 
 
@@ -397,6 +404,7 @@ void SaParser::DispatchCommand(QString cmd)
 	  sa_input_long_names[sa_current_router].clear();
 	  sa_input_source_numbers[sa_current_router].clear();
 	  sa_input_stream_addresses[sa_current_router].clear();
+	  sa_prev_input=0;
 	  sa_reading_sources=true;
 	}
 	if(f0[1]=="destnames") {
@@ -567,6 +575,9 @@ void SaParser::ReadSourceName(const QString &cmd)
   QHostAddress addr;
 
   if(ok) {
+    for(int i=sa_prev_input+1;i<input;i++) {
+      sa_input_is_reals[sa_current_router][i]=false;
+    }
     if(f0.size()==8) {
       srcnum=f0[6].toInt(&ok);
     }
@@ -581,17 +592,15 @@ void SaParser::ReadSourceName(const QString &cmd)
 	sa_input_node_slot_numbers[sa_current_router][input]=slot-1;
       }
       sa_input_names[sa_current_router][input]=f0[1];
+      sa_input_is_reals[sa_current_router][input]=true;
       if(ok) {
 	if(srcnum<=0) {
 	  sa_input_long_names[sa_current_router][input]=f0[2];
-	  //sa_input_long_names[sa_current_router][input]=
-	  //  f0[2]+" ["+tr("inactive")+"]";
 	  sa_input_source_numbers[sa_current_router][input]=-1;
 	  sa_input_stream_addresses[sa_current_router][input]=QHostAddress();
 	}
 	else {
 	  sa_input_long_names[sa_current_router][input]=f0[2];
-	  //sa_input_long_names[sa_current_router][input]=f0[2]+" ["+f0[6]+"]";
 	  sa_input_source_numbers[sa_current_router][input]=f0.at(6).toInt();
 	  QHostAddress addr;
 	  if(addr.setAddress(f0.at(7))) {
@@ -608,6 +617,7 @@ void SaParser::ReadSourceName(const QString &cmd)
 	sa_input_stream_addresses[sa_current_router][input]=QHostAddress();
       }
     }
+    sa_prev_input=input;
   }
 }
 

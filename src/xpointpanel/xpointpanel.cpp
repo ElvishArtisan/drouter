@@ -255,15 +255,14 @@ void MainWidget::routerBoxActivatedData(int n)
   //
   panel_input_list->setShowGpio(panel_parser->gpioSupported(router));
   QMap<int,QString> endpts;
-  while(count<panel_parser->inputQuantity(router)) {
-    name=panel_parser->inputLongName(router,endpt+1);
-    if(!name.isEmpty()) {
+  for(int i=0;i<panel_parser->inputQuantity(router);i++) {
+    name=panel_parser->inputLongName(router,i+1);
+    if(panel_parser->inputIsReal(router,i+1)) {
       panel_input_list->addEndpoint(router,endpt,
 				    QString().sprintf("%d - ",endpt+1)+
-				  panel_parser->inputLongName(router,endpt+1));
+				  panel_parser->inputLongName(router,i+1));
       panel_input_list->
-	setGpioState(router,endpt,panel_parser->gpiState(router,endpt));
-      count++;
+	setGpioState(router,endpt,panel_parser->gpiState(router,i));
     }
     endpt++;
   }

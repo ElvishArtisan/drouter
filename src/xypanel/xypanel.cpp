@@ -2,7 +2,7 @@
 //
 // An applet for controling an LWPath output
 //
-//   (C) Copyright 2002-2016 Fred Gleason <fredg@paravelsystems.com>
+//   (C) Copyright 2002-2020 Fred Gleason <fredg@paravelsystems.com>
 //
 //   This program is free software; you can redistribute it and/or modify
 //   it under the terms of the GNU General Public License as
@@ -38,7 +38,6 @@
 // Icons
 //
 #include "../../icons/drouter-16x16.xpm"
-
 
 MainWidget::MainWidget(QWidget *parent)
   :QWidget(parent)
@@ -252,16 +251,14 @@ void MainWidget::routerBoxActivatedData(int n)
     endpt++;
   }
   panel_input_box->clear();
-  count=0;
   endpt=0;
-  while(count<panel_parser->inputQuantity(router)) {
-    name=panel_parser->inputLongName(router,endpt+1);
-    if(!name.isEmpty()) {
+  for(int i=0;i<panel_parser->inputQuantity(router);i++) {
+    if(panel_parser->inputIsReal(router,i+1)) {
+      name=panel_parser->inputLongName(router,i+1);
       panel_input_box->
-	insertItem(count,QString().sprintf("%u - ",endpt+1)+name,endpt+1);
+	insertItem(panel_input_box->count(),QString().sprintf("%u - ",i+1)+name,i+1);
       count++;
     }
-    endpt++;
   }
   panel_input_box->
     insertItem(panel_parser->inputQuantity(router),tr("--- OFF ---"),0);
@@ -276,14 +273,18 @@ void MainWidget::outputBoxActivatedData(int n)
 {
   int router=panel_router_box->currentItemData().toInt();
   int output=panel_output_box->currentItemData().toInt();
-  outputCrosspointChangedData(router,output,panel_parser->outputCrosspoint(router,output));
+
+  outputCrosspointChangedData(router,output,
+			      panel_parser->outputCrosspoint(router,output));
 }
 
 
 void MainWidget::inputBoxActivatedData(int n)
 {
-  if(panel_input_box->currentItemData().toInt()>=0) {
-    SetArmedState(panel_current_input!=(n+1));
+  int current=panel_input_box->currentItemData().toInt();
+
+  if(current>=0) {
+    SetArmedState(panel_current_input!=(current));
   }
 }
 

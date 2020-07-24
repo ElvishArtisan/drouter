@@ -165,6 +165,7 @@ int EndpointList::slot(int endpt) const
 
 void EndpointList::addEndpoint(int router,int endpt,const QString &name)
 {
+  list_endpoints.push_back(endpt);
   list_labels[endpt]=name;
   list_gpio_widgets[endpt]=
     new MultiStateWidget(router,endpt,list_orientation,this);
@@ -187,6 +188,7 @@ void EndpointList::addEndpoints(int router,const QMap<int,QString> &endpts)
   QFontMetrics fm(font());
   for(QMap<int,QString>::const_iterator it=endpts.begin();it!=endpts.end();
       it++) {
+    list_endpoints.push_back(it.key());
     list_labels[it.key()]=it.value();
     list_gpio_widgets[it.key()]=
       new MultiStateWidget(router,it.key(),list_orientation,this);
@@ -334,7 +336,7 @@ void EndpointList::connectViaLwrpData()
   switch(list_orientation) {
   case Qt::Horizontal:
     strncpy(c_str,list_parser->inputNodeAddress(list_router,
-						list_mouse_endpoint).
+						list_mouse_endpoint+1).
 	    toString().toUtf8().constData(),255);
     if(fork()==0) {
       execlp("lwmon","lwmon","--mode=lwrp",c_str,(char *)NULL);
@@ -344,7 +346,7 @@ void EndpointList::connectViaLwrpData()
 
   case Qt::Vertical:
     strncpy(c_str,list_parser->outputNodeAddress(list_router,
-						 list_mouse_endpoint).
+						 list_mouse_endpoint+1).
 	    toString().toUtf8().constData(),255);
     if(fork()==0) {
       execlp("lwmon","lwmon","--mode=lwrp",c_str,(char *)NULL);
@@ -435,7 +437,10 @@ void EndpointList::mouseMoveEvent(QMouseEvent *e)
   // Get Endpoint
   //
   bool ok=false;
-  QString label=list_labels.value(listpos);
+  if(listpos>=list_endpoints.size()) {
+    return;
+  }
+  QString label=list_labels.value(list_endpoints.at(listpos));
   QStringList f0=label.split("-",QString::SkipEmptyParts);
   if(f0.size()<1) {
     return;
@@ -569,12 +574,15 @@ int EndpointList::LocalEndpoint(QMouseEvent *e) const
     switch(list_orientation) {
     case Qt::Horizontal:
       slot=(e->pos().y()+list_position)/ENDPOINTLIST_ITEM_HEIGHT;
-      endpt=endpoint(1+endpoint(slot+1));
+      if(slot>=list_endpoints.size()) {
+	return -1;
+      }
+      endpt=list_endpoints.at(slot);
       break;
 
     case Qt::Vertical:
       slot=(e->pos().x()+list_position)/ENDPOINTLIST_ITEM_HEIGHT;
-      endpt=endpoint(1+endpoint(slot+1));
+      endpt=list_endpoints.at(slot);
       break;
     }
     if((slot<0)||(slot>=list_labels.size())) {

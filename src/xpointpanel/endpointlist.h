@@ -22,6 +22,7 @@
 #ifndef ENDPOINTLIST_H
 #define ENDPOINTLIST_H
 
+#include <QList>
 #include <QMap>
 #include <QMenu>
 #include <QWidget>
@@ -100,6 +101,7 @@ class EndpointList : public QWidget
   QAction *list_copy_host_address_action;
   QAction *list_copy_slot_number_action;
   QMap<int,StateDialog *> list_state_dialogs;
+  QList<int> list_endpoints;
   Qt::MouseButtons list_mouse_buttons;
   QString list_description_text;
 };

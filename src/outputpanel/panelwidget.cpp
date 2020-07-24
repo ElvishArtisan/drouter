@@ -2,7 +2,7 @@
 //
 // Output panel widget for OutputPanel
 //
-//   (C) Copyright 2016-2017 Fred Gleason <fredg@paravelsystems.com>
+//   (C) Copyright 2016-2020 Fred Gleason <fredg@paravelsystems.com>
 //
 //   This program is free software; you can redistribute it and/or modify
 //   it under the terms of the GNU General Public License as
@@ -143,8 +143,8 @@ void PanelWidget::updateInputNames()
   QList<PanelInput> inputs;
 
   for(int i=0;i<widget_parser->inputQuantity(widget_router);i++) {
-    if(!widget_parser->inputName(widget_router,i).isEmpty()) {
-      inputs.push_back(PanelInput(i,widget_parser->inputName(widget_router,i)));
+    if(widget_parser->inputIsReal(widget_router,i+1)) {
+      inputs.push_back(PanelInput(i,widget_parser->inputName(widget_router,i+1)));
     }
   }
   qSort(inputs);
@@ -155,7 +155,7 @@ void PanelWidget::updateInputNames()
   widget_input_names.clear();
   widget_input_box->clear();
   widget_input_names[0]=tr("--- OFF ---");
-  widget_input_box->insertItem(0,tr("--- OFF ---"),0);
+  widget_input_box->insertItem(0,tr("--- OFF ---"),-1);
   for(int i=0;i<inputs.size();i++) {
     widget_input_names[inputs[i].number()]=inputs[i].name();
     widget_input_box->insertItem(i,inputs[i].name(),inputs[i].number());
@@ -196,23 +196,23 @@ void PanelWidget::changeOutputCrosspoint(int router,int output,int input)
 
   if(router==widget_router) {
     if((output-1)==widget_output) {
-      if(!widget_input_box->setCurrentItemData(input)) {
-	if(input<0) {
+      if(!widget_input_box->setCurrentItemData(input-1)) {
+	if(input<-1) {
 	  widget_input_box->
-	    insertItem(widget_input_box->count(),tr("** UNKNOWN **"),input);
+	    insertItem(widget_input_box->count(),tr("** UNKNOWN **"),input-1);
 	}
 	else {
 	  widget_input_box->insertItem(widget_input_box->count(),
 				       "* "+widget_input_names[input-1],input);
 	}
-	widget_input_box->setCurrentItemData(input);
+	widget_input_box->setCurrentItemData(input-1);
       }
-      widget_input=input;
+      widget_input=input-1;
       widget_xpoint_synced=true;
       SetArmedState(false);
-      if(input>=0) {
+      if(input>0) {
 	for(int i=0;i<widget_input_box->count();i++) {
-	  if(widget_input_box->itemData(i).toInt()<0) {
+	  if(widget_input_box->itemData(i).toInt()<-1) {
 	    widget_input_box->removeItem(i);
 	  }
 	}
@@ -233,7 +233,7 @@ void PanelWidget::takeButtonClickedData()
 {
   widget_parser->
     setOutputCrosspoint(widget_router,widget_output+1,
-			widget_input_box->currentItemData().toInt());
+			widget_input_box->currentItemData().toInt()+1);
 }
 
 

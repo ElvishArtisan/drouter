@@ -569,3 +569,13 @@
 	* Added a 'Gpo.codeMatches()' method to the Python API.
 2020-06-11 Fred Gleason <fredg@paravelsystems.com>
 	* Added a '--no-max-size' switch to buttonpanel(1).
+2020-07-24 Fred Gleason <fredg@paravelsystems.com>
+	* Added a 'SaParser::inputIsReal()' method.
+	* Fixed a bug in buttonpanel(1) that caused inputs to be truncated
+	on routers containing holes.
+	* Fixed a bug in outputpanel(1) that caused inputs to be truncated
+	on routers containing holes.
+	* Fixed a bug in xypanel(1) that caused inputs to be truncated
+	on routers containing holes.
+	* Fixed a bug in xpointpanel(1) that caused incorrect information
+	to appear in the message corner on routers containing holes.
