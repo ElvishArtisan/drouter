@@ -1,6 +1,15 @@
 This is the NEWS file for the drouter package.
 
-v1.0.0 - 28 May 2020
+v1.0.0rc1 - 6 October 2020
+
+Release Candidate
+
+Changes:
+   buttonpanel(1). Fixed bugs that caused buttons to be missing on routers
+   containing 'holes' --i.e. interpolated source number(s) that are missing
+   in the output of the 'SourceNames' command.
+-------------------------------------------------------------------------------
+v1.0.0rc0 - 28 May 2020
 
 Release Candidate
 
