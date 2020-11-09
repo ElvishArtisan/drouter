@@ -34,6 +34,7 @@ SaParser::SaParser(QObject *parent)
   sa_current_router=-1;
   sa_last_router=-1;
   sa_prev_input=0;
+  sa_prev_output=0;
   sa_last_xpoint_router=-1;
   sa_last_xpoint_output=-1;
 
@@ -139,6 +140,12 @@ QHostAddress SaParser::inputStreamAddress(int router,int input) const
 int SaParser::outputQuantity(int router) const
 {
   return sa_output_names[router].size();
+}
+
+
+bool SaParser::outputIsReal(int router,int output) const
+{
+  return sa_output_is_reals[router][output];
 }
 
 
@@ -410,6 +417,7 @@ void SaParser::DispatchCommand(QString cmd)
 	if(f0[1]=="destnames") {
 	  sa_output_names[sa_current_router].clear();
 	  sa_output_long_names[sa_current_router].clear();
+	  sa_prev_output=0;
 	  sa_reading_dests=true;
 	}
 	if(f0[1]=="snapshotnames") {
@@ -630,10 +638,14 @@ void SaParser::ReadDestName(const QString &cmd)
   QHostAddress addr;
 
   if(f0.size()>=3) {
+    for(int i=sa_prev_output+1;i<output;i++) {
+      sa_output_is_reals[sa_current_router][i]=false;
+    }
     if(ok) {
       QStringList f1=f0.at(2).split("ON");
       sa_output_node_names[sa_current_router][output]=f1.back().trimmed();
       sa_output_names[sa_current_router][output]=f0.at(1);
+      sa_output_is_reals[sa_current_router][output]=true;
       sa_output_long_names[sa_current_router][output]=f0.at(2);
       if(f0.size()>=4) {
 	if(addr.setAddress(f0.at(3))) {
@@ -647,6 +659,7 @@ void SaParser::ReadDestName(const QString &cmd)
 	}
       }
     }
+    sa_prev_output=output;
   }
 }
 

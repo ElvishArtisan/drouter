@@ -58,6 +58,7 @@ class SaParser : public QObject
   int inputSourceNumber(int router,int input) const;
   QHostAddress inputStreamAddress(int router,int input) const;
   int outputQuantity(int router) const;
+  bool outputIsReal(int router,int output) const;
   QString outputNodeName(int router,int output) const;
   QHostAddress outputNodeAddress(int router,int output) const;
   int outputNodeSlotNumber(int router,int output) const;
@@ -123,6 +124,7 @@ class SaParser : public QObject
   int sa_current_router;
   int sa_last_router;
   int sa_prev_input;
+  int sa_prev_output;
   QMap<int,QMap<int,QString> > sa_input_node_names;
   QMap<int,QMap<int,QHostAddress> > sa_input_node_addresses;
   QMap<int,QMap<int,int> > sa_input_node_slot_numbers;
@@ -134,6 +136,7 @@ class SaParser : public QObject
   QMap<int,QMap<int,QString> > sa_output_node_names;
   QMap<int,QMap<int,QHostAddress> > sa_output_node_addresses;
   QMap<int,QMap<int,int> > sa_output_node_slot_numbers;
+  QMap<int,QMap<int,bool> > sa_output_is_reals;
   QMap<int,QMap<int,QString> > sa_output_names;
   QMap<int,QMap<int,QString> > sa_output_long_names;
   QMap<int,QMap<int,int> > sa_output_xpoints;
