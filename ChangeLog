@@ -579,5 +579,7 @@
 	on routers containing holes.
 	* Fixed a bug in xpointpanel(1) that caused incorrect information
 	to appear in the message corner on routers containing holes.
+2020-10-06 Fred Gleason <fredg@paravelsystems.com>
+	* Incremented the package version to 1.0.0rc1.
 2020-11-09 Fred Gleason <fredg@paravelsystems.com>
 	* Added a 'SaParser::outputIsReal()' method.
