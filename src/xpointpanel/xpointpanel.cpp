@@ -314,8 +314,13 @@ void MainWidget::routerBoxActivatedData(int n)
     }
   }
   QRect screen=QApplication::desktop()->availableGeometry();
-  QSize panel(15+panel_view->sizeHint().width()+
-	      panel_input_list->sizeHint().width(),
+
+  int info_width=15+panel_input_list->sizeHint().width();
+  if(panel_output_list->sizeHint().width()>info_width) {
+    info_width=15+panel_output_list->sizeHint().width();
+  }
+  QSize panel(15+panel_output_list->sizeHint().height()+
+	      info_width-10,
 	      15+panel_view->sizeHint().height()+
 	      panel_output_list->sizeHint().width());
   if(panel.width()>screen.width()) {
