@@ -32,6 +32,9 @@
 #include "statedialog.h"
 
 #define ENDPOINTLIST_ITEM_HEIGHT 26
+#define ENDPOINTLIST_ITEM_HEIGHT 26
+#define ENDPOINTLIST_MIN_INPUT_WIDTH 250
+#define ENDPOINTLIST_GPIO_WIDTH 70
 
 class EndpointList : public QWidget
 {

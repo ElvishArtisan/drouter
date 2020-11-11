@@ -589,3 +589,6 @@
 2020-11-11 Fred Gleason <fredg@paravelsystems.com>
 	* Fixed a bug in xpointpanel(1) that caused endpoints to be
 	calculated incorrect in routers with holes.
+2020-11-11 Fred Gleason <fredg@paravelsystems.com>
+	* Fixed an edge case in xpointpanel(1) that could result in the
+	node information fields becoming truncated.

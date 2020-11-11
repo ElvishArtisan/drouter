@@ -87,10 +87,16 @@ EndpointList::~EndpointList()
 
 QSize EndpointList::sizeHint() const
 {
+  int width=15+list_width;
+
   if(list_show_gpio) {
-    return QSize(15+list_width+70,ENDPOINTLIST_ITEM_HEIGHT*list_labels.size());
+    width+=ENDPOINTLIST_GPIO_WIDTH;
   }
-  return QSize(15+list_width,ENDPOINTLIST_ITEM_HEIGHT*list_labels.size());
+  if((list_orientation==Qt::Horizontal)&&(width<ENDPOINTLIST_MIN_INPUT_WIDTH)) {
+    width=ENDPOINTLIST_MIN_INPUT_WIDTH;
+  }
+
+  return QSize(width,ENDPOINTLIST_ITEM_HEIGHT*list_labels.size());
 }
 
 
@@ -457,7 +463,7 @@ void EndpointList::paintEvent(QPaintEvent *e)
   int gpio_offset=0;
 
   if(list_show_gpio)  {
-    gpio_offset=70;
+    gpio_offset=ENDPOINTLIST_GPIO_WIDTH;
   }
   p->setFont(font());
   p->setPen(Qt::black);
