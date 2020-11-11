@@ -586,3 +586,6 @@
 2020-11-10 Fred Gleason <fredg@paravelsystems.com>
 	* Fixed a bug in xpointpanel(1) that could cause the default size of
 	the main window to be miscalculated.
+2020-11-11 Fred Gleason <fredg@paravelsystems.com>
+	* Fixed a bug in xpointpanel(1) that caused endpoints to be
+	calculated incorrect in routers with holes.

@@ -182,27 +182,9 @@ void EndpointList::addEndpoint(int router,int endpt,const QString &name)
   update();
 }
 
-
-void EndpointList::addEndpoints(int router,const QMap<int,QString> &endpts)
-{
-  QFontMetrics fm(font());
-  for(QMap<int,QString>::const_iterator it=endpts.begin();it!=endpts.end();
-      it++) {
-    list_endpoints.push_back(it.key());
-    list_labels[it.key()]=it.value();
-    list_gpio_widgets[it.key()]=
-      new MultiStateWidget(router,it.key(),list_orientation,this);
-    list_gpio_widgets.value(it.key())->setVisible(list_show_gpio);
-    if(fm.width(it.value())>list_width) {
-      list_width=fm.width(it.value());
-    }
-  }
-  update();
-}
-
-
 void EndpointList::clearEndpoints()
 {
+  list_endpoints.clear();
   list_labels.clear();
   list_width=0;
 

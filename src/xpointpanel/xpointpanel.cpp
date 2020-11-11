@@ -234,7 +234,7 @@ QSizePolicy MainWidget::sizePolicy() const
 void MainWidget::routerBoxActivatedData(int n)
 {
   QString name;
-  int count=0;
+  //  int count=0;
   int endpt=0;
   int router=panel_router_box->itemData(n).toInt();
 
@@ -270,24 +270,19 @@ void MainWidget::routerBoxActivatedData(int n)
   //
   // Populate Outputs
   //
-  count=0;
   endpt=0;
-  endpts.clear();
   panel_output_list->setShowGpio(panel_parser->gpioSupported(router));
-  while(count<panel_parser->outputQuantity(router)) {
-    name=panel_parser->outputLongName(router,endpt+1);
-    if(!name.isEmpty()) {
-      endpts[endpt]=QString().sprintf("%d - ",endpt+1)+
-	panel_parser->outputLongName(router,endpt+1);
-      count++;
+  endpts.clear();
+  for(int i=0;i<panel_parser->outputQuantity(router);i++) {
+    name=panel_parser->outputLongName(router,i+1);
+    if(panel_parser->outputIsReal(router,i+1)) {
+      panel_output_list->addEndpoint(router,endpt,
+				     QString().sprintf("%d - ",endpt+1)+
+				     panel_parser->outputLongName(router,i+1));
+      panel_output_list->
+	setGpioState(router,endpt,panel_parser->gpoState(router,i));
     }
     endpt++;
-  }
-  panel_output_list->addEndpoints(router,endpts);
-  for(int i=0;i<panel_output_list->endpointQuantity();i++) {
-    int endpt=panel_output_list->endpoint(i);
-    panel_output_list->
-      setGpioState(router,endpt,panel_parser->gpoState(router,endpt));
   }
 
   //

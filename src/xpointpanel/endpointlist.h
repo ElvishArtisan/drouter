@@ -50,7 +50,6 @@ class EndpointList : public QWidget
   QList<int> endpoints() const;
   int slot(int endpt) const;
   void addEndpoint(int router,int endpt,const QString &name);
-  void addEndpoints(int router,const QMap<int,QString> &endpts);
   void clearEndpoints();
   int endpointQuantity() const;
 
