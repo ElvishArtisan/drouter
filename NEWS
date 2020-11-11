@@ -1,5 +1,13 @@
 This is the NEWS file for the drouter package.
 
+v1.0.0rc2 - 11 November 2020
+
+Release Candidate
+
+Changes:
+   xpointpanel(1). Fixed bugs that caused problems with routers containing
+   holes. See the ChangeLog for details.
+-------------------------------------------------------------------------------
 v1.0.0rc1 - 6 October 2020
 
 Release Candidate
