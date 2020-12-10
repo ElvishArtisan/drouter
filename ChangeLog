@@ -597,3 +597,6 @@
 2020-12-10 Fred Gleason <fredg@paravelsystems.com>
 	* Added 'Systemd Utility Library' to the optional dependency list
 	in 'INSTALL'.
+2020-12-10 Fred Gleason <fredg@paravelsystems.com>
+	* Clarified the description of the '--hostname=' parameter in
+	the dlist(1) man page.
