@@ -15,6 +15,11 @@ Python 3.4 or better.
 MySQL or MariaDB RDBMS.
 
 
+OPTIONAL PREQUISITES
+---------------------------------------------------------------------------
+Systemd Utility Library
+
+
 DOCUMENTATION
 -------------
 The drouter man pages are written in XML-DocBook5.  Pre-generated troff
