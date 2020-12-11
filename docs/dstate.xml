@@ -51,6 +51,43 @@
     </para>
   </refsect1>
 
+  <refsect1 id='states'>
+    <title>States</title>
+    <para>
+      <command>dstate</command><manvolnum>1</manvolnum> will return one
+      of the following words to indicate current state:
+    </para>
+    <variablelist>
+      <varlistentry>
+	<term><computeroutput>True</computeroutput></term>
+	<listitem>
+	  <para>
+	    Instance is online and active --i.e. actively processing
+	    commands.
+	  </para>
+	</listitem>
+      </varlistentry>
+      <varlistentry>
+	<term><computeroutput>False</computeroutput></term>
+	<listitem>
+	  <para>
+	    Instance is online but inactive --i.e. not actively processing
+	    commands.
+	  </para>
+	</listitem>
+      </varlistentry>
+      <varlistentry>
+	<term><computeroutput>Inactive</computeroutput></term>
+	<listitem>
+	  <para>
+	    Instance is offline --i.e. the drouter service is shut down,
+	    or still in process of starting up.
+	  </para>
+	</listitem>
+      </varlistentry>
+    </variablelist>
+  </refsect1>
+
   <refsect1 id='options'>
     <title>Options</title>
     <variablelist remap='TP'>

@@ -606,3 +606,7 @@
 2020-12-11 Fred Gleason <fredg@paravelsystems.com>
 	* Added 'System<n>GpioType=' directives to the '[Tether]' section
 	of drouter.conf(5).
+2020-12-11 Fred Gleason <fredg@paravelsystems.com>
+	* Added an 'Offline' return state to dstate(1) for cases where
+	the drouter instance is unreachable.
+	* Documented possible outputs in the dstate(1) man page.

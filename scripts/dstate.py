@@ -4,7 +4,7 @@
 #
 # Return the active state of a Drouter instance
 #
-# (C) Copyright 2019 Fred Gleason <fredg@paravelsystems.com>
+# (C) Copyright 2019-2020 Fred Gleason <fredg@paravelsystems.com>
 #
 #   This program is free software; you can redistribute it and/or modify
 #   it under the terms of the GNU General Public License version 2 as
@@ -63,5 +63,8 @@ engine.setReadyCallback(EngineReady)
 #
 # Start the engine, giving the hostname/address of the Drouter service.
 #
-engine.start(args.hostname)
-
+try:
+    engine.start(args.hostname)
+except(ConnectionRefusedError):
+    print('Offline')
+    sys.exit(0)
