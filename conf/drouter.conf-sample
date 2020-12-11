@@ -144,5 +144,5 @@ SystemBGpioSlot=2
 ;
 ; Ths code string of the GPIO to use on the specified node/slot.
 ;
-SystemAGpioBit=Lxxxx
-SystemBGpioBit=xLxxx
+SystemAGpioCode=Lxxxx
+SystemBGpioCode=xLxxx

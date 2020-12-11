@@ -600,3 +600,6 @@
 2020-12-10 Fred Gleason <fredg@paravelsystems.com>
 	* Clarified the description of the '--hostname=' parameter in
 	the dlist(1) man page.
+2020-12-11 Fred Gleason <fredg@paravelsystems.com>
+	* Fixed typos in the 'System<n>GpioCode=' directives in the
+	sample drouter.conf(5) file.
