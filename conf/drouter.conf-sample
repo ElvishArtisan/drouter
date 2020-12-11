@@ -139,6 +139,15 @@ SystemBGpioIpAddress=172.30.4.211
 SystemAGpioSlot=2
 SystemBGpioSlot=2
 
+; SystemAGpioType=<type>
+; SystemBGpioType=<type>
+;
+; The type of the GPIO to use on the specified node. Valid values
+; are 'GPI' or 'GPO'.
+;
+SystemAGpioType=GPI
+SystemBGpioType=GPI
+
 ; SystemAGpioCode=<code-str>
 ; SystemBGpioCode=<code-str>
 ;

@@ -224,8 +224,23 @@ void DRouter::setWriteable(bool state)
       if(!state) {
 	code=SyGpioBundle::invertCode(code);
       }
-      printf("Sending %s\n",(const char *)code.toUtf8());
-      lwrp->setGpiCode(drouter_config->tetherGpioSlot(Config::This),code);
+      switch(drouter_config->tetherGpioType(Config::This)) {
+      case SyGpioBundleEvent::TypeGpi:
+	lwrp->setGpiCode(drouter_config->tetherGpioSlot(Config::This),code);
+	syslog(LOG_DEBUG,"sending gpi code %s to lwrp device %s:%d\n",
+	       code.toUtf8().constData(),
+	       lwrp->hostAddress().toString().toUtf8().constData(),
+	       drouter_config->tetherGpioSlot(Config::This));
+	break;
+
+      case SyGpioBundleEvent::TypeGpo:
+	lwrp->setGpoCode(drouter_config->tetherGpioSlot(Config::This),code);
+	syslog(LOG_DEBUG,"sending gpo code %s to lwrp device %s:%d\n",
+	       code.toUtf8().constData(),
+	       lwrp->hostAddress().toString().toUtf8().constData(),
+	       drouter_config->tetherGpioSlot(Config::This));
+	break;
+      }
     }
     if((lwrp=drouter_nodes.value(drouter_config->tetherGpioIpAddress(Config::That).toIPv4Address()))!=NULL) {
       if(state) {

@@ -134,6 +134,12 @@ int Config::tetherGpioSlot(Config::TetherRole role) const
 }
 
 
+SyGpioBundleEvent::Type Config::tetherGpioType(TetherRole role) const
+{
+  return conf_tether_gpio_types[role];
+}
+
+
 QString Config::tetherGpioCode(Config::TetherRole role) const
 {
   return conf_tether_gpio_codes[role];
@@ -216,6 +222,13 @@ void Config::load()
 	  setAddress(p->stringValue("Tether","System"+conf_tether_host_ids[i]+"GpioIpAddress"));
 	conf_tether_gpio_slots[i]=
 	  p->intValue("Tether","System"+conf_tether_host_ids[i]+"GpioSlot")-1;
+	if(p->stringValue("Tether","System"+conf_tether_host_ids[i]+"GpioType").
+	   toUpper()=="GPO") {
+	  conf_tether_gpio_types[i]=SyGpioBundleEvent::TypeGpo;
+	}
+	else {
+	  conf_tether_gpio_types[i]=SyGpioBundleEvent::TypeGpi;
+	}
 	conf_tether_gpio_codes[i]=
 	  p->stringValue("Tether","System"+conf_tether_host_ids[i]+"GpioCode",
 			 "xxxxx");

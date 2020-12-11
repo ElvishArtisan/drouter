@@ -603,3 +603,6 @@
 2020-12-11 Fred Gleason <fredg@paravelsystems.com>
 	* Fixed typos in the 'System<n>GpioCode=' directives in the
 	sample drouter.conf(5) file.
+2020-12-11 Fred Gleason <fredg@paravelsystems.com>
+	* Added 'System<n>GpioType=' directives to the '[Tether]' section
+	of drouter.conf(5).

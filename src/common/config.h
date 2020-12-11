@@ -25,6 +25,8 @@
 #include <QString>
 #include <QStringList>
 
+#include <sy/sygpio_server.h>
+
 #define DROUTER_CONF_FILE "/etc/drouter/drouter.conf"
 #define DROUTER_NULL_STREAM_ADDRESS QString("239.192.0.0")
 #define DROUTER_DEFAULT_CLIP_THRESHOLD -20
@@ -62,6 +64,7 @@ class Config
   QString tetherSerialDevice(TetherRole role) const;
   QHostAddress tetherGpioIpAddress(TetherRole role) const;
   int tetherGpioSlot(TetherRole role) const;
+  SyGpioBundleEvent::Type tetherGpioType(TetherRole role) const;
   QString tetherGpioCode(TetherRole role) const;
   bool tetherIsSane() const;
   void load();
@@ -85,6 +88,7 @@ class Config
   QString conf_tether_serial_devices[2];
   QHostAddress conf_tether_gpio_ip_addresses[2];
   int conf_tether_gpio_slots[2];
+  SyGpioBundleEvent::Type conf_tether_gpio_types[2];
   QString conf_tether_gpio_codes[2];
   bool conf_tether_is_sane;
 };
