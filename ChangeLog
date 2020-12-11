@@ -610,3 +610,6 @@
 	* Added an 'Offline' return state to dstate(1) for cases where
 	the drouter instance is unreachable.
 	* Documented possible outputs in the dstate(1) man page.
+2020-12-11 Fred Gleason <fredg@paravelsystems.com>
+	* Added a default name for inputs on SA routers with blank inputs
+	names.

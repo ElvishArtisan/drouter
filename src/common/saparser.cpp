@@ -599,16 +599,33 @@ void SaParser::ReadSourceName(const QString &cmd)
       if(ok) {
 	sa_input_node_slot_numbers[sa_current_router][input]=slot-1;
       }
-      sa_input_names[sa_current_router][input]=f0[1];
+      if(f0[1].trimmed().isEmpty()) {
+	if(sa_gpio_supporteds[sa_current_router]) {
+	  sa_input_names[sa_current_router][input]=
+	    tr("GPI")+QString().sprintf(" %d",input);
+	  sa_input_long_names[sa_current_router][input]=
+	    tr("GPI")+QString().sprintf(" %d",input)+f0[2];
+	}
+	else {
+	  sa_input_names[sa_current_router][input]=
+	    tr("Input")+QString().sprintf(" %d",input);
+	  sa_input_long_names[sa_current_router][input]=
+	    tr("Input")+QString().sprintf(" %d",input)+f0[2];
+	}
+      }
+      else {
+	sa_input_names[sa_current_router][input]=f0[1];
+	sa_input_long_names[sa_current_router][input]=f0[2];
+      }
       sa_input_is_reals[sa_current_router][input]=true;
       if(ok) {
 	if(srcnum<=0) {
-	  sa_input_long_names[sa_current_router][input]=f0[2];
+	  //	  sa_input_long_names[sa_current_router][input]=f0[2];
 	  sa_input_source_numbers[sa_current_router][input]=-1;
 	  sa_input_stream_addresses[sa_current_router][input]=QHostAddress();
 	}
 	else {
-	  sa_input_long_names[sa_current_router][input]=f0[2];
+	  //	  sa_input_long_names[sa_current_router][input]=f0[2];
 	  sa_input_source_numbers[sa_current_router][input]=f0.at(6).toInt();
 	  QHostAddress addr;
 	  if(addr.setAddress(f0.at(7))) {
