@@ -617,3 +617,5 @@
 	* Refactored the parser for the '--gpio' switch into the
 	'GpioParser' class in buttonpanel(1).
 	* Added a 'sep' ['Separator'] GPIO widget type in buttonpanel(1).
+2020-12-12 Fred Gleason <fredg@paravelsystems.com>
+	* Added a 'label' ['Label'] GPIO widget type in buttonpanel(1).

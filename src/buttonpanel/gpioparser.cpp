@@ -195,6 +195,16 @@ GpioParser *GpioParser::fromString(const QString &str,QString *err_msg)
       // (nothing to be done
     }
 
+    //
+    // Label widget
+    //
+    if(type==GpioParser::Label) {
+      //
+      // Legend
+      //
+      legend=f1.at(1).trimmed();
+    }
+
     types.push_back(type);
     colors.push_back(color);
     dirs.push_back(dir);
@@ -223,6 +233,10 @@ QString GpioParser::typeString(GpioParser::Type type)
 
   case GpioParser::Separator:
     ret="sep";
+    break;
+
+  case GpioParser::Label:
+    ret="label";
     break;
 
   case GpioParser::LastType:
@@ -274,6 +288,10 @@ int GpioParser::ArgQuantityFromType(GpioParser::Type type)
 
   case GpioParser::Separator:
     ret=1;
+    break;
+
+  case GpioParser::Label:
+    ret=2;
     break;
 
   case GpioParser::LastType:

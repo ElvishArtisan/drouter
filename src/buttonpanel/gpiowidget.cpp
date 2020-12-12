@@ -126,6 +126,14 @@ GpioWidget::GpioWidget(GpioParser *gpio_parser,SaParser *sa_parser,
       c_widgets.push_back(w);
     }
 
+    if(gpio_parser->type(i)==GpioParser::Label) {
+      QLabel *w=NULL;
+      w=new QLabel(gpio_parser->legend(i),this);
+      w->setAlignment(Qt::AlignCenter);
+      w->setFont(QFont(font().family(),font().pointSize(),QFont::Bold));
+      c_widgets.push_back(w);
+    }
+
     c_hint_width+=5+c_widgets.back()->sizeHint().width();
     if(c_widgets.back()->sizeHint().height()>c_hint_height) {
       c_hint_height=c_widgets.back()->sizeHint().height();
@@ -200,7 +208,9 @@ void GpioWidget::resizeEvent(QResizeEvent *e)
   for(int i=0;i<c_widgets.size();i++) {
     QWidget *w=c_widgets.at(i);
     w->setGeometry(xpos,label_height,
-		   w->sizeHint().width(),w->sizeHint().height());
+		   w->sizeHint().width(),40);
+    //    w->setGeometry(xpos,label_height,
+    //		   w->sizeHint().width(),w->sizeHint().height());
     xpos+=w->sizeHint().width()+5;
   }
 }
