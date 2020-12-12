@@ -625,3 +625,5 @@
 2020-12-12 Fred Gleason <fredg@paravelsystems.com>
 	* Added a 'multi' ['Multistate Indicator'] GPIO widget type in
 	buttonpanel(1).
+2020-12-12 Fred Gleason <fredg@paravelsystems.com>
+	* Incremented the package version to 1.0.0rc3.

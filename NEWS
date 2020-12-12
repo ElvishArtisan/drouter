@@ -1,5 +1,18 @@
 This is the NEWS file for the drouter package.
 
+v1.0.0rc3 - 12 December 2020
+
+Release Candidate
+
+Changes:
+   Server clustering. Fixed configuration typos and clarified documentation
+   regarding configuring a pair of redundant server instances.
+
+   buttonpanel(1). Added new 'label' ['Label'], 'multi'
+   [Multistate Indicator'] and 'sep' ['Separator'] GPIO widgets.
+
+   Various bugfixes. See the 'ChangeLog' for details.
+-------------------------------------------------------------------------------
 v1.0.0rc2 - 11 November 2020
 
 Release Candidate
