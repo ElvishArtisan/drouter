@@ -82,36 +82,58 @@
 	or more GPIO widgets. This option may be given multiple times.
       </para>
       <para>
-	A <replaceable>widget-spec</replaceable> consists of the following:
+	The following widgets are available:
+      </para>
+      <variablelist>
+	<varlistentry>
+	  <term><userinput>button</userinput></term>
+	  <listitem>
+	    <para>
+	      A push button that sets the state of a single GPIO line.
+	    </para>
+	  </listitem>
+	</varlistentry>
+	<varlistentry>
+	  <term><userinput>label</userinput></term>
+	  <listitem>
+	    <para>
+	      A text label.
+	    </para>
+	  </listitem>
+	</varlistentry>
+	<varlistentry>
+	  <term><userinput>lamp</userinput></term>
+	  <listitem>
+	    <para>
+	      An indicator for a single GPIO line.
+	    </para>
+	  </listitem>
+	</varlistentry>
+	<varlistentry>
+	  <term><userinput>sep</userinput></term>
+	  <listitem>
+	    <para>
+	      A separator (short vertical line) that can be used to set
+	      off various sections of a strip.
+	    </para>
+	  </listitem>
+	</varlistentry>
+      </variablelist>
+
+
+
+      <para>
+	<userinput>button</userinput> or <userinput>lamp</userinput> widgets
+	use a <replaceable>widget-spec</replaceable> as follows:
       </para>
       <para>
-	/<replaceable>type</replaceable>:<replaceable>color</replaceable>:<replaceable>direction</replaceable>:<replaceable>router</replaceable>:<replaceable>endpoint</replaceable>:<replaceable>legend</replaceable>:<replaceable>mask</replaceable>
-      </para>
-      <para>
-	<replaceable>type</replaceable> is one of the following:
-	<variablelist>
-	  <varlistentry>
-	    <term><userinput>lamp</userinput></term>
-	    <listitem>
-	      <para>
-		An indicator for a single GPIO line.
-	      </para>
-	    </listitem>
-	  </varlistentry>
-	  <varlistentry>
-	    <term><userinput>button</userinput></term>
-	    <listitem>
-	      <para>
-		A push button that sets the state of a single GPIO line.
-	      </para>
-	    </listitem>
-	  </varlistentry>
-	</variablelist>
+	/<userinput>button</userinput>:<replaceable>color</replaceable>:<replaceable>direction</replaceable>:<replaceable>router</replaceable>:<replaceable>endpoint</replaceable>:<replaceable>legend</replaceable>:<replaceable>mask</replaceable>
+	/<userinput>lamp</userinput>:<replaceable>color</replaceable>:<replaceable>direction</replaceable>:<replaceable>router</replaceable>:<replaceable>endpoint</replaceable>:<replaceable>legend</replaceable>:<replaceable>mask</replaceable>
       </para>
 
       <para>
 	<replaceable>color</replaceable> specifies the color of the
-	widget. The following colors are recognized:
+	button or lamp. The following colors are recognized:
       </para>
       <para>
 	<simplelist type="vert">
@@ -142,13 +164,13 @@
       </para>
       <para>
 	<replaceable>legend</replaceable> is the text to be associated with
-	the control.
+	the button or lamp.
       </para>
       <para>
 	<replaceable>mask</replaceable> is a five letter specifier that
 	indicates which line(s) of the specified GPIO are connected to
-	the control to indicate a <computeroutput>ON</computeroutput> state.
-	The following characters can be used:
+	the button or lamp to indicate a <computeroutput>ON</computeroutput>
+	state. The following characters can be used:
 	<variablelist>
 	  <varlistentry>
 	    <term><userinput>h</userinput></term>
@@ -178,8 +200,38 @@
 	  </varlistentry>
 	</variablelist>
       </para>
+
+      <para>
+	<userinput>label</userinput> widgets use a
+	<replaceable>widget-spec</replaceable> as follows:
+      </para>
+      <para>
+	/<userinput>label</userinput>:<replaceable>legend</replaceable>
+      </para>
+      <para>
+	<replaceable>legend</replaceable> is the text to be associated with
+	the button or lamp.
+      </para>
+
+      <para>
+	<userinput>sep</userinput> widgets simply use a
+	<replaceable>widget-spec</replaceable> as follows:
+      </para>
+      <para>
+	/<userinput>sep</userinput>
+      </para>
+
+
     </listitem>
   </varlistentry>
+
+
+
+
+
+
+
+
   
   <variablelist remap='TP'>
     <varlistentry>
