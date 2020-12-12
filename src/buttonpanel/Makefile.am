@@ -34,7 +34,9 @@ dist_buttonpanel_SOURCES = autolabel.cpp autolabel.h\
                            autopushbutton.cpp autopushbutton.h\
                            buttonpanel.cpp buttonpanel.h\
                            buttonwidget.cpp buttonwidget.h\
+                           gpioparser.cpp gpioparser.h\
                            gpiowidget.cpp gpiowidget.h\
+                           separator.cpp separator.h\
                            statebutton.cpp statebutton.h\
                            statelight.cpp statelight.h
 
@@ -47,6 +49,7 @@ nodist_buttonpanel_SOURCES = logindialog.cpp logindialog.h\
                              moc_gpiowidget.cpp\
                              moc_logindialog.cpp\
                              moc_saparser.cpp\
+                             moc_separator.cpp\
                              moc_statebutton.cpp\
                              moc_statelight.cpp
 

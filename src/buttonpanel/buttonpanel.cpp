@@ -45,6 +45,7 @@ MainWidget::MainWidget(QWidget *parent)
 
   bool no_creds=false;
   bool ok=false;
+  QString err_msg;
 
   setWindowTitle(QString("ButtonPanel v")+VERSION);
   setWindowIcon(QPixmap(drouter_16x16_xpm));
@@ -98,65 +99,11 @@ MainWidget::MainWidget(QWidget *parent)
     }
     if(cmd->key(i)=="--gpio") {
       panel_arg_types.push_back(EndPointMap::GpioRouter);
-      QStringList types;
-      QStringList colors;
-      QList<QChar> dirs;
-      QList<int> routers;
-      QList<int> endpts;
-      QStringList legends;
-      QStringList masks;
-      QStringList f0=cmd->value(i).split("/",QString::KeepEmptyParts);
-      panel_arg_titles.push_back(f0.at(1));
-      for(int j=2;j<f0.size();j++) {
-	QStringList f1=f0.at(j).split(":",QString::SkipEmptyParts);
-	if(f1.size()!=7) {
-	  processError(tr("Invalid --gpio argument")+" \""+f0.at(j)+"\".");
-	}
-
-	types.push_back(f1.at(0).toLower());
-	if(!colornames.contains(f1.at(1).toLower())) {
-	  processError(tr("Invalid --gpio argument, unrecognized color")+
-		       " \""+f1.at(1)+"\".");
-	}
-	colors.push_back(f1.at(1).toLower());
-
-	if((f1.at(2).length()!=1)||
-	   ((f1.at(2).toLower().at(0)!=QChar('i'))&&
-	    (f1.at(2).toLower().at(0)!=QChar('o')))) {
-	  processError(tr("Invalid --gpio argument direction")+
-		       " \""+f1.at(2)+"\".");
-	}
-	dirs.push_back(f1.at(2).toLower().at(0));
-
-	unsigned router=f1.at(3).toUInt(&ok);
-	if(!ok) {
-	  processError(tr("Invalid --gpio argument router")+
-		       " \""+f1.at(3)+"\".");
-	}
-	routers.push_back(router);
-
-	unsigned endpt=f1.at(4).toUInt(&ok);
-	if(!ok) {
-	  processError(tr("Invalid --gpio argument endpt")+
-		       " \""+f1.at(4)+"\".");
-	}
-	endpts.push_back(endpt);
-	
-	legends.push_back(f1.at(5));
-
-	QString mask=f1.at(6).toLower();
-	if(mask.length()!=5) {
-	  processError(tr("Invalid --gpio argument mask")+" \""+f1.at(6)+"\".");
-	}
-	masks.push_back(mask);
+      GpioParser *parser=GpioParser::fromString(cmd->value(i),&err_msg);
+      if(parser==NULL) {
+	processError(err_msg);
       }
-      panel_arg_gpio_types.push_back(types);
-      panel_arg_gpio_colors.push_back(colors);
-      panel_arg_gpio_dirs.push_back(dirs);
-      panel_arg_gpio_routers.push_back(routers);
-      panel_arg_gpio_endpts.push_back(endpts);
-      panel_arg_gpio_legends.push_back(legends);
-      panel_arg_gpio_masks.push_back(masks);
+      panel_gpio_parsers.push_back(parser);
       cmd->setProcessed(i,true);
     }
 
@@ -220,15 +167,7 @@ MainWidget::MainWidget(QWidget *parent)
     }
     if(panel_arg_types[i]==EndPointMap::GpioRouter) {
       GpioWidget *w=NULL;
-      w=new GpioWidget(panel_arg_gpio_types.at(gpionum),
-		       panel_arg_gpio_colors.at(gpionum),
-		       panel_arg_gpio_dirs.at(gpionum),
-		       panel_arg_gpio_routers.at(gpionum),
-		       panel_arg_gpio_endpts.at(gpionum),
-		       panel_arg_gpio_legends.at(gpionum),
-		       panel_arg_gpio_masks.at(gpionum),
-		       panel_parser,this);
-      w->setTitle(panel_arg_titles.at(gpionum));
+      w=new GpioWidget(panel_gpio_parsers.at(gpionum),panel_parser,this);
       panel_widgets.push_back(w);
       gpionum++;
     }
@@ -337,7 +276,6 @@ void MainWidget::resizeEvent(QResizeEvent *e)
   for(int i=0;i<panel_widgets.size();i++) {
     QWidget *w=panel_widgets.at(i);
     w->setGeometry(5,ypos,size().width()-5,w->sizeHint().height());
-    //    w->setGeometry(5,ypos,w->sizeHint().width(),w->sizeHint().height());
     ypos+=10+w->sizeHint().height();
   }
   panel_connecting_label->setGeometry(0,0,size().width(),size().height());

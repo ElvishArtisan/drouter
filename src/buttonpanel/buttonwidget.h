@@ -30,6 +30,7 @@
 #include <QWidget>
 
 #include "autopushbutton.h"
+#include "gpioparser.h"
 #include "logindialog.h"
 #include "saparser.h"
 

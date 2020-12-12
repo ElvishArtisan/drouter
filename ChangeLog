@@ -613,3 +613,7 @@
 2020-12-11 Fred Gleason <fredg@paravelsystems.com>
 	* Added a default name for inputs on SA routers with blank inputs
 	names.
+2020-12-12 Fred Gleason <fredg@paravelsystems.com>
+	* Refactored the parser for the '--gpio' switch into the
+	'GpioParser' class in buttonpanel(1).
+	* Added a 'sep' ['Separator'] GPIO widget type in buttonpanel(1).

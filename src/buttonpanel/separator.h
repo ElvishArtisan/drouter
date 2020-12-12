@@ -1,6 +1,6 @@
-// gpiowidget.h
+// separator.h
 //
-// Strip container for GPIO controls.
+// Separator widget for a GPIO strip
 //
 //   (C) Copyright 2020 Fred Gleason <fredg@paravelsystems.com>
 //
@@ -19,44 +19,22 @@
 //   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
 //
 
-#ifndef GPIOWIDGET_H
-#define GPIOWIDGET_H
+#ifndef SEPARATOR_H
+#define SEPARATOR_H
 
-#include <QLabel>
-#include <QList>
-#include <QStringList>
+#include <QWidget>
 
-#include "gpioparser.h"
-#include "saparser.h"
-
-#define GPIOWIDGET_CELL_WIDTH 90
-#define GPIOWIDGET_CELL_HEIGHT 60
-
-class GpioWidget : public QWidget
+class Separator : public QWidget
 {
   Q_OBJECT
  public:
-  GpioWidget(GpioParser *gpio_parser,SaParser *sa_parser,QWidget *parent=0);
-  ~GpioWidget();
+  Separator(QWidget *parent=0);
+  ~Separator();
   QSize sizeHint() const;
-  QString title() const;
-  void setTitle(const QString &str);
 
  protected:
-  void processError(const QString &err_msg);
-  void resizeEvent(QResizeEvent *e);
-
- private slots:
-  void changeConnectionState(bool state,SaParser::ConnectionState cstate);
-
- private:
-  int c_router;
-  SaParser *c_parser;
-  QLabel *c_title_label;
-  QList<QWidget *> c_widgets;
-  int c_hint_width;
-  int c_hint_height;
+  void paintEvent(QPaintEvent *e);
 };
 
 
-#endif  // GPIOWIDGET_H
+#endif  // SEPARATOR_H

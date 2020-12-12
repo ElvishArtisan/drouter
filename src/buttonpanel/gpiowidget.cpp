@@ -22,17 +22,15 @@
 #include <QMessageBox>
 
 #include "gpiowidget.h"
+#include "separator.h"
 #include "statebutton.h"
 #include "statelight.h"
 
-GpioWidget::GpioWidget(const QStringList &types,const QStringList &colors,
-		       const QList<QChar> &dirs,const QList<int> &routers,
-		       const QList<int> &endpts,const QStringList &legends,
-		       const QStringList &masks,SaParser *parser,
+GpioWidget::GpioWidget(GpioParser *gpio_parser,SaParser *sa_parser,
 		       QWidget *parent)
   : QWidget(parent)
 {
-  c_parser=parser;
+  c_parser=sa_parser;
   c_hint_width=0;
   c_hint_height=0;
 
@@ -48,104 +46,96 @@ GpioWidget::GpioWidget(const QStringList &types,const QStringList &colors,
   c_title_label->setFont(title_font);
   c_title_label->setAlignment(Qt::AlignLeft|Qt::AlignVCenter);
   c_title_label->hide();
+  c_title_label->setText(gpio_parser->title());
 
   //
   // Create Widgets
   //
-  for(int i=0;i<types.size();i++) {
-    bool matched=false;
-    if(types.at(i)=="lamp") {
+  for(int i=0;i<gpio_parser->widgetQuantity();i++) {
+    if(gpio_parser->type(i)==GpioParser::Lamp) {
       StateLight *w=NULL;
-      w=new StateLight(routers.at(i),endpts.at(i),legends.at(i),masks.at(i),
-		       dirs.at(i),c_parser,this);
+      w=new StateLight(gpio_parser->router(i),gpio_parser->endPoint(i),
+		       gpio_parser->legend(i),gpio_parser->mask(i),
+		       gpio_parser->direction(i),c_parser,this);
       c_widgets.push_back(w);
-      QString colorstr=colors.at(i);
+      QString colorstr=gpio_parser->color(i);
       if(colorstr=="black") {
 	w->setTextColor("#000000");
 	w->setBackgroundColor("#FFFFFF");
-	matched=true;
       }
       if(colorstr=="blue") {
 	w->setTextColor("#FFFFFF");
 	w->setBackgroundColor("#0000FF");
-	matched=true;
       }
       if(colorstr=="cyan") {
 	w->setTextColor("#FFFFFF");
 	w->setBackgroundColor("#008888");
-	matched=true;
       }
       if(colorstr=="green") {
 	w->setTextColor("#FFFFFF");
 	w->setBackgroundColor("#008800");
-	matched=true;
       }
       if(colorstr=="magenta") {
 	w->setTextColor("#FFFFFF");
 	w->setBackgroundColor("#880088");
-	matched=true;
       }
       if(colorstr=="red") {
 	w->setTextColor("#FFFFFF");
 	w->setBackgroundColor("#CC0000");
-	matched=true;
       }
       if(colorstr=="yellow") {
 	w->setTextColor("#000000");
 	w->setBackgroundColor("#FFFF00");
-	matched=true;
       }
     }
 
-    if(types.at(i)=="button") {
+    if(gpio_parser->type(i)==GpioParser::Button) {
       StateButton *w=NULL;
-      w=new StateButton(routers.at(i),endpts.at(i),legends.at(i),masks.at(i),
-			dirs.at(i),c_parser,this);
+      w=new StateButton(gpio_parser->router(i),gpio_parser->endPoint(i),
+			gpio_parser->legend(i),gpio_parser->mask(i),
+			gpio_parser->direction(i),c_parser,this);
       c_widgets.push_back(w);
-      QString colorstr=colors.at(i);
+      QString colorstr=gpio_parser->color(i);
 
       if(colorstr=="black") {
 	w->setTextColor("#000000");
-	matched=true;
       }
       if(colorstr=="blue") {
 	w->setTextColor("#0000FF");
-	matched=true;
       }
       if(colorstr=="cyan") {
 	w->setTextColor("#008888");
-	matched=true;
       }
       if(colorstr=="green") {
 	w->setTextColor("#008800");
-	matched=true;
       }
       if(colorstr=="magenta") {
 	w->setTextColor("#880088");
-	matched=true;
       }
       if(colorstr=="red") {
 	w->setTextColor("#CC0000");
-	matched=true;
       }
       if(colorstr=="yellow") {
 	w->setTextColor("#FFFF00");
-	matched=true;
       }
     }
 
-    if(matched) {
-      c_hint_width+=5+c_widgets.back()->sizeHint().width();
-      if(c_widgets.back()->sizeHint().height()>c_hint_height) {
-	c_hint_height=c_widgets.back()->sizeHint().height();
-      }
+    if(gpio_parser->type(i)==GpioParser::Separator) {
+      Separator *w=NULL;
+      w=new Separator(this);
+      c_widgets.push_back(w);
     }
-    else {
-      processError(tr("Invalid --gpio argument type")+" \""+types.at(i)+"\".");
+
+    c_hint_width+=5+c_widgets.back()->sizeHint().width();
+    if(c_widgets.back()->sizeHint().height()>c_hint_height) {
+      c_hint_height=c_widgets.back()->sizeHint().height();
     }
     c_widgets.back()->hide();
   }
   c_hint_width-=5;    // Remove unused space after last widget
+  if((c_title_label->sizeHint().width()+20)>c_hint_width) {
+    c_hint_width=c_title_label->sizeHint().width()+20;
+  }
 
   //
   // The SA Connection

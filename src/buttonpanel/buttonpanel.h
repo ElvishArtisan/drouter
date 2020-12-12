@@ -33,6 +33,7 @@
 #include "autopushbutton.h"
 #include "buttonwidget.h"
 #include "endpointmap.h"
+#include "gpioparser.h"
 #include "logindialog.h"
 #include "saparser.h"
 
@@ -70,19 +71,10 @@ class MainWidget : public QWidget
   LoginDialog *panel_login_dialog;
   QTimer *panel_resize_timer;
   QList<QWidget *> panel_widgets;
-
   QList<EndPointMap::RouterType> panel_arg_types;
   QList<int> panel_arg_audio_routers;
   QList<int> panel_arg_audio_outputs;
-
-  QStringList panel_arg_titles;
-  QList<QStringList> panel_arg_gpio_types;
-  QList<QStringList> panel_arg_gpio_colors;
-  QList<QList <QChar> > panel_arg_gpio_dirs;
-  QList<QList<int> > panel_arg_gpio_routers;
-  QList<QList<int> > panel_arg_gpio_endpts;
-  QList<QStringList> panel_arg_gpio_legends;
-  QList<QStringList> panel_arg_gpio_masks;
+  QList<GpioParser *> panel_gpio_parsers;
 };
 
 
