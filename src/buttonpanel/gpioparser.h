@@ -31,7 +31,7 @@
 class GpioParser
 {
  public:
-  enum Type {Lamp=0,Button=1,Separator=2,Label=3,LastType=4};
+  enum Type {Lamp=0,Button=1,Separator=2,Label=3,MultiState=4,LastType=5};
   QString title() const;
   int widgetQuantity() const;
   Type type(int n) const;

@@ -31,7 +31,6 @@ moc_%.cpp:	%.h
 bin_PROGRAMS = xpointpanel
 
 dist_xpointpanel_SOURCES = endpointlist.cpp endpointlist.h\
-                           multistatewidget.cpp multistatewidget.h\
                            statedialog.cpp statedialog.h\
                            xpointpanel.cpp xpointpanel.h\
                            xpointview.cpp xpointview.h
@@ -39,6 +38,7 @@ dist_xpointpanel_SOURCES = endpointlist.cpp endpointlist.h\
 nodist_xpointpanel_SOURCES = combobox.cpp combobox.h\
                              dparser.cpp dparser.h\
                              logindialog.cpp logindialog.h\
+                             multistatewidget.cpp multistatewidget.h\
                              saparser.cpp saparser.h\
                              moc_combobox.cpp\
                              moc_dparser.cpp\
@@ -64,6 +64,7 @@ DISTCLEANFILES = combobox.cpp combobox.h\
                  dparser.cpp dparser.h\
                  endpointmap.cpp endpointmap.h\
                  logindialog.cpp logindialog.h\
+                 multistatewidget.cpp multistatewidget.h\
                  saparser.cpp saparser.h
 
 MAINTAINERCLEANFILES = *~\

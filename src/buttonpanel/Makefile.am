@@ -36,11 +36,13 @@ dist_buttonpanel_SOURCES = autolabel.cpp autolabel.h\
                            buttonwidget.cpp buttonwidget.h\
                            gpioparser.cpp gpioparser.h\
                            gpiowidget.cpp gpiowidget.h\
+                           multistatelabel.cpp multistatelabel.h\
                            separator.cpp separator.h\
                            statebutton.cpp statebutton.h\
                            statelight.cpp statelight.h
 
 nodist_buttonpanel_SOURCES = logindialog.cpp logindialog.h\
+                             multistatewidget.cpp multistatewidget.h\
                              saparser.cpp saparser.h\
                              moc_autolabel.cpp\
                              moc_autopushbutton.cpp\
@@ -48,6 +50,8 @@ nodist_buttonpanel_SOURCES = logindialog.cpp logindialog.h\
                              moc_buttonwidget.cpp\
                              moc_gpiowidget.cpp\
                              moc_logindialog.cpp\
+                             moc_multistatelabel.cpp\
+                             moc_multistatewidget.cpp\
                              moc_saparser.cpp\
                              moc_separator.cpp\
                              moc_statebutton.cpp\
@@ -67,6 +71,7 @@ DISTCLEANFILES = combobox.cpp combobox.h\
                  dparser.cpp dparser.h\
                  endpointmap.cpp endpointmap.h\
                  logindialog.cpp logindialog.h\
+                 multistatewidget.cpp multistatewidget.h\
                  saparser.cpp saparser.h
 
 MAINTAINERCLEANFILES = *~\

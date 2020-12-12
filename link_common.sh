@@ -4,7 +4,7 @@
 
 # Create symlinks for common elements.
 #
-#   (C) Copyright 2017-2018 Fred Gleason <fredg@paravelsystems.com>
+#   (C) Copyright 2017-2020 Fred Gleason <fredg@paravelsystems.com>
 #
 #   This program is free software; you can redistribute it and/or modify
 #   it under the terms of the GNU General Public License version 2 as
@@ -46,6 +46,11 @@ rm -f src/$DESTDIR/logindialog.cpp
 ln -s ../../src/common/logindialog.cpp src/$DESTDIR/logindialog.cpp
 rm -f src/$DESTDIR/logindialog.h
 ln -s ../../src/common/logindialog.h src/$DESTDIR/logindialog.h
+
+rm -f src/$DESTDIR/multistatewidget.cpp
+ln -s ../../src/common/multistatewidget.cpp src/$DESTDIR/multistatewidget.cpp
+rm -f src/$DESTDIR/multistatewidget.h
+ln -s ../../src/common/multistatewidget.h src/$DESTDIR/multistatewidget.h
 
 rm -f src/$DESTDIR/saparser.cpp
 ln -s ../../src/common/saparser.cpp src/$DESTDIR/saparser.cpp

@@ -205,6 +205,46 @@ GpioParser *GpioParser::fromString(const QString &str,QString *err_msg)
       legend=f1.at(1).trimmed();
     }
 
+    //
+    // MultiState widget
+    //
+    if(type==GpioParser::MultiState) {
+      //
+      // Direction
+      //
+      dir=f1.at(1).at(0);
+      if((f1.at(1).length()!=1)||
+	 ((f1.at(1).toLower().at(0)!=QChar('i'))&&
+	  (f1.at(1).toLower().at(0)!=QChar('o')))) {
+	*err_msg=QObject::tr("invalid --gpio argument direction")+
+	  " \""+f1.at(2)+"\".";
+	return NULL;
+      }
+
+      //
+      // Router
+      //
+      router=f1.at(2).toInt(&ok);
+      if((!ok)||(router<=0)) {
+	*err_msg=QObject::tr("invalid --gpio argument router");
+	return NULL;
+      }
+
+      //
+      // Endpoint
+      //
+      endpt=f1.at(3).toInt(&ok);
+      if((!ok)||(endpt<=0)) {
+	*err_msg=QObject::tr("invalid --gpio argument endpoint");
+	return NULL;
+      }
+
+      //
+      // Legend
+      //
+      legend=f1.at(4).trimmed();
+    }
+
     types.push_back(type);
     colors.push_back(color);
     dirs.push_back(dir);
@@ -237,6 +277,10 @@ QString GpioParser::typeString(GpioParser::Type type)
 
   case GpioParser::Label:
     ret="label";
+    break;
+
+  case GpioParser::MultiState:
+    ret="multi";
     break;
 
   case GpioParser::LastType:
@@ -292,6 +336,10 @@ int GpioParser::ArgQuantityFromType(GpioParser::Type type)
 
   case GpioParser::Label:
     ret=2;
+    break;
+
+  case GpioParser::MultiState:
+    ret=5;
     break;
 
   case GpioParser::LastType:

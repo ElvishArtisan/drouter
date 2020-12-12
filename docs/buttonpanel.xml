@@ -110,6 +110,15 @@
 	  </listitem>
 	</varlistentry>
 	<varlistentry>
+	  <term><userinput>multi</userinput></term>
+	  <listitem>
+	    <para>
+	      A &quot;multi-state&quot; indicator that shows the states
+	      of all five lines of a single GPIO channel simultaneously.
+	    </para>
+	  </listitem>
+	</varlistentry>
+	<varlistentry>
 	  <term><userinput>sep</userinput></term>
 	  <listitem>
 	    <para>
@@ -120,118 +129,13 @@
 	</varlistentry>
       </variablelist>
 
-
-
       <para>
-	<userinput>button</userinput> or <userinput>lamp</userinput> widgets
-	use a <replaceable>widget-spec</replaceable> as follows:
+	For a detailed description of the
+	<replaceable>widget-spec</replaceable> for each type, see the
+	WIDGET SPECIFICATIONS section, below.
       </para>
-      <para>
-	/<userinput>button</userinput>:<replaceable>color</replaceable>:<replaceable>direction</replaceable>:<replaceable>router</replaceable>:<replaceable>endpoint</replaceable>:<replaceable>legend</replaceable>:<replaceable>mask</replaceable>
-	/<userinput>lamp</userinput>:<replaceable>color</replaceable>:<replaceable>direction</replaceable>:<replaceable>router</replaceable>:<replaceable>endpoint</replaceable>:<replaceable>legend</replaceable>:<replaceable>mask</replaceable>
-      </para>
-
-      <para>
-	<replaceable>color</replaceable> specifies the color of the
-	button or lamp. The following colors are recognized:
-      </para>
-      <para>
-	<simplelist type="vert">
-	  <member><userinput>black</userinput></member>
-	  <member><userinput>blue</userinput></member>
-	  <member><userinput>cyan</userinput></member>
-	  <member><userinput>green</userinput></member>
-	  <member><userinput>magenta</userinput></member>
-	  <member><userinput>red</userinput></member>
-	  <member><userinput>yellow</userinput></member>
-	</simplelist>
-      </para>
-      <para>
-	<replaceable>direction</replaceable> specifies the direction of the
-	specified signal, with <userinput>i</userinput> for GPI and
-	<userinput>o</userinput> for GPO.
-      </para>
-      <para>
-	<replaceable>router</replaceable> is the number of the Software
-	Authority router containing the specified GPIO, as given in the
-	<userinput>RouterNumbers</userinput> command.
-      </para>
-      <para>
-	<replaceable>endpoint</replaceable> is the Software Authroity
-	input (for GPIs) or output (for GPOs) number of the specified GPIO,
-	as given by the	<userinput>SourceNames</userinput> or
-	<userinput>DestNames</userinput> command respectively.
-      </para>
-      <para>
-	<replaceable>legend</replaceable> is the text to be associated with
-	the button or lamp.
-      </para>
-      <para>
-	<replaceable>mask</replaceable> is a five letter specifier that
-	indicates which line(s) of the specified GPIO are connected to
-	the button or lamp to indicate a <computeroutput>ON</computeroutput>
-	state. The following characters can be used:
-	<variablelist>
-	  <varlistentry>
-	    <term><userinput>h</userinput></term>
-	    <listitem>
-	      <para>
-		The specified line, in <computeroutput>HIGH</computeroutput>
-		state.
-	      </para>
-	    </listitem>
-	  </varlistentry>
-	  <varlistentry>
-	    <term><userinput>l</userinput></term>
-	    <listitem>
-	      <para>
-		The specified line, in <computeroutput>LOW</computeroutput>
-		state.
-	      </para>
-	    </listitem>
-	  </varlistentry>
-	  <varlistentry>
-	    <term><userinput>x</userinput></term>
-	    <listitem>
-	      <para>
-		The specified line has no effect with the control.
-	      </para>
-	    </listitem>
-	  </varlistentry>
-	</variablelist>
-      </para>
-
-      <para>
-	<userinput>label</userinput> widgets use a
-	<replaceable>widget-spec</replaceable> as follows:
-      </para>
-      <para>
-	/<userinput>label</userinput>:<replaceable>legend</replaceable>
-      </para>
-      <para>
-	<replaceable>legend</replaceable> is the text to be associated with
-	the button or lamp.
-      </para>
-
-      <para>
-	<userinput>sep</userinput> widgets simply use a
-	<replaceable>widget-spec</replaceable> as follows:
-      </para>
-      <para>
-	/<userinput>sep</userinput>
-      </para>
-
-
     </listitem>
   </varlistentry>
-
-
-
-
-
-
-
-
   
   <variablelist remap='TP'>
     <varlistentry>
@@ -335,6 +239,151 @@
       </listitem>
     </varlistentry>
   </variablelist>
+
+  </refsect1>
+
+  <refsect1 id='widget_specifications'>
+    <title>Widget Specifications</title>
+
+    <refsect2 id='widget_specifications.buttons_and_lamps'>
+      <title>Buttons and Lamps</title>
+      <para>
+	Button or lamp widgets use a <replaceable>widget-spec</replaceable>
+	as follows:
+      </para>
+      <para>
+	/<userinput>button:</userinput><replaceable>color</replaceable><userinput>:</userinput><replaceable>direction</replaceable><userinput>:</userinput><replaceable>router</replaceable><userinput>:</userinput><replaceable>endpoint</replaceable><userinput>:</userinput><replaceable>legend</replaceable><userinput>:</userinput><replaceable>mask</replaceable>
+	/<userinput>lamp:</userinput><replaceable>color</replaceable><userinput>:</userinput><replaceable>direction</replaceable><userinput>:</userinput><replaceable>router</replaceable><userinput>:</userinput><replaceable>endpoint</replaceable><userinput>:</userinput><replaceable>legend</replaceable><userinput>:</userinput><replaceable>mask</replaceable>
+      </para>
+
+      <para>
+	<replaceable>color</replaceable> specifies the color of the
+	button or lamp. The following colors are recognized:
+      </para>
+      <para>
+	<simplelist type="vert">
+	  <member><userinput>black</userinput></member>
+	  <member><userinput>blue</userinput></member>
+	  <member><userinput>cyan</userinput></member>
+	  <member><userinput>green</userinput></member>
+	  <member><userinput>magenta</userinput></member>
+	  <member><userinput>red</userinput></member>
+	  <member><userinput>yellow</userinput></member>
+	</simplelist>
+      </para>
+      <para>
+	<replaceable>direction</replaceable> specifies the direction of the
+	specified signal, with <userinput>i</userinput> for GPI and
+	<userinput>o</userinput> for GPO.
+      </para>
+      <para>
+	<replaceable>router</replaceable> is the number of the Software
+	Authority router containing the specified GPIO, as given in the
+	<userinput>RouterNumbers</userinput> command.
+      </para>
+      <para>
+	<replaceable>endpoint</replaceable> is the Software Authority
+	input (for GPIs) or output (for GPOs) number of the specified GPIO,
+	as given by the	<userinput>SourceNames</userinput> or
+	<userinput>DestNames</userinput> command respectively.
+      </para>
+      <para>
+	<replaceable>legend</replaceable> is the text to be associated with
+	the button or lamp.
+      </para>
+      <para>
+	<replaceable>mask</replaceable> is a five letter specifier that
+	indicates which line(s) of the specified GPIO are connected to
+	the button or lamp to indicate a <computeroutput>ON</computeroutput>
+	state. The following characters can be used:
+	<variablelist>
+	  <varlistentry>
+	    <term><userinput>h</userinput></term>
+	    <listitem>
+	      <para>
+		The specified line, in <computeroutput>HIGH</computeroutput>
+		state.
+	      </para>
+	    </listitem>
+	  </varlistentry>
+	  <varlistentry>
+	    <term><userinput>l</userinput></term>
+	    <listitem>
+	      <para>
+		The specified line, in <computeroutput>LOW</computeroutput>
+		state.
+	      </para>
+	    </listitem>
+	  </varlistentry>
+	  <varlistentry>
+	    <term><userinput>x</userinput></term>
+	    <listitem>
+	      <para>
+		The specified line has no effect with the control.
+	      </para>
+	    </listitem>
+	  </varlistentry>
+	</variablelist>
+      </para>
+    </refsect2>
+
+    <refsect2 id='widget_specifications.labels'>
+      <title>Labels</title>
+      <para>
+	<userinput>label</userinput> widgets use a
+	<replaceable>widget-spec</replaceable> as follows:
+      </para>
+      <para>
+	/<userinput>label:</userinput><replaceable>legend</replaceable>
+      </para>
+      <para>
+	<replaceable>legend</replaceable> is the text to be associated with
+	the button or lamp.
+      </para>
+    </refsect2>
+
+    <refsect2 id='widget_specifications.multistate_indicators'>
+      <title>Multistate Indicators</title>
+      <para>
+	Multistate indicator widgets use a
+	<replaceable>widget-spec</replaceable> as follows:
+      </para>
+      <para>
+	/<userinput>multi:</userinput><replaceable>direction</replaceable><userinput>:</userinput><replaceable>router</replaceable><userinput>:</userinput><replaceable>endpoint</replaceable><userinput>:</userinput><replaceable>legend</replaceable>
+      </para>
+
+      <para>
+	<replaceable>direction</replaceable> specifies the direction of the
+	specified signal, with <userinput>i</userinput> for GPI and
+	<userinput>o</userinput> for GPO.
+      </para>
+      <para>
+	<replaceable>router</replaceable> is the number of the Software
+	Authority router containing the specified GPIO, as given in the
+	<userinput>RouterNumbers</userinput> command.
+      </para>
+      <para>
+	<replaceable>endpoint</replaceable> is the Software Authority
+	input (for GPIs) or output (for GPOs) number of the specified GPIO,
+	as given by the	<userinput>SourceNames</userinput> or
+	<userinput>DestNames</userinput> command respectively.
+      </para>
+      <para>
+	<replaceable>legend</replaceable> is the text to be associated with
+	the indicator.
+      </para>
+    </refsect2>
+
+    <refsect2 id='widget_specifications.separators'>
+      <title>Separators</title>
+      <para>
+	<userinput>sep</userinput> widgets simply use a
+	<replaceable>widget-spec</replaceable> as follows:
+      </para>
+      <para>
+	/<userinput>sep</userinput>
+      </para>
+    </refsect2>
 
   </refsect1>
 

@@ -622,3 +622,6 @@
 2020-12-12 Fred Gleason <fredg@paravelsystems.com>
 	* Documented the 'sep' and 'label' GPIO widgets in the
 	buttonpanel(1) man page.
+2020-12-12 Fred Gleason <fredg@paravelsystems.com>
+	* Added a 'multi' ['Multistate Indicator'] GPIO widget type in
+	buttonpanel(1).
