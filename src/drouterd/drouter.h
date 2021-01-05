@@ -2,7 +2,7 @@
 //
 // Dynamic router database component for Drouter
 //
-//   (C) Copyright 2018 Fred Gleason <fredg@paravelsystems.com>
+//   (C) Copyright 2018-2021 Fred Gleason <fredg@paravelsystems.com>
 //
 //   This program is free software; you can redistribute it and/or modify
 //   it under the terms of the GNU General Public License version 2 as
@@ -32,6 +32,7 @@
 
 #include "config.h"
 #include "endpointmap.h"
+#include "gpioflasher.h"
 
 class DRouter : public QObject
 {
@@ -96,6 +97,7 @@ class DRouter : public QObject
   QTcpServer *drouter_ipc_server;
   int *drouter_proto_socks;
   bool drouter_writeable;
+  GpioFlasher *drouter_flasher;
   Config *drouter_config;
 };
 

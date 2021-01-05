@@ -2,7 +2,7 @@
 ##
 ## Makefile for the drouterd(8) routing service
 ##
-## (C) Copyright 2017-2019 Fred Gleason <fredg@paravelsystems.com>
+## (C) Copyright 2017-2021 Fred Gleason <fredg@paravelsystems.com>
 ##
 ##   This program is free software; you can redistribute it and/or modify
 ##   it under the terms of the GNU General Public License version 2 as
@@ -36,6 +36,7 @@ noinst_PROGRAMS = tethertest
 dist_drouterd_SOURCES = drouter.cpp drouter.h\
                         drouterd.cpp drouterd.h\
                         exitnotifier.cpp exitnotifier.h\
+                        gpioflasher.cpp gpioflasher.h\
                         protoipc.h\
                         scriptengine.cpp scriptengine.h\
                         tether.cpp tether.h\
@@ -46,6 +47,7 @@ nodist_drouterd_SOURCES = config.cpp config.h\
                           moc_drouter.cpp\
                           moc_drouterd.cpp\
                           moc_exitnotifier.cpp\
+                          moc_gpioflasher.cpp\
                           moc_scriptengine.cpp\
                           moc_tether.cpp\
                           moc_ttydevice.cpp\

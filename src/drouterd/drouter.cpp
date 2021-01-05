@@ -2,7 +2,7 @@
 //
 // Dynamic router database component for Drouter
 //
-//   (C) Copyright 2018-2019 Fred Gleason <fredg@paravelsystems.com>
+//   (C) Copyright 2018-2021 Fred Gleason <fredg@paravelsystems.com>
 //
 //   This program is free software; you can redistribute it and/or modify
 //   it under the terms of the GNU General Public License version 2 as
@@ -49,6 +49,8 @@ DRouter::DRouter(int *proto_socks,QObject *parent)
 
   drouter_config=new Config();
   drouter_config->load();
+
+  drouter_flasher=new GpioFlasher(this);
 }
 
 
@@ -210,46 +212,11 @@ bool DRouter::isWriteable() const
 
 void DRouter::setWriteable(bool state)
 {
-  QString code;
   QString sql;
   QSqlQuery *q;
-  SyLwrpClient *lwrp=NULL;
 
   if(drouter_writeable!=state) {
-    //
-    // Update Livewire GPIO
-    //
-    if((lwrp=drouter_nodes.value(drouter_config->tetherGpioIpAddress(Config::This).toIPv4Address()))!=NULL) {
-      code=drouter_config->tetherGpioCode(Config::This);
-      if(!state) {
-	code=SyGpioBundle::invertCode(code);
-      }
-      switch(drouter_config->tetherGpioType(Config::This)) {
-      case SyGpioBundleEvent::TypeGpi:
-	lwrp->setGpiCode(drouter_config->tetherGpioSlot(Config::This),code);
-	syslog(LOG_DEBUG,"sending gpi code %s to lwrp device %s:%d\n",
-	       code.toUtf8().constData(),
-	       lwrp->hostAddress().toString().toUtf8().constData(),
-	       drouter_config->tetherGpioSlot(Config::This));
-	break;
-
-      case SyGpioBundleEvent::TypeGpo:
-	lwrp->setGpoCode(drouter_config->tetherGpioSlot(Config::This),code);
-	syslog(LOG_DEBUG,"sending gpo code %s to lwrp device %s:%d\n",
-	       code.toUtf8().constData(),
-	       lwrp->hostAddress().toString().toUtf8().constData(),
-	       drouter_config->tetherGpioSlot(Config::This));
-	break;
-      }
-    }
-    if((lwrp=drouter_nodes.value(drouter_config->tetherGpioIpAddress(Config::That).toIPv4Address()))!=NULL) {
-      if(state) {
-	code=SyGpioBundle::invertCode(drouter_config->
-				      tetherGpioCode(Config::That));
-	lwrp->setGpiCode(drouter_config->tetherGpioSlot(Config::That),code);
-      }
-    }
-    qApp->processEvents();
+    drouter_flasher->setActive(state);
 
     //
     // Update Protocols
@@ -477,6 +444,17 @@ void DRouter::nodeConnectedData(unsigned id,bool state)
 	}
       }
     }
+
+    for(int i=0;i<2;i++) {
+      Config::TetherRole role=(Config::TetherRole)i;
+      if(lwrp->hostAddress()==drouter_config->tetherGpioIpAddress(role)) {
+	drouter_flasher->
+	  addGpio(role,lwrp,drouter_config->tetherGpioType(role),
+		  drouter_config->tetherGpioSlot(role),
+		  drouter_config->tetherGpioCode(role));
+      }
+    }
+
     UnlockTables();
     NotifyProtocols("NODEADD",QHostAddress(id).toString());
   }
