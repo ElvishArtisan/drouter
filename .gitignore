@@ -34,6 +34,8 @@ src/buttonpanel/endpointmap.cpp
 src/buttonpanel/endpointmap.h
 src/buttonpanel/logindialog.cpp
 src/buttonpanel/logindialog.h
+src/buttonpanel/multistatewidget.cpp
+src/buttonpanel/multistatewidget.h
 src/buttonpanel/saparser.cpp
 src/buttonpanel/saparser.h
 src/dmap/combobox.cpp
@@ -47,6 +49,8 @@ src/dmap/endpointmap.cpp
 src/dmap/endpointmap.h
 src/dmap/logindialog.cpp
 src/dmap/logindialog.h
+src/dmap/multistatewidget.cpp
+src/dmap/multistatewidget.h
 src/dmap/saparser.cpp
 src/dmap/saparser.h
 src/drouterd/combobox.cpp
@@ -61,6 +65,8 @@ src/drouterd/endpointmap.cpp
 src/drouterd/endpointmap.h
 src/drouterd/logindialog.cpp
 src/drouterd/logindialog.h
+src/drouterd/multistatewidget.cpp
+src/drouterd/multistatewidget.h
 src/drouterd/tethertest
 src/drouterd/saparser.cpp
 src/drouterd/saparser.h
@@ -74,6 +80,8 @@ src/outputpanel/endpointmap.cpp
 src/outputpanel/endpointmap.h
 src/outputpanel/logindialog.cpp
 src/outputpanel/logindialog.h
+src/outputpanel/multistatewidget.cpp
+src/outputpanel/multistatewidget.h
 src/outputpanel/outputpanel
 src/outputpanel/saparser.cpp
 src/outputpanel/saparser.h
@@ -87,6 +95,8 @@ src/shotpanel/endpointmap.cpp
 src/shotpanel/endpointmap.h
 src/shotpanel/logindialog.cpp
 src/shotpanel/logindialog.h
+src/shotpanel/multistatewidget.cpp
+src/shotpanel/multistatewidget.h
 src/shotpanel/saparser.cpp
 src/shotpanel/saparser.h
 src/shotpanel/shotpanel
@@ -101,6 +111,8 @@ src/tests/endpointmap.cpp
 src/tests/endpointmap.h
 src/tests/logindialog.cpp
 src/tests/logindialog.h
+src/tests/multistatewidget.cpp
+src/tests/multistatewidget.h
 src/tests/saparser.cpp
 src/tests/saparser.h
 src/xpointpanel/combobox.cpp
@@ -113,6 +125,8 @@ src/xpointpanel/endpointmap.cpp
 src/xpointpanel/endpointmap.h
 src/xpointpanel/logindialog.cpp
 src/xpointpanel/logindialog.h
+src/xpointpanel/multistatewidget.cpp
+src/xpointpanel/multistatewidget.h
 src/xpointpanel/saparser.cpp
 src/xpointpanel/saparser.h
 src/xpointpanel/xpointpanel
@@ -126,6 +140,8 @@ src/xypanel/endpointmap.cpp
 src/xypanel/endpointmap.h
 src/xypanel/logindialog.cpp
 src/xypanel/logindialog.h
+src/xypanel/multistatewidget.cpp
+src/xypanel/multistatewidget.h
 src/xypanel/saparser.cpp
 src/xypanel/saparser.h
 src/xypanel/xypanel
