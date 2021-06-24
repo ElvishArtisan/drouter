@@ -182,8 +182,9 @@ void MainObject::protocolData()
   }
   if(!main_no_tether) {
     if(!main_tether->start(main_config,&err_msg)) {
-      fprintf(stderr,"drouterd: tethering system failed to start [%s]\n",
-	      (const char *)err_msg.toUtf8());
+      fprintf(stderr,
+	      "drouterd: tethering system failed to start [%s], exiting...\n",
+	      err_msg.toUtf8().constData());
       exit(1);
     }
   }
