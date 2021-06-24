@@ -641,3 +641,5 @@
 2021-06-24 Fred Gleason <fredg@paravelsystems.com>
 	* Amplified the 'tethering system failed to start' message in
 	drouterd(8).
+2021-06-24 Fred Gleason <fredg@paravelsystems.com>
+	* Incremented the package version to 1.0.0rc4.

@@ -1,5 +1,15 @@
 This is the NEWS file for the drouter package.
 
+-------------------------------------------------------------------------------
+v1.0.0rc4 - 24 June 2021
+
+Release Candidate
+
+Changes:
+   drouterd(8). Added a '--no-tether' switch to drouterd(8).
+
+   Various bugfixes. See the 'ChangeLog' for details.
+-------------------------------------------------------------------------------
 v1.0.0rc3 - 12 December 2020
 
 Release Candidate
