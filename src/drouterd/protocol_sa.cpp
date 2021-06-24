@@ -615,6 +615,10 @@ void ProtocolSa::SendRouteInfo(unsigned router,int output)
       sql+=QString().sprintf("&& SA_DESTINATIONS.SOURCE_NUMBER=%d ",output);
     }
     sql+="&& SA_SOURCES.STREAM_ADDRESS!=\""+DROUTER_NULL_STREAM_ADDRESS+"\" ";
+    sql+="&& SA_SOURCES.STREAM_ADDRESS!=\"0.0.0.0\" ";
+    sql+="&& SA_SOURCES.STREAM_ADDRESS!=\"255.255.255.255\" ";
+    sql+="&& SA_SOURCES.STREAM_ADDRESS!=\"\" ";
+    sql+="&& SA_SOURCES.STREAM_ADDRESS is not null ";
     sql+="order by SA_DESTINATIONS.SOURCE_NUMBER";
   }
   else {

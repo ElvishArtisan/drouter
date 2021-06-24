@@ -634,3 +634,7 @@
 2021-06-24 Fred Gleason <fredg@paravelsystems.com>
 	* Fixed a bug in drouterd(8) that could cause a segfault on
 	startup if tethering was configured.
+2021-06-24 Fred Gleason <fredg@paravelsystems.com>
+	* Fixed a bug in drouterd(8) that caused SoftwareAuthority protocol
+	to report incorrect cross-point data when one or more node
+	destinations had an 'ADDR' field value of '0.0.0.0'.
