@@ -52,6 +52,7 @@ class MainObject : public QObject
   QList<pid_t> main_protocol_pids;
   int main_protocol_socks[2];
   bool main_no_scripts;
+  bool main_no_tether;
   QTimer *main_scripts_timer;
   ScriptEngine *main_script_engine;
   ExitNotifier *main_exit_notifier;

@@ -41,6 +41,7 @@ MainObject::MainObject(QObject *parent)
   : QObject(parent)
 {
   main_no_scripts=false;
+  main_no_tether=false;
   main_protocol_socks[0]=-1;
   main_protocol_socks[1]=-1;
   int n;
@@ -56,6 +57,10 @@ MainObject::MainObject(QObject *parent)
     }
     if(cmd->key(i)=="--no-scripts") {
       main_no_scripts=true;
+      cmd->setProcessed(i,true);
+    }
+    if(cmd->key(i)=="--no-tether") {
+      main_no_tether=true;
       cmd->setProcessed(i,true);
     }
     if(cmd->key(i)=="--no-protocols") {
@@ -175,10 +180,12 @@ void MainObject::protocolData()
   if(!main_no_scripts) {
     main_scripts_timer->start(5000);
   }
-  if(!main_tether->start(main_config,&err_msg)) {
-    fprintf(stderr,"drouterd: tethering system failed to start [%s]\n",
-	    (const char *)err_msg.toUtf8());
-    exit(1);
+  if(!main_no_tether) {
+    if(!main_tether->start(main_config,&err_msg)) {
+      fprintf(stderr,"drouterd: tethering system failed to start [%s]\n",
+	      (const char *)err_msg.toUtf8());
+      exit(1);
+    }
   }
 }
 

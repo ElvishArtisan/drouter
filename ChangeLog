@@ -629,3 +629,5 @@
 	* Incremented the package version to 1.0.0rc3.
 2021-01-05 Fred Gleason <fredg@paravelsystems.com>
 	* Modified the GPIO state indicator for tether status to 'wink'.
+2021-06-24 Fred Gleason <fredg@paravelsystems.com>
+	* Added a '--no-tether' switch to drouterd(8).

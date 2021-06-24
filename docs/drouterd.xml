@@ -39,8 +39,8 @@
   <para>
     <command>drouterd</command><manvolnum>8</manvolnum> is the primary
     service daemon for the Drouter system. When started (typically by
-    SystemD at boot time), it listens for Livewire multicast advertisements
-    on UDP port <computeroutput>4001</computeroutput>, then enumerating
+    Systemd at boot time), it listens for Livewire multicast advertisements
+    on UDP port <computeroutput>4001</computeroutput>, then enumerates
     any devices found via LWRP. The resulting list of devices can then
     be queried and commanded via the <computeroutput>Protocol D</computeroutput>
     interface at TCP port <computeroutput>23883</computeroutput> and
@@ -91,6 +91,22 @@
       <listitem>
 	<para>
 	  Do not start any state scripts found in
+	  <userinput>/etc/drouter/scripts.d</userinput>. Mostly useful
+	  for debugging.
+	</para>
+      </listitem>
+    </varlistentry>
+  </variablelist>
+
+  <variablelist remap='TP'>
+    <varlistentry>
+      <term>
+	<option>--no-tether</option>
+      </term>
+      <listitem>
+	<para>
+	  Do not start any tethering configuration found in the
+	  <userinput>[Tether]</userinput> section of
 	  <userinput>/etc/drouter/scripts.d</userinput>. Mostly useful
 	  for debugging.
 	</para>
