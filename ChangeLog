@@ -631,3 +631,6 @@
 	* Modified the GPIO state indicator for tether status to 'wink'.
 2021-06-24 Fred Gleason <fredg@paravelsystems.com>
 	* Added a '--no-tether' switch to drouterd(8).
+2021-06-24 Fred Gleason <fredg@paravelsystems.com>
+	* Fixed a bug in drouterd(8) that could cause a segfault on
+	startup if tethering was configured.

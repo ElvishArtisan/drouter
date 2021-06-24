@@ -98,25 +98,29 @@ void GpioFlasher::setActive(bool state)
 void GpioFlasher::timeoutData()
 {
   if(d_state) {
-    if(d_types[Config::This]==SyGpioBundleEvent::TypeGpi) {
-      d_lwrps[Config::This]->
-	setGpiCode(d_slots[Config::This],
-		   SyGpioBundle::invertCode(d_codes[Config::This]));
-    }
-    else {
-      d_lwrps[Config::This]->
-	setGpoCode(d_slots[Config::This],
-		   SyGpioBundle::invertCode(d_codes[Config::This]));
+    if(d_lwrps[Config::This]!=NULL) {
+      if(d_types[Config::This]==SyGpioBundleEvent::TypeGpi) {
+	d_lwrps[Config::This]->
+	  setGpiCode(d_slots[Config::This],
+		     SyGpioBundle::invertCode(d_codes[Config::This]));
+      }
+      else {
+	d_lwrps[Config::This]->
+	  setGpoCode(d_slots[Config::This],
+		     SyGpioBundle::invertCode(d_codes[Config::This]));
+      }
     }
     d_timer->start(100);
   }
   else {
     for(int i=0;i<2;i++) {  // Clear the Config::That instance as well
-      if(d_types[i]==SyGpioBundleEvent::TypeGpi) {
-	d_lwrps[i]->setGpiCode(d_slots[i],d_codes[i]);
-      }
-      else {
-	d_lwrps[i]->setGpoCode(d_slots[i],d_codes[i]);
+      if(d_lwrps[i]!=NULL) {
+	if(d_types[i]==SyGpioBundleEvent::TypeGpi) {
+	  d_lwrps[i]->setGpiCode(d_slots[i],d_codes[i]);
+	}
+	else {
+	  d_lwrps[i]->setGpoCode(d_slots[i],d_codes[i]);
+	}
       }
     }
     d_timer->start(900);
