@@ -243,7 +243,6 @@ void ProtocolSa::nodeAdded(const QHostAddress &host_addr)
 			   DestNamesMessage(EndPointMap::GpioRouter,q)).toUtf8());
     }
     delete q;
-
   }
 }
 
@@ -375,6 +374,34 @@ void ProtocolSa::gpiCodeChanged(const QHostAddress &host_addr,int slotnum)
   while(q->next()) {
     proto_socket->write(GPIStatMessage(q).toUtf8());
     proto_socket->write(">>",2);
+  }
+  delete q;
+}
+
+
+void ProtocolSa::gpoChanged(const QHostAddress &host_addr,int slotnum)
+{
+  QString sql;
+  QSqlQuery *q=NULL;
+
+  sql=QString("select ")+
+    "SA_GPOS.SOURCE_NUMBER,"+  // 00
+    "GPOS.NAME,"+              // 01
+    "GPOS.HOST_ADDRESS,"+      // 02
+    "GPOS.HOST_NAME,"+         // 03
+    "GPOS.SLOT,"+              // 04
+    "SA_GPOS.NAME,"+           // 05
+    "SA_GPOS.ROUTER_NUMBER "+  // 06
+    "from GPOS left join SA_GPOS on GPOS.ID=SA_GPOS.GPO_ID where "+
+    "SA_GPOS.HOST_ADDRESS=\""+host_addr.toString()+"\" && "+
+    QString().sprintf("SA_GPOS.SLOT=%d ",slotnum)+
+    "order by SA_GPOS.ROUTER_NUMBER,SA_GPOS.SLOT ";
+    //syslog(LOG_NOTICE,"SQL: %s\n",sql.toUtf8().constData());
+  q=new QSqlQuery(sql);
+  while(q->next()) {
+    proto_socket->write(("DestNameChanged\t"+
+			 QString().sprintf("%d\t",1+q->value(6).toInt())+
+			 DestNamesMessage(EndPointMap::GpioRouter,q)).toUtf8());
   }
   delete q;
 }

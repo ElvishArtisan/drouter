@@ -652,3 +652,6 @@
 	* Added 'DestNameAdded', 'DestNameRemoved' and
 	'DestNameChanged' messages to the Software Authority protocol
 	driver.
+2021-07-01 Fred Gleason <fredg@paravelsystems.com>
+	* Implemented Software Authority 'DestNameChanged' message for
+	GPO endpoints.

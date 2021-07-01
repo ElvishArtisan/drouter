@@ -51,6 +51,7 @@ class ProtocolSa : public Protocol
   void destinationChanged(const QHostAddress &host_addr,int slotnum);
   void destinationCrosspointChanged(const QHostAddress &host_addr,int slotnum);
   void gpiCodeChanged(const QHostAddress &host_addr,int slotnum);
+  void gpoChanged(const QHostAddress &host_addr,int slotnum);
   void gpoCodeChanged(const QHostAddress &host_addr,int slotnum);
   void gpoCrosspointChanged(const QHostAddress &host_addr,int slotnum);
 
