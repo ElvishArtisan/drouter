@@ -2,7 +2,7 @@
 //
 // Map integers to DRouter endpoints.
 //
-// (C) Copyright 2017 Fred Gleason <fredg@paravelsystems.com>
+// (C) Copyright 2017-2021 Fred Gleason <fredg@paravelsystems.com>
 //
 //   This program is free software; you can redistribute it and/or modify
 //   it under the terms of the GNU General Public License version 2 as
@@ -19,7 +19,6 @@
 //
 
 #include <stdio.h>
-#include <syslog.h>
 #include <unistd.h>
 
 #include <QDir>
@@ -295,14 +294,10 @@ bool EndPointMap::load(const QString &filename,QStringList *unused_lines)
 	       QString().sprintf("%d",count+1),"Slot")-1);
       map_names[type].push_back(p->stringValue(EndPointMap::typeString(type)+
 	       QString().sprintf("%d",count+1),"Name"));
-      syslog(LOG_NOTICE,"Adding [%d] router: %d  HostAddress: %s  Slot: %d",
-	     count+1,map_router_number,addr.toString().toUtf8().constData(),
-	     map_slots[type].back());
       count++;
       addr=p->addressValue(EndPointMap::typeString(type)+
 	       QString().sprintf("%d",count+1),"HostAddress",QHostAddress(),&ok);
     }
-    syslog(LOG_NOTICE,"final size [%d]: %d",map_router_number,map_slots[type].size());
   }
 
   //

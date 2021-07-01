@@ -317,10 +317,6 @@ void Protocol::ProcessIpcCommand(const QString &cmd)
     nodeAdded(QHostAddress(cmds.at(1)));
   }
 
-  if((cmds.at(0)=="NODEADD")&&(cmds.size()==2)){
-    nodeAdded(QHostAddress(cmds.at(1)));
-  }
-
   if((cmds.at(0)=="NODEDEL")&&(cmds.size()==6)) {
     nodeRemoved(QHostAddress(cmds.at(1)),cmds.at(2).toInt(),cmds.at(3).toInt(),
 		cmds.at(4).toInt(),cmds.at(5).toInt());

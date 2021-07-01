@@ -655,3 +655,6 @@
 2021-07-01 Fred Gleason <fredg@paravelsystems.com>
 	* Implemented Software Authority 'DestNameChanged' message for
 	GPO endpoints.
+2021-07-01 Fred Gleason <fredg@paravelsystems.com>
+	* Fixed a bug in drouterd(8) that caused node add and node removal
+	messages to be doubled.
