@@ -643,3 +643,12 @@
 	drouterd(8).
 2021-06-24 Fred Gleason <fredg@paravelsystems.com>
 	* Incremented the package version to 1.0.0rc4.
+2021-07-01 Fred Gleason <fredg@paravelsystems.com>
+	* Added a 'EnableDynamicEndpoints' command to the Software
+	Authority Protocol driver.
+	* Added 'SourceNameAdded', 'SourceNameRemoved' and
+	'SourceNameChanged' messages to the Software Authority protocol
+	driver.
+	* Added 'DestNameAdded', 'DestNameRemoved' and
+	'DestNameChanged' messages to the Software Authority protocol
+	driver.

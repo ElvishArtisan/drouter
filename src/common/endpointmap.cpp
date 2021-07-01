@@ -19,6 +19,7 @@
 //
 
 #include <stdio.h>
+#include <syslog.h>
 #include <unistd.h>
 
 #include <QDir>
@@ -196,6 +197,21 @@ int EndPointMap::endPoint(Type type,const QString &hostaddr,int slot) const
 }
 
 
+QList<int> EndPointMap::endPoints(Type type,const QString &hostaddr) const
+{
+  QHostAddress addr(hostaddr);
+  QList<int> eps;
+
+  for(int i=0;i<map_host_addresses[type].size();i++) {
+    if(map_host_addresses[type].at(i)==addr) {
+      eps.push_back(i);
+    }
+  }
+
+  return eps;
+}
+
+
 void EndPointMap::insert(EndPointMap::Type type,int n,const QHostAddress &host_addr,int slot,
 			 const QString &name)
 {
@@ -279,10 +295,14 @@ bool EndPointMap::load(const QString &filename,QStringList *unused_lines)
 	       QString().sprintf("%d",count+1),"Slot")-1);
       map_names[type].push_back(p->stringValue(EndPointMap::typeString(type)+
 	       QString().sprintf("%d",count+1),"Name"));
+      syslog(LOG_NOTICE,"Adding [%d] router: %d  HostAddress: %s  Slot: %d",
+	     count+1,map_router_number,addr.toString().toUtf8().constData(),
+	     map_slots[type].back());
       count++;
       addr=p->addressValue(EndPointMap::typeString(type)+
 	       QString().sprintf("%d",count+1),"HostAddress",QHostAddress(),&ok);
     }
+    syslog(LOG_NOTICE,"final size [%d]: %d",map_router_number,map_slots[type].size());
   }
 
   //

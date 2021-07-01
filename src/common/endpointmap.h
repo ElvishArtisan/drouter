@@ -73,6 +73,7 @@ class EndPointMap
   void setName(Type type,int n,const QString &str);
   int endPoint(Type type,const QHostAddress &hostaddr,int slot) const;
   int endPoint(Type type,const QString &hostaddr,int slot) const;
+  QList<int> endPoints(Type type,const QString &hostaddr) const;
   void insert(Type type,int n,const QHostAddress &host_addr,int slot,
 	      const QString &name=QString());
   void insert(Type type,int n,const QString &host_addr,int slot,

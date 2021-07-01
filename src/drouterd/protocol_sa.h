@@ -43,6 +43,12 @@ class ProtocolSa : public Protocol
   void disconnectedData();
 
  protected:
+  void nodeAdded(const QHostAddress &host_addr);
+  void nodeRemoved(const QHostAddress &host_addr,
+			   int srcs,int dsts,int gpis,int gpos);
+  void nodeChanged(const QHostAddress &host_addr);
+  void sourceChanged(const QHostAddress &host_addr,int slotnum);
+  void destinationChanged(const QHostAddress &host_addr,int slotnum);
   void destinationCrosspointChanged(const QHostAddress &host_addr,int slotnum);
   void gpiCodeChanged(const QHostAddress &host_addr,int slotnum);
   void gpoCodeChanged(const QHostAddress &host_addr,int slotnum);
@@ -85,6 +91,7 @@ class ProtocolSa : public Protocol
   bool proto_sources_subscribed;
   bool proto_clips_subscribed;
   bool proto_silences_subscribed;
+  bool proto_dynamic_endpoints_subscribed;
 };
 
 

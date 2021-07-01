@@ -42,6 +42,8 @@ ProtocolSa::ProtocolSa(int sock,QObject *parent)
   proto_sources_subscribed=false;
   proto_clips_subscribed=false;
   proto_silences_subscribed=false;
+  proto_dynamic_endpoints_subscribed=true;
+  //  proto_dynamic_endpoints_subscribed=false;
 
   openlog("dprotod(SA)",LOG_PID,LOG_DAEMON);
 
@@ -140,6 +142,206 @@ void ProtocolSa::readyReadData()
 void ProtocolSa::disconnectedData()
 {
   quit();
+}
+
+
+void ProtocolSa::nodeAdded(const QHostAddress &host_addr)
+{
+  QString sql;
+  QSqlQuery *q=NULL;
+
+  if(proto_dynamic_endpoints_subscribed) {
+
+    //
+    // Audio Sources
+    //
+    sql=QString("select ")+
+      "SA_SOURCES.SOURCE_NUMBER,"+  // 00
+      "SOURCES.NAME,"+              // 01
+      "SOURCES.HOST_ADDRESS,"+      // 02
+      "SOURCES.HOST_NAME,"+         // 03
+      "SOURCES.SLOT,"+              // 04
+      "SOURCES.STREAM_ADDRESS,"+    // 05
+      "SA_SOURCES.NAME,"+           // 06
+      "SA_SOURCES.ROUTER_NUMBER "+  // 07
+      "from "+"SOURCES left join SA_"+"SOURCES "+
+      "on SOURCES.ID=SA_"+"SOURCES."+"SOURCE_ID where "+
+      "SA_SOURCES.HOST_ADDRESS=\""+host_addr.toString()+"\" "+
+      "order by SA_SOURCES.ROUTER_NUMBER,SA_SOURCES.SLOT ";
+    q=new QSqlQuery(sql);
+    while(q->next()) {
+      proto_socket->write(("SourceNameAdded\t"+
+			   QString().sprintf("%d\t",1+q->value(7).toInt())+
+			   SourceNamesMessage(EndPointMap::AudioRouter,q)).toUtf8());
+    }
+    delete q;
+
+    //
+    // Audio Destinations
+    //
+    sql=QString("select ")+
+      "SA_DESTINATIONS.SOURCE_NUMBER,"+  // 00
+      "DESTINATIONS.NAME,"+              // 01
+      "DESTINATIONS.HOST_ADDRESS,"+      // 02
+      "DESTINATIONS.HOST_NAME,"+         // 03
+      "DESTINATIONS.SLOT,"+              // 04
+      "SA_DESTINATIONS.NAME,"+           // 05
+      "SA_DESTINATIONS.ROUTER_NUMBER "+  // 06
+      "from DESTINATIONS left join SA_DESTINATIONS "+
+      "on DESTINATIONS.ID=SA_DESTINATIONS.DESTINATION_ID where "+
+      "SA_DESTINATIONS.HOST_ADDRESS=\""+host_addr.toString()+"\" "+
+      "order by SA_DESTINATIONS.ROUTER_NUMBER ";
+    q=new QSqlQuery(sql);
+    while(q->next()) {
+      proto_socket->write(("DestNameAdded\t"+
+			   QString().sprintf("%d\t",1+q->value(6).toInt())+
+			   DestNamesMessage(EndPointMap::AudioRouter,q)).toUtf8());
+    }
+    delete q;
+
+    //
+    // GPIs
+    //
+    sql=QString("select ")+
+      "SA_GPIS.SOURCE_NUMBER,"+  // 00
+      "GPIS.HOST_ADDRESS,"+      // 01
+      "GPIS.HOST_NAME,"+         // 02
+      "GPIS.SLOT,"+              // 03
+      "SA_GPIS.NAME,"+           // 04
+      "SA_GPIS.ROUTER_NUMBER "+  // 05
+      "from "+"GPIS left join SA_"+"GPIS "+
+      "on GPIS.ID=SA_GPIS.GPI_ID where "+
+      "SA_GPIS.HOST_ADDRESS=\""+host_addr.toString()+"\" "+
+      "order by SA_GPIS.ROUTER_NUMBER,SA_GPIS.SLOT ";
+    q=new QSqlQuery(sql);
+    while(q->next()) {
+      proto_socket->write(("SourceNameAdded\t"+
+			   QString().sprintf("%d\t",1+q->value(5).toInt())+
+			   SourceNamesMessage(EndPointMap::GpioRouter,q)).toUtf8());
+    }
+    delete q;
+
+    //
+    // GPOs
+    //
+    sql=QString("select ")+
+      "SA_GPOS.SOURCE_NUMBER,"+  // 00
+      "GPOS.NAME,"+              // 01
+      "GPOS.HOST_ADDRESS,"+      // 02
+      "GPOS.HOST_NAME,"+         // 03
+      "GPOS.SLOT,"+              // 04
+      "SA_GPOS.NAME,"+           // 05
+      "SA_GPOS.ROUTER_NUMBER "+  // 06
+      "from GPOS left join SA_GPOS on GPOS.ID=SA_GPOS.GPO_ID where "+
+      "SA_GPOS.HOST_ADDRESS=\""+host_addr.toString()+"\" "+
+      "order by SA_GPOS.ROUTER_NUMBER,SA_GPOS.SLOT ";
+    //syslog(LOG_NOTICE,"SQL: %s\n",sql.toUtf8().constData());
+    q=new QSqlQuery(sql);
+    while(q->next()) {
+      proto_socket->write(("DestNameAdded\t"+
+			   QString().sprintf("%d\t",1+q->value(6).toInt())+
+			   DestNamesMessage(EndPointMap::GpioRouter,q)).toUtf8());
+    }
+    delete q;
+
+  }
+}
+
+
+void ProtocolSa::nodeRemoved(const QHostAddress &host_addr,
+			     int srcs,int dsts,int gpis,int gpos)
+{
+  QList<int> endpts;
+  int slot;
+
+  if(proto_dynamic_endpoints_subscribed) {
+    for(QMap<int,EndPointMap *>::const_iterator it=proto_maps.begin();
+	it!=proto_maps.end();it++) {
+      endpts=it.value()->endPoints(EndPointMap::Output,host_addr.toString());
+      for(int i=0;i<endpts.size();i++) {
+	slot=it.value()->slot(EndPointMap::Output,endpts.at(i));
+	proto_socket->write(("DestNameRemoved\t"+
+			     QString().sprintf("%d\t",1+it.value()->
+					       routerNumber())+
+			     QString().sprintf("%d\r\n",1+slot)).toUtf8());
+      }
+      endpts=it.value()->endPoints(EndPointMap::Input,host_addr.toString());
+      for(int i=0;i<endpts.size();i++) {
+	slot=it.value()->slot(EndPointMap::Input,endpts.at(i));
+	proto_socket->write(("SourceNameRemoved\t"+
+			     QString().sprintf("%d\t",1+it.value()->
+					       routerNumber())+
+			     QString().sprintf("%d\r\n",1+slot)).toUtf8());
+      }
+    }
+  }
+}
+
+
+void ProtocolSa::nodeChanged(const QHostAddress &host_addr)
+{
+}
+
+
+void ProtocolSa::sourceChanged(const QHostAddress &host_addr,int slotnum)
+{
+  QString sql;
+  QSqlQuery *q=NULL;
+
+  if(proto_dynamic_endpoints_subscribed) {
+    sql=QString("select ")+
+      "SA_SOURCES.SOURCE_NUMBER,"+  // 00
+      "SOURCES.NAME,"+              // 01
+      "SOURCES.HOST_ADDRESS,"+      // 02
+      "SOURCES.HOST_NAME,"+         // 03
+      "SOURCES.SLOT,"+              // 04
+      "SOURCES.STREAM_ADDRESS,"+    // 05
+      "SA_SOURCES.NAME,"+           // 06
+      "SA_SOURCES.ROUTER_NUMBER "+  // 07
+      "from "+"SOURCES left join SA_"+"SOURCES "+
+      "on SOURCES.ID=SA_"+"SOURCES."+"SOURCE_ID where "+
+      "SA_SOURCES.HOST_ADDRESS=\""+host_addr.toString()+"\" && "+
+      QString().sprintf("SA_SOURCES.SLOT=%d ",slotnum)+
+      "order by SA_SOURCES.ROUTER_NUMBER ";
+    //    printf("SQL: %s\n",sql.toUtf8().constData());
+    q=new QSqlQuery(sql);
+    while(q->next()) {
+      proto_socket->write(("SourceNameChanged\t"+
+			   QString().sprintf("%d\t",1+q->value(7).toInt())+
+			   SourceNamesMessage(EndPointMap::AudioRouter,q)).toUtf8());
+    }
+    delete q;
+  }
+}
+
+
+void ProtocolSa::destinationChanged(const QHostAddress &host_addr,int slotnum)
+{
+  QString sql;
+  QSqlQuery *q=NULL;
+
+  if(proto_dynamic_endpoints_subscribed) {
+    sql=QString("select ")+
+      "SA_DESTINATIONS.SOURCE_NUMBER,"+  // 00
+      "DESTINATIONS.NAME,"+              // 01
+      "DESTINATIONS.HOST_ADDRESS,"+      // 02
+      "DESTINATIONS.HOST_NAME,"+         // 03
+      "DESTINATIONS.SLOT,"+              // 04
+      "SA_DESTINATIONS.NAME,"+           // 05
+      "SA_DESTINATIONS.ROUTER_NUMBER "+  // 06
+      "from DESTINATIONS left join SA_DESTINATIONS "+
+      "on DESTINATIONS.ID=SA_DESTINATIONS.DESTINATION_ID where "+
+      "SA_DESTINATIONS.HOST_ADDRESS=\""+host_addr.toString()+"\" && "+
+      QString().sprintf("SA_DESTINATIONS.SLOT=%d ",slotnum)+
+      "order by SA_DESTINATIONS.ROUTER_NUMBER ";
+    q=new QSqlQuery(sql);
+    while(q->next()) {
+      proto_socket->write(("DestNameChanged\t"+
+			   QString().sprintf("%d\t",1+q->value(6).toInt())+
+			   DestNamesMessage(EndPointMap::AudioRouter,q)).toUtf8());
+    }
+    delete q;
+  }
 }
 
 
@@ -906,6 +1108,24 @@ void ProtocolSa::ProcessCommand(const QString &cmd)
     }
     proto_socket->write(">>",2);
   }
+
+  if((cmds[0].toLower()=="enabledynamicendpoints")&&(cmds.size()==2)) {
+    if(cmds[1].toLower()=="yes") {
+      proto_dynamic_endpoints_subscribed=true;
+      proto_socket->write(QString("Dynamic endpoints enabled.\r\n").toUtf8());
+    }
+    else {
+      if(cmds[1].toLower()=="no") {
+	proto_dynamic_endpoints_subscribed=false;
+	proto_socket->
+	  write(QString("Dynamic endpoints disabled.\r\n").toUtf8());
+      }
+      else {
+	proto_socket->write(QString("Error - Invalid syntax.\r\n").toUtf8());
+      }
+    }
+    proto_socket->write(">>",2);
+  }
 }
 
 
@@ -929,6 +1149,7 @@ void ProtocolSa::LoadHelp()
     ", ActivateScene"+
     ", ActivateSnap"+
     ", DestNames"+
+    ", EnableDynamicEndpoints"+
     ", Exit"+
     ", GPIStat"+
     ", GPOStat"+
@@ -944,6 +1165,7 @@ void ProtocolSa::LoadHelp()
   proto_help_strings["activatescene"]="ActivateScene <router> <snapshot>\r\n\r\nActivate the specified snapshot.";
   proto_help_strings["activatesnap"]="ActivateSnap <router> <snapshot>\r\n\r\nActivate the specified snapshot.";
   proto_help_strings["destnames"]="DestNames <router>\r\n\r\nReturn names of all outputs on the specified router.";
+  proto_help_strings["enabledynamicendpoints"]="EnableDynamicEndpoints yes|no\r\n\r\nEnable/disable dynamic endpoint updates (Drouter extension).";
   proto_help_strings["exit"]="Exit\r\n\r\nClose TCP/IP connection.";
   proto_help_strings["gpistat"]="GPIStat <router> [<gpi-num>]\r\n\r\nQuery the state of one or more GPIs.\r\nIf <gpi-num> is not given, the entire set of GPIs for the specified\r\n<router> will be returned.";
   proto_help_strings["gpostat"]="GPOStat <router> [<gpo-num>]\r\n\r\nQuery the state of one or more GPOs.\r\nIf <gpo-num> is not given, the entire set of GPOs for the specified\r\n<router> will be returned.";
