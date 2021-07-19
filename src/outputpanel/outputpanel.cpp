@@ -2,7 +2,7 @@
 //
 // An applet for controling an SA output
 //
-//   (C) Copyright 2002-2017 Fred Gleason <fredg@paravelsystems.com>
+//   (C) Copyright 2002-2021 Fred Gleason <fredg@paravelsystems.com>
 //
 //   This program is free software; you can redistribute it and/or modify
 //   it under the terms of the GNU General Public License as
@@ -27,7 +27,7 @@
 #include <QTimer>
 #include <QSettings>
 
-#include <sy/sycmdswitch.h>
+#include <sy5/sycmdswitch.h>
 
 #include "outputpanel.h"
 
@@ -61,9 +61,8 @@ MainWidget::MainWidget(QWidget *parent)
   //
   // Read Command Options
   //
-  SyCmdSwitch *cmd=
-    new SyCmdSwitch(qApp->argc(),qApp->argv(),"outputpanel",VERSION,OUTPUTPANEL_USAGE);
-  for(unsigned i=0;i<cmd->keys();i++) {
+  SyCmdSwitch *cmd=new SyCmdSwitch("outputpanel",VERSION,OUTPUTPANEL_USAGE);
+  for(int i=0;i<cmd->keys();i++) {
     if(cmd->key(i)=="--columns") {
       panel_columns=cmd->value(i).toUInt();
       cmd->setProcessed(i,true);
@@ -132,7 +131,7 @@ MainWidget::MainWidget(QWidget *parent)
   //
   // Start Output Panels
   //
-  for(unsigned i=0;i<cmd->keys();i++) {
+  for(int i=0;i<cmd->keys();i++) {
     if(cmd->key(i)=="--output") {
       router=1;
       QStringList f0=cmd->value(i).split(":");

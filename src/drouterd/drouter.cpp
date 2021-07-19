@@ -35,8 +35,8 @@
 #include <QSqlQuery>
 #include <QVariant>
 
-#include <sy/syconfig.h>
-#include <sy/syinterfaces.h>
+#include <sy5/syconfig.h>
+#include <sy5/syinterfaces.h>
 
 #include "drouter.h"
 #include "protoipc.h"

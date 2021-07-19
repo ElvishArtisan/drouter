@@ -2,7 +2,7 @@
 //
 // Base class for drouterd(8) protocols
 //
-//   (C) Copyright 2018 Fred Gleason <fredg@paravelsystems.com>
+//   (C) Copyright 2018-2021 Fred Gleason <fredg@paravelsystems.com>
 //
 //   This program is free software; you can redistribute it and/or modify
 //   it under the terms of the GNU General Public License version 2 as
@@ -26,7 +26,7 @@
 #include <QTcpSocket>
 #include <QTimer>
 
-#include <sy/sylwrp_client.h>
+#include <sy5/sylwrp_client.h>
 
 #include "config.h"
 

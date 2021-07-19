@@ -2,7 +2,7 @@
 //
 // Full graphical crosspoint panel for SA devices.
 //
-//   (C) Copyright 2017-2020 Fred Gleason <fredg@paravelsystems.com>
+//   (C) Copyright 2017-2021 Fred Gleason <fredg@paravelsystems.com>
 //
 //   This program is free software; you can redistribute it and/or modify
 //   it under the terms of the GNU General Public License as
@@ -33,9 +33,9 @@
 #include <QScrollBar>
 #include <QSettings>
 
-#include <sy/sycmdswitch.h>
-#include <sy/symcastsocket.h>
-#include <sy/synode.h>
+#include <sy5/sycmdswitch.h>
+#include <sy5/symcastsocket.h>
+#include <sy5/synode.h>
 
 #include "xpointpanel.h"
 
@@ -64,10 +64,8 @@ MainWidget::MainWidget(QWidget *parent)
   //
   // Read Command Options
   //
-  SyCmdSwitch *cmd=
-    new SyCmdSwitch(qApp->argc(),qApp->argv(),"xpointpanel",VERSION,
-		    XPOINTPANEL_USAGE);
-  for(unsigned i=0;i<cmd->keys();i++) {
+  SyCmdSwitch *cmd=new SyCmdSwitch("xpointpanel",VERSION,XPOINTPANEL_USAGE);
+  for(int i=0;i<cmd->keys();i++) {
     if(cmd->key(i)=="--initial-router") {
       panel_initial_router=cmd->value(i).toInt(&ok);
       if(!ok) {
@@ -116,7 +114,7 @@ MainWidget::MainWidget(QWidget *parent)
   //
   // Create And Set Icons
   //
-  setWindowIcon(QIcon(drouter_16x16_xpm));
+  setWindowIcon(QPixmap(drouter_16x16_xpm));
   panel_greenx_map=new QPixmap(greenx_xpm);
 
   //

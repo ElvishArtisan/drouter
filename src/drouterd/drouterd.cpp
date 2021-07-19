@@ -2,7 +2,7 @@
 //
 // Dynamic router service for Livewire networks
 //
-//   (C) Copyright 2017 Fred Gleason <fredg@paravelsystems.com>
+//   (C) Copyright 2017-2021 Fred Gleason <fredg@paravelsystems.com>
 //
 //   This program is free software; you can redistribute it and/or modify
 //   it under the terms of the GNU General Public License version 2 as
@@ -26,7 +26,7 @@
 
 #include <QCoreApplication>
 
-#include <sy/sycmdswitch.h>
+#include <sy5/sycmdswitch.h>
 
 #ifdef LIBSYSTEMD
 #include <systemd/sd-daemon.h>
@@ -48,9 +48,8 @@ MainObject::MainObject(QObject *parent)
   bool no_protocols=false;
   QString err_msg;
   int log_options=0;
-  SyCmdSwitch *cmd=
-    new SyCmdSwitch(qApp->argc(),qApp->argv(),"drouterd",VERSION,DROUTERD_USAGE);
-  for(unsigned i=0;i<(cmd->keys());i++) {
+  SyCmdSwitch *cmd=new SyCmdSwitch("drouterd",VERSION,DROUTERD_USAGE);
+  for(int i=0;i<(cmd->keys());i++) {
     if(cmd->key(i)=="-d") {
       log_options=log_options|LOG_PERROR;;
       cmd->setProcessed(i,true);

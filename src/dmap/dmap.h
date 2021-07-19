@@ -27,8 +27,8 @@
 #include <QObject>
 #include <QTimer>
 
-#include <sy/symcastsocket.h>
-#include <sy/sylwrp_client.h>
+#include <sy5/symcastsocket.h>
+#include <sy5/sylwrp_client.h>
 
 #include "dparser.h"
 #include "endpointmap.h"

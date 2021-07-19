@@ -2,7 +2,7 @@
 //
 // Software Authority protocol handler for DRouter.
 //
-//   (C) Copyright 2018-2020 Fred Gleason <fredg@paravelsystems.com>
+//   (C) Copyright 2018-2021 Fred Gleason <fredg@paravelsystems.com>
 //
 //   This program is free software; you can redistribute it and/or modify
 //   it under the terms of the GNU General Public License version 2 as
@@ -25,7 +25,7 @@
 
 #include <QStringList>
 
-#include <sy/syrouting.h>
+#include <sy5/syrouting.h>
 
 #include "protocol_sa.h"
 

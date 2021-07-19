@@ -2,7 +2,7 @@
 //
 // Widget to display GPIO code state
 //
-//   (C) Copyright 2020 Fred Gleason <fredg@paravelsystems.com>
+//   (C) Copyright 2020-2021 Fred Gleason <fredg@paravelsystems.com>
 //
 //   This program is free software; you can redistribute it and/or modify
 //   it under the terms of the GNU General Public License as
@@ -24,7 +24,7 @@
 
 #include <qwidget.h>
 
-#include <sy/syconfig.h>
+#include <sy5/syconfig.h>
 
 #define MULTISTATEWIDGET_SHORT_EDGE 10
 #define MULTISTATEWIDGET_LONG_EDGE 50

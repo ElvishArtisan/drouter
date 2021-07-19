@@ -2,7 +2,7 @@
 //
 // Button applet for controlling an lwpath output.
 //
-//   (C) Copyright 2002-2020 Fred Gleason <fredg@paravelsystems.com>
+//   (C) Copyright 2002-2021 Fred Gleason <fredg@paravelsystems.com>
 //
 //   This program is free software; you can redistribute it and/or modify
 //   it under the terms of the GNU General Public License as
@@ -23,8 +23,8 @@
 #include <QMessageBox>
 #include <QPainter>
 
-#include <sy/sycmdswitch.h>
-#include <sy/symcastsocket.h>
+#include <sy5/sycmdswitch.h>
+#include <sy5/symcastsocket.h>
 
 #include "buttonpanel.h"
 #include "gpiowidget.h"
@@ -63,9 +63,8 @@ MainWidget::MainWidget(QWidget *parent)
   colornames.push_back("yellow");
 
   SyCmdSwitch *cmd=
-    new SyCmdSwitch(qApp->argc(),qApp->argv(),"buttonpanel",VERSION,
-				   BUTTONPANEL_USAGE);
-  for(unsigned i=0;i<cmd->keys();i++) {
+    new SyCmdSwitch("buttonpanel",VERSION,BUTTONPANEL_USAGE);
+  for(int i=0;i<cmd->keys();i++) {
     if(cmd->key(i)=="--arm-button") {
       panel_arm_button=true;
       cmd->setProcessed(i,true);

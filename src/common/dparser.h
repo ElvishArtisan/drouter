@@ -2,7 +2,7 @@
 //
 // Parser for Protocol D
 //
-// (C) Copyright 2017 Fred Gleason <fredg@paravelsystems.com>
+// (C) Copyright 2017-2021 Fred Gleason <fredg@paravelsystems.com>
 //
 //   This program is free software; you can redistribute it and/or modify
 //   it under the terms of the GNU General Public License version 2 as
@@ -31,9 +31,9 @@
 #include <QTcpSocket>
 #include <QTimer>
 
-#include <sy/sydestination.h>
-#include <sy/synode.h>
-#include <sy/sysource.h>
+#include <sy5/sydestination.h>
+#include <sy5/synode.h>
+#include <sy5/sysource.h>
 
 #define DPARSER_WATCHDOG_POLL_INTERVAL 1000
 #define DPARSER_WATCHDOG_TIMEOUT_INTERVAL 3000

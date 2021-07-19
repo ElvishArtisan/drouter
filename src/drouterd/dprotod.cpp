@@ -2,7 +2,7 @@
 //
 // Protocol dispatcher for drouterd(8)
 //
-//   (C) Copyright 2018 Fred Gleason <fredg@paravelsystems.com>
+//   (C) Copyright 2018-2021 Fred Gleason <fredg@paravelsystems.com>
 //
 //   This program is free software; you can redistribute it and/or modify
 //   it under the terms of the GNU General Public License version 2 as
@@ -27,7 +27,7 @@
 
 #include <QCoreApplication>
 
-#include <sy/sycmdswitch.h>
+#include <sy5/sycmdswitch.h>
 
 #include "dprotod.h"
 #include "protocol_d.h"
@@ -44,9 +44,8 @@ MainObject::MainObject(QObject *parent)
   int protocols_defined=0;
   QString err_msg;
 
-  SyCmdSwitch *cmd=
-    new SyCmdSwitch(qApp->argc(),qApp->argv(),"dprotod",VERSION,DPROTOD_USAGE);
-  for(unsigned i=0;i<cmd->keys();i++) {
+  SyCmdSwitch *cmd=new SyCmdSwitch("dprotod",VERSION,DPROTOD_USAGE);
+  for(int i=0;i<cmd->keys();i++) {
     if(cmd->key(i)=="--protocol-d") {
       main_protocol_d=true;
       protocols_defined++;

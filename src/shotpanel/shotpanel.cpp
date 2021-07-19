@@ -2,7 +2,7 @@
 //
 // An applet for activating a snapshot
 //
-//   (C) Copyright 2017 Fred Gleason <fredg@paravelsystems.com>
+//   (C) Copyright 2017-2021 Fred Gleason <fredg@paravelsystems.com>
 //
 //   This program is free software; you can redistribute it and/or modify
 //   it under the terms of the GNU General Public License as
@@ -29,8 +29,8 @@
 #include <QTimer>
 #include <QSettings>
 
-#include <sy/sycmdswitch.h>
-#include <sy/symcastsocket.h>
+#include <sy5/sycmdswitch.h>
+#include <sy5/symcastsocket.h>
 
 #include "shotpanel.h"
 
@@ -57,10 +57,8 @@ MainWidget::MainWidget(QWidget *parent)
   //
   // Read Command Options
   //
-  SyCmdSwitch *cmd=
-    new SyCmdSwitch(qApp->argc(),qApp->argv(),"shotpanel",VERSION,
-		    SHOTPANEL_USAGE);
-  for(unsigned i=0;i<cmd->keys();i++) {
+  SyCmdSwitch *cmd=new SyCmdSwitch("shotpanel",VERSION,SHOTPANEL_USAGE);
+  for(int i=0;i<cmd->keys();i++) {
     if(cmd->key(i)=="--hostname") {
       panel_hostname=cmd->value(i);
       cmd->setProcessed(i,true);
@@ -99,7 +97,7 @@ MainWidget::MainWidget(QWidget *parent)
   //
   // Create And Set Icon
   //
-  setWindowIcon(QIcon(drouter_16x16_xpm));
+  setWindowIcon(QPixmap(drouter_16x16_xpm));
 
   //
   // Fonts

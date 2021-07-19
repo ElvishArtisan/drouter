@@ -643,3 +643,6 @@
 	drouterd(8).
 2021-06-24 Fred Gleason <fredg@paravelsystems.com>
 	* Incremented the package version to 1.0.0rc4.
+2021-07-19 Fred Gleason <fredg@paravelsystems.com>
+	* Updated Qt dependency to Qt5.
+	* Updated the Switchyard dependency to Switchyard5.
