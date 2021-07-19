@@ -159,7 +159,7 @@ void ProtocolD::nodeAdded(const QHostAddress &host_addr)
 
   if(proto_nodes_subscribed) {
     sql=NodeSqlFields()+"where "+
-      "HOST_ADDRESS=\""+host_addr.toString()+"\"";
+      "`HOST_ADDRESS`='"+host_addr.toString()+"'";
     q=new QSqlQuery(sql);
     while(q->next()) {
       proto_socket->write(NodeRecord("NODEADD",q).toUtf8());
@@ -168,8 +168,8 @@ void ProtocolD::nodeAdded(const QHostAddress &host_addr)
   }
   if(proto_sources_subscribed) {
     sql=SourceSqlFields()+"where "+
-      "HOST_ADDRESS=\""+host_addr.toString()+"\""+     
-      "order by HOST_ADDRESS,SLOT";
+      "`HOST_ADDRESS`='"+host_addr.toString()+"'"+     
+      "order by `HOST_ADDRESS`,`SLOT`";
     q=new QSqlQuery(sql);
     while(q->next()) {
       proto_socket->write(SourceRecord("SRCADD",q).toUtf8());
@@ -178,8 +178,8 @@ void ProtocolD::nodeAdded(const QHostAddress &host_addr)
   }
   if(proto_destinations_subscribed) {
     sql=DestinationSqlFields()+"where "+
-      "HOST_ADDRESS=\""+host_addr.toString()+"\""+     
-      "order by HOST_ADDRESS,SLOT";
+      "`HOST_ADDRESS`='"+host_addr.toString()+"'"+     
+      "order by `HOST_ADDRESS`,`SLOT`";
     q=new QSqlQuery(sql);
     while(q->next()) {
       proto_socket->write(DestinationRecord("DSTADD",q).toUtf8());
@@ -188,8 +188,8 @@ void ProtocolD::nodeAdded(const QHostAddress &host_addr)
   }
   if(proto_gpis_subscribed) {
     sql=GpiSqlFields()+"where "+
-      "HOST_ADDRESS=\""+host_addr.toString()+"\""+     
-      "order by HOST_ADDRESS,SLOT";
+      "`HOST_ADDRESS`='"+host_addr.toString()+"'"+     
+      "order by `HOST_ADDRESS`,`SLOT`";
     q=new QSqlQuery(sql);
     while(q->next()) {
       proto_socket->write(GpiRecord("GPIADD",q).toUtf8());
@@ -198,8 +198,8 @@ void ProtocolD::nodeAdded(const QHostAddress &host_addr)
   }
   if(proto_gpos_subscribed) {
     sql=GpoSqlFields()+"where "+
-      "HOST_ADDRESS=\""+host_addr.toString()+"\""+     
-      "order by HOST_ADDRESS,SLOT";
+      "`HOST_ADDRESS`='"+host_addr.toString()+"'"+     
+      "order by `HOST_ADDRESS`,`SLOT`";
     q=new QSqlQuery(sql);
     while(q->next()) {
       proto_socket->write(GpoRecord("GPOADD",q).toUtf8());
@@ -249,7 +249,7 @@ void ProtocolD::nodeChanged(const QHostAddress &host_addr)
 
   if(proto_nodes_subscribed) {
     sql=NodeSqlFields()+"where "+
-      "HOST_ADDRESS=\""+host_addr.toString()+"\"";
+      "`HOST_ADDRESS`='"+host_addr.toString()+"'";
     q=new QSqlQuery(sql);
     while(q->next()) {
       proto_socket->write(NodeRecord("NODE",q).toUtf8());
@@ -265,8 +265,8 @@ void ProtocolD::sourceChanged(const QHostAddress &host_addr,int slotnum)
 
   if(proto_sources_subscribed) {
     sql=SourceSqlFields()+"where "+
-      "HOST_ADDRESS=\""+host_addr.toString()+"\" && "+
-      "SLOT="+QString().sprintf("%d",slotnum);
+      "`HOST_ADDRESS`='"+host_addr.toString()+"' && "+
+      "`SLOT`="+QString().sprintf("%d",slotnum);
     q=new QSqlQuery(sql);
     while(q->next()) {
       proto_socket->write(SourceRecord("SRC",q).toUtf8());
@@ -282,8 +282,8 @@ void ProtocolD::destinationChanged(const QHostAddress &host_addr,int slotnum)
 
   if(proto_destinations_subscribed) {
     sql=DestinationSqlFields()+"where "+
-      "HOST_ADDRESS=\""+host_addr.toString()+"\" && "+
-      "SLOT="+QString().sprintf("%d",slotnum);
+      "`HOST_ADDRESS`='"+host_addr.toString()+"' && "+
+      "`SLOT`="+QString().sprintf("%d",slotnum);
     q=new QSqlQuery(sql);
     while(q->next()) {
       proto_socket->write(DestinationRecord("DST",q).toUtf8());
@@ -299,8 +299,8 @@ void ProtocolD::gpiChanged(const QHostAddress &host_addr,int slotnum)
 
   if(proto_gpis_subscribed) {
     sql=GpiSqlFields()+"where "+
-      "HOST_ADDRESS=\""+host_addr.toString()+"\" && "+
-      "SLOT="+QString().sprintf("%d",slotnum);
+      "`HOST_ADDRESS`='"+host_addr.toString()+"' && "+
+      "`SLOT`="+QString().sprintf("%d",slotnum);
     q=new QSqlQuery(sql);
     while(q->next()) {
       proto_socket->write(GpiRecord("GPI",q).toUtf8());
@@ -316,8 +316,8 @@ void ProtocolD::gpoChanged(const QHostAddress &host_addr,int slotnum)
 
   if(proto_gpos_subscribed) {
     sql=GpoSqlFields()+"where "+
-      "HOST_ADDRESS=\""+host_addr.toString()+"\" && "+
-      "SLOT="+QString().sprintf("%d",slotnum);
+      "`HOST_ADDRESS`='"+host_addr.toString()+"' && "+
+      "`SLOT`="+QString().sprintf("%d",slotnum);
     q=new QSqlQuery(sql);
     while(q->next()) {
       proto_socket->write(GpoRecord("GPO",q).toUtf8());
@@ -335,8 +335,8 @@ void ProtocolD::clipChanged(const QHostAddress &host_addr,int slotnum,
 
   if(proto_clips_subscribed) {
     sql=AlarmSqlFields("CLIP",chan)+"from "+tbl_name+" where ";
-    sql+="HOST_ADDRESS=\""+host_addr.toString()+"\" && "+
-      QString().sprintf("SLOT=%d",slotnum);
+    sql+="`HOST_ADDRESS`='"+host_addr.toString()+"' && "+
+      QString().sprintf("`SLOT`=%d",slotnum);
     q=new QSqlQuery(sql);
     while(q->next()) {
       proto_socket->write(AlarmRecord("CLIP",meter_type,chan,q).toUtf8());
@@ -355,8 +355,8 @@ void ProtocolD::silenceChanged(const QHostAddress &host_addr,int slotnum,
 
   if(proto_silences_subscribed) {
     sql=AlarmSqlFields("SILENCE",chan)+"from "+tbl_name+" where ";
-    sql+="HOST_ADDRESS=\""+host_addr.toString()+"\" && "+
-      QString().sprintf("SLOT=%d",slotnum);
+    sql+="`HOST_ADDRESS`='"+host_addr.toString()+"' && "+
+      QString().sprintf("`SLOT`=%d",slotnum);
     q=new QSqlQuery(sql);
     while(q->next()) {
       proto_socket->write(AlarmRecord("SILENCE",meter_type,chan,q).toUtf8());
@@ -387,7 +387,7 @@ void ProtocolD::ProcessCommand(const QString &cmd)
   }
 
   if(keyword=="listdestinations") {
-    sql=DestinationSqlFields()+"order by HOST_ADDRESS,SLOT";
+    sql=DestinationSqlFields()+"order by `HOST_ADDRESS`,`SLOT`";
     q=new QSqlQuery(sql);
     while(q->next()) {
       proto_socket->write(DestinationRecord("DST",q).toUtf8());
@@ -399,7 +399,7 @@ void ProtocolD::ProcessCommand(const QString &cmd)
 
   if(keyword=="subscribedestinations") {
     proto_destinations_subscribed=true;
-    sql=DestinationSqlFields()+"order by HOST_ADDRESS,SLOT";
+    sql=DestinationSqlFields()+"order by `HOST_ADDRESS`,`SLOT`";
     q=new QSqlQuery(sql);
     while(q->next()) {
       proto_socket->write(DestinationRecord("DSTADD",q).toUtf8());
@@ -410,7 +410,7 @@ void ProtocolD::ProcessCommand(const QString &cmd)
   }
 
   if(keyword=="listgpis") {
-    sql=GpiSqlFields()+"order by HOST_ADDRESS,SLOT";
+    sql=GpiSqlFields()+"order by `HOST_ADDRESS`,`SLOT`";
     q=new QSqlQuery(sql);
     while(q->next()) {
       proto_socket->write(GpiRecord("GPI",q).toUtf8());
@@ -422,7 +422,7 @@ void ProtocolD::ProcessCommand(const QString &cmd)
 
   if(keyword=="subscribegpis") {
     proto_gpis_subscribed=true;
-    sql=GpiSqlFields()+"order by HOST_ADDRESS,SLOT";
+    sql=GpiSqlFields()+"order by `HOST_ADDRESS`,`SLOT`";
     q=new QSqlQuery(sql);
     while(q->next()) {
       proto_socket->write(GpiRecord("GPIADD",q).toUtf8());
@@ -433,7 +433,7 @@ void ProtocolD::ProcessCommand(const QString &cmd)
   }
 
   if(keyword=="listgpos") {
-    sql=GpoSqlFields()+"order by HOST_ADDRESS,SLOT";
+    sql=GpoSqlFields()+"order by `HOST_ADDRESS`,`SLOT`";
     q=new QSqlQuery(sql);
     while(q->next()) {
       proto_socket->write(GpoRecord("GPO",q).toUtf8());
@@ -445,7 +445,7 @@ void ProtocolD::ProcessCommand(const QString &cmd)
 
   if(keyword=="subscribegpos") {
     proto_gpos_subscribed=true;
-    sql=GpoSqlFields()+"order by HOST_ADDRESS,SLOT";
+    sql=GpoSqlFields()+"order by `HOST_ADDRESS`,`SLOT`";
     q=new QSqlQuery(sql);
     while(q->next()) {
       proto_socket->write(GpoRecord("GPOADD",q).toUtf8());
@@ -456,7 +456,7 @@ void ProtocolD::ProcessCommand(const QString &cmd)
   }
 
   if(keyword=="listnodes") {
-    sql=NodeSqlFields()+"order by HOST_ADDRESS";
+    sql=NodeSqlFields()+"order by `HOST_ADDRESS`";
     q=new QSqlQuery(sql);
     while(q->next()) {
       proto_socket->write(NodeRecord("NODE",q).toUtf8());
@@ -468,7 +468,7 @@ void ProtocolD::ProcessCommand(const QString &cmd)
 
   if(keyword=="subscribenodes") {
     proto_nodes_subscribed=true;
-    sql=NodeSqlFields()+"order by HOST_ADDRESS";
+    sql=NodeSqlFields()+"order by `HOST_ADDRESS`";
     q=new QSqlQuery(sql);
     while(q->next()) {
       proto_socket->write(NodeRecord("NODEADD",q).toUtf8());
@@ -479,7 +479,7 @@ void ProtocolD::ProcessCommand(const QString &cmd)
   }
 
   if(keyword=="listsources") {
-    sql=SourceSqlFields()+"order by HOST_ADDRESS,SLOT";
+    sql=SourceSqlFields()+"order by `HOST_ADDRESS`,`SLOT`";
     q=new QSqlQuery(sql);
     while(q->next()) {
       proto_socket->write(SourceRecord("SRC",q).toUtf8());
@@ -491,7 +491,7 @@ void ProtocolD::ProcessCommand(const QString &cmd)
 
   if(keyword=="subscribesources") {
     proto_sources_subscribed=true;
-    sql=SourceSqlFields()+"order by HOST_ADDRESS,SLOT";
+    sql=SourceSqlFields()+"order by `HOST_ADDRESS`,`SLOT`";
     q=new QSqlQuery(sql);
     while(q->next()) {
       proto_socket->write(SourceRecord("SRCADD",q).toUtf8());
@@ -504,7 +504,7 @@ void ProtocolD::ProcessCommand(const QString &cmd)
   if(keyword=="listclips") {
     for(int j=0;j<2;j++) {
       sql=AlarmSqlFields("CLIP",j)+
-	"from SOURCES order by HOST_ADDRESS,SLOT";
+	"from `SOURCES` order by `HOST_ADDRESS`,`SLOT`";
       q=new QSqlQuery(sql);
       while(q->next()) {
 	proto_socket->
@@ -514,7 +514,7 @@ void ProtocolD::ProcessCommand(const QString &cmd)
     }
     for(int j=0;j<2;j++) {
       sql=AlarmSqlFields("CLIP",j)+
-	"from DESTINATIONS order by HOST_ADDRESS,SLOT";
+	"from `DESTINATIONS` order by `HOST_ADDRESS`,`SLOT`";
       q=new QSqlQuery(sql);
       while(q->next()) {
 	proto_socket->
@@ -530,7 +530,7 @@ void ProtocolD::ProcessCommand(const QString &cmd)
     proto_clips_subscribed=true;
     for(int j=0;j<2;j++) {
       sql=AlarmSqlFields("CLIP",j)+
-	"from SOURCES order by HOST_ADDRESS,SLOT";
+	"from `SOURCES` order by `HOST_ADDRESS`,`SLOT`";
       q=new QSqlQuery(sql);
       while(q->next()) {
 	proto_socket->
@@ -540,7 +540,7 @@ void ProtocolD::ProcessCommand(const QString &cmd)
     }
     for(int j=0;j<2;j++) {
       sql=AlarmSqlFields("CLIP",j)+
-	"from DESTINATIONS order by HOST_ADDRESS,SLOT";
+	"from `DESTINATIONS` order by `HOST_ADDRESS`,`SLOT`";
       q=new QSqlQuery(sql);
       while(q->next()) {
 	proto_socket->
@@ -555,7 +555,7 @@ void ProtocolD::ProcessCommand(const QString &cmd)
   if(keyword=="listsilences") {
     for(int j=0;j<2;j++) {
       sql=AlarmSqlFields("SILENCE",j)+
-	"from SOURCES order by HOST_ADDRESS,SLOT";
+	"from `SOURCES` order by `HOST_ADDRESS`,`SLOT`";
       q=new QSqlQuery(sql);
       while(q->next()) {
 	proto_socket->
@@ -565,7 +565,7 @@ void ProtocolD::ProcessCommand(const QString &cmd)
     }
     for(int j=0;j<2;j++) {
       sql=AlarmSqlFields("SILENCE",j)+
-	"from DESTINATIONS order by HOST_ADDRESS,SLOT";
+	"from `DESTINATIONS` order by `HOST_ADDRESS`,`SLOT`";
       q=new QSqlQuery(sql);
       while(q->next()) {
 	proto_socket->
@@ -581,7 +581,7 @@ void ProtocolD::ProcessCommand(const QString &cmd)
     proto_silences_subscribed=true;
     for(int j=0;j<2;j++) {
       sql=AlarmSqlFields("SILENCE",j)+
-	"from SOURCES order by HOST_ADDRESS,SLOT";
+	"from `SOURCES` order by `HOST_ADDRESS`,`SLOT`";
       q=new QSqlQuery(sql);
       while(q->next()) {
 	proto_socket->
@@ -591,7 +591,7 @@ void ProtocolD::ProcessCommand(const QString &cmd)
     }
     for(int j=0;j<2;j++) {
       sql=AlarmSqlFields("SILENCE",j)+
-	"from DESTINATIONS order by HOST_ADDRESS,SLOT";
+	"from `DESTINATIONS` order by `HOST_ADDRESS`,`SLOT`";
       q=new QSqlQuery(sql);
       while(q->next()) {
 	proto_socket->
@@ -604,7 +604,7 @@ void ProtocolD::ProcessCommand(const QString &cmd)
   }
 
   if(keyword=="listtether") {
-    sql=QString("select IS_ACTIVE from TETHER");
+    sql=QString("select `IS_ACTIVE` from `TETHER`");
     q=new QSqlQuery(sql);
     if(q->first()) {
       proto_socket->
@@ -617,7 +617,7 @@ void ProtocolD::ProcessCommand(const QString &cmd)
 
   if(keyword=="subscribetether") {
     proto_tether_subscribed=true;
-    sql=QString("select IS_ACTIVE from TETHER");
+    sql=QString("select `IS_ACTIVE` from `TETHER`");
     q=new QSqlQuery(sql);
     if(q->first()) {
       proto_socket->
@@ -731,13 +731,13 @@ void ProtocolD::ProcessCommand(const QString &cmd)
 QString ProtocolD::AlarmSqlFields(const QString &type,int chan) const
 {
   QString sql=QString("select ")+
-    "HOST_ADDRESS,"+     // 00
-    "SLOT,";             // 01
+    "`HOST_ADDRESS`,"+        // 00
+    "`SLOT`,";                // 01
   if(chan==0) {
-    sql+="LEFT_"+type;   // 02
+    sql+="`LEFT_"+type+"`";   // 02
   }
   else {
-    sql+="RIGHT_"+type;  // 02
+    sql+="`RIGHT_"+type+"`";  // 02
   }
   sql+=" ";
   return sql;
@@ -788,13 +788,13 @@ QString ProtocolD::AlarmRecord(const QString &keyword,SyLwrpClient::MeterType po
 QString ProtocolD::DestinationSqlFields() const
 {
   return QString("select ")+
-    "HOST_ADDRESS,"+    // 00
-    "SLOT,"+            // 01
-    "HOST_NAME,"+       // 02
-    "STREAM_ADDRESS,"+  // 03
-    "NAME,"+            // 04
-    "CHANNELS "+        // 05
-    "from DESTINATIONS ";
+    "`HOST_ADDRESS`,"+    // 00
+    "`SLOT`,"+            // 01
+    "`HOST_NAME`,"+       // 02
+    "`STREAM_ADDRESS`,"+  // 03
+    "`NAME`,"+            // 04
+    "`CHANNELS` "+        // 05
+    "from `DESTINATIONS` ";
 }
 
 
@@ -818,11 +818,11 @@ QString ProtocolD::DestinationRecord(const QString &keyword,QSqlQuery *q) const
 QString ProtocolD::GpiSqlFields() const
 {
   return QString("select ")+
-    "HOST_ADDRESS,"+  // 00
-    "SLOT,"+          // 01
-    "HOST_NAME,"+     // 02
-    "CODE "+          // 03
-    "from GPIS ";
+    "`HOST_ADDRESS`,"+  // 00
+    "`SLOT`,"+          // 01
+    "`HOST_NAME`,"+     // 02
+    "`CODE` "+          // 03
+    "from `GPIS` ";
 }
 
 
@@ -844,14 +844,14 @@ QString ProtocolD::GpiRecord(const QString &keyword,QSqlQuery *q)
 QString ProtocolD::GpoSqlFields() const
 {
   return QString("select ")+
-    "HOST_ADDRESS,"+    // 00
-    "SLOT,"+            // 01
-    "HOST_NAME,"+       // 02
-    "CODE,"+            // 03
-    "NAME,"+            // 04
-    "SOURCE_ADDRESS,"+  // 05
-    "SOURCE_SLOT "+     // 06
-    "from GPOS ";
+    "`HOST_ADDRESS`,"+    // 00
+    "`SLOT`,"+            // 01
+    "`HOST_NAME`,"+       // 02
+    "`CODE`,"+            // 03
+    "`NAME`,"+            // 04
+    "`SOURCE_ADDRESS`,"+  // 05
+    "`SOURCE_SLOT` "+     // 06
+    "from `GPOS` ";
 }
 
 
@@ -876,14 +876,14 @@ QString ProtocolD::GpoRecord(const QString &keyword,QSqlQuery *q)
 QString ProtocolD::NodeSqlFields() const
 {
   return QString("select ")+
-    "HOST_ADDRESS,"+       // 00
-    "HOST_NAME,"+          // 01
-    "DEVICE_NAME,"+        // 02
-    "SOURCE_SLOTS,"+       // 03
-    "DESTINATION_SLOTS,"+  // 04
-    "GPI_SLOTS,"+          // 05
-    "GPO_SLOTS "+          // 06
-    "from NODES ";
+    "`HOST_ADDRESS`,"+       // 00
+    "`HOST_NAME`,"+          // 01
+    "`DEVICE_NAME`,"+        // 02
+    "`SOURCE_SLOTS`,"+       // 03
+    "`DESTINATION_SLOTS`,"+  // 04
+    "`GPI_SLOTS`,"+          // 05
+    "`GPO_SLOTS` "+          // 06
+    "from `NODES` ";
 }
 
 
@@ -908,15 +908,15 @@ QString ProtocolD::NodeRecord(const QString &keyword,QSqlQuery *q) const
 QString ProtocolD::SourceSqlFields() const
 {
   return QString("select ")+
-    "HOST_ADDRESS,"+    // 00
-    "SLOT,"+            // 01
-    "HOST_NAME,"+       // 02
-    "STREAM_ADDRESS,"+  // 03
-    "NAME,"+            // 04
-    "STREAM_ENABLED,"+  // 05
-    "CHANNELS,"+        // 06
-    "BLOCK_SIZE "+      // 07
-    "from SOURCES ";
+    "`HOST_ADDRESS`,"+    // 00
+    "`SLOT`,"+            // 01
+    "`HOST_NAME`,"+       // 02
+    "`STREAM_ADDRESS`,"+  // 03
+    "`NAME`,"+            // 04
+    "`STREAM_ENABLED`,"+  // 05
+    "`CHANNELS`,"+        // 06
+    "`BLOCK_SIZE` "+      // 07
+    "from `SOURCES` ";
 }
 
 
