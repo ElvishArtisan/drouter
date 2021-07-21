@@ -653,3 +653,5 @@
 	better between core->protocols and protocols->core messages.
 	* Fixed a regression in dprotod(8) that broke 'RouteStat'
 	notification messages in Software Authority protocol.
+2021-07-21 Fred Gleason <fredg@paravelsystems.com>
+	* Added a SQL driver layer to catch and report SQL errors.
