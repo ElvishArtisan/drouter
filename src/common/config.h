@@ -2,7 +2,7 @@
 //
 // Global configuration for DRouter
 //
-//   (C) Copyright 2018 Fred Gleason <fredg@paravelsystems.com>
+//   (C) Copyright 2018-2021 Fred Gleason <fredg@paravelsystems.com>
 //
 //   This program is free software; you can redistribute it and/or modify
 //   it under the terms of the GNU General Public License version 2 as
@@ -25,7 +25,7 @@
 #include <QString>
 #include <QStringList>
 
-#include <sy/sygpio_server.h>
+#include <sy5/sygpio_server.h>
 
 #define DROUTER_CONF_FILE "/etc/drouter/drouter.conf"
 #define DROUTER_NULL_STREAM_ADDRESS QString("239.192.0.0")

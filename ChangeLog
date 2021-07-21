@@ -658,3 +658,8 @@
 2021-07-01 Fred Gleason <fredg@paravelsystems.com>
 	* Fixed a bug in drouterd(8) that caused node add and node removal
 	messages to be doubled.
+2021-07-19 Fred Gleason <fredg@paravelsystems.com>
+	* Updated Qt dependency to Qt5.
+	* Updated the Switchyard dependency to Switchyard5.
+2021-07-19 Fred Gleason <fredg@paravelsystems.com>
+	* Escaped identifiers in all SQL statements in drouterd(8).

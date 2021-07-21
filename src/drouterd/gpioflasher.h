@@ -25,8 +25,8 @@
 #include <QString>
 #include <QTimer>
 
-#include <sy/sygpio_server.h>
-#include <sy/sylwrp_client.h>
+#include <sy5/sygpio_server.h>
+#include <sy5/sylwrp_client.h>
 
 #include "config.h"
 

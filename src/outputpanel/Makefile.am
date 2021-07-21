@@ -2,7 +2,7 @@
 ##
 ## Makefile for the outputpanel(1) applet
 ##
-## (C) Copyright 2016-2017 Fred Gleason <fredg@paravelsystems.com>
+## (C) Copyright 2016-2021 Fred Gleason <fredg@paravelsystems.com>
 ##
 ##   This program is free software; you can redistribute it and/or modify
 ##   it under the terms of the GNU General Public License as
@@ -20,12 +20,12 @@
 ##
 ## Use automake to process this into a Makefile.in
 
-AM_CPPFLAGS = -Wall -DPREFIX=\"$(prefix)\" -Wno-strict-aliasing @QT4GUI_CFLAGS@ @SWITCHYARD_CFLAGS@
-MOC = @QT4_MOC@
+AM_CPPFLAGS = -Wall -DPREFIX=\"$(prefix)\" -Wno-strict-aliasing -std=c++11 -fPIC @QT5GUI_CFLAGS@ @SWITCHYARD5_CFLAGS@
+MOC = @QT_MOC@
 
 # The dependency for qt's Meta Object Compiler (moc)
 moc_%.cpp:	%.h
-	@MOC@ $< -o $@
+	$(MOC) $< -o $@
 
 
 bin_PROGRAMS = outputpanel
@@ -42,7 +42,7 @@ nodist_outputpanel_SOURCES = combobox.cpp combobox.h\
                              moc_outputpanel.cpp\
                              moc_panelwidget.cpp
 
-outputpanel_LDADD = @QT4GUI_LIBS@ @SWITCHYARD_LIBS@
+outputpanel_LDADD = @QT5GUI_LIBS@ @SWITCHYARD5_LIBS@
 
 CLEANFILES = *~\
              moc_*\

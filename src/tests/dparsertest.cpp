@@ -2,7 +2,7 @@
 //
 // dparsertest(8) routing daemon
 //
-//   (C) Copyright 2017 Fred Gleason <fredg@paravelsystems.com>
+//   (C) Copyright 2017-2021 Fred Gleason <fredg@paravelsystems.com>
 //
 //   This program is free software; you can redistribute it and/or modify
 //   it under the terms of the GNU General Public License version 2 as
@@ -25,10 +25,10 @@
 #include <QCoreApplication>
 #include <QSignalMapper>
 
-#include <sy/sycmdswitch.h>
-#include <sy/syconfig.h>
-#include <sy/syinterfaces.h>
-#include <sy/syprofile.h>
+#include <sy5/sycmdswitch.h>
+#include <sy5/syconfig.h>
+#include <sy5/syinterfaces.h>
+#include <sy5/syprofile.h>
 
 #include "dparsertest.h"
 
@@ -37,9 +37,8 @@ MainObject::MainObject(QObject *parent)
 {
   test_hostname="localhost";
 
-  SyCmdSwitch *cmd=
-    new SyCmdSwitch(qApp->argc(),qApp->argv(),"dparsertest",VERSION,DPARSERTEST_USAGE);
-  for(unsigned i=0;i<cmd->keys();i++) {
+  SyCmdSwitch *cmd=new SyCmdSwitch("dparsertest",VERSION,DPARSERTEST_USAGE);
+  for(int i=0;i<cmd->keys();i++) {
     if(cmd->key(i)=="--hostname") {
       test_hostname=cmd->value(i);
       cmd->setProcessed(i,true);

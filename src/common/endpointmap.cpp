@@ -23,7 +23,7 @@
 
 #include <QDir>
 
-#include <sy/syprofile.h>
+#include <sy5/syprofile.h>
 
 #include "endpointmap.h"
 

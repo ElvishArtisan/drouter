@@ -20,12 +20,12 @@
 ##
 ## Use automake to process this into a Makefile.in
 
-AM_CPPFLAGS = -Wall -DPREFIX=\"$(prefix)\" -Wno-strict-aliasing @QT4CLI_CFLAGS@ @SWITCHYARD_CFLAGS@ @LIBSYSTEMD_CFLAGS@
-MOC = @QT4_MOC@
+AM_CPPFLAGS = -Wall -DPREFIX=\"$(prefix)\" -Wno-strict-aliasing -std=c++11 -fPIC @QT5CLI_CFLAGS@ @SWITCHYARD5_CFLAGS@ @LIBSYSTEMD_CFLAGS@
+MOC = @QT_MOC@
 
 # The dependency for qt's Meta Object Compiler (moc)
 moc_%.cpp:	%.h
-	@MOC@ $< -o $@
+	$(MOC) $< -o $@
 
 
 sbin_PROGRAMS = dprotod\
@@ -53,7 +53,7 @@ nodist_drouterd_SOURCES = config.cpp config.h\
                           moc_ttydevice.cpp\
                           protoipc.h
 
-drouterd_LDADD = @QT4CLI_LIBS@ @SWITCHYARD_LIBS@ @LIBSYSTEMD_LIBS@
+drouterd_LDADD = @QT5CLI_LIBS@ @SWITCHYARD5_LIBS@ @LIBSYSTEMD_LIBS@
 
 dist_dprotod_SOURCES = dprotod.cpp dprotod.h\
                        protocol.cpp protocol.h\
@@ -68,7 +68,7 @@ nodist_dprotod_SOURCES = config.cpp config.h\
                          moc_protocol_d.cpp\
                          moc_protocol_sa.cpp
 
-dprotod_LDADD = @QT4CLI_LIBS@ @SWITCHYARD_LIBS@ @LIBSYSTEMD_LIBS@
+dprotod_LDADD = @QT5CLI_LIBS@ @SWITCHYARD5_LIBS@ @LIBSYSTEMD_LIBS@
 
 dist_tethertest_SOURCES = tether.cpp tether.h\
                           tethertest.cpp tethertest.h\
@@ -79,7 +79,7 @@ nodist_tethertest_SOURCES = config.cpp config.h\
                             moc_tethertest.cpp\
                             moc_ttydevice.cpp
 
-tethertest_LDADD = @QT4CLI_LIBS@ @SWITCHYARD_LIBS@ @LIBSYSTEMD_LIBS@
+tethertest_LDADD = @QT5CLI_LIBS@ @SWITCHYARD5_LIBS@ @LIBSYSTEMD_LIBS@
 
 CLEANFILES = *~\
              moc_*\

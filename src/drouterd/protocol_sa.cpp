@@ -25,7 +25,7 @@
 
 #include <QStringList>
 
-#include <sy/syrouting.h>
+#include <sy5/syrouting.h>
 
 #include "protocol_sa.h"
 
@@ -350,9 +350,9 @@ void ProtocolSa::destinationCrosspointChanged(const QHostAddress &host_addr,int 
   QSqlQuery *q;
  
   sql=RouteStatSqlFields(EndPointMap::AudioRouter)+
-    " SA_DESTINATIONS.HOST_ADDRESS=\""+host_addr.toString()+"\" && "+
-    QString().sprintf("SA_DESTINATIONS.SLOT=%d ",slotnum)+
-    "order by SA_DESTINATIONS.SOURCE_NUMBER,SA_DESTINATIONS.ROUTER_NUMBER";
+    " `SA_DESTINATIONS`.`HOST_ADDRESS`='"+host_addr.toString()+"' && "+
+    QString().sprintf("`SA_DESTINATIONS`.`SLOT`=%d ",slotnum)+
+    "order by `SA_DESTINATIONS`.`SOURCE_NUMBER`,`SA_DESTINATIONS`.`ROUTER_NUMBER`";
   q=new QSqlQuery(sql);
   while(q->next()) {
     proto_socket->write(RouteStatMessage(q).toUtf8());
@@ -368,8 +368,8 @@ void ProtocolSa::gpiCodeChanged(const QHostAddress &host_addr,int slotnum)
   QSqlQuery *q;
 
   sql=GPIStatSqlFields()+" where "+
-    "GPIS.HOST_ADDRESS=\""+host_addr.toString()+"\" && "+
-    QString().sprintf("GPIS.SLOT=%d",slotnum);
+    "`GPIS`.`HOST_ADDRESS`='"+host_addr.toString()+"' && "+
+    QString().sprintf("`GPIS`.`SLOT`=%d",slotnum);
   q=new QSqlQuery(sql);
   while(q->next()) {
     proto_socket->write(GPIStatMessage(q).toUtf8());
@@ -413,8 +413,8 @@ void ProtocolSa::gpoCodeChanged(const QHostAddress &host_addr,int slotnum)
   QSqlQuery *q;
 
   sql=GPOStatSqlFields()+" where "+
-    "GPOS.HOST_ADDRESS=\""+host_addr.toString()+"\" && "+
-    QString().sprintf("GPOS.SLOT=%d",slotnum);
+    "`GPOS`.`HOST_ADDRESS`='"+host_addr.toString()+"' && "+
+    QString().sprintf("`GPOS`.`SLOT`=%d",slotnum);
   q=new QSqlQuery(sql);
   while(q->next()) {
     proto_socket->write(GPOStatMessage(q).toUtf8());
@@ -430,9 +430,9 @@ void ProtocolSa::gpoCrosspointChanged(const QHostAddress &host_addr,int slotnum)
   QSqlQuery *q;
 
   sql=RouteStatSqlFields(EndPointMap::GpioRouter)+
-    " SA_GPOS.HOST_ADDRESS=\""+host_addr.toString()+"\" && "+
-    QString().sprintf("SA_GPOS.SLOT=%d ",slotnum)+
-    "order by SA_GPOS.SOURCE_NUMBER,SA_GPOS.ROUTER_NUMBER";
+    " `SA_GPOS`.`HOST_ADDRESS`='"+host_addr.toString()+"' && "+
+    QString().sprintf("`SA_GPOS`.`SLOT`=%d ",slotnum)+
+    "order by `SA_GPOS`.`SOURCE_NUMBER`,`SA_GPOS`.`ROUTER_NUMBER`";
   q=new QSqlQuery(sql);
   while(q->next()) {
     proto_socket->write(RouteStatMessage(q).toUtf8());
@@ -583,13 +583,13 @@ void ProtocolSa::SendSourceInfo(unsigned router)
   }
   if(map->routerType()==EndPointMap::AudioRouter) {
     sql=SourceNamesSqlFields(map->routerType())+"where "+
-      QString().sprintf("SA_SOURCES.ROUTER_NUMBER=%u ",router)+
-      "order by SA_SOURCES.SOURCE_NUMBER";
+      QString().sprintf("`SA_SOURCES`.`ROUTER_NUMBER`=%u ",router)+
+      "order by `SA_SOURCES`.`SOURCE_NUMBER`";
   }
   else {
     sql=SourceNamesSqlFields(map->routerType())+"where "+
-      QString().sprintf("SA_GPIS.ROUTER_NUMBER=%u ",router)+
-      "order by SA_GPIS.SOURCE_NUMBER";
+      QString().sprintf("`SA_GPIS`.`ROUTER_NUMBER`=%u ",router)+
+      "order by `SA_GPIS`.`SOURCE_NUMBER`";
   }
   q=new QSqlQuery(sql);
   proto_socket->write(QString().sprintf("Begin SourceNames - %d\r\n",router+1).toUtf8());
@@ -604,24 +604,24 @@ QString ProtocolSa::SourceNamesSqlFields(EndPointMap::RouterType type) const
 {
   if(type==EndPointMap::AudioRouter) {
     return QString("select ")+
-      "SA_SOURCES.SOURCE_NUMBER,"+  // 00
-      "SOURCES.NAME,"+              // 01
-      "SOURCES.HOST_ADDRESS,"+      // 02
-      "SOURCES.HOST_NAME,"+         // 03
-      "SOURCES.SLOT,"+              // 04
-      "SOURCES.STREAM_ADDRESS,"+    // 05
-      "SA_SOURCES.NAME "+           // 06
-      "from "+"SOURCES left join SA_"+"SOURCES "+
-      "on SOURCES.ID=SA_"+"SOURCES."+"SOURCE_ID ";
+      "`SA_SOURCES`.`SOURCE_NUMBER`,"+  // 00
+      "`SOURCES`.`NAME`,"+              // 01
+      "`SOURCES`.`HOST_ADDRESS`,"+      // 02
+      "`SOURCES`.`HOST_NAME`,"+         // 03
+      "`SOURCES`.`SLOT`,"+              // 04
+      "`SOURCES`.`STREAM_ADDRESS`,"+    // 05
+      "`SA_SOURCES`.`NAME` "+           // 06
+      "from "+"`SOURCES` left join `SA_SOURCES` "+
+      "on `SOURCES`.`ID`=`SA_SOURCES`."+"`SOURCE_ID` ";
   }
   return QString("select ")+
-    "SA_GPIS.SOURCE_NUMBER,"+  // 00
-    "GPIS.HOST_ADDRESS,"+      // 01
-    "GPIS.HOST_NAME,"+         // 02
-    "GPIS.SLOT,"+              // 03
-    "SA_GPIS.NAME "+           // 04
-    "from "+"GPIS left join SA_"+"GPIS "+
-    "on GPIS.ID=SA_GPIS.GPI_ID ";
+    "`SA_GPIS`.`SOURCE_NUMBER`,"+  // 00
+    "`GPIS`.`HOST_ADDRESS`,"+      // 01
+    "`GPIS`.`HOST_NAME`,"+         // 02
+    "`GPIS`.`SLOT`,"+              // 03
+    "`SA_GPIS`.`NAME` "+           // 04
+    "from "+"`GPIS` left join `SA_GPIS` "+
+    "on `GPIS`.`ID`=`SA_GPIS`.`GPI_ID` ";
 }
 
 
@@ -671,13 +671,13 @@ void ProtocolSa::SendDestInfo(unsigned router)
   proto_socket->write(">>",2);
   if(map->routerType()==EndPointMap::AudioRouter) {
     sql=DestNamesSqlFields(map->routerType())+"where "+
-      QString().sprintf("SA_DESTINATIONS.ROUTER_NUMBER=%u ",router)+
-      "order by SA_DESTINATIONS.SOURCE_NUMBER";
+      QString().sprintf("`SA_DESTINATIONS`.`ROUTER_NUMBER`=%u ",router)+
+      "order by `SA_DESTINATIONS`.`SOURCE_NUMBER`";
   }
   else {
     sql=DestNamesSqlFields(map->routerType())+"where "+
-      QString().sprintf("SA_GPOS.ROUTER_NUMBER=%u ",router)+
-      "order by SA_GPOS.SOURCE_NUMBER";
+      QString().sprintf("`SA_GPOS`.`ROUTER_NUMBER`=%u ",router)+
+      "order by `SA_GPOS`.`SOURCE_NUMBER`";
   }
   q=new QSqlQuery(sql);
   proto_socket->write(QString().sprintf("Begin DestNames - %d\r\n",router+1).toUtf8());
@@ -692,22 +692,22 @@ QString ProtocolSa::DestNamesSqlFields(EndPointMap::RouterType type) const
 {
   if(type==EndPointMap::AudioRouter) {
     return QString("select ")+
-      "SA_DESTINATIONS.SOURCE_NUMBER,"+  // 00
-      "DESTINATIONS.NAME,"+              // 01
-      "DESTINATIONS.HOST_ADDRESS,"+      // 02
-      "DESTINATIONS.HOST_NAME,"+         // 03
-      "DESTINATIONS.SLOT,"+              // 04
-      "SA_DESTINATIONS.NAME "+           // 05
-      "from DESTINATIONS left join SA_DESTINATIONS on DESTINATIONS.ID=SA_DESTINATIONS.DESTINATION_ID ";
+      "`SA_DESTINATIONS`.`SOURCE_NUMBER`,"+  // 00
+      "`DESTINATIONS`.`NAME`,"+              // 01
+      "`DESTINATIONS`.`HOST_ADDRESS`,"+      // 02
+      "`DESTINATIONS`.`HOST_NAME`,"+         // 03
+      "`DESTINATIONS`.`SLOT`,"+              // 04
+      "`SA_DESTINATIONS`.`NAME` "+           // 05
+      "from `DESTINATIONS` left join `SA_DESTINATIONS` on `DESTINATIONS`.`ID`=`SA_DESTINATIONS`.`DESTINATION_ID` ";
   }
   return QString("select ")+
-    "SA_GPOS.SOURCE_NUMBER,"+  // 00
-    "GPOS.NAME,"+              // 01
-    "GPOS.HOST_ADDRESS,"+      // 02
-    "GPOS.HOST_NAME,"+         // 03
-    "GPOS.SLOT,"+              // 04
-    "SA_GPOS.NAME "+           // 05
-    "from GPOS left join SA_GPOS on GPOS.ID=SA_GPOS.GPO_ID ";
+    "`SA_GPOS`.`SOURCE_NUMBER`,"+  // 00
+    "`GPOS`.`NAME`,"+              // 01
+    "`GPOS`.`HOST_ADDRESS`,"+      // 02
+    "`GPOS`.`HOST_NAME`,"+         // 03
+    "`GPOS`.`SLOT`,"+              // 04
+    "`SA_GPOS`.`NAME` "+           // 05
+    "from `GPOS` left join `SA_GPOS` on `GPOS`.`ID`=`SA_GPOS`.`GPO_ID` ";
 }
 
 
@@ -744,14 +744,14 @@ void ProtocolSa::SendGpiInfo(unsigned router,int input)
   }
   if(input<0) {
     sql=GPIStatSqlFields()+"where "+
-      QString().sprintf("SA_GPIS.ROUTER_NUMBER=%u ",router)+
-      "order by SA_GPIS.SOURCE_NUMBER";
+      QString().sprintf("`SA_GPIS`.`ROUTER_NUMBER`=%u ",router)+
+      "order by `SA_GPIS`.`SOURCE_NUMBER`";
   }
   else {
     sql=GPIStatSqlFields()+"where "+
-      QString().sprintf("SA_GPIS.ROUTER_NUMBER=%u && ",router)+
-      QString().sprintf("SA_GPIS.SOURCE_NUMBER=%u ",input)+
-      "order by SA_GPIS.SOURCE_NUMBER";
+      QString().sprintf("`SA_GPIS`.`ROUTER_NUMBER`=%u && ",router)+
+      QString().sprintf("`SA_GPIS`.`SOURCE_NUMBER`=%u ",input)+
+      "order by `SA_GPIS`.`SOURCE_NUMBER`";
   }
   q=new QSqlQuery(sql);
   while(q->next()) {
@@ -763,10 +763,10 @@ void ProtocolSa::SendGpiInfo(unsigned router,int input)
 QString ProtocolSa::GPIStatSqlFields() const
 {
   return QString("select ")+
-    "SA_GPIS.ROUTER_NUMBER,"+  // 00
-    "SA_GPIS.SOURCE_NUMBER,"+  // 01
-    "GPIS.CODE "+              // 02
-    "from GPIS left join SA_GPIS on GPIS.ID=SA_GPIS.GPI_ID ";
+    "`SA_GPIS`.`ROUTER_NUMBER`,"+  // 00
+    "`SA_GPIS`.`SOURCE_NUMBER`,"+  // 01
+    "`GPIS`.`CODE` "+              // 02
+    "from `GPIS` left join `SA_GPIS` on `GPIS`.`ID`=`SA_GPIS`.`GPI_ID` ";
 }
 
 
@@ -794,14 +794,14 @@ void ProtocolSa::SendGpoInfo(unsigned router,int output)
   proto_socket->write(">>",2);
   if(output<0) {
     sql=GPOStatSqlFields()+"where "+
-      QString().sprintf("SA_GPOS.ROUTER_NUMBER=%u ",router)+
-      "order by SA_GPOS.SOURCE_NUMBER";
+      QString().sprintf("`SA_GPOS`.`ROUTER_NUMBER`=%u ",router)+
+      "order by `SA_GPOS`.`SOURCE_NUMBER`";
   }
   else {
     sql=GPOStatSqlFields()+"where "+
-      QString().sprintf("SA_GPOS.ROUTER_NUMBER=%u && ",router)+
-      QString().sprintf("SA_GPOS.SOURCE_NUMBER=%u ",output)+
-      "order by SA_GPOS.SOURCE_NUMBER";
+      QString().sprintf("`SA_GPOS`.`ROUTER_NUMBER`=%u && ",router)+
+      QString().sprintf("`SA_GPOS`.`SOURCE_NUMBER`=%u ",output)+
+      "order by `SA_GPOS`.`SOURCE_NUMBER`";
   }
   q=new QSqlQuery(sql);
   while(q->next()) {
@@ -813,10 +813,10 @@ void ProtocolSa::SendGpoInfo(unsigned router,int output)
 QString ProtocolSa::GPOStatSqlFields() const
 {
   return QString("select ")+
-    "SA_GPOS.ROUTER_NUMBER,"+  // 00
-    "SA_GPOS.SOURCE_NUMBER,"+  // 01
-    "GPOS.CODE "+              // 02
-    "from GPOS left join SA_GPOS on GPOS.ID=SA_GPOS.GPO_ID ";
+    "`SA_GPOS`.`ROUTER_NUMBER`,"+  // 00
+    "`SA_GPOS`.`SOURCE_NUMBER`,"+  // 01
+    "`GPOS.CODE` "+              // 02
+    "from `GPOS` left join `SA_GPOS` on `GPOS`.`ID`=`SA_GPOS`.`GPO_ID` ";
 }
 
 
@@ -839,23 +839,23 @@ void ProtocolSa::SendRouteInfo(unsigned router,int output)
   }
   sql=RouteStatSqlFields(map->routerType());
   if(map->routerType()==EndPointMap::AudioRouter) {
-    sql+=QString().sprintf("SA_DESTINATIONS.ROUTER_NUMBER=%d ",router);
+    sql+=QString().sprintf("`SA_DESTINATIONS`.`ROUTER_NUMBER`=%d ",router);
     if(output>=0) {
-      sql+=QString().sprintf("&& SA_DESTINATIONS.SOURCE_NUMBER=%d ",output);
+      sql+=QString().sprintf("&& `SA_DESTINATIONS`.`SOURCE_NUMBER`=%d ",output);
     }
-    sql+="&& SA_SOURCES.STREAM_ADDRESS!=\""+DROUTER_NULL_STREAM_ADDRESS+"\" ";
-    sql+="&& SA_SOURCES.STREAM_ADDRESS!=\"0.0.0.0\" ";
-    sql+="&& SA_SOURCES.STREAM_ADDRESS!=\"255.255.255.255\" ";
-    sql+="&& SA_SOURCES.STREAM_ADDRESS!=\"\" ";
-    sql+="&& SA_SOURCES.STREAM_ADDRESS is not null ";
-    sql+="order by SA_DESTINATIONS.SOURCE_NUMBER";
+    sql+="&& `SA_SOURCES`.`STREAM_ADDRESS`!='"+DROUTER_NULL_STREAM_ADDRESS+"' ";
+    sql+="&& `SA_SOURCES`.`STREAM_ADDRESS`!='0.0.0.0' ";
+    sql+="&& `SA_SOURCES`.`STREAM_ADDRESS`!='255.255.255.255' ";
+    sql+="&& `SA_SOURCES`.`STREAM_ADDRESS`!='' ";
+    sql+="&& `SA_SOURCES`.`STREAM_ADDRESS` is not null ";
+    sql+="order by `SA_DESTINATIONS`.`SOURCE_NUMBER`";
   }
   else {
-    sql+=QString().sprintf("SA_GPOS.ROUTER_NUMBER=%d ",router);
+    sql+=QString().sprintf("`SA_GPOS`.`ROUTER_NUMBER`=%d ",router);
     if(output>=0) {
-      sql+=QString().sprintf("&& SA_GPOS.SOURCE_NUMBER=%d ",output);
+      sql+=QString().sprintf("&& `SA_GPOS`.`SOURCE_NUMBER`=%d ",output);
     }
-    sql+="order by SA_GPOS.SOURCE_NUMBER";
+    sql+="order by `SA_GPOS`.`SOURCE_NUMBER`";
   }
   q=new QSqlQuery(sql);
   q->first();
@@ -890,22 +890,22 @@ QString ProtocolSa::RouteStatSqlFields(EndPointMap::RouterType type)
 {
   if(type==EndPointMap::AudioRouter) {
     return QString("select ")+
-      "SA_DESTINATIONS.ROUTER_NUMBER,"+  // 00
-      "SA_DESTINATIONS.SOURCE_NUMBER,"+  // 01
-      "SA_SOURCES.SOURCE_NUMBER "+       // 02
-      "from SA_DESTINATIONS left join SA_SOURCES "+
-      "on SA_DESTINATIONS.STREAM_ADDRESS=SA_SOURCES.STREAM_ADDRESS && "+
-      "SA_SOURCES.ROUTER_NUMBER=SA_DESTINATIONS.ROUTER_NUMBER where ";
+      "`SA_DESTINATIONS`.`ROUTER_NUMBER`,"+  // 00
+      "`SA_DESTINATIONS`.`SOURCE_NUMBER`,"+  // 01
+      "`SA_SOURCES`.SOURCE_NUMBER` "+       // 02
+      "from `SA_DESTINATIONS` left join `SA_SOURCES` "+
+      "on `SA_DESTINATIONS`.`STREAM_ADDRESS`=`SA_SOURCES`.`STREAM_ADDRESS` && "+
+      "`SA_SOURCES`.`ROUTER_NUMBER`=`SA_DESTINATIONS`.`ROUTER_NUMBER` where ";
   }
   else {
     return QString("select ")+
-      "SA_GPOS.ROUTER_NUMBER,"+  // 00
-      "SA_GPOS.SOURCE_NUMBER,"+  // 01
-      "SA_GPIS.SOURCE_NUMBER "+  // 02
-      "from SA_GPOS left join SA_GPIS "+
-      "on SA_GPOS.SOURCE_ADDRESS=SA_GPIS.HOST_ADDRESS && "+
-      "SA_GPOS.SOURCE_SLOT=SA_GPIS.SLOT && "+
-      "SA_GPIS.ROUTER_NUMBER=SA_GPOS.ROUTER_NUMBER where ";
+      "`SA_GPOS`.`ROUTER_NUMBER`,"+  // 00
+      "`SA_GPOS`.`SOURCE_NUMBER`,"+  // 01
+      "`SA_GPIS`.`SOURCE_NUMBER` "+  // 02
+      "from `SA_GPOS` left join `SA_GPIS` "+
+      "on `SA_GPOS`.`SOURCE_ADDRESS`=`SA_GPIS`.`HOST_ADDRESS` && "+
+      "`SA_GPOS`.`SOURCE_SLOT`=`SA_GPIS`.`SLOT` && "+
+      "`SA_GPIS`.`ROUTER_NUMBER`=`SA_GPOS`.`ROUTER_NUMBER` where ";
   }
   return QString();
 }

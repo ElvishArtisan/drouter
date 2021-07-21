@@ -27,8 +27,8 @@
 #include <QSignalMapper>
 #include <QTcpServer>
 
-#include <sy/sylwrp_client.h>
-#include <sy/symcastsocket.h>
+#include <sy5/sylwrp_client.h>
+#include <sy5/symcastsocket.h>
 
 #include "config.h"
 #include "endpointmap.h"

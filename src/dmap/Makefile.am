@@ -2,7 +2,7 @@
 ##
 ## Makefile for the dmap(8) map generation utility
 ##
-## (C) Copyright 2017 Fred Gleason <fredg@paravelsystems.com>
+## (C) Copyright 2017-2021 Fred Gleason <fredg@paravelsystems.com>
 ##
 ##   This program is free software; you can redistribute it and/or modify
 ##   it under the terms of the GNU General Public License version 2 as
@@ -20,12 +20,12 @@
 ##
 ## Use automake to process this into a Makefile.in
 
-AM_CPPFLAGS = -Wall -DPREFIX=\"$(prefix)\" -Wno-strict-aliasing @QT4CLI_CFLAGS@ @SWITCHYARD_CFLAGS@
-MOC = @QT4_MOC@
+AM_CPPFLAGS = -Wall -DPREFIX=\"$(prefix)\" -Wno-strict-aliasing -std=c++11 -fPIC @QT5CLI_CFLAGS@ @SWITCHYARD5_CFLAGS@
+MOC = @QT_MOC@
 
 # The dependency for qt's Meta Object Compiler (moc)
 moc_%.cpp:	%.h
-	@MOC@ $< -o $@
+	$(MOC) $< -o $@
 
 
 bin_PROGRAMS = dmap
@@ -37,7 +37,7 @@ nodist_dmap_SOURCES = dparser.cpp dparser.h\
                       moc_dmap.cpp\
                       moc_dparser.cpp
 
-dmap_LDADD = @QT4CLI_LIBS@ @SWITCHYARD_LIBS@
+dmap_LDADD = @QT5CLI_LIBS@ @SWITCHYARD5_LIBS@
 
 CLEANFILES = *~\
              moc_*\
