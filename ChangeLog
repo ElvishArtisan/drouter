@@ -666,3 +666,10 @@
 2021-07-21 Fred Gleason <fredg@paravelsystems.com>
 	* Fixed a regression in 'SaParser' that threw a 'no such signal'
 	error.
+2021-07-21 Fred Gleason <fredg@paravelsystems.com>
+	* Clarified UNIX socket IPC in drouterd(8) logging to distinguish
+	better between core->protocols and protocols->core messages.
+	* Fixed a regression in dprotod(8) that broke 'RouteStat'
+	notification messages in Software Authority protocol.
+2021-07-21 Fred Gleason <fredg@paravelsystems.com>
+	* Added a SQL driver layer to catch and report SQL errors.

@@ -23,12 +23,12 @@
 
 #include <signal.h>
 
-#include <QSqlQuery>
 #include <QTcpServer>
 
 #include <sy5/sylwrp_client.h>
 
 #include "protocol.h"
+#include "sqlquery.h"
 
 class ProtocolD : public Protocol
 {
@@ -62,17 +62,17 @@ class ProtocolD : public Protocol
   void ProcessCommand(const QString &cmd);
   QString AlarmSqlFields(const QString &type,int chan) const;
   QString AlarmRecord(const QString &keyword,SyLwrpClient::MeterType port,
-		      int chan,QSqlQuery *q);
+		      int chan,SqlQuery *q);
   QString DestinationSqlFields() const;
-  QString DestinationRecord(const QString &keyword,QSqlQuery *q) const;
+  QString DestinationRecord(const QString &keyword,SqlQuery *q) const;
   QString GpiSqlFields() const;
-  QString GpiRecord(const QString &keyword,QSqlQuery *q);
+  QString GpiRecord(const QString &keyword,SqlQuery *q);
   QString GpoSqlFields() const;
-  QString GpoRecord(const QString &keyword,QSqlQuery *q);
+  QString GpoRecord(const QString &keyword,SqlQuery *q);
   QString NodeSqlFields() const;
-  QString NodeRecord(const QString &keyword,QSqlQuery *q) const;
+  QString NodeRecord(const QString &keyword,SqlQuery *q) const;
   QString SourceSqlFields() const;
-  QString SourceRecord(const QString &keyword,QSqlQuery *q);
+  QString SourceRecord(const QString &keyword,SqlQuery *q);
   QTcpSocket *proto_socket;
   QTcpServer *proto_server;
   QString proto_accum;

@@ -39,6 +39,7 @@ dist_drouterd_SOURCES = drouter.cpp drouter.h\
                         gpioflasher.cpp gpioflasher.h\
                         protoipc.h\
                         scriptengine.cpp scriptengine.h\
+                        sqlquery.cpp sqlquery.h\
                         tether.cpp tether.h\
                         ttydevice.cpp ttydevice.h
 
@@ -59,7 +60,8 @@ dist_dprotod_SOURCES = dprotod.cpp dprotod.h\
                        protocol.cpp protocol.h\
                        protocol_d.cpp protocol_d.h\
                        protocol_sa.cpp protocol_sa.h\
-                       protoipc.h
+                       protoipc.h\
+                       sqlquery.cpp sqlquery.h
 
 nodist_dprotod_SOURCES = config.cpp config.h\
                          endpointmap.cpp endpointmap.h\

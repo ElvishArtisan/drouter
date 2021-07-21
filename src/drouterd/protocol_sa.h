@@ -23,13 +23,13 @@
 
 #include <signal.h>
 
-#include <QSqlQuery>
 #include <QTcpServer>
 
 #include <sy5/sylwrp_client.h>
 
 #include "endpointmap.h"
 #include "protocol.h"
+#include "sqlquery.h"
 
 class ProtocolSa : public Protocol
 {
@@ -63,19 +63,19 @@ class ProtocolSa : public Protocol
   void ActivateSnapshot(unsigned router,const QString &snapshot_name);
   void SendSourceInfo(unsigned router);
   QString SourceNamesSqlFields(EndPointMap::RouterType type) const;
-  QString SourceNamesMessage(EndPointMap::RouterType type,QSqlQuery *q);
+  QString SourceNamesMessage(EndPointMap::RouterType type,SqlQuery *q);
   void SendDestInfo(unsigned router);
   QString DestNamesSqlFields(EndPointMap::RouterType type) const;
-  QString DestNamesMessage(EndPointMap::RouterType type,QSqlQuery *q);
+  QString DestNamesMessage(EndPointMap::RouterType type,SqlQuery *q);
   void SendGpiInfo(unsigned router,int input);
   QString GPIStatSqlFields() const;
-  QString GPIStatMessage(QSqlQuery *q);
+  QString GPIStatMessage(SqlQuery *q);
   void SendGpoInfo(unsigned router,int output);
   QString GPOStatSqlFields() const;
-  QString GPOStatMessage(QSqlQuery *q);
+  QString GPOStatMessage(SqlQuery *q);
   void SendRouteInfo(unsigned router,int output);
   QString RouteStatSqlFields(EndPointMap::RouterType type);
-  QString RouteStatMessage(QSqlQuery *q);
+  QString RouteStatMessage(SqlQuery *q);
   void ProcessCommand(const QString &cmd);
   void LoadMaps();
   void LoadHelp();
