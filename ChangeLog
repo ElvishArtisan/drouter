@@ -655,3 +655,5 @@
 	notification messages in Software Authority protocol.
 2021-07-21 Fred Gleason <fredg@paravelsystems.com>
 	* Added a SQL driver layer to catch and report SQL errors.
+2021-07-21 Fred Gleason <fredg@paravelsystems.com>
+	* Removed dead code from drouterd(8).

@@ -32,7 +32,6 @@
 #include <QSocketNotifier>
 #include <QSqlDatabase>
 #include <QSqlError>
-//#include <QSqlQuery>
 #include <QVariant>
 
 #include <sy5/syconfig.h>
@@ -307,14 +306,6 @@ void DRouter::nodeConnectedData(unsigned id,bool state)
 	QString().sprintf("`CHANNELS`=%u,",lwrp->srcChannels(i))+
 	QString().sprintf("`BLOCK_SIZE`=%u",lwrp->srcPacketSize(i));
       last_id=SqlQuery::run(sql).toInt();
-      /*
-      sql=QString("select last_insert_id() from `SOURCES`");
-      q=new QSqlQuery(sql);
-      if(q->first()) {
-	last_id=q->value(0).toInt();
-      }
-      delete q;
-      */
       for(QMap<int,EndPointMap *>::const_iterator it=drouter_maps.begin();it!=drouter_maps.end();it++) {
 	if(it.value()->routerType()==EndPointMap::AudioRouter) {
 	  if((endpt=it.value()->endPoint(EndPointMap::Input,QHostAddress(id).toString(),i))>=0) {
@@ -345,15 +336,6 @@ void DRouter::nodeConnectedData(unsigned id,bool state)
 	"`NAME`='"+SqlQuery::escape(lwrp->dstName(i))+"',"+
 	QString().sprintf("`CHANNELS`=%u",lwrp->dstChannels(i));
       last_id=SqlQuery::run(sql).toInt();
-      /*
-      delete q;
-      sql=QString("select last_insert_id() from `DESTINATIONS`");
-      q=new QSqlQuery(sql);
-      if(q->first()) {
-	last_id=q->value(0).toInt();
-      }
-      delete q;
-      */
       for(QMap<int,EndPointMap *>::const_iterator it=drouter_maps.begin();it!=drouter_maps.end();it++) {
 	if(it.value()->routerType()==EndPointMap::AudioRouter) {
 	  if((endpt=it.value()->endPoint(EndPointMap::Output,QHostAddress(id).toString(),i))>=0) {
@@ -381,15 +363,6 @@ void DRouter::nodeConnectedData(unsigned id,bool state)
 	"`HOST_NAME`='"+SqlQuery::escape(lwrp->hostName())+"',"+
 	"`CODE`='"+lwrp->gpiBundle(i)->code()+"'";
       last_id=SqlQuery::run(sql).toInt();
-      /*
-      delete q;
-      sql=QString("select last_insert_id() from `GPIS`");
-      q=new QSqlQuery(sql);
-      if(q->first()) {
-	last_id=q->value(0).toInt();
-      }
-      delete q;
-      */
       for(QMap<int,EndPointMap *>::const_iterator it=drouter_maps.begin();it!=drouter_maps.end();it++) {
 	if(it.value()->routerType()==EndPointMap::GpioRouter) {
 	  if((endpt=it.value()->endPoint(EndPointMap::Input,QHostAddress(id).toString(),i))>=0) {
@@ -422,15 +395,6 @@ void DRouter::nodeConnectedData(unsigned id,bool state)
 	"`SOURCE_ADDRESS`='"+lwrp->gpo(i)->sourceAddress().toString()+"',"+
 	QString().sprintf("`SOURCE_SLOT`=%d",lwrp->gpo(i)->sourceSlot());
       last_id=SqlQuery::run(sql).toInt();
-      /*
-      delete q;
-      sql=QString("select last_insert_id() from `GPOS`");
-      q=new QSqlQuery(sql);
-      if(q->first()) {
-	last_id=q->value(0).toInt();
-      }
-      delete q;
-      */
       for(QMap<int,EndPointMap *>::const_iterator it=drouter_maps.begin();it!=drouter_maps.end();it++) {
 	if(it.value()->routerType()==EndPointMap::GpioRouter) {
 	  if((endpt=it.value()->endPoint(EndPointMap::Output,QHostAddress(id).toString(),i))>=0) {
