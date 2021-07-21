@@ -730,7 +730,7 @@ void SaParser::MakeSocket()
   }
   sa_socket=new QTcpSocket(this);
   connect(sa_socket,SIGNAL(connected()),this,SLOT(connectedData()));
-  connect(sa_socket,SIGNAL(connectionClosed()),
+  connect(sa_socket,SIGNAL(disconnected()),
 	  this,SLOT(connectionClosedData()));
   connect(sa_socket,SIGNAL(readyRead()),this,SLOT(readyReadData()));
   connect(sa_socket,SIGNAL(error(QAbstractSocket::SocketError)),

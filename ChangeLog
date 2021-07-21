@@ -663,3 +663,6 @@
 	* Updated the Switchyard dependency to Switchyard5.
 2021-07-19 Fred Gleason <fredg@paravelsystems.com>
 	* Escaped identifiers in all SQL statements in drouterd(8).
+2021-07-21 Fred Gleason <fredg@paravelsystems.com>
+	* Fixed a regression in 'SaParser' that threw a 'no such signal'
+	error.
