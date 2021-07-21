@@ -663,7 +663,7 @@ QString ProtocolSa::RouteStatSqlFields(EndPointMap::RouterType type)
     return QString("select ")+
       "`SA_DESTINATIONS`.`ROUTER_NUMBER`,"+  // 00
       "`SA_DESTINATIONS`.`SOURCE_NUMBER`,"+  // 01
-      "`SA_SOURCES`.SOURCE_NUMBER` "+       // 02
+      "`SA_SOURCES`.`SOURCE_NUMBER` "+       // 02
       "from `SA_DESTINATIONS` left join `SA_SOURCES` "+
       "on `SA_DESTINATIONS`.`STREAM_ADDRESS`=`SA_SOURCES`.`STREAM_ADDRESS` && "+
       "`SA_SOURCES`.`ROUTER_NUMBER`=`SA_DESTINATIONS`.`ROUTER_NUMBER` where ";

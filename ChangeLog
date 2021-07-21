@@ -648,3 +648,8 @@
 	* Updated the Switchyard dependency to Switchyard5.
 2021-07-19 Fred Gleason <fredg@paravelsystems.com>
 	* Escaped identifiers in all SQL statements in drouterd(8).
+2021-07-21 Fred Gleason <fredg@paravelsystems.com>
+	* Clarified UNIX socket IPC in drouterd(8) logging to distinguish
+	better between core->protocols and protocols->core messages.
+	* Fixed a regression in dprotod(8) that broke 'RouteStat'
+	notification messages in Software Authority protocol.

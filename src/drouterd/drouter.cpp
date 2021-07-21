@@ -888,7 +888,7 @@ bool DRouter::ProcessIpcCommand(int sock,const QString &cmd)
 {
   bool ok=false;
 
-  syslog(LOG_DEBUG,"received IPC cmd: \"%s\" from connection %d",
+  syslog(LOG_DEBUG,"received proto->core IPC cmd: \"%s\" from connection %d",
 	 (const char *)cmd.toUtf8(),sock);
 
   if(cmd=="QUIT") {

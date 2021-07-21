@@ -304,7 +304,7 @@ void Protocol::quit()
 
 void Protocol::ProcessIpcCommand(const QString &cmd)
 {
-  logIpc("received IPC cmd: \""+cmd+"\"");
+  logIpc("received core->proto IPC cmd: \""+cmd+"\"");
 
   QStringList cmds=cmd.split(":");
 
