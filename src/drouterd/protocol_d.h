@@ -49,6 +49,7 @@ class ProtocolD : public Protocol
   void nodeChanged(const QHostAddress &host_addr);
   void sourceChanged(const QHostAddress &host_addr,int slotnum);
   void destinationChanged(const QHostAddress &host_addr,int slotnum);
+  void destinationCrosspointChanged(const QHostAddress &host_addr,int slotnum);
   void gpiChanged(const QHostAddress &host_addr,int slotnum);
   void gpoChanged(const QHostAddress &host_addr,int slotnum);
   void clipChanged(const QHostAddress &host_addr,int slotnum,

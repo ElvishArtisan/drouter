@@ -675,3 +675,7 @@
 	* Added a SQL driver layer to catch and report SQL errors.
 2021-07-21 Fred Gleason <fredg@paravelsystems.com>
 	* Removed dead code from drouterd(8).
+2021-07-21 Fred Gleason <fredg@paravelsystems.com>
+	* Fixed a bug in drouterd(8) that caused changes in the name of
+	a destination to generate 'DestNameChanged' messages in Software
+	Authority protocol.

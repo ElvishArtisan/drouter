@@ -148,7 +148,7 @@ void ProtocolSa::disconnectedData()
 void ProtocolSa::nodeAdded(const QHostAddress &host_addr)
 {
   QString sql;
-  QSqlQuery *q=NULL;
+  SqlQuery *q=NULL;
 
   if(proto_dynamic_endpoints_subscribed) {
 
@@ -168,7 +168,7 @@ void ProtocolSa::nodeAdded(const QHostAddress &host_addr)
       "on SOURCES.ID=SA_"+"SOURCES."+"SOURCE_ID where "+
       "SA_SOURCES.HOST_ADDRESS=\""+host_addr.toString()+"\" "+
       "order by SA_SOURCES.ROUTER_NUMBER,SA_SOURCES.SLOT ";
-    q=new QSqlQuery(sql);
+    q=new SqlQuery(sql);
     while(q->next()) {
       proto_socket->write(("SourceNameAdded\t"+
 			   QString().sprintf("%d\t",1+q->value(7).toInt())+
@@ -191,7 +191,7 @@ void ProtocolSa::nodeAdded(const QHostAddress &host_addr)
       "on DESTINATIONS.ID=SA_DESTINATIONS.DESTINATION_ID where "+
       "SA_DESTINATIONS.HOST_ADDRESS=\""+host_addr.toString()+"\" "+
       "order by SA_DESTINATIONS.ROUTER_NUMBER ";
-    q=new QSqlQuery(sql);
+    q=new SqlQuery(sql);
     while(q->next()) {
       proto_socket->write(("DestNameAdded\t"+
 			   QString().sprintf("%d\t",1+q->value(6).toInt())+
@@ -213,7 +213,7 @@ void ProtocolSa::nodeAdded(const QHostAddress &host_addr)
       "on GPIS.ID=SA_GPIS.GPI_ID where "+
       "SA_GPIS.HOST_ADDRESS=\""+host_addr.toString()+"\" "+
       "order by SA_GPIS.ROUTER_NUMBER,SA_GPIS.SLOT ";
-    q=new QSqlQuery(sql);
+    q=new SqlQuery(sql);
     while(q->next()) {
       proto_socket->write(("SourceNameAdded\t"+
 			   QString().sprintf("%d\t",1+q->value(5).toInt())+
@@ -236,7 +236,7 @@ void ProtocolSa::nodeAdded(const QHostAddress &host_addr)
       "SA_GPOS.HOST_ADDRESS=\""+host_addr.toString()+"\" "+
       "order by SA_GPOS.ROUTER_NUMBER,SA_GPOS.SLOT ";
     //syslog(LOG_NOTICE,"SQL: %s\n",sql.toUtf8().constData());
-    q=new QSqlQuery(sql);
+    q=new SqlQuery(sql);
     while(q->next()) {
       proto_socket->write(("DestNameAdded\t"+
 			   QString().sprintf("%d\t",1+q->value(6).toInt())+
@@ -285,7 +285,7 @@ void ProtocolSa::nodeChanged(const QHostAddress &host_addr)
 void ProtocolSa::sourceChanged(const QHostAddress &host_addr,int slotnum)
 {
   QString sql;
-  QSqlQuery *q=NULL;
+  SqlQuery *q=NULL;
 
   if(proto_dynamic_endpoints_subscribed) {
     sql=QString("select ")+
@@ -303,7 +303,7 @@ void ProtocolSa::sourceChanged(const QHostAddress &host_addr,int slotnum)
       QString().sprintf("SA_SOURCES.SLOT=%d ",slotnum)+
       "order by SA_SOURCES.ROUTER_NUMBER ";
     //    printf("SQL: %s\n",sql.toUtf8().constData());
-    q=new QSqlQuery(sql);
+    q=new SqlQuery(sql);
     while(q->next()) {
       proto_socket->write(("SourceNameChanged\t"+
 			   QString().sprintf("%d\t",1+q->value(7).toInt())+
@@ -317,7 +317,7 @@ void ProtocolSa::sourceChanged(const QHostAddress &host_addr,int slotnum)
 void ProtocolSa::destinationChanged(const QHostAddress &host_addr,int slotnum)
 {
   QString sql;
-  QSqlQuery *q=NULL;
+  SqlQuery *q=NULL;
 
   if(proto_dynamic_endpoints_subscribed) {
     sql=QString("select ")+
@@ -333,7 +333,7 @@ void ProtocolSa::destinationChanged(const QHostAddress &host_addr,int slotnum)
       "SA_DESTINATIONS.HOST_ADDRESS=\""+host_addr.toString()+"\" && "+
       QString().sprintf("SA_DESTINATIONS.SLOT=%d ",slotnum)+
       "order by SA_DESTINATIONS.ROUTER_NUMBER ";
-    q=new QSqlQuery(sql);
+    q=new SqlQuery(sql);
     while(q->next()) {
       proto_socket->write(("DestNameChanged\t"+
 			   QString().sprintf("%d\t",1+q->value(6).toInt())+
@@ -382,7 +382,7 @@ void ProtocolSa::gpiCodeChanged(const QHostAddress &host_addr,int slotnum)
 void ProtocolSa::gpoChanged(const QHostAddress &host_addr,int slotnum)
 {
   QString sql;
-  QSqlQuery *q=NULL;
+  SqlQuery *q=NULL;
 
   sql=QString("select ")+
     "SA_GPOS.SOURCE_NUMBER,"+  // 00
@@ -397,7 +397,7 @@ void ProtocolSa::gpoChanged(const QHostAddress &host_addr,int slotnum)
     QString().sprintf("SA_GPOS.SLOT=%d ",slotnum)+
     "order by SA_GPOS.ROUTER_NUMBER,SA_GPOS.SLOT ";
     //syslog(LOG_NOTICE,"SQL: %s\n",sql.toUtf8().constData());
-  q=new QSqlQuery(sql);
+  q=new SqlQuery(sql);
   while(q->next()) {
     proto_socket->write(("DestNameChanged\t"+
 			 QString().sprintf("%d\t",1+q->value(6).toInt())+

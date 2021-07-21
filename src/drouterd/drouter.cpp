@@ -550,8 +550,10 @@ void DRouter::destinationChangedData(unsigned id,int slotnum,const SyNode &node,
     NotifyProtocols("DSTX",QHostAddress(id).toString()+
 		    QString().sprintf(":%u",slotnum));
   }
-  NotifyProtocols("DST",QHostAddress(id).toString()+
-		  QString().sprintf(":%u",slotnum));
+  else {
+    NotifyProtocols("DST",QHostAddress(id).toString()+
+		    QString().sprintf(":%u",slotnum));
+  }
 }
 
 

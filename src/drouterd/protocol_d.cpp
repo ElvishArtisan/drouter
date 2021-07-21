@@ -296,6 +296,13 @@ void ProtocolD::destinationChanged(const QHostAddress &host_addr,int slotnum)
 }
 
 
+void ProtocolD::destinationCrosspointChanged(const QHostAddress &host_addr,
+					     int slotnum)
+{
+  destinationChanged(host_addr,slotnum);
+}
+
+
 void ProtocolD::gpiChanged(const QHostAddress &host_addr,int slotnum)
 {
   QString sql;
