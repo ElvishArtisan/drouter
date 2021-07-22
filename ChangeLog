@@ -657,3 +657,6 @@
 	* Added a SQL driver layer to catch and report SQL errors.
 2021-07-21 Fred Gleason <fredg@paravelsystems.com>
 	* Removed dead code from drouterd(8).
+2021-07-22 Fred Gleason <fredg@paravelsystems.com>
+	* Fixed a bug that would cause dprotod(8) to segfault when the
+	'RouteStat' command was given with no arguments.

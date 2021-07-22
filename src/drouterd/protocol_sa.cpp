@@ -835,21 +835,29 @@ void ProtocolSa::ProcessCommand(const QString &cmd)
   }
 
   if(cmds[0].toLower()=="routestat") {
-    cardnum=cmds[1].toUInt(&ok);
-    if(ok) {
-      if(cmds.size()==2) {
-	SendRouteInfo(cardnum-1,-1);
+    if((cmds.size()==2)||(cmds.size()==3)) {
+      cardnum=cmds[1].toUInt(&ok);
+      if(ok) {
+	if(cmds.size()==2) {
+	  SendRouteInfo(cardnum-1,-1);
+	}
+	if(cmds.size()==3) {
+	  input=cmds[2].toUInt(&ok);
+	  if(ok) {
+	    SendRouteInfo(cardnum-1,input-1);
+	  }
+	  else {
+	    proto_socket->write("Error\r\n");
+	  }
+	}
       }
       else {
-	input=cmds[2].toUInt(&ok);
-	if(ok) {
-	  SendRouteInfo(cardnum-1,input-1);
-	}
+	proto_socket->write(QString("Error - Bay Does Not exist.\r\n").
+			    toUtf8());
       }
     }
     else {
-      proto_socket->write(QString("Error - Bay Does Not exist.\r\n").
-			  toUtf8());
+      proto_socket->write("Error\r\n");
     }
     proto_socket->write(">>",2);
   }
