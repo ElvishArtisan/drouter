@@ -660,3 +660,6 @@
 2021-07-22 Fred Gleason <fredg@paravelsystems.com>
 	* Fixed a bug that would cause dprotod(8) to segfault when the
 	'RouteStat' command was given with no arguments.
+2021-07-22 Fred Gleason <fredg@paravelsystems.com>
+	* Documented the Drouter implementation of Software Authority
+	Protocol in 'docs/protcol_sa.xml'.

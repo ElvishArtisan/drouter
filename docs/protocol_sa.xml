@@ -1,0 +1,681 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<article xmlns="http://docbook.org/ns/docbook" version="5.0">
+<info>
+  <title>Software Authority Protocol</title>
+  <subtitle>TCP/IP Protocol for controlling endpoint routers</subtitle>
+  <edition>0.0.0</edition>
+  <author>
+    <personname>
+      <firstname>Fred</firstname>
+      <surname>Gleason</surname>
+      <email>fredg@paravelsystems.com</email>
+    </personname>
+  </author>
+</info>
+
+<sect1 id="sect.overview">
+  <title>Overview</title>
+  <para>
+    Messages to the Software Authority routing service are by means of a
+    TCP SOCK_STREAM connection to TCP port 9500 on the host server.
+  </para>
+  <sect2 id="sect.overview.commands">
+    <title>Protocol Command Syntax</title>
+    <para>
+      Commands from a control client to the service have the following general
+      syntax:
+    </para>
+    <para>
+      <replaceable>cmd-phrase</replaceable> [<replaceable>arg</replaceable>] [<replaceable>...</replaceable>]<userinput>CR/LF</userinput>
+    </para>
+    <variablelist>
+      <varlistentry>
+	<term>
+	  <replaceable>cmd-phrase</replaceable>
+	</term>
+	<listitem>
+	  <para>
+	    A single phrase, consisting of one or more &quot;camel-case&quot;
+	    words; containing no whitespace, case-insensitive.
+	  </para>
+	</listitem>
+      </varlistentry>
+      <varlistentry>
+	<term>
+	  <replaceable>arg</replaceable>
+	</term>
+	<listitem>
+	  <para>
+	    Zero or more arguments, delimited by a 
+	    <userinput>space</userinput> character (ASCII 32).
+	  </para>
+	</listitem>
+      </varlistentry>
+      <varlistentry>
+	<term>
+	  <userinput>CR/LF</userinput>
+	</term>
+	<listitem>
+	  <para>
+	    The ASCII character <userinput>CR</userinput> (13) followed by
+	    <userinput>LF</userinput> (10).
+	  </para>
+	</listitem>
+      </varlistentry>
+    </variablelist>
+  </sect2>
+  <sect2 id="sect.overview.responses">
+    <title>Protocol Response Syntax</title>
+    <para>
+      Responses from the service to the control client take one of two
+      possible forms:
+    </para>
+    <sect3 id="sect.overview.responses.state_updates">
+      <title>State Updates</title>
+      <para>
+	Single line message communicating a change of state, with the syntax:
+      </para>
+    <para>
+      <replaceable>resp-phrase</replaceable> [<replaceable>arg</replaceable>] [<replaceable>...</replaceable>]<userinput>CR/LF</userinput>
+    </para>
+    <variablelist>
+      <varlistentry>
+	<term>
+	  <replaceable>resp-phrase</replaceable>
+	</term>
+	<listitem>
+	  <para>
+	    A single phrase, consisting of one or more &quot;camel-case&quot;
+	    words; containing no whitespace.
+	  </para>
+	</listitem>
+      </varlistentry>
+      <varlistentry>
+	<term>
+	  <replaceable>arg</replaceable>
+	</term>
+	<listitem>
+	  <para>
+	    Zero or more arguments, delimited by a 
+	    <userinput>space</userinput> character (ASCII 32).
+	  </para>
+	</listitem>
+      </varlistentry>
+      <varlistentry>
+	<term>
+	  <userinput>CR/LF</userinput>
+	</term>
+	<listitem>
+	  <para>
+	    The ASCII character <userinput>CR</userinput> (13) followed by
+	    <userinput>LF</userinput> (10).
+	  </para>
+	</listitem>
+      </varlistentry>
+    </variablelist>
+    </sect3>
+    <sect3 id="sect.overview.responses.lists">
+      <title>Lists</title>
+      <para>
+	Multi-line messages containing a list of multiple attributes.
+	Lists are only sent in response to a command requesting them, and
+	have the general format:
+      </para>
+      <programlisting>
+<computeroutput>Begin</computeroutput> <replaceable>cmd-phrase</replaceable> [- <replaceable>cmd-arg</replaceable>]<computeroutput>CR/LF</computeroutput>
+    <replaceable>param1</replaceable><computeroutput>HT</computeroutput><replaceable>param2</replaceable><computeroutput>HT</computeroutput>[<replaceable>...</replaceable>]<computeroutput>CR/LF</computeroutput>
+<computeroutput>End</computeroutput> <replaceable>cmd-phrase</replaceable> [- <replaceable>cmd-arg</replaceable>]<computeroutput>CR/LF</computeroutput>
+      </programlisting>
+      <para>
+	Where:
+      </para>
+      <variablelist>
+	<varlistentry>
+	  <term><replaceable>cmd-phrase</replaceable></term>
+	  <listitem>
+	    <para>
+	      The command phrase issued by the client, consisting of one or
+	      more &quot;camel-case&quot; words; containing no whitespace.
+	    </para>
+	  </listitem>
+	</varlistentry>
+	<varlistentry>
+	  <term><replaceable>cmd-arg</replaceable></term>
+	  <listitem>
+	    <para>
+	      An optional argument, provided by the command from the client.
+	    </para>
+	  </listitem>
+	</varlistentry>
+	<varlistentry>
+	  <term>
+	    <userinput>HT</userinput>
+	  </term>
+	  <listitem>
+	    <para>
+	      The ASCII character <userinput>HT</userinput> [horizontal tab]
+	      (9).
+	    </para>
+	  </listitem>
+	</varlistentry>
+	<varlistentry>
+	  <term>
+	    <userinput>CR/LF</userinput>
+	  </term>
+	  <listitem>
+	    <para>
+	      The ASCII character <userinput>CR</userinput> (13) followed by
+	      <userinput>LF</userinput> (10).
+	    </para>
+	  </listitem>
+	</varlistentry>
+      </variablelist>
+      <para>
+	A <computeroutput>Begin</computeroutput>/<computeroutput>End</computeroutput>
+	block contains zero or more lines, each line consisting of
+	<computeroutput>HT</computeroutput> delimited records.
+      </para>
+    </sect3>
+  </sect2>
+</sect1>
+
+<sect1 id="sect.connection_management">
+  <title>Connection Management</title>
+  <para>
+    Messages for managing connections to the service.
+  </para>
+  <sect2 id="sect.connection_management.exit">
+    <title>Exit</title>
+    <para>
+      <command>Exit</command>
+    </para>
+    <para>
+      Drop the TCP connection and end the session.
+    </para>
+  </sect2>
+  <sect2 id="sect.connection_management.login">
+    <title>Login</title>
+    <para>
+      <command>Login</command> <replaceable>user-name</replaceable> <replaceable>password</replaceable>
+    </para>
+    <para>
+      Authenticate to the service.
+    </para>
+    <note>
+      On the Drouter system, the <command>Login</command> command does nothing,
+      and will accept any combination of <replaceable>user-name</replaceable>
+      and <replaceable>password</replaceable> as being valid. It is provided
+      strictly for compatibility with clients designed to use PathFinder.
+    </note>
+  </sect2>
+  <sect2 id="sect.connection_management.quit">
+    <title>Quit</title>
+    <para>
+      <command>Quit</command>
+    </para>
+    <para>
+      Drop the TCP connection and end the session.
+    </para>
+  </sect2>
+</sect1>
+
+<sect1 id="sect.configuration_discovery">
+  <title>Configuration Discovery</title>
+  <para>
+    Messages for interrogating the system about its configuration. These
+    commands all return list-type responses.
+  </para>
+  <sect2 id="sect.configuration_discovery.list_destination_names">
+    <title>List Destination Names [DestNames]</title>
+    <para>
+      <command>DestNames</command> <replaceable>router-num</replaceable>
+    </para>
+    <para>
+      Return a list of destination endpoints on the specified router.
+    </para>
+    <para>
+      Returns:
+    </para>
+    <programlisting>
+Begin DestNames - <replaceable>router-num</replaceable>
+    <replaceable>endpt-num</replaceable> <replaceable>short-name</replaceable> <replaceable>long-name</replaceable> <replaceable>node-addr</replaceable> <replaceable>node-name</replaceable> <replaceable>node-slot</replaceable>
+End DestNames - <replaceable>router-num</replaceable>
+    </programlisting>
+    <para>
+      Example:
+    </para>
+    <programlisting>
+>>DestNames 2
+Begin DestNames - 2
+    1   Mackie 3/4   Mackie 3/4 ON FRED-XNODE   172.30.4.211   FRED-XNODE   1
+    2   Mackie 5/6   Mackie 5/6 ON FRED-XNODE   172.30.4.211   FRED-XNODE   2
+    3   Delta 1/2   Delta 1/2 ON FRED-XNODE   172.30.4.211   FRED-XNODE   3
+    9   PGM 4   PGM 4 ON RDVIRT-SERV   172.30.4.212   RDVIRT-SERV   1
+    10  PGM 3   PGM 3 ON RDVIRT-SERV   172.30.4.212   RDVIRT-SERV   2
+End DestNames - 2
+    </programlisting>
+  </sect2>
+  <sect2 id="sect.configuration_discovery.list_router_names">
+    <title>List Router Names [RouterNames]</title>
+    <para>
+      <command>RouterNames</command>
+    </para>
+    <para>
+      Return a list of routers configured on this system.
+    </para>
+    <para>
+      Returns:
+    </para>
+    <programlisting>
+Begin RouterNames
+    <replaceable>router-num</replaceable> <replaceable>router-name</replaceable>
+End RouterNames
+    </programlisting>
+    <para>
+      Example:
+    </para>
+    <programlisting>
+>>RouterNames
+Begin RouterNames
+    1 RFA-ALL
+    2 Fred-Test
+    3 Fred-GPIO-Test
+    4 RFA_AIR_MC
+    7 Rivendell-Test
+    9 GPIO
+    11 RFA_AIRPLAYS_BLUE
+    12 RFA_AIRPLAYS_GOLD
+End RouterNames
+    </programlisting>
+  </sect2>
+
+  <sect2 id="sect.configuration_discovery.list_snapshots">
+    <title>List Snapshots [SnapShots]</title>
+    <para>
+      <command>SnapShots</command> <replaceable>router-num</replaceable>
+    </para>
+    <para>
+      Return a list of snapshots on the specified router.
+    </para>
+    <para>
+      Returns:
+    </para>
+    <programlisting>
+Begin SnapshotNames - <replaceable>router-num</replaceable>
+    <replaceable>snapshot-name</replaceable>
+End SourceNames - <replaceable>router-num</replaceable>
+    </programlisting>
+    <para>
+      Example:
+    </para>
+    <programlisting>
+>>SnapshotNames 4
+Begin SnapshotNames - 4
+    BUR from FEED
+    BUR from Studio 11
+    TIB from MC
+End SnapshotNames - 4
+    </programlisting>
+  </sect2>
+
+  <sect2 id="sect.configuration_discovery.list_source_names">
+    <title>List Source Names [SourceNames]</title>
+    <para>
+      <command>SourceNames</command> <replaceable>router-num</replaceable>
+    </para>
+    <para>
+      Return a list of source endpoints on the specified router.
+    </para>
+    <para>
+      Returns:
+    </para>
+    <programlisting>
+Begin SourceNames - <replaceable>router-num</replaceable>
+    <replaceable>endpt-num</replaceable> <replaceable>short-name</replaceable> <replaceable>long-name</replaceable> <replaceable>node-addr</replaceable> <replaceable>node-name</replaceable> <replaceable>node-slot</replaceable> <replaceable>src-num</replaceable> <replaceable>stream-addr</replaceable>
+End SourceNames - <replaceable>router-num</replaceable>
+    </programlisting>
+    <para>
+      Example:
+    </para>
+    <programlisting>
+>>SourceNames 2
+Begin SourceNames - 2
+    1   Mackie Main   Mackie Main ON FRED-XNODE   172.30.4.211   FRED-XNODE   1   30001   239.192.117.49
+    2   SRC 2   SRC 2 ON FRED-XNODE   172.30.4.211   FRED-XNODE   2   30002   239.192.117.50
+    9   Rivenberry   Rivenberry ON RDVIRT-SERV   172.30.4.212   RDVIRT-SERV   1   30301   239.192.118.93
+    10  SRC 2   SRC 2 ON RDVIRT-SERV   172.30.4.212   RDVIRT-SERV   2   30302   239.192.118.94
+End SourceNames - 2
+    </programlisting>
+  </sect2>
+
+</sect1>
+
+<sect1 id="sect.state_discovery">
+  <title>State Discovery</title>
+  <para>
+    Messages for interrogating the system about its current state. These
+    commands all return single-line style responses.
+  </para>
+  <sect2 id="sect.state_discovery.get_crosspoint_route_state">
+    <title>Get Crosspoint Route State [RouteStat]</title>
+    <para>
+      <command>RouteStat</command> <replaceable>router-num</replaceable> [<replaceable>endpt-num</replaceable>]
+    </para>
+    <para>
+      If the <replaceable>endpt-num</replaceable> argument is omitted,
+      the system will send <computeroutput>RouteStat</computeroutput>
+      messages for <emphasis>all</emphasis> of the destinations that belong
+      to the specified <replaceable>router-num</replaceable>.
+    </para>
+    <para>
+      Interrogate one or more destinations for their connected source. Returns
+      messages of the following form:
+    </para>
+    <para>
+      <computeroutput>RouteStat</computeroutput> <replaceable>router-num</replaceable> <replaceable>dest-endpt-num</replaceable> <replaceable>src-endpt-num</replaceable> <replaceable>lock-active</replaceable>
+    </para>
+    <note>
+      The <replaceable>lock-active</replaceable> field will
+      <emphasis>always</emphasis> be &quot;False&quot; on Drouter as
+      Drouter does not support the notion of locking routes.
+    </note>
+    <para>
+      A returned value of &quot;0&quot; for
+      <replaceable>src-endpt-num</replaceable>
+      indicates that the respective destination is either disconnected, or
+      connected to a source that is not a member of the specified
+      <replaceable>router-num</replaceable>.
+    </para>
+    <para>
+      Example (single destination):
+    </para>
+    <programlisting>
+>>RouteStat 2 2
+RouteStat 2 2 17 False
+    </programlisting>
+    <para>
+      Example (entire router):
+    </para>
+    <programlisting>
+>>RouteStat 2
+RouteStat 2 1 17 False
+RouteStat 2 2 2 False
+RouteStat 2 3 0 False
+RouteStat 2 9 1 False
+RouteStat 2 10 1 False
+    </programlisting>
+  </sect2>
+
+  <sect2 id="sect.state_discovery.get_general_purpose_input_gpi_state">
+    <title>Get General Purpose Input (GPI) State [GPIStat]</title>
+    <para>
+      <command>GPIStat</command> <replaceable>router-num</replaceable> [<replaceable>endpt-num</replaceable>]
+    </para>
+    <para>
+      If the <replaceable>endpt-num</replaceable> argument is omitted,
+      the system will send <computeroutput>GPIStat</computeroutput>
+      messages for <emphasis>all</emphasis> of the sources that belong
+      to the specified <replaceable>router-num</replaceable>.
+    </para>
+    <para>
+      Interrogate one or more sources for their GPI state. Returns
+      messages of the following form:
+    </para>
+    <para>
+      <computeroutput>GPIStat</computeroutput> <replaceable>router-num</replaceable> <replaceable>endpt-num</replaceable> <replaceable>state-str</replaceable>
+    </para>
+    <para>
+      The returned <replaceable>state-str</replaceable> will be a five
+      character string indicating the low (<computeroutput>l</computeroutput>)
+      or high (<computeroutput>h</computeroutput>) state of the respective
+      GPI source.
+    </para>
+    <note>
+      An error will be returned if the specified
+      <replaceable>router-num</replaceable> is not a GPIO router.
+    </note>
+    <para>
+      Example (single source):
+    </para>
+    <programlisting>
+>>GPIStat 3 11
+GPIStat 3 11 lhlhh
+    </programlisting>
+    <para>
+      Example (entire router):
+    </para>
+    <programlisting>
+>>GPIStat 3
+GPIStat 3 1 lhlhh
+GPIStat 3 2 hhhhh
+GPIStat 3 3 hlhhh
+GPIStat 3 4 hhhhh
+GPIStat 3 5 hhhhh
+GPIStat 3 6 hhhhh
+    </programlisting>
+  </sect2>
+
+  <sect2 id="sect.state_discovery.get_general_purpose_output_gpo_state">
+    <title>Get General Purpose Output (GPO) State [GPOStat]</title>
+    <para>
+      <command>GPOStat</command> <replaceable>router-num</replaceable> [<replaceable>endpt-num</replaceable>]
+    </para>
+    <para>
+      If the <replaceable>endpt-num</replaceable> argument is omitted,
+      the system will send <computeroutput>GPOStat</computeroutput>
+      messages for <emphasis>all</emphasis> of the destinations that belong
+      to the specified <replaceable>router-num</replaceable>.
+    </para>
+    <para>
+      Interrogate one or more sources for their GPO state. Returns
+      messages of the following form:
+    </para>
+    <para>
+      <computeroutput>GPOStat</computeroutput> <replaceable>router-num</replaceable> <replaceable>endpt-num</replaceable> <replaceable>state-str</replaceable>
+    </para>
+    <para>
+      The returned <replaceable>state-str</replaceable> will be a five
+      character string indicating the low (<computeroutput>l</computeroutput>)
+      or high (<computeroutput>h</computeroutput>) state of the respective
+      GPO destination.
+    </para>
+    <note>
+      An error will be returned if the specified
+      <replaceable>router-num</replaceable> is not a GPIO router.
+    </note>
+    <para>
+      Example (single source):
+    </para>
+    <programlisting>
+>>GPOStat 3 11
+GPOStat 3 11 lhlhh
+    </programlisting>
+    <para>
+      Example (entire router):
+    </para>
+    <programlisting>
+>>GPOStat 3
+GPOStat 3 1 lhlhh
+GPOStat 3 2 hhhhh
+GPOStat 3 3 hlhhh
+GPOStat 3 4 hhhhh
+GPOStat 3 5 hhhhh
+GPOStat 3 6 hhhhh
+    </programlisting>
+  </sect2>
+</sect1>
+
+<sect1 id="sect.commands">
+  <title>Commands</title>
+  <para>
+    Messages for actively changing the state of the system.
+  </para>
+
+  <sect2 id="sect.commands.set_snapshot">
+    <title>Set Snapshot [ActivateSnap / ActivateScene]</title>
+    <para>
+      <command>ActivateSnap</command> <replaceable>router-num</replaceable> <replaceable>snapshot-name</replaceable>
+    </para>
+    <para>
+      The system will respond with zero or more <command>RouteStat</command>
+      messages to reflect changed crosspoint states.
+    </para>
+    <note>
+      <command>ActivateScene</command> is merely a synonym for
+      <command>ActivateSnap</command>. The syntax and operation of the
+      two commands are identical.
+    </note>
+    <para>
+      Example:
+    </para>
+    <programlisting>
+>>ActivateSnap 4 MAN from MC 
+RouteStat 4 3 9 False
+RouteStat 7 3 0 False
+RouteStat 1 5045 1953 False
+    </programlisting>
+  </sect2>
+
+  <sect2 id="sect.commands.set_crosspoint_route">
+    <title>Set Crosspoint Route [ActivateRoute]</title>
+    <para>
+      <command>ActivateRoute</command> <replaceable>router-num</replaceable> <replaceable>dest-endpt-num</replaceable> <replaceable>src-endpt-num</replaceable>
+    </para>
+    <para>
+      The system will respond with zero or more <command>RouteStat</command>
+      messages to reflect changed crosspoint state.
+    </para>
+    <para>
+      Example:
+    </para>
+    <programlisting>
+>>ActivateRoute 2 3 9
+RouteStat 2 3 9 False
+RouteStat 7 3 0 False
+RouteStat 1 5045 1953 False
+    </programlisting>
+  </sect2>
+
+  <sect2 id="sect.commands.set_general_purpose_gpi_state">
+    <title>Set General Purpose Input (GPI) State [TriggerGPI]</title>
+    <para>
+      <command>TriggerGPI</command> <replaceable>router-num</replaceable> <replaceable>src-endpt-num</replaceable> <replaceable>state-str</replaceable> [<replaceable>duration</replaceable>]
+    </para>
+    <para>
+      The specified <replaceable>state-str</replaceable> should be a five
+      character string indicating the state to which to set the specified
+      GPI endpoint. Valid characters are:
+      <variablelist>
+	<varlistentry>
+	  <term><userinput>h</userinput></term>
+	  <listitem>
+	    <para>
+	      Set the corresponding line to the HIGH state.
+	    </para>
+	  </listitem>
+	</varlistentry>
+	<varlistentry>
+	  <term><userinput>l</userinput></term>
+	  <listitem>
+	    <para>
+	      Set the corresponding line to the LOW state.
+	    </para>
+	  </listitem>
+	</varlistentry>
+	<varlistentry>
+	  <term><userinput>x</userinput></term>
+	  <listitem>
+	    <para>
+	      Leave the corresponding line state UNCHANGED.
+	    </para>
+	  </listitem>
+	</varlistentry>
+      </variablelist>
+    </para>
+    <caution>
+      The <replaceable>duration</replaceable> parameter exists solely
+      for compatibility with PathFinder. Drouter does not support setting
+      momentary GPI states, thus, any <replaceable>duration</replaceable>
+      parameter given on Drouter will be silently ignored.
+    </caution>
+    <note>
+      An error will be returned if the specified
+      <replaceable>router-num</replaceable> is not a GPIO router.
+    </note>
+    <para>
+      The system will respond with zero or more <command>GPIStat</command>
+      messages to reflect changed GPI state. Only virtual GPIO devices
+      can have their GPI state set remotely; attempts to do so to physical
+      GPI devices will be silently ignored.
+    </para>
+    <para>
+      Example:
+    </para>
+    <programlisting>
+>>TriggerGPI 3 11 xxlxx
+GPIStat 3 11 hhlhh
+    </programlisting>
+  </sect2>
+
+  <sect2 id="sect.commands.set_general_purpose_gpo_state">
+    <title>Set General Purpose Output (GPO) State [TriggerGPO]</title>
+    <para>
+      <command>TriggerGPO</command> <replaceable>router-num</replaceable> <replaceable>dest-endpt-num</replaceable> <replaceable>state-str</replaceable> [<replaceable>duration</replaceable>]
+    </para>
+    <para>
+      The specified <replaceable>state-str</replaceable> should be a five
+      character string indicating the state to which to set the specified
+      GPO endpoint. Valid characters are:
+      <variablelist>
+	<varlistentry>
+	  <term><userinput>h</userinput></term>
+	  <listitem>
+	    <para>
+	      Set the corresponding line to the HIGH state.
+	    </para>
+	  </listitem>
+	</varlistentry>
+	<varlistentry>
+	  <term><userinput>l</userinput></term>
+	  <listitem>
+	    <para>
+	      Set the corresponding line to the LOW state.
+	    </para>
+	  </listitem>
+	</varlistentry>
+	<varlistentry>
+	  <term><userinput>x</userinput></term>
+	  <listitem>
+	    <para>
+	      Leavethe corresponding line state UNCHANGED.
+	    </para>
+	  </listitem>
+	</varlistentry>
+      </variablelist>
+    </para>
+    <caution>
+      The <replaceable>duration</replaceable> parameter exists solely
+      for compatibility with PathFinder. Drouter does not support setting
+      momentary GPO states, thus, any <replaceable>duration</replaceable>
+      parameter given on Drouter will be silently ignored.
+    </caution>
+    <note>
+      An error will be returned if the specified
+      <replaceable>router-num</replaceable> is not a GPOO router.
+    </note>
+    <para>
+      The system will respond with zero or more <command>GPOStat</command>
+      messages to reflect changed GPO state.
+    </para>
+    <para>
+      Example:
+    </para>
+    <programlisting>
+>>TriggerGPO 3 11 xxlxx
+GPOStat 3 11 hhlhh
+    </programlisting>
+  </sect2>
+
+</sect1>
+
+</article>

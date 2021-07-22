@@ -2,7 +2,7 @@
 ##
 ## docs/Makefile.am
 ##
-## (C) Copyright 2017-2018 Fred Gleason <fredg@paravelsystems.com>
+## (C) Copyright 2017-2021 Fred Gleason <fredg@paravelsystems.com>
 ##
 ##   This program is free software; you can redistribute it and/or modify
 ##   it under the terms of the GNU General Public License version 2 as
@@ -25,7 +25,7 @@
 %.html:	%.xml
 	xsltproc -o $@ $(DOCBOOK_STYLESHEETS)/xhtml/docbook.xsl $<
 %.pdf:	%.xml
-	xsltproc $(DOCBOOK_STYLESHEETS)/fo/docbook.xsl $< | fop - -pdf $@
+	xsltproc --stringparam page.orientation landscape $(DOCBOOK_STYLESHEETS)/fo/docbook.xsl $< | fop - -pdf $@
 %.1:	%.xml
 	xsltproc $(DOCBOOK_STYLESHEETS)/manpages/docbook.xsl $<
 %.5:	%.xml
@@ -56,7 +56,9 @@ all-local:	buttonpanel.1\
                 xypanel.1\
                 xypanel.xml\
                 protocol_d.html\
-                protocol_d.pdf
+                protocol_d.pdf\
+                protocol_sa.html\
+                protocol_sa.pdf
 
 EXTRA_DIST = buttonpanel.1\
              buttonpanel.xml\
@@ -82,7 +84,10 @@ EXTRA_DIST = buttonpanel.1\
              xypanel.xml\
              protocol_d.html\
              protocol_d.pdf\
-             protocol_d.xml
+             protocol_d.xml\
+             protocol_sa.html\
+             protocol_sa.pdf\
+             protocol_sa.xml
 
 man_MANS = buttonpanel.1\
            dlist.1\
