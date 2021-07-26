@@ -662,4 +662,4 @@
 	'RouteStat' command was given with no arguments.
 2021-07-22 Fred Gleason <fredg@paravelsystems.com>
 	* Documented the Drouter implementation of Software Authority
-	Protocol in 'docs/protcol_sa.xml'.
+	Protocol in 'docs/protocol_sa.xml'.
