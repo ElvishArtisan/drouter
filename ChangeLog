@@ -663,3 +663,5 @@
 2021-07-22 Fred Gleason <fredg@paravelsystems.com>
 	* Documented the Drouter implementation of Software Authority
 	Protocol in 'docs/protocol_sa.xml'.
+2021-07-26 Fred Gleason <fredg@paravelsystems.com>
+	* Documented a new 'Protocol J' in 'docs/protocol_j.xml'.

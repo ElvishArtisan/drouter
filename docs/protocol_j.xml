@@ -1,0 +1,1081 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<article xmlns="http://docbook.org/ns/docbook" version="5.0">
+<info>
+  <title>Protocol J</title>
+  <subtitle>JSON Protocol for controlling endpoint routers</subtitle>
+  <edition>0.0.0</edition>
+  <author>
+    <personname>
+      <firstname>Fred</firstname>
+      <surname>Gleason</surname>
+      <email>fredg@paravelsystems.com</email>
+    </personname>
+  </author>
+</info>
+
+<sect1 id="sect.overview">
+  <title>Overview</title>
+  <para>
+    Messages to the Protocol J routing service are by means of a
+    TCP SOCK_STREAM connection to TCP port 7300 on the host server.
+  </para>
+  <para>
+    All Protocol J messages are encoded as JSON object as described
+    at https://www.json.org
+  </para>
+</sect1>
+
+<sect1 id="sect.connection_management">
+  <title>Connection Management</title>
+  <para>
+    Messages for managing connections to the service.
+  </para>
+
+  <!-- ******************************************************************** -->
+
+  <sect2 id="sect.connection_management.exit">
+    <title>Exit [Exit]</title>
+    <programlisting>
+{
+    &quot;Exit&quot;: null
+}
+    </programlisting>
+    <para>
+      Drop the TCP connection and end the session.
+    </para>
+  </sect2>
+</sect1>
+
+<sect1 id="sect.configuration_discovery">
+  <title>Configuration Discovery</title>
+  <para>
+    Messages for interrogating the system about its configuration.
+  </para>
+
+  <!-- ******************************************************************** -->
+
+  <sect2 id="sect.configuration_discovery.list_destination_names">
+    <title>List Destination Names [DestNames]</title>
+    <para>
+      Return a list of destination endpoints on the specified router.
+    </para>
+    <programlisting>
+{
+    &quot;DestNames&quot;: {
+        &quot;routerNumber&quot;: <replaceable>router-num</replaceable>
+    }
+}
+    </programlisting>
+    <para>
+      Returns:
+    </para>
+    <programlisting>
+{
+    &quot;DestNames&quot;: {
+        &quot;routerNumber&quot;: &quot;<replaceable>router-num</replaceable>&quot;,
+        &quot;items&quot;: [
+            {
+                &quot;destinationNumber&quot;: <replaceable>dest-endpt-num</replaceable>,
+                &quot;shortName&quot;: &quot;<replaceable>short-name</replaceable>&quot;,
+                &quot;longName&quot;: &quot;<replaceable>long-name</replaceable>,
+                &quot;nodeAddress&quot;: &quot;<replaceable>node-addr</replaceable>&quot;,
+                &quot;nodeName&quot;: &quot;<replaceable>node-name</replaceable>&quot;,
+                &quot;nodeSlot&quot;: <replaceable>node-slot</replaceable>
+            }
+        ]            
+    }
+}
+    </programlisting>
+    <para>
+      Example send:
+    </para>
+    <programlisting>
+{
+    &quot;DestNames&quot;: {
+        &quot;routerNumber&quot;: 2
+    }
+}
+    </programlisting>
+    <para>
+      Example Returns:
+    </para>
+    <programlisting>
+{
+    "DestNames": {
+        "routerNumber": 2,
+        "items": [
+            {
+                "destinationNumber": 1,
+                "shortName": "Mackie 3/4",
+                "longName": "Mackie 3/4 ON FRED-XNODE",
+                "nodeAddress": "172.30.4.211",
+                "nodeName": "FRED-XNODE",
+                "nodeSlot": 1
+            },
+            {
+                "destinationNumber": 2,
+                "shortName": "Mackie 5/6",
+                "longName": "Mackie 5/6 ON FRED-XNODE",
+                "nodeAddress": "172.30.4.211",
+                "nodeName": "FRED-XNODE",
+                "nodeSlot": 2
+            },
+            {
+                "destinationNumber": 3,
+                "shortName": "Delta 1/2",
+                "longName": "Delta 1/2 ON FRED-XNODE",
+                "nodeAddress": "172.30.4.211",
+                "nodeName": "FRED-XNODE",
+                "nodeSlot": 3
+            },
+            {
+                "destinationNumber": 9,
+                "shortName": "PGM 4",
+                "longName": "PGM 4 ON RDVIRT-SERV",
+                "nodeAddress": "172.30.4.212",
+                "nodeName": "RDVIRT-SERV",
+                "nodeSlot": 1
+            },
+            {
+                "destinationNumber": 10,
+                "shortName": "PGM 3",
+                "longName": "PGM 3 ON RDVIRT-SERV",
+                "nodeAddress": "172.30.4.212",
+                "nodeName": "RDVIRT-SERV",
+                "nodeSlot": 2
+            }
+        ]
+    }
+}
+    </programlisting>
+  </sect2>
+
+  <!-- ******************************************************************** -->
+
+  <sect2 id="sect.configuration_discovery.list_router_names">
+    <title>List Router Names [RouterNames]</title>
+    <para>
+      Return a list of routers configured on this system.
+    </para>
+    <programlisting>
+{
+    &quot;RouterNames&quot;: null
+}
+    </programlisting>
+    <para>
+      Returns:
+    </para>
+    <programlisting>
+{
+    "RouterNames": {
+        "items": [
+            {
+                "routerNumber": "<replaceable>router-num</replaceable>",
+                "routerName": "<replaceable>name</replaceable>"
+            }
+        ]
+    }
+}
+    </programlisting>
+    <para>
+      Example send:
+    </para>
+    <programlisting>
+{
+    "RouterNames": null
+}
+    </programlisting>
+    <para>
+      Example Returns:
+    </para>
+    <programlisting>
+{
+    "RouterNames": {
+        "items": [
+            {
+                "routerNumber": 1,
+                "routerName": "RFA-ALL"
+            },
+            {
+                "routerNumber": 2,
+                "routerName": "Fred-Test"
+            },
+            {
+                "routerNumber": 3,
+                "routerName": "Fred-GPIO-Test"
+            },
+            {
+                "routerNumber": 4,
+                "routerName": "RFA_AIR_MC"
+            },
+            {
+                "routerNumber": 7,
+                "routerName": "Rivendell-Test"
+            },
+            {
+                "routerNumber": 9,
+                "routerName": "GPIO"
+            },
+            {
+                "routerNumber": 11,
+                "routerName": "RFA_AIRPLAYS_BLUE"
+            },
+            {
+                "routerNumber": 12,
+                "routerName": "RFA_AIRPLAYS_GOLD"
+            }
+        ]
+    }
+}
+    </programlisting>
+  </sect2>
+
+  <!-- ******************************************************************** -->
+
+  <sect2 id="sect.configuration_discovery.list_snapshots">
+    <title>List Snapshots [SnapShots]</title>
+    <para>
+      Return a list of source endpoints on the specified router.
+    </para>
+    <programlisting>
+{
+    &quot;SnapShots&quot;: {
+        &quot;routerNumber&quot;: <replaceable>router-num</replaceable>
+    }
+}
+    </programlisting>
+    <para>
+      Return a list of snapshots on the specified router.
+    </para>
+    <para>
+      Returns:
+    </para>
+    <programlisting>
+{
+    &quot;SnapShots&quot;: {
+        &quot;routerNumber&quot;: &quot;<replaceable>router-num</replaceable>&quot;,
+        &quot;items&quot;: [
+            {
+                &quot;snapShotName&quot;: &quot;<replaceable>snap-name</replaceable>&quot;
+            }
+        ]            
+    }
+}
+    </programlisting>
+    <para>
+      Example send:
+    </para>
+    <programlisting>
+{
+    "SnapShots": {
+        "routerNumber": 4
+    }
+}
+    </programlisting>
+    <para>
+      Example returns:
+    </para>
+    <programlisting>
+{
+    "SnapShots": {
+        "routerNumber": 4,
+        "items": [
+            {
+                "snapShotName": "BUR from FEED",
+            },
+            {
+                "snapShotName": "BUR from Studio 1",
+            },
+            {
+                "snapShotName": "TIB from MC"
+            }
+        ]
+    }
+}
+    </programlisting>
+  </sect2>
+
+  <!-- ******************************************************************** -->
+
+  <sect2 id="sect.configuration_discovery.list_source_names">
+    <title>List Source Names [SourceNames]</title>
+    <programlisting>
+{
+    &quot;SourceNames&quot;: {
+        &quot;routerNumber&quot;: <replaceable>router-num</replaceable>
+    }
+}
+    </programlisting>
+    <para>
+      Returns:
+    </para>
+    <programlisting>
+{
+    &quot;SourceNames&quot;: {
+        &quot;routerNumber&quot;: &quot;<replaceable>router-num</replaceable>&quot;,
+        &quot;items&quot;: [
+            {
+                &quot;sourceNumber&quot;: <replaceable>src-endpt-num</replaceable>,
+                &quot;shortName&quot;: &quot;<replaceable>short-name</replaceable>&quot;,
+                &quot;longName&quot;: &quot;<replaceable>long-name</replaceable>,
+                &quot;nodeAddress&quot;: &quot;<replaceable>node-addr</replaceable>&quot;,
+                &quot;nodeName&quot;: &quot;<replaceable>node-name</replaceable>&quot;,
+                &quot;nodeSlot&quot;: <replaceable>node-slot</replaceable>,
+                &quot;livewireSourceNumber&quot;: <replaceable>src-num</replaceable>
+                &quot;streamAddress&quot;: &quot;<replaceable>stream-addr</replaceable>&quot;
+            }
+        ]            
+    }
+}
+    </programlisting>
+    <para>
+      Example send:
+    </para>
+    <programlisting>
+{
+    "SourceNames": {
+        "routerNumber": 2
+    }
+}
+    </programlisting>
+    <para>
+      Example returns:
+    </para>
+    <programlisting>
+{
+    "SourceNames": {
+        "routerNumber": 2,
+        "items": [
+            {
+                "sourceNumber": 1,
+                "shortName": "Mackie Main",
+                "longName": "Mackie Main ON FRED-XNODE",
+                "nodeAddress": "172.30.4.211",
+                "nodeName": "FRED-XNODE",
+                "nodeSlot": 1,
+                "livewireSourceNumber": 30001,
+                "streamAddress": "239.192.117.49"
+            },
+            {
+                "sourceNumber": 2,
+                "shortName": "SRC 2",
+                "longName": "SRC 2 ON FRED-XNODE",
+                "nodeAddress": "172.30.4.211",
+                "nodeName": "FRED-XNODE",
+                "nodeSlot": 2,
+                "livewireSourceNumber": 30002,
+                "streamAddress": "239.192.117.50"
+            },
+            {
+                "sourceNumber": 9,
+                "shortName": "Rivenberry",
+                "longName": "Rivenberry ON RDVIRT-SERV",
+                "nodeAddress": "172.30.4.212",
+                "nodeName": "RDVIRT-SERV",
+                "nodeSlot": 1,
+                "livewireSourceNumber": 30301,
+                "streamAddress": "239.192.117.93"
+            },
+            {
+                "sourceNumber": 10,
+                "shortName": "SRC 2",
+                "longName": "SRC 2 ON RDVIRT-SERV",
+                "nodeAddress": "172.30.4.212",
+                "nodeName": "RDVIRT-SERVER",
+                "nodeSlot": 2,
+                "livewireSourceNumber": 30302,
+                "streamAddress": "239.192.117.94"
+            }
+        ]
+    }
+}
+    </programlisting>
+  </sect2>
+
+</sect1>
+
+<sect1 id="sect.state_discovery">
+  <title>State Discovery</title>
+  <para>
+    Messages for interrogating the system about its current state.
+  </para>
+
+  <!-- ******************************************************************** -->
+
+  <sect2 id="sect.state_discovery.get_crosspoint_route_state">
+    <title>Get Crosspoint Route State [RouteStat]</title>
+    <para>
+      Interrogate one or more destinations for their connected source.
+    </para>
+    <para>
+      Send:
+    </para>
+    <programlisting>
+{
+    &quot;RouteStat&quot;: {
+        &quot;routerNumber&quot;: <replaceable>router-num</replaceable>
+    }
+}
+    </programlisting>
+    <para>
+      or
+    </para>
+    <programlisting>
+{
+    &quot;RouteStat&quot;: {
+        &quot;routerNumber&quot;: <replaceable>router-num</replaceable>,
+        &quot;destNumber&quot;: <replaceable>dest-endpt-num</replaceable>
+    }
+}
+    </programlisting>
+    <para>
+      If the <replaceable>dest-endpt-num</replaceable> argument is omitted,
+      the system will send <computeroutput>RouteStat</computeroutput>
+      messages for <emphasis>all</emphasis> of the destinations that belong
+      to the specified <replaceable>router-num</replaceable>.
+    </para>
+    <para>
+      Return messages will be of the form:
+    </para>
+    <programlisting>
+{
+    &quot;RouteStat&quot;: {
+        &quot;routerNumber&quot;: <replaceable>router-num</replaceable>,
+        &quot;destinationNumber&quot;: <replaceable>dest-endpt-num</replaceable>
+        &quot;sourceNumber&quot;: <replaceable>src-endpt-num</replaceable>
+    }
+}
+    </programlisting>
+    <note>
+      A returned value of &quot;0&quot; for
+      <replaceable>src-endpt-num</replaceable>
+      indicates that the respective destination is disconnected --i.e. muted,
+      while a value of 'null' indicates that the destination is connected to a
+      source that is not a member of the specified
+      <replaceable>router-num</replaceable>.
+    </note>
+    <para>
+      Example (single source) Send:
+    </para>
+    <programlisting>
+{
+    &quot;RouteStat&quot;: {
+        &quot;routerNumber&quot;: 3,
+        &quot;destinationNumber&quot;: 11
+    }
+}
+    </programlisting>
+    <para>
+      Example Receive:
+    </para>
+    <programlisting>
+{
+    &quot;RouteStat&quot;: {
+        &quot;routerNumber&quot;: 3,
+        &quot;destinationNumber&quot;: 27,
+        &quot;sourceNumber&quot;: 11
+    }
+}
+    </programlisting>
+    <para>
+      Example (entire router) Send:
+    </para>
+    <programlisting>
+{
+    "RouteStat": {
+        "routerNumber": 2
+    }
+}
+    </programlisting>
+    <para>
+      Example Receive:
+    </para>
+    <programlisting>
+{
+    &quot;RouteStat&quot;: {
+        &quot;routerNumber&quot;: 2,
+        &quot;destinationNumber&quot;: 1,
+        &quot;sourceNumber&quot;: 17
+    }
+}
+{
+    &quot;RouteStat&quot;: {
+        &quot;routerNumber&quot;: 2,
+        &quot;destinationNumber&quot;: 2,
+        &quot;sourceNumber&quot;: 30
+    }
+}
+{
+    &quot;RouteStat&quot;: {
+        &quot;routerNumber&quot;: 2,
+        &quot;destinationNumber&quot;: 9,
+        &quot;sourceNumber&quot;: null
+    }
+}
+{
+    &quot;RouteStat&quot;: {
+        &quot;routerNumber&quot;: 2,
+        &quot;destinationNumber&quot;: 10,
+        &quot;sourceNumber&quot;: 1
+    }
+}
+    </programlisting>
+  </sect2>
+
+  <!-- ******************************************************************** -->
+
+  <sect2 id="sect.state_discovery.get_general_purpose_input_gpi_state">
+    <title>Get General Purpose Input (GPI) State [GPIStat]</title>
+    <para>
+      Interrogate one or more sources for their GPI state. Returns
+      messages of the following form:
+    </para>
+    <para>
+      Send:
+    </para>
+    <programlisting>
+{
+    &quot;GPIStat&quot;: {
+        &quot;routerNumber&quot;: <replaceable>router-num</replaceable>
+    }
+}
+    </programlisting>
+    <para>
+      or
+    </para>
+    <programlisting>
+{
+    &quot;GPIStat&quot;: {
+        &quot;routerNumber&quot;: <replaceable>router-num</replaceable>,
+        &quot;sourceNumber&quot;: <replaceable>src-endpt-num</replaceable>
+    }
+}
+    </programlisting>
+    <para>
+      If the <replaceable>src-endpt-num</replaceable> argument is omitted,
+      the system will send <computeroutput>GPIStat</computeroutput>
+      messages for <emphasis>all</emphasis> of the sources that belong
+      to the specified <replaceable>router-num</replaceable>.
+    </para>
+    <para>
+      Receive:
+    </para>
+    <programlisting>
+{
+    &quot;GPIStat&quot;: {
+        &quot;routerNumber&quot;: <replaceable>router-num</replaceable>,
+        "items": [
+            {
+                &quot;sourceNumber&quot;: <replaceable>src-endpt-num</replaceable>,
+                &quot;code&quot;: &quot;<replaceable>state-str</replaceable>&quot;
+            }
+        ]
+    }
+}
+    </programlisting>
+    <para>
+      The returned <replaceable>state-str</replaceable> will be a five
+      character string indicating the low (<computeroutput>l</computeroutput>)
+      or high (<computeroutput>h</computeroutput>) state of the respective
+      GPI source.
+    </para>
+    <note>
+      An error will be returned if the specified
+      <replaceable>router-num</replaceable> is not a GPIO router.
+    </note>
+    <para>
+      Example (single source) send:
+    </para>
+    <programlisting>
+{
+    &quot;GPIStat&quot;: {
+        &quot;routerNumber&quot;: 3,
+        &quot;sourceNumber&quot;: 1
+    }
+}
+    </programlisting>
+    <para>
+      Example (single source) Receive:
+    </para>
+    <programlisting>
+{
+    &quot;RouteStat&quot;: {
+        &quot;routerNumber&quot;: 3,
+        "items": [
+            {
+                &quot;sourceNumber&quot;: 1,
+                &quot;code&quot;: "lhlhh"
+            }
+        ]
+    }
+}
+    </programlisting>
+    <para>
+      Example (whole router) send:
+    </para>
+    <programlisting>
+{
+    &quot;GPIStat&quot;: {
+        &quot;routerNumber&quot;: 3
+    }
+}
+    </programlisting>
+    <para>
+      Example (whole router) Receive:
+    </para>
+    <programlisting>
+{
+    &quot;RouteStat&quot;: {
+        &quot;routerNumber&quot;: 3,
+        "items": [
+            {
+                &quot;sourceNumber&quot;: 1,
+                &quot;code&quot;: "lhlhh"
+            }
+            {
+                &quot;sourceNumber&quot;: 2,
+                &quot;code&quot;: "hhhhh"
+            }
+            {
+                &quot;sourceNumber&quot;: 3,
+                &quot;code&quot;: "hlhhh"
+            }
+            {
+                &quot;sourceNumber&quot;: 4,
+                &quot;code&quot;: "hhhhh"
+            }
+            {
+                &quot;sourceNumber&quot;: 5,
+                &quot;code&quot;: "hhhhh"
+            }
+            {
+                &quot;sourceNumber&quot;: 6,
+                &quot;code&quot;: "hhhhh"
+            }
+        ]
+    }
+}
+    </programlisting>
+  </sect2>
+
+  <!-- ******************************************************************** -->
+
+  <sect2 id="sect.state_discovery.get_general_purpose_output_gpo_state">
+    <title>Get General Purpose Output (GPO) State [GPOStat]</title>
+    <para>
+      Interrogate one or more sources for their GPO state. Returns
+      messages of the following form:
+    </para>
+    <programlisting>
+{
+    &quot;GPOStat&quot;: {
+        &quot;routerNumber&quot;: <replaceable>router-num</replaceable>
+    }
+}
+    </programlisting>
+    <para>
+      or
+    </para>
+    <programlisting>
+{
+    &quot;GPOStat&quot;: {
+        &quot;routerNumber&quot;: <replaceable>router-num</replaceable>,
+        &quot;destinationNumber&quot;: <replaceable>dest-endpt-num</replaceable>
+    }
+}
+    </programlisting>
+    <para>
+      If the <replaceable>dest-endpt-num</replaceable> argument is omitted,
+      the system will send <computeroutput>GPOStat</computeroutput>
+      messages for <emphasis>all</emphasis> of the sources that belong
+      to the specified <replaceable>router-num</replaceable>.
+    </para>
+    <programlisting>
+{
+    &quot;GPOStat&quot;: {
+        &quot;routerNumber&quot;: <replaceable>router-num</replaceable>,
+        "items": [
+            {
+                &quot;destinationNumber&quot;: <replaceable>dest-endpt-num</replaceable>,
+                &quot;code&quot;: &quot;<replaceable>state-str</replaceable>&quot;
+            }
+        ]
+    }
+}
+    </programlisting>
+    <para>
+      The returned <replaceable>state-str</replaceable> will be a five
+      character string indicating the low (<computeroutput>l</computeroutput>)
+      or high (<computeroutput>h</computeroutput>) state of the respective
+      GPO source.
+    </para>
+    <note>
+      An error will be returned if the specified
+      <replaceable>router-num</replaceable> is not a GPIO router.
+    </note>
+    <para>
+      Example (single source) send:
+    </para>
+    <programlisting>
+{
+    &quot;GPOStat&quot;: {
+        &quot;routerNumber&quot;: 3,
+        &quot;destinationNumber&quot;: 1
+    }
+}
+    </programlisting>
+    <para>
+      Example (single source) Receive:
+    </para>
+    <programlisting>
+{
+    &quot;RouteStat&quot;: {
+        &quot;routerNumber&quot;: 3,
+        "items": [
+            {
+                &quot;destinationNumber&quot;: 1,
+                &quot;code&quot;: "lhlhh"
+            }
+        ]
+    }
+}
+    </programlisting>
+    <para>
+      Example (whole router) send:
+    </para>
+    <programlisting>
+{
+    &quot;GPOStat&quot;: {
+        &quot;routerNumber&quot;: 3
+    }
+}
+    </programlisting>
+    <para>
+      Example (whole router) Receive:
+    </para>
+    <programlisting>
+{
+    &quot;RouteStat&quot;: {
+        &quot;routerNumber&quot;: 3,
+        "items": [
+            {
+                &quot;destinationNumber&quot;: 1,
+                &quot;code&quot;: "lhlhh"
+            }
+            {
+                &quot;destinationNumber&quot;: 2,
+                &quot;code&quot;: "hhhhh"
+            }
+            {
+                &quot;destinationNumber&quot;: 3,
+                &quot;code&quot;: "hlhhh"
+            }
+            {
+                &quot;destinationNumber&quot;: 4,
+                &quot;code&quot;: "hhhhh"
+            }
+            {
+                &quot;destinationNumber&quot;: 5,
+                &quot;code&quot;: "hhhhh"
+            }
+            {
+                &quot;destinationNumber&quot;: 6,
+                &quot;code&quot;: "hhhhh"
+            }
+        ]
+    }
+}
+    </programlisting>
+  </sect2>
+
+  <!-- ******************************************************************** -->
+  <!-- ******************************************************************** -->
+
+</sect1>
+
+<sect1 id="sect.commands">
+  <title>Commands</title>
+  <para>
+    Messages for actively changing the state of the system.
+  </para>
+
+
+  <!-- ******************************************************************** -->
+
+  <sect2 id="sect.commands.set_snapshot">
+    <title>Set Snapshot [ActivateSnap]</title>
+    <para>
+      Execute a snapshot.
+    </para> 
+    <programlisting>
+{
+    &quot;ActivateSnap&quot;: {
+        &quot;routerNumber&quot;: 4,
+        &quot;snapshotName&quot;: &quot;<replaceable>snapshot-name</replaceable>&quot;
+    }
+}
+    </programlisting>
+    <para>
+      The system will respond with zero or more <command>RouteStat</command>
+      messages to reflect changed crosspoint states.
+    </para>
+    <para>
+      Example:
+    </para>
+    <programlisting>
+{
+    &quot;ActivateSnap&quot;: {
+        &quot;routerNumber&quot;: 4,
+        &quot;snapshotName&quot;: "MAN from MC";
+    }
+}
+    </programlisting>
+    <para>
+      Returns:
+    </para>
+    <programlisting>
+{
+    "RouteStat": {
+        "routerNumber": 4,
+        "destinationNumber": 3,
+        "sourceNumber": 9
+    }
+}
+{
+    "RouteStat": {
+        "routerNumber": 7,
+        "destinationNumber": 3,
+        "sourceNumber": 0
+    }
+}
+{
+    "RouteStat": {
+        "routerNumber": 1,
+        "destinationNumber": 5045,
+        "sourceNumber": 1953
+    }
+}
+    </programlisting>
+  </sect2>
+
+
+  <!-- ******************************************************************** -->
+
+  <sect2 id="sect.commands.set_crosspoint_route">
+    <title>Set Crosspoint Route [ActivateRoute]</title>
+    <para>
+      Change a destination to use a different source.
+    </para>
+    <para>
+      Send:
+    </para>
+    <programlisting>
+{
+    ActivateRoute": {
+        "routerNumber": <replaceable>router-num</replaceable>,
+        "destinationNumber": <replaceable>dest-endpt-num</replaceable>,
+        "sourceNumber": <replaceable>src-endpt-num</replaceable>
+    }
+}
+    </programlisting>
+    <para>
+      The system will respond with zero or more <command>RouteStat</command>
+      messages to reflect changed crosspoint state.
+    </para>
+    <para>
+      Example:
+    </para>
+    <programlisting>
+{
+    ActivateRoute": {
+        "routerNumber": 2,
+        "destinationNumber": 3,
+        "sourceNumber": 9
+    }
+}
+    </programlisting>
+    <para>
+      Returns:
+    </para>
+    <programlisting>
+{
+    "RouteStat": {
+        "routerNumber": 2,
+        "destinationNumber": 3,
+        "sourceNumber": 9
+    }
+}
+    </programlisting>
+  </sect2>
+
+
+  <!-- ******************************************************************** -->
+
+  <sect2 id="sect.commands.set_general_purpose_gpi_state">
+    <title>Set General Purpose Input (GPI) State [TriggerGPI]</title>
+    <para>
+      Change a virtual GPI source's logical state.
+    </para>
+    <programlisting>
+{
+    "TriggerGPI": {
+        "routerNumber": <replaceable>router-num</replaceable>,
+        "sourceNumber": <replaceable>src-endpt-num</replaceable>,
+        "code": <replaceable>state-str</replaceable>
+    }
+}
+    </programlisting>
+    <para>
+      The specified <replaceable>state-str</replaceable> should be a five
+      character string indicating the state to which to set the specified
+      GPI endpoint. Valid characters are:
+      <variablelist>
+	<varlistentry>
+	  <term><userinput>h</userinput></term>
+	  <listitem>
+	    <para>
+	      Set the corresponding line to the HIGH state.
+	    </para>
+	  </listitem>
+	</varlistentry>
+	<varlistentry>
+	  <term><userinput>l</userinput></term>
+	  <listitem>
+	    <para>
+	      Set the corresponding line to the LOW state.
+	    </para>
+	  </listitem>
+	</varlistentry>
+	<varlistentry>
+	  <term><userinput>x</userinput></term>
+	  <listitem>
+	    <para>
+	      Leave the corresponding line state UNCHANGED.
+	    </para>
+	  </listitem>
+	</varlistentry>
+      </variablelist>
+    </para>
+    <note>
+      An error will be returned if the specified
+      <replaceable>router-num</replaceable> is not a GPIO router.
+    </note>
+    <para>
+      The system will respond with zero or more <command>GPIStat</command>
+      messages to reflect changed GPI state. Only virtual GPIO devices
+      can have their GPI state set remotely; attempts to do so to physical
+      GPI devices will be silently ignored.
+    </para>
+    <para>
+      Example: send
+    </para>
+    <programlisting>
+{
+    "TriggerGPI": {
+        "routerNumber": 3,
+        "sourceNumber": 11,
+        "code": "xxlxx"
+    }
+}
+    </programlisting>
+    <para>
+      Returns:
+    </para>
+    <programlisting>
+{
+    "GPIStat": {
+        "routerNumber": 3,
+        "sourceNumber": 11,
+        "code": "hhlhh"
+    }
+}
+    </programlisting>
+  </sect2>
+
+
+  <!-- ******************************************************************** -->
+
+  <sect2 id="sect.commands.set_general_purpose_gpo_state">
+    <title>Set General Purpose Input (GPO) State [TriggerGPO]</title>
+    <para>
+      Change a virtual GPO source's logical state.
+    </para>
+    <programlisting>
+{
+    "TriggerGPO": {
+        "routerNumber": <replaceable>router-num</replaceable>,
+        "destinationNumber": <replaceable>dest-endpt-num</replaceable>,
+        "code": <replaceable>state-str</replaceable>
+    }
+}
+    </programlisting>
+    <para>
+      The specified <replaceable>state-str</replaceable> should be a five
+      character string indicating the state to which to set the specified
+      GPO endpoint. Valid characters are:
+      <variablelist>
+	<varlistentry>
+	  <term><userinput>h</userinput></term>
+	  <listitem>
+	    <para>
+	      Set the corresponding line to the HIGH state.
+	    </para>
+	  </listitem>
+	</varlistentry>
+	<varlistentry>
+	  <term><userinput>l</userinput></term>
+	  <listitem>
+	    <para>
+	      Set the corresponding line to the LOW state.
+	    </para>
+	  </listitem>
+	</varlistentry>
+	<varlistentry>
+	  <term><userinput>x</userinput></term>
+	  <listitem>
+	    <para>
+	      Leave the corresponding line state UNCHANGED.
+	    </para>
+	  </listitem>
+	</varlistentry>
+      </variablelist>
+    </para>
+    <note>
+      An error will be returned if the specified
+      <replaceable>router-num</replaceable> is not a GPIO router.
+    </note>
+    <para>
+      The system will respond with zero or more <command>GPOStat</command>
+      messages to reflect changed GPO state.
+    </para>
+    <para>
+      Example: send
+    </para>
+    <programlisting>
+{
+    "TriggerGPO": {
+        "routerNumber": 3,
+        "destinationNumber": 11,
+        "code": "xxlxx"
+    }
+}
+    </programlisting>
+    <para>
+      Returns:
+    </para>
+    <programlisting>
+{
+    "GPOStat": {
+        "routerNumber": 3,
+        "destinationNumber": 11,
+        "code": "hhlhh"
+    }
+}
+    </programlisting>
+  </sect2>
+
+  <!-- ******************************************************************** -->
+
+</sect1>
+
+</article>

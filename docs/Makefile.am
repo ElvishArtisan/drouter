@@ -25,7 +25,7 @@
 %.html:	%.xml
 	xsltproc -o $@ $(DOCBOOK_STYLESHEETS)/xhtml/docbook.xsl $<
 %.pdf:	%.xml
-	xsltproc --stringparam page.orientation landscape $(DOCBOOK_STYLESHEETS)/fo/docbook.xsl $< | fop - -pdf $@
+	xsltproc --stringparam page.orientation portrait $(DOCBOOK_STYLESHEETS)/fo/docbook.xsl $< | fop - -pdf $@
 %.1:	%.xml
 	xsltproc $(DOCBOOK_STYLESHEETS)/manpages/docbook.xsl $<
 %.5:	%.xml
@@ -57,6 +57,8 @@ all-local:	buttonpanel.1\
                 xypanel.xml\
                 protocol_d.html\
                 protocol_d.pdf\
+                protocol_j.html\
+                protocol_j.pdf\
                 protocol_sa.html\
                 protocol_sa.pdf
 
@@ -85,6 +87,9 @@ EXTRA_DIST = buttonpanel.1\
              protocol_d.html\
              protocol_d.pdf\
              protocol_d.xml\
+             protocol_j.html\
+             protocol_j.pdf\
+             protocol_j.xml\
              protocol_sa.html\
              protocol_sa.pdf\
              protocol_sa.xml
