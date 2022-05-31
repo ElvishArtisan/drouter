@@ -2,7 +2,7 @@
 //
 // Protocol dispatcher for drouterd(8)
 //
-//   (C) Copyright 2018-2021 Fred Gleason <fredg@paravelsystems.com>
+//   (C) Copyright 2018-2022 Fred Gleason <fredg@paravelsystems.com>
 //
 //   This program is free software; you can redistribute it and/or modify
 //   it under the terms of the GNU General Public License version 2 as
@@ -118,10 +118,16 @@ bool MainObject::StartIpc(QString *err_msg)
     return false;
   }
   if(main_protocol_d) {
-    write(sock,"SEND_D_SOCK\r\n",13);
+    if(write(sock,"SEND_D_SOCK\r\n",13)<0) {
+      fprintf(stderr,"dprotod: error writing SEND_D_SOCK [%s]\n",
+	      strerror(errno));
+    }
   }
   if(main_protocol_sa) {
-    write(sock,"SEND_SA_SOCK\r\n",14);
+    if(write(sock,"SEND_SA_SOCK\r\n",14)<0) {
+      fprintf(stderr,"dprotod: error writing SEND_SA_SOCK [%s]\n",
+	      strerror(errno));
+    }
   }
 
   //

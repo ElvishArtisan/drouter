@@ -133,7 +133,7 @@ void DParser::readyReadData()
 
 void DParser::errorData(QAbstractSocket::SocketError err)
 {
-  QString err_msg=tr("Socket Error")+QString().sprintf(" %u",err);
+  QString err_msg=tr("Socket Error")+QString::asprintf(" %u",err);
 
   switch(err) {
   case QAbstractSocket::ConnectionRefusedError:

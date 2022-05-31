@@ -663,3 +663,5 @@
 2021-07-22 Fred Gleason <fredg@paravelsystems.com>
 	* Documented the Drouter implementation of Software Authority
 	Protocol in 'docs/protcol_sa.xml'.
+2022-05-31 Fred Gleason <fredg@paravelsystems.com>
+	* Cleaned up numerous build warnings.

@@ -2,7 +2,7 @@
 //
 // Dynamic router database component for Drouter
 //
-//   (C) Copyright 2018-2021 Fred Gleason <fredg@paravelsystems.com>
+//   (C) Copyright 2018-2022 Fred Gleason <fredg@paravelsystems.com>
 //
 //   This program is free software; you can redistribute it and/or modify
 //   it under the terms of the GNU General Public License version 2 as
@@ -289,34 +289,34 @@ void DRouter::nodeConnectedData(unsigned id,bool state)
       "`HOST_ADDRESS`='"+QHostAddress(id).toString()+"',"+
       "`HOST_NAME`='"+SqlQuery::escape(lwrp->hostName())+"',"+
       "`DEVICE_NAME`='"+SqlQuery::escape(lwrp->deviceName())+"',"+
-      QString().sprintf("`SOURCE_SLOTS`=%u,",lwrp->srcSlots())+
-      QString().sprintf("`DESTINATION_SLOTS`=%u,",lwrp->dstSlots())+
-      QString().sprintf("`GPI_SLOTS`=%u,",lwrp->gpis())+
-      QString().sprintf("`GPO_SLOTS`=%u",lwrp->gpos());
+      QString::asprintf("`SOURCE_SLOTS`=%u,",lwrp->srcSlots())+
+      QString::asprintf("`DESTINATION_SLOTS`=%u,",lwrp->dstSlots())+
+      QString::asprintf("`GPI_SLOTS`=%u,",lwrp->gpis())+
+      QString::asprintf("`GPO_SLOTS`=%u",lwrp->gpos());
     SqlQuery::apply(sql);
     for(unsigned i=0;i<lwrp->srcSlots();i++) {
       sql=QString("insert into `SOURCES` set ")+
 	"`HOST_ADDRESS`='"+QHostAddress(id).toString()+"',"+
-	QString().sprintf("`SLOT`=%u,",i)+
+	QString::asprintf("`SLOT`=%u,",i)+
 	"`HOST_NAME`='"+SqlQuery::escape(lwrp->hostName())+"',"+
 	"`STREAM_ADDRESS`='"+
 	Config::normalizedStreamAddress(lwrp->srcAddress(i)).toString()+"',"+
 	"`NAME`='"+SqlQuery::escape(lwrp->srcName(i))+"',"+
-	QString().sprintf("`STREAM_ENABLED`=%u,",lwrp->srcEnabled(i))+
-	QString().sprintf("`CHANNELS`=%u,",lwrp->srcChannels(i))+
-	QString().sprintf("`BLOCK_SIZE`=%u",lwrp->srcPacketSize(i));
+	QString::asprintf("`STREAM_ENABLED`=%u,",lwrp->srcEnabled(i))+
+	QString::asprintf("`CHANNELS`=%u,",lwrp->srcChannels(i))+
+	QString::asprintf("`BLOCK_SIZE`=%u",lwrp->srcPacketSize(i));
       last_id=SqlQuery::run(sql).toInt();
       for(QMap<int,EndPointMap *>::const_iterator it=drouter_maps.begin();it!=drouter_maps.end();it++) {
 	if(it.value()->routerType()==EndPointMap::AudioRouter) {
 	  if((endpt=it.value()->endPoint(EndPointMap::Input,QHostAddress(id).toString(),i))>=0) {
 	    sql=QString("insert into `SA_SOURCES` set ")+
-	      QString().sprintf("`ROUTER_NUMBER`=%d,",it.value()->routerNumber())+
-	      QString().sprintf("`SOURCE_NUMBER`=%d,",endpt)+
-	      QString().sprintf("`SOURCE_ID`=%d,",last_id)+
+	      QString::asprintf("`ROUTER_NUMBER`=%d,",it.value()->routerNumber())+
+	      QString::asprintf("`SOURCE_NUMBER`=%d,",endpt)+
+	      QString::asprintf("`SOURCE_ID`=%d,",last_id)+
 	      "`STREAM_ADDRESS`='"+
 	      Config::normalizedStreamAddress(lwrp->srcAddress(i)).toString()+"',"+
 	      "`HOST_ADDRESS`='"+QHostAddress(id).toString()+"',"+
-	      QString().sprintf("SLOT=%d",i);
+	      QString::asprintf("SLOT=%d",i);
 	    if(!it.value()->name(EndPointMap::Input,endpt).isEmpty()) {
 	      sql+=",`NAME`='"+
 	       SqlQuery::escape(it.value()->name(EndPointMap::Input,endpt))+"'";
@@ -329,24 +329,24 @@ void DRouter::nodeConnectedData(unsigned id,bool state)
     for(unsigned i=0;i<lwrp->dstSlots();i++) {
       sql=QString("insert into `DESTINATIONS` set ")+
 	"`HOST_ADDRESS`='"+QHostAddress(id).toString()+"',"+
-	QString().sprintf("`SLOT`=%u,",i)+
+	QString::asprintf("`SLOT`=%u,",i)+
 	"`HOST_NAME`='"+SqlQuery::escape(lwrp->hostName())+"',"+
 	"`STREAM_ADDRESS`='"+
 	Config::normalizedStreamAddress(lwrp->dstAddress(i)).toString()+"',"+
 	"`NAME`='"+SqlQuery::escape(lwrp->dstName(i))+"',"+
-	QString().sprintf("`CHANNELS`=%u",lwrp->dstChannels(i));
+	QString::asprintf("`CHANNELS`=%u",lwrp->dstChannels(i));
       last_id=SqlQuery::run(sql).toInt();
       for(QMap<int,EndPointMap *>::const_iterator it=drouter_maps.begin();it!=drouter_maps.end();it++) {
 	if(it.value()->routerType()==EndPointMap::AudioRouter) {
 	  if((endpt=it.value()->endPoint(EndPointMap::Output,QHostAddress(id).toString(),i))>=0) {
 	    sql=QString("insert into `SA_DESTINATIONS` set ")+
-	      QString().sprintf("`ROUTER_NUMBER`=%d,",it.value()->routerNumber())+
-	      QString().sprintf("`SOURCE_NUMBER`=%d,",endpt)+
-	      QString().sprintf("`DESTINATION_ID`=%d,",last_id)+
+	      QString::asprintf("`ROUTER_NUMBER`=%d,",it.value()->routerNumber())+
+	      QString::asprintf("`SOURCE_NUMBER`=%d,",endpt)+
+	      QString::asprintf("`DESTINATION_ID`=%d,",last_id)+
 	      "`STREAM_ADDRESS`='"+
 	      Config::normalizedStreamAddress(lwrp->dstAddress(i)).toString()+"',"+
 	      "`HOST_ADDRESS`='"+QHostAddress(id).toString()+"',"+
-	      QString().sprintf("`SLOT`=%d",i);
+	      QString::asprintf("`SLOT`=%d",i);
 	    if(!it.value()->name(EndPointMap::Output,endpt).isEmpty()) {
 	      sql+=",`NAME`='"+
 	      SqlQuery::escape(it.value()->name(EndPointMap::Output,endpt))+"'";
@@ -359,7 +359,7 @@ void DRouter::nodeConnectedData(unsigned id,bool state)
     for(unsigned i=0;i<lwrp->gpis();i++) {
       sql=QString("insert into `GPIS` set ")+
 	"`HOST_ADDRESS`='"+QHostAddress(id).toString()+"',"+
-	QString().sprintf("`SLOT`=%u,",i)+
+	QString::asprintf("`SLOT`=%u,",i)+
 	"`HOST_NAME`='"+SqlQuery::escape(lwrp->hostName())+"',"+
 	"`CODE`='"+lwrp->gpiBundle(i)->code()+"'";
       last_id=SqlQuery::run(sql).toInt();
@@ -367,11 +367,11 @@ void DRouter::nodeConnectedData(unsigned id,bool state)
 	if(it.value()->routerType()==EndPointMap::GpioRouter) {
 	  if((endpt=it.value()->endPoint(EndPointMap::Input,QHostAddress(id).toString(),i))>=0) {
 	    sql=QString("insert into `SA_GPIS` set ")+
-	      QString().sprintf("`ROUTER_NUMBER`=%d,",it.value()->routerNumber())+
-	      QString().sprintf("`SOURCE_NUMBER`=%d,",endpt)+
-	      QString().sprintf("`GPI_ID`=%d,",last_id)+
+	      QString::asprintf("`ROUTER_NUMBER`=%d,",it.value()->routerNumber())+
+	      QString::asprintf("`SOURCE_NUMBER`=%d,",endpt)+
+	      QString::asprintf("`GPI_ID`=%d,",last_id)+
 	      "`HOST_ADDRESS`='"+QHostAddress(id).toString()+"',"+
-	      QString().sprintf("`SLOT`=%d",i);
+	      QString::asprintf("`SLOT`=%d",i);
 	    if(!it.value()->name(EndPointMap::Input,endpt).isEmpty()) {
 	      sql+=",`NAME`='"+
 	       SqlQuery::escape(it.value()->name(EndPointMap::Input,endpt))+"'";
@@ -384,28 +384,28 @@ void DRouter::nodeConnectedData(unsigned id,bool state)
     for(unsigned i=0;i<lwrp->gpos();i++) {
       QString name=lwrp->gpo(i)->name();
       if(name.isEmpty()) {
-	name=QString().sprintf("GPO %d",i+1);
+	name=QString::asprintf("GPO %d",i+1);
       }
       sql=QString("insert into `GPOS` set ")+
 	"`HOST_ADDRESS`='"+QHostAddress(id).toString()+"',"+
-	QString().sprintf("`SLOT`=%u,",i)+
+	QString::asprintf("`SLOT`=%u,",i)+
 	"`HOST_NAME`='"+SqlQuery::escape(lwrp->hostName())+"',"+
 	"`CODE`='"+lwrp->gpiBundle(i)->code()+"',"+
 	"`NAME`='"+SqlQuery::escape(name)+"',"+
 	"`SOURCE_ADDRESS`='"+lwrp->gpo(i)->sourceAddress().toString()+"',"+
-	QString().sprintf("`SOURCE_SLOT`=%d",lwrp->gpo(i)->sourceSlot());
+	QString::asprintf("`SOURCE_SLOT`=%d",lwrp->gpo(i)->sourceSlot());
       last_id=SqlQuery::run(sql).toInt();
       for(QMap<int,EndPointMap *>::const_iterator it=drouter_maps.begin();it!=drouter_maps.end();it++) {
 	if(it.value()->routerType()==EndPointMap::GpioRouter) {
 	  if((endpt=it.value()->endPoint(EndPointMap::Output,QHostAddress(id).toString(),i))>=0) {
 	    sql=QString("insert into `SA_GPOS` set ")+
-	      QString().sprintf("`ROUTER_NUMBER`=%d,",it.value()->routerNumber())+
-	      QString().sprintf("`SOURCE_NUMBER`=%d,",endpt)+
-	      QString().sprintf("`GPO_ID`=%d,",last_id)+
+	      QString::asprintf("`ROUTER_NUMBER`=%d,",it.value()->routerNumber())+
+	      QString::asprintf("`SOURCE_NUMBER`=%d,",endpt)+
+	      QString::asprintf("`GPO_ID`=%d,",last_id)+
 	      "`SOURCE_ADDRESS`='"+lwrp->gpo(i)->sourceAddress().toString()+"',"+
-	      QString().sprintf("`SOURCE_SLOT`=%d,",lwrp->gpo(i)->sourceSlot())+
+	      QString::asprintf("`SOURCE_SLOT`=%d,",lwrp->gpo(i)->sourceSlot())+
 	      "`HOST_ADDRESS`='"+QHostAddress(id).toString()+"',"+
-	      QString().sprintf("`SLOT`=%d",i);
+	      QString::asprintf("`SLOT`=%d",i);
 	    if(!it.value()->name(EndPointMap::Output,endpt).isEmpty()) {
 	      sql+=",`NAME`='"+
 	      SqlQuery::escape(it.value()->name(EndPointMap::Output,endpt))+"'";
@@ -497,20 +497,20 @@ void DRouter::sourceChangedData(unsigned id,int slotnum,const SyNode &node,
     "`STREAM_ADDRESS`='"+
     Config::normalizedStreamAddress(src.streamAddress()).toString()+"',"+
     "`NAME`='"+SqlQuery::escape(src.name())+"',"+
-    QString().sprintf("`STREAM_ENABLED`=%u,",src.enabled())+
-    QString().sprintf("`CHANNELS`=%u,",src.channels())+
-    QString().sprintf("`BLOCK_SIZE`=%u where ",src.packetSize())+
+    QString::asprintf("`STREAM_ENABLED`=%u,",src.enabled())+
+    QString::asprintf("`CHANNELS`=%u,",src.channels())+
+    QString::asprintf("`BLOCK_SIZE`=%u where ",src.packetSize())+
     "`HOST_ADDRESS`='"+QHostAddress(id).toString()+"' && "+
-    QString().sprintf("`SLOT`=%u",slotnum);
+    QString::asprintf("`SLOT`=%u",slotnum);
   SqlQuery::apply(sql);
   sql=QString("update `SA_SOURCES` set ")+
     "`STREAM_ADDRESS`='"+
     Config::normalizedStreamAddress(src.streamAddress()).toString()+"' where "+
     "`HOST_ADDRESS`='"+QHostAddress(id).toString()+"' && "+
-    QString().sprintf("`SLOT`=%u",slotnum);
+    QString::asprintf("`SLOT`=%u",slotnum);
   SqlQuery::apply(sql);
   NotifyProtocols("SRC",QHostAddress(id).toString()+
-		  QString().sprintf(":%u",slotnum));
+		  QString::asprintf(":%u",slotnum));
 }
 
 
@@ -524,7 +524,7 @@ void DRouter::destinationChangedData(unsigned id,int slotnum,const SyNode &node,
   sql=QString("select ")+
     "`STREAM_ADDRESS` from `DESTINATIONS` where "
     "`HOST_ADDRESS`='"+QHostAddress(id).toString()+"' && "+
-    QString().sprintf("`SLOT`=%d",slotnum);
+    QString::asprintf("`SLOT`=%d",slotnum);
   q=new SqlQuery(sql);
   if(q->first()) {
     xpoint_changed=QHostAddress(q->value(0).toString())!=dst.streamAddress();
@@ -536,22 +536,22 @@ void DRouter::destinationChangedData(unsigned id,int slotnum,const SyNode &node,
     "`STREAM_ADDRESS`='"+
     Config::normalizedStreamAddress(dst.streamAddress()).toString()+"',"+
     "`NAME`='"+SqlQuery::escape(dst.name())+"',"+
-    QString().sprintf("`CHANNELS`=%u where ",dst.channels())+
+    QString::asprintf("`CHANNELS`=%u where ",dst.channels())+
     "`HOST_ADDRESS`='"+QHostAddress(id).toString()+"' && "+
-    QString().sprintf("`SLOT`=%u",slotnum);
+    QString::asprintf("`SLOT`=%u",slotnum);
   SqlQuery::apply(sql);
   sql=QString("update `SA_DESTINATIONS` set ")+
     "`STREAM_ADDRESS`='"+
     Config::normalizedStreamAddress(dst.streamAddress()).toString()+"' where "+
     "`HOST_ADDRESS`='"+QHostAddress(id).toString()+"' && "+
-    QString().sprintf("`SLOT`=%u",slotnum);
+    QString::asprintf("`SLOT`=%u",slotnum);
   SqlQuery::apply(sql);
   if(xpoint_changed) {
     NotifyProtocols("DSTX",QHostAddress(id).toString()+
-		    QString().sprintf(":%u",slotnum));
+		    QString::asprintf(":%u",slotnum));
   }
   NotifyProtocols("DST",QHostAddress(id).toString()+
-		  QString().sprintf(":%u",slotnum));
+		  QString::asprintf(":%u",slotnum));
 }
 
 
@@ -566,7 +566,7 @@ void DRouter::gpiChangedData(unsigned id,int slotnum,const SyNode &node,
     "`CODE` "+            // 00
     "from `GPIS` where "+
     "`HOST_ADDRESS`='"+QHostAddress(id).toString()+"' && "+
-    QString().sprintf("`SLOT`=%d",slotnum);
+    QString::asprintf("`SLOT`=%d",slotnum);
   q=new SqlQuery(sql);
   if(q->first()) {
     code_changed=q->value(0).toString().toLower()!=gpi.code().toLower();
@@ -576,14 +576,14 @@ void DRouter::gpiChangedData(unsigned id,int slotnum,const SyNode &node,
   sql=QString("update `GPIS` set ")+
     "`CODE`='"+gpi.code().toLower()+"' where "+
     "`HOST_ADDRESS`='"+QHostAddress(id).toString()+"' && "+
-    QString().sprintf("`SLOT`=%u",slotnum);
+    QString::asprintf("`SLOT`=%u",slotnum);
   SqlQuery::apply(sql);
   if(code_changed) {
     NotifyProtocols("GPICODE",QHostAddress(id).toString()+
-		    QString().sprintf(":%u",slotnum));
+		    QString::asprintf(":%u",slotnum));
   }
   NotifyProtocols("GPI",QHostAddress(id).toString()+
-		  QString().sprintf(":%u",slotnum));
+		  QString::asprintf(":%u",slotnum));
 }
 
 
@@ -601,7 +601,7 @@ void DRouter::gpoChangedData(unsigned id,int slotnum,const SyNode &node,
     "`CODE` "+            // 02
     "from `GPOS` where "+
     "`HOST_ADDRESS`='"+QHostAddress(id).toString()+"' && "+
-    QString().sprintf("`SLOT`=%d",slotnum);
+    QString::asprintf("`SLOT`=%d",slotnum);
   q=new SqlQuery(sql);
   if(q->first()) {
     xpoint_changed=(QHostAddress(q->value(0).toString())!=gpo.sourceAddress()||
@@ -614,26 +614,26 @@ void DRouter::gpoChangedData(unsigned id,int slotnum,const SyNode &node,
     "`CODE`='"+gpo.bundle()->code().toLower()+"',"+
     "`NAME`='"+SqlQuery::escape(gpo.name())+"',"+
     "`SOURCE_ADDRESS`='"+gpo.sourceAddress().toString()+"',"+
-    QString().sprintf("`SOURCE_SLOT`=%d where ",gpo.sourceSlot())+
+    QString::asprintf("`SOURCE_SLOT`=%d where ",gpo.sourceSlot())+
     "`HOST_ADDRESS`='"+QHostAddress(id).toString()+"' && "+
-    QString().sprintf("`SLOT`=%u",slotnum);
+    QString::asprintf("`SLOT`=%u",slotnum);
   SqlQuery::apply(sql);
   sql=QString("update `SA_GPOS` set ")+
     "`SOURCE_ADDRESS`='"+gpo.sourceAddress().toString()+"',"+
-    QString().sprintf("`SOURCE_SLOT`=%d where ",gpo.sourceSlot())+
+    QString::asprintf("`SOURCE_SLOT`=%d where ",gpo.sourceSlot())+
     "`HOST_ADDRESS`='"+QHostAddress(id).toString()+"' && "+
-    QString().sprintf("`SLOT`=%u",slotnum);
+    QString::asprintf("`SLOT`=%u",slotnum);
   SqlQuery::apply(sql);
   if(xpoint_changed) {
     NotifyProtocols("GPOX",QHostAddress(id).toString()+
-		    QString().sprintf(":%u",slotnum));
+		    QString::asprintf(":%u",slotnum));
   }
   if(code_changed) {
     NotifyProtocols("GPOCODE",QHostAddress(id).toString()+
-		    QString().sprintf(":%u",slotnum));
+		    QString::asprintf(":%u",slotnum));
   }
   NotifyProtocols("GPO",QHostAddress(id).toString()+
-		  QString().sprintf(":%u",slotnum));
+		  QString::asprintf(":%u",slotnum));
 }
 
 
@@ -653,11 +653,11 @@ void DRouter::audioClipAlarmData(unsigned id,SyLwrpClient::MeterType type,
   }
   if((lwrp=drouter_nodes[id])!=NULL) {
     sql=QString("update `")+table+"` set "+
-      "`"+chan_name+"_CLIP`="+QString().sprintf("%d where ",state)+
+      "`"+chan_name+"_CLIP`="+QString::asprintf("%d where ",state)+
       "`HOST_ADDRESS`='"+QHostAddress(id).toString()+"' && "+
-      QString().sprintf("`SLOT`=%d",slotnum);
+      QString::asprintf("`SLOT`=%d",slotnum);
     SqlQuery::apply(sql);
-    NotifyProtocols("CLIP",QString().sprintf("%d:%d:",type,chan)+QHostAddress(id).toString()+QString().sprintf(":%d",slotnum));
+    NotifyProtocols("CLIP",QString::asprintf("%d:%d:",type,chan)+QHostAddress(id).toString()+QString::asprintf(":%d",slotnum));
     //    emit clipAlarmChanged(*(lwrp->node()),(int)slotnum,type,chan,state);
   }
 }
@@ -680,11 +680,11 @@ void DRouter::audioSilenceAlarmData(unsigned id,SyLwrpClient::MeterType type,
 
   if((lwrp=drouter_nodes[id])!=NULL) {
     sql=QString("update `")+table+"` set "+
-      "`"+chan_name+"_SILENCE`="+QString().sprintf("%d where ",state)+
+      "`"+chan_name+"_SILENCE`="+QString::asprintf("%d where ",state)+
       "`HOST_ADDRESS`='"+QHostAddress(id).toString()+"' && "+
-      QString().sprintf("`SLOT`=%d",slotnum);
+      QString::asprintf("`SLOT`=%d",slotnum);
     SqlQuery::apply(sql);
-    NotifyProtocols("SILENCE",QString().sprintf("%d:%d:",type,chan)+QHostAddress(id).toString()+QString().sprintf(":%d",slotnum));
+    NotifyProtocols("SILENCE",QString::asprintf("%d:%d:",type,chan)+QHostAddress(id).toString()+QString::asprintf(":%d",slotnum));
   }
 }
 
@@ -789,7 +789,7 @@ void DRouter::NotifyProtocols(const QString &type,const QString &id,
     }
     else {
       it.value()->write((type+":"+id+
-			 QString().sprintf(":%d:%d:%d:%d\r\n",
+			 QString::asprintf(":%d:%d:%d:%d\r\n",
 					   srcs,dsts,gpis,gpos)).toUtf8());
     }
   }
@@ -1223,6 +1223,6 @@ void DRouter::SendProtoSocket(int dest_sock,int proto_sock)
 void DRouter::Log(int prio,const QString &msg) const
 {
   if(prio>=0) {
-    syslog(prio,msg.toUtf8());
+    syslog(prio,"%s",msg.toUtf8().constData());
   }
 }

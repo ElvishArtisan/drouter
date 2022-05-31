@@ -2,7 +2,7 @@
 //
 // Protocol D handler for DRouter.
 //
-//   (C) Copyright 2018-2019 Fred Gleason <fredg@paravelsystems.com>
+//   (C) Copyright 2018-2022 Fred Gleason <fredg@paravelsystems.com>
 //
 //   This program is free software; you can redistribute it and/or modify
 //   it under the terms of the GNU General Public License version 2 as
@@ -216,25 +216,25 @@ void ProtocolD::nodeRemoved(const QHostAddress &host_addr,
   if(proto_gpos_subscribed) {
     for(int i=0;i<gpos;i++) {
       proto_socket->write(("GPODEL\t"+host_addr.toString()+"\t"+
-			   QString().sprintf("%d\r\n",i)).toUtf8());
+			   QString::asprintf("%d\r\n",i)).toUtf8());
     }
   }
   if(proto_gpis_subscribed) {
     for(int i=0;i<gpis;i++) {
       proto_socket->write(("GPIDEL\t"+host_addr.toString()+"\t"+
-			   QString().sprintf("%d\r\n",i)).toUtf8());
+			   QString::asprintf("%d\r\n",i)).toUtf8());
     }
   }
   if(proto_destinations_subscribed) {
     for(int i=0;i<dsts;i++) {
       proto_socket->write(("DSTDEL\t"+host_addr.toString()+"\t"+
-			   QString().sprintf("%d\r\n",i)).toUtf8());
+			   QString::asprintf("%d\r\n",i)).toUtf8());
     }
   }
   if(proto_sources_subscribed) {
     for(int i=0;i<srcs;i++) {
       proto_socket->write(("SRCDEL\t"+host_addr.toString()+"\t"+
-			   QString().sprintf("%d\r\n",i)).toUtf8());
+			   QString::asprintf("%d\r\n",i)).toUtf8());
     }
   }
   if(proto_nodes_subscribed) {
@@ -268,7 +268,7 @@ void ProtocolD::sourceChanged(const QHostAddress &host_addr,int slotnum)
   if(proto_sources_subscribed) {
     sql=SourceSqlFields()+"where "+
       "`HOST_ADDRESS`='"+host_addr.toString()+"' && "+
-      "`SLOT`="+QString().sprintf("%d",slotnum);
+      "`SLOT`="+QString::asprintf("%d",slotnum);
     q=new SqlQuery(sql);
     while(q->next()) {
       proto_socket->write(SourceRecord("SRC",q).toUtf8());
@@ -286,7 +286,7 @@ void ProtocolD::destinationChanged(const QHostAddress &host_addr,int slotnum)
   if(proto_destinations_subscribed) {
     sql=DestinationSqlFields()+"where "+
       "`HOST_ADDRESS`='"+host_addr.toString()+"' && "+
-      "`SLOT`="+QString().sprintf("%d",slotnum);
+      "`SLOT`="+QString::asprintf("%d",slotnum);
     q=new SqlQuery(sql);
     while(q->next()) {
       proto_socket->write(DestinationRecord("DST",q).toUtf8());
@@ -304,7 +304,7 @@ void ProtocolD::gpiChanged(const QHostAddress &host_addr,int slotnum)
   if(proto_gpis_subscribed) {
     sql=GpiSqlFields()+"where "+
       "`HOST_ADDRESS`='"+host_addr.toString()+"' && "+
-      "`SLOT`="+QString().sprintf("%d",slotnum);
+      "`SLOT`="+QString::asprintf("%d",slotnum);
     q=new SqlQuery(sql);
     while(q->next()) {
       proto_socket->write(GpiRecord("GPI",q).toUtf8());
@@ -322,7 +322,7 @@ void ProtocolD::gpoChanged(const QHostAddress &host_addr,int slotnum)
   if(proto_gpos_subscribed) {
     sql=GpoSqlFields()+"where "+
       "`HOST_ADDRESS`='"+host_addr.toString()+"' && "+
-      "`SLOT`="+QString().sprintf("%d",slotnum);
+      "`SLOT`="+QString::asprintf("%d",slotnum);
     q=new SqlQuery(sql);
     while(q->next()) {
       proto_socket->write(GpoRecord("GPO",q).toUtf8());
@@ -342,7 +342,7 @@ void ProtocolD::clipChanged(const QHostAddress &host_addr,int slotnum,
   if(proto_clips_subscribed) {
     sql=AlarmSqlFields("CLIP",chan)+"from "+tbl_name+" where ";
     sql+="`HOST_ADDRESS`='"+host_addr.toString()+"' && "+
-      QString().sprintf("`SLOT`=%d",slotnum);
+      QString::asprintf("`SLOT`=%d",slotnum);
     q=new SqlQuery(sql);
     while(q->next()) {
       proto_socket->write(AlarmRecord("CLIP",meter_type,chan,q).toUtf8());
@@ -362,7 +362,7 @@ void ProtocolD::silenceChanged(const QHostAddress &host_addr,int slotnum,
   if(proto_silences_subscribed) {
     sql=AlarmSqlFields("SILENCE",chan)+"from "+tbl_name+" where ";
     sql+="`HOST_ADDRESS`='"+host_addr.toString()+"' && "+
-      QString().sprintf("`SLOT`=%d",slotnum);
+      QString::asprintf("`SLOT`=%d",slotnum);
     q=new SqlQuery(sql);
     while(q->next()) {
       proto_socket->write(AlarmRecord("SILENCE",meter_type,chan,q).toUtf8());
@@ -757,7 +757,7 @@ QString ProtocolD::AlarmRecord(const QString &keyword,SyLwrpClient::MeterType po
 
   ret+=keyword+"\t";
   ret+=q->value(0).toString()+"\t";
-  ret+=QString().sprintf("%d\t",q->value(1).toInt());
+  ret+=QString::asprintf("%d\t",q->value(1).toInt());
   switch(port) {
   case SyLwrpClient::InputMeter:
     ret+="INPUT\t";
@@ -784,7 +784,7 @@ QString ProtocolD::AlarmRecord(const QString &keyword,SyLwrpClient::MeterType po
     ret+="UNKNOWN\t";
     break;
   }
-  ret+=QString().sprintf("%d\t",q->value(2).toInt());
+  ret+=QString::asprintf("%d\t",q->value(2).toInt());
   ret+="\r\n";
 
   return ret;
@@ -810,11 +810,11 @@ QString ProtocolD::DestinationRecord(const QString &keyword,SqlQuery *q) const
 
   ret+=keyword+"\t";
   ret+=q->value(0).toString()+"\t";
-  ret+=QString().sprintf("%d\t",q->value(1).toInt());
+  ret+=QString::asprintf("%d\t",q->value(1).toInt());
   ret+=q->value(2).toString()+"\t";
   ret+=q->value(3).toString()+"\t";
   ret+=q->value(4).toString()+"\t";
-  ret+=QString().sprintf("%u",q->value(5).toInt());
+  ret+=QString::asprintf("%u",q->value(5).toInt());
   ret+="\r\n";
 
   return ret;
@@ -838,7 +838,7 @@ QString ProtocolD::GpiRecord(const QString &keyword,SqlQuery *q)
 
   ret+=keyword+"\t";
   ret+=q->value(0).toString()+"\t";
-  ret+=QString().sprintf("%d\t",q->value(1).toInt());
+  ret+=QString::asprintf("%d\t",q->value(1).toInt());
   ret+=q->value(2).toString()+"\t";
   ret+=q->value(3).toString();
   ret+="\r\n";
@@ -867,12 +867,12 @@ QString ProtocolD::GpoRecord(const QString &keyword,SqlQuery *q)
 
   ret+=keyword+"\t";
   ret+=q->value(0).toString()+"\t";
-  ret+=QString().sprintf("%d\t",q->value(1).toInt());
+  ret+=QString::asprintf("%d\t",q->value(1).toInt());
   ret+=q->value(2).toString()+"\t";
   ret+=q->value(3).toString()+"\t";
   ret+=q->value(4).toString()+"\t";
   ret+=q->value(5).toString()+"\t";
-  ret+=QString().sprintf("%d",q->value(6).toInt());
+  ret+=QString::asprintf("%d",q->value(6).toInt());
   ret+="\r\n";
 
   return ret;
@@ -901,10 +901,10 @@ QString ProtocolD::NodeRecord(const QString &keyword,SqlQuery *q) const
   ret+=q->value(0).toString()+"\t";
   ret+=q->value(1).toString()+"\t";
   ret+=q->value(2).toString()+"\t";
-  ret+=QString().sprintf("%u\t",q->value(3).toInt());
-  ret+=QString().sprintf("%u\t",q->value(4).toInt());
-  ret+=QString().sprintf("%u\t",q->value(5).toInt());
-  ret+=QString().sprintf("%u",q->value(6).toInt());
+  ret+=QString::asprintf("%u\t",q->value(3).toInt());
+  ret+=QString::asprintf("%u\t",q->value(4).toInt());
+  ret+=QString::asprintf("%u\t",q->value(5).toInt());
+  ret+=QString::asprintf("%u",q->value(6).toInt());
   ret+="\r\n";
 
   return ret;
@@ -932,13 +932,13 @@ QString ProtocolD::SourceRecord(const QString &keyword,SqlQuery *q)
 
   ret+=keyword+"\t";
   ret+=q->value(0).toString()+"\t";
-  ret+=QString().sprintf("%d\t",q->value(1).toInt());
+  ret+=QString::asprintf("%d\t",q->value(1).toInt());
   ret+=q->value(2).toString()+"\t";
   ret+=q->value(3).toString()+"\t";
   ret+=q->value(4).toString()+"\t";
-  ret+=QString().sprintf("%u\t",q->value(5).toInt());
-  ret+=QString().sprintf("%u\t",q->value(6).toInt());
-  ret+=QString().sprintf("%u",q->value(7).toInt());
+  ret+=QString::asprintf("%u\t",q->value(5).toInt());
+  ret+=QString::asprintf("%u\t",q->value(6).toInt());
+  ret+=QString::asprintf("%u",q->value(7).toInt());
   ret+="\r\n";
 
   return ret;

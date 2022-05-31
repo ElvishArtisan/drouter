@@ -2,7 +2,7 @@
 //
 // Full graphical crosspoint panel for SA devices.
 //
-//   (C) Copyright 2017-2021 Fred Gleason <fredg@paravelsystems.com>
+//   (C) Copyright 2017-2022 Fred Gleason <fredg@paravelsystems.com>
 //
 //   This program is free software; you can redistribute it and/or modify
 //   it under the terms of the GNU General Public License as
@@ -30,6 +30,7 @@
 #include <QPainter>
 #include <QPixmap>
 #include <QTimer>
+#include <QScreen>
 #include <QScrollBar>
 #include <QSettings>
 
@@ -257,7 +258,7 @@ void MainWidget::routerBoxActivatedData(int n)
     name=panel_parser->inputLongName(router,i+1);
     if(panel_parser->inputIsReal(router,i+1)) {
       panel_input_list->addEndpoint(router,endpt,
-				    QString().sprintf("%d - ",endpt+1)+
+				    QString::asprintf("%d - ",endpt+1)+
 				  panel_parser->inputLongName(router,i+1));
       panel_input_list->
 	setGpioState(router,endpt,panel_parser->gpiState(router,i));
@@ -275,7 +276,7 @@ void MainWidget::routerBoxActivatedData(int n)
     name=panel_parser->outputLongName(router,i+1);
     if(panel_parser->outputIsReal(router,i+1)) {
       panel_output_list->addEndpoint(router,endpt,
-				     QString().sprintf("%d - ",endpt+1)+
+				     QString::asprintf("%d - ",endpt+1)+
 				     panel_parser->outputLongName(router,i+1));
       panel_output_list->
 	setGpioState(router,endpt,panel_parser->gpoState(router,i));
@@ -306,7 +307,11 @@ void MainWidget::routerBoxActivatedData(int n)
       }
     }
   }
-  QRect screen=QApplication::desktop()->availableGeometry();
+  //
+  // FIXME: Make this play better with multiple screens!
+  //
+  //  QRect screen=QApplication::desktop()->availableGeometry();
+  QRect screen=QGuiApplication::screens()[0]->availableGeometry();
 
   int info_width=15+panel_input_list->sizeHint().width();
   if(panel_output_list->sizeHint().width()>info_width) {
@@ -336,7 +341,7 @@ void MainWidget::connectedData(bool state,SaParser::ConnectionState cstate)
 	it++) {
       panel_router_box->
 	insertItem(panel_router_box->count(),
-		   QString().sprintf("%d - ",it.key())+it.value(),it.key());
+		   QString::asprintf("%d - ",it.key())+it.value(),it.key());
       if(it.key()==panel_initial_router) {
 	panel_router_box->setCurrentIndex(panel_router_box->count()-1);
       }
@@ -448,7 +453,7 @@ void MainWidget::inputHoveredEndpointChangedData(int router,int input)
   // Set Description Title
   //
   tt="";
-  tt+="<strong>"+QString().sprintf("%d - ",input);
+  tt+="<strong>"+QString::asprintf("%d - ",input);
   tt+=panel_parser->inputName(router,input)+"</strong>";
   tt+=" ON ";
   tt+="<strong>"+panel_parser->inputNodeName(router,input)+"</strong>";
@@ -463,7 +468,7 @@ void MainWidget::inputHoveredEndpointChangedData(int router,int input)
     tt+="Device: <strong>"+node->productName()+"</strong><br>";
   }
   if(panel_parser->inputSourceNumber(router,input)>0) {
-    tt+=QString().sprintf("Source Number: <strong>%d</strong><br>",
+    tt+=QString::asprintf("Source Number: <strong>%d</strong><br>",
 			  panel_parser->inputSourceNumber(router,input));
     tt+="Stream Address: <strong>"+
       panel_parser->inputStreamAddress(router,input).toString()+
@@ -471,7 +476,7 @@ void MainWidget::inputHoveredEndpointChangedData(int router,int input)
   }
   tt+="Node Address/Slot: <strong>"+
     panel_parser->inputNodeAddress(router,input).toString();
-  tt+=QString().sprintf("/%d</strong>",1+panel_parser->
+  tt+=QString::asprintf("/%d</strong>",1+panel_parser->
 			  inputNodeSlotNumber(router,input));
   panel_description_text_label->setText(tt);
 }
@@ -492,7 +497,7 @@ void MainWidget::outputHoveredEndpointChangedData(int router,int output)
   // Set Description Title
   //
   tt="";
-  tt+="<strong>"+QString().sprintf("%d - ",output);
+  tt+="<strong>"+QString::asprintf("%d - ",output);
   tt+=panel_parser->outputName(router,output)+"</strong>";
   tt+=" ON ";
   tt+="<strong>"+panel_parser->outputNodeName(router,output)+"</strong>";
@@ -508,7 +513,7 @@ void MainWidget::outputHoveredEndpointChangedData(int router,int output)
   }
   tt+="Node Address/Slot: <strong>"+
     panel_parser->outputNodeAddress(router,output).toString();
-  tt+=QString().sprintf("/%d</strong>",
+  tt+=QString::asprintf("/%d</strong>",
 			1+panel_parser->
 			outputNodeSlotNumber(router,output));
   panel_description_text_label->setText(tt);

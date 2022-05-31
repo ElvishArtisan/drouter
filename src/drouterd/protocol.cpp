@@ -2,7 +2,7 @@
 //
 // Base class for drouterd(8) protocols
 //
-//   (C) Copyright 2018-2021 Fred Gleason <fredg@paravelsystems.com>
+//   (C) Copyright 2018-2022 Fred Gleason <fredg@paravelsystems.com>
 //
 //   This program is free software; you can redistribute it and/or modify
 //   it under the terms of the GNU General Public License version 2 as
@@ -121,14 +121,14 @@ bool Protocol::startIpc(QString *err_msg)
 void Protocol::clearCrosspoint(const QHostAddress &node_addr,int slotnum)
 {
   proto_ipc_socket->write(("ClearCrosspoint "+node_addr.toString()+" "+
-			   QString().sprintf("%d\r\n",slotnum)).toUtf8());
+			   QString::asprintf("%d\r\n",slotnum)).toUtf8());
 }
 
 
 void Protocol::clearGpioCrosspoint(const QHostAddress &node_addr,int slotnum)
 {
   proto_ipc_socket->write(("ClearGpioCrosspoint "+node_addr.toString()+" "+
-			   QString().sprintf("%d\r\n",slotnum)).toUtf8());
+			   QString::asprintf("%d\r\n",slotnum)).toUtf8());
 }
 
 
@@ -136,9 +136,9 @@ void Protocol::setCrosspoint(const QHostAddress &dst_node_addr,int dst_slotnum,
 			     const QHostAddress &src_node_addr,int src_slotnum)
 {
   proto_ipc_socket->write(("SetCrosspoint "+dst_node_addr.toString()+
-			   QString().sprintf(" %d ",dst_slotnum)+
+			   QString::asprintf(" %d ",dst_slotnum)+
 			   src_node_addr.toString()+
-			   QString().sprintf(" %d\r\n",src_slotnum)).toUtf8());
+			   QString::asprintf(" %d\r\n",src_slotnum)).toUtf8());
 }
 
 
@@ -148,9 +148,9 @@ void Protocol::setGpioCrosspoint(const QHostAddress &gpo_node_addr,
 				 int gpi_slotnum)
 {
   proto_ipc_socket->write(("SetGpioCrosspoint "+gpo_node_addr.toString()+
-			   QString().sprintf(" %d ",gpo_slotnum)+
+			   QString::asprintf(" %d ",gpo_slotnum)+
 			   gpi_node_addr.toString()+
-			   QString().sprintf(" %d\r\n",gpi_slotnum)).toUtf8());
+			   QString::asprintf(" %d\r\n",gpi_slotnum)).toUtf8());
 }
 
 
@@ -158,7 +158,7 @@ void Protocol::setGpiState(const QHostAddress &gpi_node_addr,int gpi_slotnum,
 			   const QString &code)
 {
   proto_ipc_socket->write(("SetGpiState "+gpi_node_addr.toString()+
-			   QString().sprintf(" %d ",gpi_slotnum)+code+"\r\n").
+			   QString::asprintf(" %d ",gpi_slotnum)+code+"\r\n").
 			  toUtf8());
 }
 
@@ -167,7 +167,7 @@ void Protocol::setGpoState(const QHostAddress &gpo_node_addr,int gpo_slotnum,
 			   const QString &code)
 {
   proto_ipc_socket->write(("SetGpoState "+gpo_node_addr.toString()+
-			   QString().sprintf(" %d ",gpo_slotnum)+code+"\r\n").
+			   QString::asprintf(" %d ",gpo_slotnum)+code+"\r\n").
 			  toUtf8());
 }
 
@@ -289,7 +289,7 @@ Config *Protocol::config()
 void Protocol::logIpc(const QString &msg)
 {
   if(proto_config->ipcLogPriority()>=0) {
-    syslog(proto_config->ipcLogPriority(),msg.toUtf8());
+    syslog(proto_config->ipcLogPriority(),"%s",msg.toUtf8().constData());
   }
 }
 

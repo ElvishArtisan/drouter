@@ -2,7 +2,7 @@
 //
 // Button container for a single output.
 //
-//   (C) Copyright 2002-2020 Fred Gleason <fredg@paravelsystems.com>
+//   (C) Copyright 2002-2022 Fred Gleason <fredg@paravelsystems.com>
 //
 //   This program is free software; you can redistribute it and/or modify
 //   it under the terms of the GNU General Public License as
@@ -135,7 +135,7 @@ void ButtonWidget::changeConnectionState(bool state,
       QMessageBox::
 	warning(this,"ButtonPanel - "+tr("Error"),
 		tr("Output")+
-		QString().sprintf(" %d:%d ",panel_router,panel_output+1)+
+		QString::asprintf(" %d:%d ",panel_router,panel_output+1)+
 		tr("does not exist!"));
       exit(1);
     }

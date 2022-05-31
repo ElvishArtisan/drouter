@@ -187,7 +187,7 @@ int SaParser::outputCrosspoint(int router,int output) const
 
 void SaParser::setOutputCrosspoint(int router,int output,int input)
 {
-  SendCommand(QString().sprintf("ActivateRoute %d %d %d",router,output,input));
+  SendCommand(QString::asprintf("ActivateRoute %d %d %d",router,output,input));
 }
 
 
@@ -200,11 +200,11 @@ QString SaParser::gpiState(int router,int input) const
 void SaParser::setGpiState(int router,int input,const QString &code,int msec)
 {
   if(msec<0) {
-    SendCommand(QString().sprintf("TriggerGPI %d %d %s",router,input,
+    SendCommand(QString::asprintf("TriggerGPI %d %d %s",router,input,
 				  code.toUtf8().constData()));
   }
   else {
-    SendCommand(QString().sprintf("TriggerGPI %d %d %s %d",router,input,
+    SendCommand(QString::asprintf("TriggerGPI %d %d %s %d",router,input,
 				  code.toUtf8().constData(),msec));
   }
 }
@@ -219,11 +219,11 @@ QString SaParser::gpoState(int router,int output) const
 void SaParser::setGpoState(int router,int output,const QString &code,int msec)
 {
   if(msec<0) {
-    SendCommand(QString().sprintf("TriggerGPO %d %d %s",router,output,
+    SendCommand(QString::asprintf("TriggerGPO %d %d %s",router,output,
 				  code.toUtf8().constData()));
   }
   else {
-    SendCommand(QString().sprintf("TriggerGPO %d %d %s %d",router,output,
+    SendCommand(QString::asprintf("TriggerGPO %d %d %s %d",router,output,
 				  code.toUtf8().constData(),msec));
   }
 }
@@ -243,7 +243,7 @@ QString SaParser::snapshotName(int router,int n) const
 
 void SaParser::activateSnapshot(int router,const QString &snapshot)
 {
-  SendCommand(QString().sprintf("ActivateSnap %d ",router)+snapshot);
+  SendCommand(QString::asprintf("ActivateSnap %d ",router)+snapshot);
 }
 
 
@@ -261,7 +261,7 @@ void SaParser::connectToHost(const QString &hostname,uint16_t port,
 
 QString SaParser::connectionStateString(ConnectionState cstate)
 {
-  QString ret=tr("Unknown")+QString().sprintf(" [%d]",cstate);
+  QString ret=tr("Unknown")+QString::asprintf(" [%d]",cstate);
 
   switch(cstate) {
   case SaParser::Ok:
@@ -435,7 +435,7 @@ void SaParser::DispatchCommand(QString cmd)
 	emit routerListChanged();
 	for(QMap<int,QString>::const_iterator it=sa_router_names.begin();
 	    it!=sa_router_names.end();it++) {
-	  SendCommand(QString().sprintf("SourceNames %u",it.key()));
+	  SendCommand(QString::asprintf("SourceNames %u",it.key()));
 	  sa_last_router=it.key();
 	}
       }
@@ -448,7 +448,7 @@ void SaParser::DispatchCommand(QString cmd)
 	  emit inputListChanged();
 	  for(QMap<int,QString>::const_iterator it=sa_router_names.begin();
 	      it!=sa_router_names.end();it++) {
-	    SendCommand(QString().sprintf("DestNames %u",it.key()));
+	    SendCommand(QString::asprintf("DestNames %u",it.key()));
 	  }
 	}
 	if((f0[1]=="destnames")&&(sa_current_router==sa_last_router)) {
@@ -456,13 +456,13 @@ void SaParser::DispatchCommand(QString cmd)
 	  emit outputListChanged();
 	  for(QMap<int,QString>::const_iterator it=sa_router_names.begin();
 	      it!=sa_router_names.end();it++) {
-	    SendCommand(QString().sprintf("Snapshots %u",it.key()));
+	    SendCommand(QString::asprintf("Snapshots %u",it.key()));
 	  }
 	}
 	if((f0[1]=="snapshotnames")&&(sa_current_router==sa_last_router)) {
 	  for(QMap<int,QString>::const_iterator it=sa_router_names.begin();
 	      it!=sa_router_names.end();it++) {
-	    SendCommand(QString().sprintf("RouteStat %u\r\n",it.key()));
+	    SendCommand(QString::asprintf("RouteStat %u\r\n",it.key()));
 	    sa_last_xpoint_router=it.key();
 	    QMap<int,QString>::const_iterator it2=
 	      sa_output_names[it.key()].end();
@@ -515,8 +515,8 @@ void SaParser::DispatchCommand(QString cmd)
 
 	    for(QMap<int,QString>::const_iterator it=sa_router_names.begin();
 		it!=sa_router_names.end();it++) {
-	      SendCommand(QString().sprintf("GPIStat %d",it.key()));
-	      SendCommand(QString().sprintf("GPOStat %d",it.key()));
+	      SendCommand(QString::asprintf("GPIStat %d",it.key()));
+	      SendCommand(QString::asprintf("GPOStat %d",it.key()));
 	    }
 	    sa_startup_timer->start(SAPARSER_STARTUP_INTERVAL);
 	  }
@@ -561,7 +561,7 @@ void SaParser::DispatchCommand(QString cmd)
 void SaParser::ReadRouterName(const QString &cmd)
 {
   bool ok=false;
-  QStringList f0=cmd.split(" ",QString::SkipEmptyParts);
+  QStringList f0=cmd.split(" ",Qt::SkipEmptyParts);
   if(f0.size()>=2) {
     for(int i=2;i<f0.size();i++) {
       f0[1]+=" "+f0[i];
@@ -602,15 +602,15 @@ void SaParser::ReadSourceName(const QString &cmd)
       if(f0[1].trimmed().isEmpty()) {
 	if(sa_gpio_supporteds[sa_current_router]) {
 	  sa_input_names[sa_current_router][input]=
-	    tr("GPI")+QString().sprintf(" %d",input);
+	    tr("GPI")+QString::asprintf(" %d",input);
 	  sa_input_long_names[sa_current_router][input]=
-	    tr("GPI")+QString().sprintf(" %d",input)+f0[2];
+	    tr("GPI")+QString::asprintf(" %d",input)+f0[2];
 	}
 	else {
 	  sa_input_names[sa_current_router][input]=
-	    tr("Input")+QString().sprintf(" %d",input);
+	    tr("Input")+QString::asprintf(" %d",input);
 	  sa_input_long_names[sa_current_router][input]=
-	    tr("Input")+QString().sprintf(" %d",input)+f0[2];
+	    tr("Input")+QString::asprintf(" %d",input)+f0[2];
 	}
       }
       else {

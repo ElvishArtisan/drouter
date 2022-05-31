@@ -2,7 +2,7 @@
 //
 //  Emit a Qt signal upon reception of SIGINT or SIGTERM
 //
-//   (C) Copyright 2019 Fred Gleason <fredg@paravelsystems.com>
+//   (C) Copyright 2019-2022 Fred Gleason <fredg@paravelsystems.com>
 //
 //   This program is free software; you can redistribute it and/or modify
 //   it under the terms of the GNU Library General Public License 
@@ -34,7 +34,9 @@ void __ExitNotifierSigHandler(int signo)
   switch(signo) {
   case SIGINT:
   case SIGTERM:
-    write(__exit_notifier_sockets[0],"X",1);
+    if(write(__exit_notifier_sockets[0],"X",1)<0) {
+      fprintf(stderr,"error writing exit notifier [%s]\n",strerror(errno));
+    }
   }
 }
 

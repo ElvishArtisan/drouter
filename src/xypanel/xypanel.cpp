@@ -2,7 +2,7 @@
 //
 // An applet for controling an LWPath output
 //
-//   (C) Copyright 2002-2021 Fred Gleason <fredg@paravelsystems.com>
+//   (C) Copyright 2002-2022 Fred Gleason <fredg@paravelsystems.com>
 //
 //   This program is free software; you can redistribute it and/or modify
 //   it under the terms of the GNU General Public License as
@@ -243,7 +243,7 @@ void MainWidget::routerBoxActivatedData(int n)
     name=panel_parser->outputLongName(router,endpt+1);
     if(!name.isEmpty()) {
       panel_output_box->
-	insertItem(endpt,QString().sprintf("%u - ",endpt+1)+name,endpt+1);
+	insertItem(endpt,QString::asprintf("%u - ",endpt+1)+name,endpt+1);
       count++;
     }
     endpt++;
@@ -254,7 +254,7 @@ void MainWidget::routerBoxActivatedData(int n)
     if(panel_parser->inputIsReal(router,i+1)) {
       name=panel_parser->inputLongName(router,i+1);
       panel_input_box->
-	insertItem(panel_input_box->count(),QString().sprintf("%u - ",i+1)+name,i+1);
+	insertItem(panel_input_box->count(),QString::asprintf("%u - ",i+1)+name,i+1);
       count++;
     }
   }
@@ -313,7 +313,7 @@ void MainWidget::connectedData(bool state,SaParser::ConnectionState cstate)
 	it++) {
       panel_router_box->
 	insertItem(panel_router_box->count(),
-		   QString().sprintf("%d - ",it.key())+it.value(),it.key());
+		   QString::asprintf("%d - ",it.key())+it.value(),it.key());
       if(it.key()==panel_initial_router) {
 	panel_router_box->setCurrentIndex(panel_router_box->count()-1);
       }

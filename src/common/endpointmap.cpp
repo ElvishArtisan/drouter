@@ -2,7 +2,7 @@
 //
 // Map integers to DRouter endpoints.
 //
-// (C) Copyright 2017-2021 Fred Gleason <fredg@paravelsystems.com>
+// (C) Copyright 2017-2022 Fred Gleason <fredg@paravelsystems.com>
 //
 //   This program is free software; you can redistribute it and/or modify
 //   it under the terms of the GNU General Public License version 2 as
@@ -272,16 +272,16 @@ bool EndPointMap::load(const QString &filename,QStringList *unused_lines)
     map_router_number=p->intValue("Global","RouterNumber",1)-1;
 
     addr=p->addressValue(EndPointMap::typeString(type)+
-	     QString().sprintf("%d",count+1),"HostAddress",QHostAddress(),&ok);
+	     QString::asprintf("%d",count+1),"HostAddress",QHostAddress(),&ok);
     while(ok) {
       map_host_addresses[type].push_back(addr);
       map_slots[type].push_back(p->intValue(EndPointMap::typeString(type)+
-	       QString().sprintf("%d",count+1),"Slot")-1);
+	       QString::asprintf("%d",count+1),"Slot")-1);
       map_names[type].push_back(p->stringValue(EndPointMap::typeString(type)+
-	       QString().sprintf("%d",count+1),"Name"));
+	       QString::asprintf("%d",count+1),"Name"));
       count++;
       addr=p->addressValue(EndPointMap::typeString(type)+
-	       QString().sprintf("%d",count+1),"HostAddress",QHostAddress(),&ok);
+	       QString::asprintf("%d",count+1),"HostAddress",QHostAddress(),&ok);
     }
   }
 
@@ -290,7 +290,7 @@ bool EndPointMap::load(const QString &filename,QStringList *unused_lines)
   //
   QString name;
   int snap=0;
-  QString section=QString().sprintf("Snapshot%d",snap+1);
+  QString section=QString::asprintf("Snapshot%d",snap+1);
   bool ok=false;
 
   for(int i=0;i<map_snapshots.size();i++) {
@@ -303,16 +303,16 @@ bool EndPointMap::load(const QString &filename,QStringList *unused_lines)
     map_snapshots.push_back(new Snapshot(name));
     int route=0;
     int output=
-      p->intValue(section,QString().sprintf("Route%dOutput",route+1),0,&ok);
+      p->intValue(section,QString::asprintf("Route%dOutput",route+1),0,&ok);
     while(ok) {
-      map_snapshots.back()->addRoute(output,p->intValue(section,QString().sprintf("Route%dInput",route+1),0,&ok));
+      map_snapshots.back()->addRoute(output,p->intValue(section,QString::asprintf("Route%dInput",route+1),0,&ok));
       route++;
       output=
-	p->intValue(section,QString().sprintf("Route%dOutput",route+1),0,&ok);
+	p->intValue(section,QString::asprintf("Route%dOutput",route+1),0,&ok);
     }
 
     snap++;
-    section=QString().sprintf("Snapshot%d",snap+1);
+    section=QString::asprintf("Snapshot%d",snap+1);
     name=p->stringValue(section,"Name","",&ok);
   }
   if(unused_lines!=NULL) {
@@ -426,14 +426,14 @@ bool EndPointMap::loadSet(QMap<int,EndPointMap *> *maps,QStringList *msgs)
 	  if(map->snapshot(j)->routeOutput(k)>=
 	     map->quantity(EndPointMap::Output)) {
 	    msgs->clear();
-	    msgs->push_back(QString().sprintf("invalid output \"%d\"",map->snapshot(j)->routeOutput(k))+" in snapshot \""+map->snapshot(j)->name()+"\" in \""+
+	    msgs->push_back(QString::asprintf("invalid output \"%d\"",map->snapshot(j)->routeOutput(k))+" in snapshot \""+map->snapshot(j)->name()+"\" in \""+
 			    pathname+"\"");
 	    return false;
 	  }
 	  if(map->snapshot(j)->routeInput(k)>=
 	     map->quantity(EndPointMap::Input)) {
 	    msgs->clear();
-	    msgs->push_back(QString().sprintf("invalid input \"%d\"",map->snapshot(j)->routeInput(k))+" in snapshot \""+map->snapshot(j)->name()+"\" in \""+
+	    msgs->push_back(QString::asprintf("invalid input \"%d\"",map->snapshot(j)->routeInput(k))+" in snapshot \""+map->snapshot(j)->name()+"\" in \""+
 			    pathname+"\"");
 	    return false;
 	  }
@@ -444,7 +444,7 @@ bool EndPointMap::loadSet(QMap<int,EndPointMap *> *maps,QStringList *msgs)
 	if(it.key()==map->routerNumber()) {
 	  msgs->clear();
 	  msgs->push_back(QString("duplicate SA router number ")+
-			  QString().sprintf("\"%d\" ",map->routerNumber()+1)+
+			  QString::asprintf("\"%d\" ",map->routerNumber()+1)+
 			  "in maps \""+it.value()->routerName()+"\" and \""+
 			  map->routerName()+"\"");
 	  return false;
@@ -457,7 +457,7 @@ bool EndPointMap::loadSet(QMap<int,EndPointMap *> *maps,QStringList *msgs)
       }
       (*maps)[map->routerNumber()]=map;
       msgs->push_back("loaded SA map from \""+dir.path()+"/"+mapfiles.at(i)+
-		      "\" "+QString().sprintf("[%d:",map->routerNumber()+1)+
+		      "\" "+QString::asprintf("[%d:",map->routerNumber()+1)+
 		      map->routerName()+"]");
     }
   }

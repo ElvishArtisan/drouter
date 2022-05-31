@@ -2,7 +2,7 @@
 //
 //  A Qt driver for tty ports.
 //
-//   (C) Copyright 2010-1019 Fred Gleason <fredg@paravelsystems.com>
+//   (C) Copyright 2010-1022 Fred Gleason <fredg@paravelsystems.com>
 //
 //   This program is free software; you can redistribute it and/or modify
 //   it under the terms of the GNU Library General Public License 
@@ -604,5 +604,7 @@ void TTYDevice::writeTtyData()
     data[i]=tty_write_queue.front();
     tty_write_queue.pop();
   }
-  ::write(tty_fd,data,n);
+  if(::write(tty_fd,data,n)<n) {
+    fprintf(stderr,"TTYDevice write error [%s]\n",strerror(errno));
+  }
 }

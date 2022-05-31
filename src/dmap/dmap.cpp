@@ -2,7 +2,7 @@
 //
 // dmap(8) routing daemon
 //
-//   (C) Copyright 2017-2021 Fred Gleason <fredg@paravelsystems.com>
+//   (C) Copyright 2017-2022 Fred Gleason <fredg@paravelsystems.com>
 //
 //   This program is free software; you can redistribute it and/or modify
 //   it under the terms of the GNU General Public License version 2 as
@@ -231,7 +231,7 @@ void MainObject::connectedData(bool state)
       for(unsigned j=0;j<node->gpiSlotQuantity();j++) {
 	map_map->
 	  insert(EndPointMap::Input,map_map->quantity(EndPointMap::Input),
-		 node->hostAddress(),j,QString().sprintf("OUT %d",j+1));
+		 node->hostAddress(),j,QString::asprintf("OUT %d",j+1));
       }
     }
 
@@ -243,7 +243,7 @@ void MainObject::connectedData(bool state)
       for(unsigned j=0;j<node->gpoSlotQuantity();j++) {
 	map_map->
 	  insert(EndPointMap::Output,map_map->quantity(EndPointMap::Output),
-		 node->hostAddress(),j,QString().sprintf("OUT %d",j+1));
+		 node->hostAddress(),j,QString::asprintf("OUT %d",j+1));
       }
     }
   }

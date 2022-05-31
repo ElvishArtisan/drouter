@@ -2,7 +2,7 @@
 //
 // Set state on a GPIO endpoint
 //
-//   (C) Copyright 2020-2021 Fred Gleason <fredg@paravelsystems.com>
+//   (C) Copyright 2020-2022 Fred Gleason <fredg@paravelsystems.com>
 //
 //   This program is free software; you can redistribute it and/or modify
 //   it under the terms of the GNU General Public License as
@@ -62,7 +62,7 @@ StateDialog::StateDialog(int router,int endpt,EndPointMap::Type gpio_type,
   case EndPointMap::Input:
     connect(d_parser,SIGNAL(gpiStateChanged(int,int,const QString &)),
 	    this,SLOT(gpioStateChangedData(int,int,const QString &)));
-    d_name_label->setText(QString().sprintf("%d - ",endpt+1)+
+    d_name_label->setText(QString::asprintf("%d - ",endpt+1)+
 			  d_parser->inputLongName(d_router,d_endpoint));
     setWindowTitle(tr("GPI State"));
     break;
@@ -70,7 +70,7 @@ StateDialog::StateDialog(int router,int endpt,EndPointMap::Type gpio_type,
   case EndPointMap::Output:
     connect(d_parser,SIGNAL(gpoStateChanged(int,int,const QString &)),
 	    this,SLOT(gpioStateChangedData(int,int,const QString &)));
-    d_name_label->setText(QString().sprintf("%d - ",endpt+1)+
+    d_name_label->setText(QString::asprintf("%d - ",endpt+1)+
 			  d_parser->outputLongName(d_router,d_endpoint));
     setWindowTitle(tr("GPO State"));
     break;
@@ -81,8 +81,8 @@ StateDialog::StateDialog(int router,int endpt,EndPointMap::Type gpio_type,
   resetData();
 
   QFontMetrics *fm=new QFontMetrics(d_name_label->font());
-  if(fm->width(d_name_label->text())>STATEDIALOG_CONTROL_WIDTH) {
-    d_width=fm->width(d_name_label->text())+20;
+  if(fm->horizontalAdvance(d_name_label->text())>STATEDIALOG_CONTROL_WIDTH) {
+    d_width=fm->horizontalAdvance(d_name_label->text())+20;
   }
   else {
     d_width=STATEDIALOG_CONTROL_WIDTH;

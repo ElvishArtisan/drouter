@@ -2,7 +2,7 @@
 //
 // Input/Output labels for xpointpanel(1)
 //
-//   (C) Copyright 2017-2020 Fred Gleason <fredg@paravelsystems.com>
+//   (C) Copyright 2017-2022 Fred Gleason <fredg@paravelsystems.com>
 //
 //   This program is free software; you can redistribute it and/or modify
 //   it under the terms of the GNU General Public License as
@@ -180,8 +180,8 @@ void EndpointList::addEndpoint(int router,int endpt,const QString &name)
   QFontMetrics fm(font());
   for(QMap<int,QString>::const_iterator it=list_labels.begin();
       it!=list_labels.end();it++) {
-    if(fm.width(it.value())>list_width) {
-      list_width=fm.width(it.value());
+    if(fm.horizontalAdvance(it.value())>list_width) {
+      list_width=fm.horizontalAdvance(it.value());
     }
   }
 
@@ -348,7 +348,7 @@ void EndpointList::connectViaLwrpData()
 void EndpointList::copySourceNumberData()
 {
   QClipboard *cb=QApplication::clipboard();
-  cb->setText(QString().sprintf("%d",list_parser->
+  cb->setText(QString::asprintf("%d",list_parser->
 				inputSourceNumber(list_router,
 						  1+list_mouse_endpoint)));
 }
@@ -385,13 +385,13 @@ void EndpointList::copySlotNumberData()
   QClipboard *cb=QApplication::clipboard();
   switch(list_orientation) {
   case Qt::Horizontal:
-    cb->setText(QString().sprintf("%d",1+list_parser->
+    cb->setText(QString::asprintf("%d",1+list_parser->
 				  inputNodeSlotNumber(list_router,
 						      1+list_mouse_endpoint)));
     break;
 
   case Qt::Vertical:
-    cb->setText(QString().sprintf("%d",1+list_parser->
+    cb->setText(QString::asprintf("%d",1+list_parser->
 				  outputNodeSlotNumber(list_router,
 						       1+list_mouse_endpoint)));
     break;
@@ -429,7 +429,7 @@ void EndpointList::mouseMoveEvent(QMouseEvent *e)
     return;
   }
   QString label=list_labels.value(list_endpoints.at(listpos));
-  QStringList f0=label.split("-",QString::SkipEmptyParts);
+  QStringList f0=label.split("-",Qt::SkipEmptyParts);
   if(f0.size()<1) {
     return;
   }
@@ -483,7 +483,7 @@ void EndpointList::paintEvent(QPaintEvent *e)
 		    0,w-i+list_position-(list_width+15+10));
 	p->drawLine(0,w-i+list_position-(list_width+15+10),
 		    list_width+15+gpio_offset,w-i+list_position-(list_width+15+10));
-	p->drawText(((list_width+15-5)-fm.width(it.value())),w-(text_y+i+list_width+15)+list_position,
+	p->drawText(((list_width+15-5)-fm.horizontalAdvance(it.value())),w-(text_y+i+list_width+15)+list_position,
 		    it.value());
 	it++;
       }
@@ -506,7 +506,7 @@ void EndpointList::paintEvent(QPaintEvent *e)
 		    i-list_position,
 		    w+gpio_offset,
 		    i-list_position);
-	p->drawText(w-fm.width(it.value())-gpio_offset-5,
+	p->drawText(w-fm.horizontalAdvance(it.value())-gpio_offset-5,
 		    text_y+i-list_position,
 		    it.value());
 	it++;

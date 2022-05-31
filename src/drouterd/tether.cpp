@@ -2,7 +2,7 @@
 //
 //  State Manager for twin Drouter instances
 //
-//   (C) Copyright 2019-2021 Fred Gleason <fredg@paravelsystems.com>
+//   (C) Copyright 2019-2022 Fred Gleason <fredg@paravelsystems.com>
 //
 //   This program is free software; you can redistribute it and/or modify
 //   it under the terms of the GNU Library General Public License 
@@ -80,8 +80,8 @@ bool Tether::start(Config *config,QString *err_msg)
   }
 
   if(!tether_udp_socket->bind(DROUTER_TETHER_UDP_PORT)) {
-    *err_msg=QString().
-      sprintf("unable to bind tether udp port %u",DROUTER_TETHER_UDP_PORT);
+    *err_msg=QString::asprintf("unable to bind tether udp port %u",
+			       DROUTER_TETHER_UDP_PORT);
     return false;
   }
   tether_tty_device->setName(tether_config->tetherSerialDevice(Config::This));
@@ -238,7 +238,7 @@ bool Tether::ModifySharedAddress(const QString &keyword)
       args.push_back("addr");
       args.push_back(keyword);
       args.push_back(tether_config->tetherSharedIpAddress().toString()+
-		     QString().sprintf("/%u",iface_mask));
+		     QString::asprintf("/%u",iface_mask));
       args.push_back("dev");
       args.push_back(iface_name);
 
@@ -248,7 +248,7 @@ bool Tether::ModifySharedAddress(const QString &keyword)
 	tether_exit_args.push_back("del");
 	tether_exit_args.
 	  push_back(tether_config->tetherSharedIpAddress().toString()+
-		    QString().sprintf("/%u",iface_mask));
+		    QString::asprintf("/%u",iface_mask));
 	tether_exit_args.push_back("dev");
 	tether_exit_args.push_back(iface_name);
       }

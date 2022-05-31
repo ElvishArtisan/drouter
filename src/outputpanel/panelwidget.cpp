@@ -2,7 +2,7 @@
 //
 // Output panel widget for OutputPanel
 //
-//   (C) Copyright 2016-2020 Fred Gleason <fredg@paravelsystems.com>
+//   (C) Copyright 2016-2022 Fred Gleason <fredg@paravelsystems.com>
 //
 //   This program is free software; you can redistribute it and/or modify
 //   it under the terms of the GNU General Public License as
@@ -118,13 +118,13 @@ void PanelWidget::changeConnectionState(bool state,
   if(state) {
     if(!widget_parser->routers().contains(widget_router)) {
       QMessageBox::warning(this,"OutputPanel - "+tr("Error"),
-	  tr("Router")+QString().sprintf(" %u ",widget_router)+
+	  tr("Router")+QString::asprintf(" %u ",widget_router)+
 	  tr("does not exist!"));
       exit(256);
     }
     if(widget_output>widget_parser->outputQuantity(widget_router)) {
       QMessageBox::warning(this,"OutputPanel - "+tr("Error"),
-	  tr("Output")+QString().sprintf(" %u ",widget_output)+
+	  tr("Output")+QString::asprintf(" %u ",widget_output)+
 	  tr("does not exist!"));
       exit(256);
     }
@@ -167,7 +167,7 @@ void PanelWidget::updateOutputNames()
 {
   QString name=widget_parser->outputName(widget_router,widget_output+1);
   if(name.isEmpty()) {
-    name=tr("Output")+QString().sprintf(" %d",widget_output+1);
+    name=tr("Output")+QString::asprintf(" %d",widget_output+1);
   }
   widget_output_label->setText(name);
 }
