@@ -665,3 +665,5 @@
 	Protocol in 'docs/protcol_sa.xml'.
 2022-05-31 Fred Gleason <fredg@paravelsystems.com>
 	* Cleaned up numerous build warnings.
+2022-06-02 Fred Gleason <fredg@paravelsystems.com>
+	* Added 'compile' to the MAINTAINERCLEAN build rule.
