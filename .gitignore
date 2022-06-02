@@ -2,6 +2,11 @@
 *.5
 *.7
 *.8
+*.buildinfo
+*.changes
+*.deb
+*.ddeb
+*.dsc
 *.html
 *.o
 *.pdf
@@ -9,7 +14,11 @@
 *.service
 *.spec
 *.tar.gz
+*.tar.xz
 .deps
+build_debs.sh
+changelog
+control
 Makefile
 Makefile.in
 aclocal.m4
