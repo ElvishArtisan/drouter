@@ -4,7 +4,7 @@
 ##
 ## Use automake to process this into a Makefile.in
 ##
-##   (C) Copyright 2017 Fred Gleason <fredg@paravelsystems.com>
+##   (C) Copyright 2017-2022 Fred Gleason <fredg@paravelsystems.com>
 ##
 ##   This program is free software; you can redistribute it and/or modify
 ##   it under the terms of the GNU General Public License version 2 as
@@ -25,11 +25,15 @@ if DOCBOOK_AM
 endif
 
 SUBDIRS = conf\
+          debian\
           icons\
           python\
           scripts\
           $(DOCBOOK_AM_OPT) src\
           systemd
+
+deb:	dist
+	./build_debs.sh
 
 rpm:	dist
 	cp drouter-$(VERSION).tar.gz $(HOME)/rpmbuild/SOURCES/
@@ -40,21 +44,30 @@ rpm:	dist
 	rm -rf $(HOME)/rpmbuild/BUILD/drouter-$(VERSION)
 
 EXTRA_DIST = autogen.sh\
+             build_debs.sh.in\
              get_distro.sh\
              get_target.sh\
+             GFDL-1.3\
              link_common.sh\
              PACKAGE_VERSION
 
 CLEANFILES = *~\
+             *.buildinfo\
+             *.changes\
+             *.ddeb\
              *.deb\
+             *.dsc\
              *.mo\
              *.rpm\
              *.tar.gz\
+             *.tar.xz\
              *.tgz\
              *.zip
 
 DISTCLEANFILES = *.service\
                  *.spec\
+                 build_debs.sh\
+                 compile\
                  config.guess\
                  config.sub\
                  ltmain.sh\

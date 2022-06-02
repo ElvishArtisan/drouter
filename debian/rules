@@ -1,0 +1,87 @@
+#!/usr/bin/make -f
+
+build:	
+	dh_update_autotools_config
+	dh_autoreconf
+	 ./configure --prefix=/usr --libdir=/usr/lib
+	make $(DEBUILD_MAKE_ARGS)
+
+binary:	
+	dh_testroot
+	dh_prep
+	dh_auto_install
+	dh_installchangelogs ChangeLog
+
+#
+# drouter
+#
+	mkdir -p debian/drouter/lib/systemd/system
+	mv debian/tmp/lib/systemd/system/* debian/drouter/lib/systemd/system/
+	mkdir -p debian/drouter/usr/bin
+	mv debian/tmp/usr/bin/dmap debian/drouter/usr/bin/
+	mv debian/tmp/usr/bin/drouter_init_db.sh debian/drouter/usr/bin/
+	mv debian/tmp/usr/bin/pf_import.py debian/drouter/usr/bin/
+	mkdir -p debian/drouter/usr/sbin
+	mv debian/tmp/usr/sbin/dprotod debian/drouter/usr/sbin/
+	mv debian/tmp/usr/sbin/drouterd debian/drouter/usr/sbin/
+	mkdir -p debian/drouter/usr/share/man/man1
+	mv debian/tmp/usr/share/man/man1/dmap.1 debian/drouter/usr/share/man/man1/
+	mkdir -p debian/drouter/usr/share/man/man5
+	mv debian/tmp/usr/share/man/man5/drouter.conf.5 debian/drouter/usr/share/man/man5/
+	mv debian/tmp/usr/share/man/man5/drouter.map.5 debian/drouter/usr/share/man/man5/
+	mkdir -p debian/drouter/usr/share/man/man8
+	mv debian/tmp/usr/share/man/man8/drouterd.8 debian/drouter/usr/share/man/man8/
+
+#
+# drouter-python
+#
+	mkdir -p debian/drouter-python/usr/bin
+	mv debian/tmp/usr/bin/dlist debian/drouter-python/usr/bin/
+	mv debian/tmp/usr/bin/dstate debian/drouter-python/usr/bin/
+	mkdir -p debian/drouter-python/usr/lib/python3/dist-packages
+	mv debian/tmp/usr/lib/python*/site-packages debian/drouter-python/usr/lib/python3/
+	mkdir -p debian/drouter-python/usr/share/man/man1
+	mv debian/tmp/usr/share/man/man1/dlist.1 debian/drouter-python/usr/share/man/man1/
+	mv debian/tmp/usr/share/man/man1/dstate.1 debian/drouter-python/usr/share/man/man1/
+	mkdir -p debian/drouter-python/usr/share/doc/drouter/examples
+	scripts/install_python.sh python/examples/show_changes.py debian/drouter-python/usr/share/doc/drouter/examples/show_changes.py
+	scripts/install_python.sh python/examples/show_destinations.py debian/drouter-python/usr/share/doc/drouter/examples/show_destinations.py
+	scripts/install_python.sh python/examples/show_gpis.py debian/drouter-python/usr/share/doc/drouter/examples/show_gpis.py
+	scripts/install_python.sh python/examples/show_gpos.py debian/drouter-python/usr/share/doc/drouter/examples/show_gpos.py
+	scripts/install_python.sh python/examples/show_nodes.py debian/drouter-python/usr/share/doc/drouter/examples/show_nodes.py
+	scripts/install_python.sh python/examples/show_sources.py debian/drouter-python/usr/share/doc/drouter/examples/show_sources.py
+	scripts/install_python.sh python/examples/silence_alarm.py debian/drouter-python/usr/share/doc/drouter/examples/silence_alarm.py
+
+#
+# drouter-panels
+#
+	mkdir -p debian/drouter-panels/usr/bin
+	mv debian/tmp/usr/bin/buttonpanel debian/drouter-panels/usr/bin/
+	mv debian/tmp/usr/bin/outputpanel debian/drouter-panels/usr/bin/
+	mv debian/tmp/usr/bin/shotpanel debian/drouter-panels/usr/bin/
+	mv debian/tmp/usr/bin/xpointpanel debian/drouter-panels/usr/bin/
+	mv debian/tmp/usr/bin/xypanel debian/drouter-panels/usr/bin/
+	mkdir -p debian/drouter-panels/usr/share/man/man1
+	mv debian/tmp/usr/share/man/man1/buttonpanel.1 debian/drouter-panels/usr/share/man/man1/
+	mv debian/tmp/usr/share/man/man1/outputpanel.1 debian/drouter-panels/usr/share/man/man1/
+	mv debian/tmp/usr/share/man/man1/shotpanel.1 debian/drouter-panels/usr/share/man/man1/
+	mv debian/tmp/usr/share/man/man1/xpointpanel.1 debian/drouter-panels/usr/share/man/man1/
+	mv debian/tmp/usr/share/man/man1/xypanel.1 debian/drouter-panels/usr/share/man/man1/
+	mkdir debian/drouter-panels/usr/share/icons/
+	mv debian/tmp/usr/share/icons/hicolor debian/drouter-panels/usr/share/icons/
+
+	dh_strip_nondeterminism
+	dh_compress
+	dh_fixperms
+	dh_missing
+	dh_dwz
+	dh_strip
+	dh_makeshlibs
+	dh_shlibdeps
+	dh_installdeb
+	dh_gencontrol
+	dh_md5sums
+	dh_builddeb
+
+%:	
+	dh $@

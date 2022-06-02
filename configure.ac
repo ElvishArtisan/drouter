@@ -114,6 +114,8 @@ fi
 
 AC_CONFIG_FILES([ \
     conf/Makefile \
+    debian/source/Makefile \
+    debian/Makefile \
     docs/Makefile \
     icons/Makefile \
     python/api/Makefile \
@@ -134,8 +136,10 @@ AC_CONFIG_FILES([ \
     systemd/Makefile \
     systemd/drouter.service \
     drouter.spec \
+    build_debs.sh \
     Makefile ])
 AC_OUTPUT()
+chmod 755 build_debs.sh
 chmod 755 scripts/install_python.sh
 
 #

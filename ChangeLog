@@ -667,3 +667,5 @@
 	* Cleaned up numerous build warnings.
 2022-06-02 Fred Gleason <fredg@paravelsystems.com>
 	* Added 'compile' to the MAINTAINERCLEAN build rule.
+2022-06-02 Fred Gleason <fredg@paravelsystems.com>
+	* Debianized the source.
