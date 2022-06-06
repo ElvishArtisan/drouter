@@ -84,7 +84,7 @@ bool Protocol::startIpc(QString *err_msg)
   }
   memset(&sa,0,sizeof(sa));
   sa.sun_family=AF_UNIX;
-  strncpy(sa.sun_path+1,DROUTER_IPC_ADDRESS,UNIX_PATH_MAX-1);
+  strncpy(sa.sun_path,DROUTER_IPC_ADDRESS,UNIX_PATH_MAX-1);
   if(::connect(sock,(struct sockaddr *)(&sa),sizeof(sa))<0) {
     *err_msg=QString("unable to attach to drouter service [")+
       strerror(errno)+"]";

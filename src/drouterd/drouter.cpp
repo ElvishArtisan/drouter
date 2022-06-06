@@ -804,13 +804,14 @@ bool DRouter::StartProtocolIpc(QString *err_msg)
   //
   // UNIX Server
   //
+  unlink(DROUTER_IPC_ADDRESS);
   if((sock=socket(AF_UNIX,SOCK_SEQPACKET,0))<0) {
     *err_msg=tr("unable to start protocol ipc")+" ["+strerror(errno)+"]";
     return false;
   }
   memset(&sa,0,sizeof(sa));
   sa.sun_family=AF_UNIX;
-  strncpy(sa.sun_path+1,DROUTER_IPC_ADDRESS,UNIX_PATH_MAX-1);
+  strncpy(sa.sun_path,DROUTER_IPC_ADDRESS,UNIX_PATH_MAX-1);
   if(bind(sock,(struct sockaddr *)(&sa),sizeof(sa))<0) {
     *err_msg=tr("unable to bind protocol ipc")+" ["+strerror(errno)+"]";
     return false;
@@ -985,7 +986,7 @@ bool DRouter::StartDb(QString *err_msg)
   //
   sql=QString("create table if not exists `NODES` (")+
     "`HOST_ADDRESS` char(15) not null primary key,"+
-    "`HOST_NAME` char(16),"+
+    "`HOST_NAME` char(191),"+
     "`DEVICE_NAME` char(20),"+
     "`SOURCE_SLOTS` int,"+
     "`DESTINATION_SLOTS` int,"+
@@ -998,9 +999,9 @@ bool DRouter::StartDb(QString *err_msg)
     "`ID` int auto_increment not null primary key,"+
     "`HOST_ADDRESS` char(15) not null,"+
     "`SLOT` int not null,"+
-    "`HOST_NAME` char(16),"+
+    "`HOST_NAME` char(191),"+
     "`STREAM_ADDRESS` char(15),"+
-    "`NAME` char(16),"+
+    "`NAME` char(191),"+
     "`STREAM_ENABLED` int,"+
     "`CHANNELS` int,"+
     "`BLOCK_SIZE` int,"+
@@ -1017,9 +1018,9 @@ bool DRouter::StartDb(QString *err_msg)
     "`ID` int auto_increment not null primary key,"+
     "`HOST_ADDRESS` char(15) not null,"+
     "`SLOT` int not null,"+
-    "`HOST_NAME` char(16),"+
+    "`HOST_NAME` char(191),"+
     "`STREAM_ADDRESS` char(15),"+
-    "`NAME` char(16),"+
+    "`NAME` char(191),"+
     "`CHANNELS` int,"+
     "`LEFT_CLIP` int default 0,"+
     "`RIGHT_CLIP` int default 0,"+
@@ -1033,7 +1034,7 @@ bool DRouter::StartDb(QString *err_msg)
     "`ID` int auto_increment not null primary key,"+
     "`HOST_ADDRESS` char(15) not null,"+
     "`SLOT` int not null,"+
-    "`HOST_NAME` char(16),"+
+    "`HOST_NAME` char(191),"+
     "`CODE` char(5),"+
     "unique index SLOT_IDX(`HOST_ADDRESS`,`SLOT`)) "+
     "engine MEMORY character set utf8 collate utf8_general_ci";
@@ -1043,9 +1044,9 @@ bool DRouter::StartDb(QString *err_msg)
     "`ID` int auto_increment not null primary key,"+
     "`HOST_ADDRESS` char(15) not null,"+
     "`SLOT` int not null,"+
-    "`HOST_NAME` char(16),"+
+    "`HOST_NAME` char(191),"+
     "`CODE` char(5),"+
-    "`NAME` char(16),"+
+    "`NAME` char(191),"+
     "`SOURCE_ADDRESS` char(22),"+
     "`SOURCE_SLOT` int default -1,"+
     "unique index SLOT_IDX(`HOST_ADDRESS`,`SLOT`),"+
@@ -1060,7 +1061,7 @@ bool DRouter::StartDb(QString *err_msg)
     "`ROUTER_NUMBER` int not null,"+
     "`SOURCE_NUMBER` int not null,"
     "`SOURCE_ID` int not null,"+
-    "`NAME` char(32),"+
+    "`NAME` char(191),"+
     "`STREAM_ADDRESS` char(15),"+
     "index HOST_ADDRESS_IDX(`HOST_ADDRESS`,`SLOT`),"+
     "index STREAM_ADDRESS_IDX(`ROUTER_NUMBER`,`STREAM_ADDRESS`),"+
@@ -1075,7 +1076,7 @@ bool DRouter::StartDb(QString *err_msg)
     "`ROUTER_NUMBER` int not null,"+
     "`SOURCE_NUMBER` int not null,"
     "`DESTINATION_ID` int not null,"+
-    "`NAME` char(32),"+
+    "`NAME` char(191),"+
     "`STREAM_ADDRESS` char(15),"+
     "index HOST_ADDRESS_IDX(`HOST_ADDRESS`,`SLOT`),"+
     "index ROUTER_NUMBER_IDX(`ROUTER_NUMBER`)) "+
@@ -1089,7 +1090,7 @@ bool DRouter::StartDb(QString *err_msg)
     "`ROUTER_NUMBER` int not null,"+
     "`SOURCE_NUMBER` int not null,"
     "`GPI_ID` int not null,"+
-    "`NAME` char(32),"+
+    "`NAME` char(191),"+
     "index HOST_ADDRESS_IDX(`HOST_ADDRESS`,`SLOT`),"+
     "index ROUTER_IDX(`ROUTER_NUMBER`))"+
     "engine MEMORY character set utf8 collate utf8_general_ci";
@@ -1102,7 +1103,7 @@ bool DRouter::StartDb(QString *err_msg)
     "`ROUTER_NUMBER` int not null,"+
     "`SOURCE_NUMBER` int not null,"
     "`GPO_ID` int not null,"+
-    "`NAME` char(32),"+
+    "`NAME` char(191),"+
     "`SOURCE_ADDRESS` char(22),"+
     "`SOURCE_SLOT` int default -1,"+
     "index HOST_ADDRESS_IDX(`HOST_ADDRESS`,`SLOT`),"+

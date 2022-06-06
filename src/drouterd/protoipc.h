@@ -2,7 +2,7 @@
 //
 // Common data structures for DRouter protocol IPC
 //
-//   (C) Copyright 2018 Fred Gleason <fredg@paravelsystems.com>
+//   (C) Copyright 2018-2022 Fred Gleason <fredg@paravelsystems.com>
 //
 //   This program is free software; you can redistribute it and/or modify
 //   it under the terms of the GNU General Public License version 2 as
@@ -22,8 +22,8 @@
 #define PROTOIPC_H
 
 /*
- * Used for the abstract UNIX socket address
+ * The UNIX socket address
  */
-#define DROUTER_IPC_ADDRESS "p0q9346unq90-846un5b6w0ue-a09i"
+#define DROUTER_IPC_ADDRESS "/var/cache/drouter/protoipc.sock"
 
 #endif  // PROTOIPC_H
