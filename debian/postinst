@@ -7,7 +7,7 @@ case "$1" in
 	    mkdir -p /etc/drouter
 	    mkdir -p /etc/drouter/maps.d
 	    mkdir -p /etc/drouter/scripts.d
-	    cp /usr/share/doc/drouter/drouter.conf-sample /etc/drouter/drouter.conf
+	    cp /usr/share/drouter/drouter.conf-sample /etc/drouter/drouter.conf
 	fi
 	if [ -x /bin/systemctl ] ; then
 	    /bin/systemctl daemon-reload

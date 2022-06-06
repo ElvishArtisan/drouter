@@ -669,3 +669,6 @@
 	* Added 'compile' to the MAINTAINERCLEAN build rule.
 2022-06-02 Fred Gleason <fredg@paravelsystems.com>
 	* Debianized the source.
+2022-06-06 Fred Gleason <fredg@paravelsystems.com>
+	* Fixed a bug in the DEB packaging that failed to install a
+	default copy of drouter.conf(5).
