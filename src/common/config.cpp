@@ -87,6 +87,12 @@ QString Config::lwrpPassword() const
 }
 
 
+int Config::maxHeapTableSize() const
+{
+  return conf_max_heap_table_size;
+}
+
+
 bool Config::tetherIsActivated() const
 {
   return conf_tether_is_activated;
@@ -179,6 +185,9 @@ void Config::load()
   conf_lwrp_password=p->stringValue("Drouterd","LwrpPassword");
 
   conf_tether_is_activated=p->boolValue("Tether","IsActivated",false);
+
+  conf_max_heap_table_size=p->intValue("Drouterd","MaxHeapTableSize",
+				       DROUTER_DEFAULT_MAX_HEAP_TABLE_SIZE);
 
   if(conf_tether_is_activated) {
     conf_tether_shared_ip_address.

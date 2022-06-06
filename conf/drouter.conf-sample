@@ -83,6 +83,13 @@ NodeLogPriority=5
 LwrpPassword=
 
 
+; MaxHeapTableSize=<bytes>
+;
+; Maximum memory for MySQL/MariaDB to allocate per DB table
+;
+MaxHeapTableSize=33554432
+
+
 [Tether]
 ; IsActivated=Yes|No
 ;

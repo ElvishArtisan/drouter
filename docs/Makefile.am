@@ -102,9 +102,10 @@ man_MANS = buttonpanel.1\
            xypanel.1
 
 CLEANFILES = *~
+DISTCLEANFILES = *.1\
+                 *.5\
+                 *.8
 MAINTAINERCLEANFILES = *~\
-                       *.1\
-                       *.8\
                        *.html\
                        *.pdf\
                        aclocal.m4\

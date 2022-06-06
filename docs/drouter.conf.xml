@@ -152,6 +152,21 @@
 	</varlistentry>
 	<varlistentry>
 	  <term>
+	    <userinput>MaxHeapTableSize=<replaceable>mb</replaceable></userinput>
+	  </term>
+	  <listitem>
+	    <para>
+	      Where <replaceable>mb</replaceable> is an integer that is
+	      passed to MySQL/MariaDB to set the
+	      <userinput>max_heap_data_size</userinput> configuration
+	      variable. This value determines the maximum amount of memory
+	      (in bytes) that the DB back end will allocate per table. Default
+	      value is 33,554,321 (32 MB).
+	    </para>
+	  </listitem>
+	</varlistentry>
+	<varlistentry>
+	  <term>
 	    <userinput>NoAudioAlarmDevices=<replaceable>dev-name1</replaceable>, 
 	    <replaceable>dev-name2</replaceable> ... </userinput>
 	  </term>

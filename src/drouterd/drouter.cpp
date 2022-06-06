@@ -969,6 +969,9 @@ bool DRouter::StartDb(QString *err_msg)
     *err_msg=tr("unable to open database")+" ["+db.lastError().driverText()+"]";
     return false;
   }
+  sql=QString::asprintf("set max_heap_table_size=%d",
+			drouter_config->maxHeapTableSize());
+  SqlQuery::apply(sql);
 
   //
   // Clear Old Data

@@ -679,3 +679,6 @@
 	DB to accommodate strings up to 191 characters long.
 	* Fixed a bug in 'systemd/daemon-reload.sh' that caused Systemd
 	to not be initialized correctly when installing on Ubuntu systems.
+2022-06-06 Fred Gleason <fredg@paravelsystems.com>
+	* Added a 'MaxHeapTableSize' directive to the '[Drouterd]' section
+	of drouter.conf(5).
