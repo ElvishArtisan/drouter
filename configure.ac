@@ -4,7 +4,7 @@ dnl Autoconf configuration
 dnl
 dnl Use autoconf to process this into a configure script
 dnl
-dnl   (C) Copyright 2014-2021 Fred Gleason <fredg@paravelsystems.com>
+dnl   (C) Copyright 2014-2022 Fred Gleason <fredg@paravelsystems.com>
 dnl
 dnl   This program is free software; you can redistribute it and/or modify
 dnl   it under the terms of the GNU General Public License version 2 as
@@ -62,9 +62,129 @@ AC_SUBST(QT_MOC,$MOC_NAME)
 PKG_CHECK_MODULES(SWITCHYARD5,switchyard5,[],[AC_MSG_ERROR([*** Switchyard5 not found ***])])
 
 #
+# Determine Distro
+#
+AR_GET_DISTRO()
+AC_SUBST(DISTRO,$ar_gcc_distro)
+AC_MSG_NOTICE($ar_distro_id)
+DISTRO_NAME="|                         Distribution Name ... Unknown   |"
+case "$ar_distro_id" in
+     debian)
+       AC_MSG_NOTICE([Distro is Debian-ish])
+       DISTRO_FAMILY="|                       Distribution Family ... Debian    |"
+       DISTRO_IS_DEBIANISH=yes
+       DISTRO_NAME="|                         Distribution Name ... Debian    |"
+       AC_SUBST(APACHE_PKG,"apache2")
+       AC_SUBST(APACHE_CONFIG_DIR,"/etc/apache2/conf.d")
+       AC_SUBST(USERMODE_PKG,"")
+       AC_SUBST(MYSQL_PKG,"mariadb-client")
+       AC_SUBST(QT_MYSQL_PKG,"libqt5sql5-mysql")
+       AC_SUBST(DOC_PATH,"/usr/share/doc/rivendell")
+       AC_SUBST(HAVE_USERMODE,"no")
+       AC_SUBST(RDALSACONFIG_DESKTOP_FILE,"rivendell-rdalsaconfig-sudo.desktop")
+       AC_SUBST(RDDBCONFIG_DESKTOP_FILE,"rivendell-rddbconfig-sudo.desktop")
+       AC_SUBST(PYPAD_DEPS,"python3 python3-pycurl python3-requests python3-pyserial python3-mysql python3-urllib3")
+     ;;
+
+     raspbian)
+       AC_MSG_NOTICE([Distro is Debian-ish])
+       DISTRO_FAMILY="|                      Distribution Family ... Debian    |"
+       DISTRO_IS_DEBIANISH=yes
+       DISTRO_NAME="|                        Distribution Name ... Raspbian  |"
+       AC_SUBST(APACHE_PKG,"apache2")
+       AC_SUBST(APACHE_CONFIG_DIR,"/etc/apache2/conf.d")
+       AC_SUBST(USERMODE_PKG,"")
+       AC_SUBST(MYSQL_PKG,"mariadb-client")
+       AC_SUBST(QT_MYSQL_PKG,"libqt5sql5-mysql")
+       AC_SUBST(DOC_PATH,"/usr/share/doc/rivendell")
+       AC_SUBST(HAVE_USERMODE,"no")
+       AC_SUBST(RDALSACONFIG_DESKTOP_FILE,"rivendell-rdalsaconfig-sudo.desktop")
+       AC_SUBST(RDDBCONFIG_DESKTOP_FILE,"rivendell-rddbconfig-sudo.desktop")
+       AC_SUBST(PYPAD_DEPS,"python3 python3-pycurl python3-requests python3-pyserial python3-mysql python3-urllib3")
+     ;;
+
+     ubuntu)
+       AC_MSG_NOTICE([Distro is Debian-ish])
+       DISTRO_FAMILY="|                       Distribution Family ... Debian    |"
+       DISTRO_IS_DEBIANISH=yes
+       DISTRO_NAME="|                         Distribution Name ... Ubuntu    |"
+       AC_SUBST(APACHE_PKG,"apache2")
+       AC_SUBST(APACHE_CONFIG_DIR,"/etc/apache2/conf.d")
+       AC_SUBST(USERMODE_PKG,"")
+       AC_SUBST(MYSQL_PKG,"mariadb-client")
+       AC_SUBST(QT_MYSQL_PKG,"libqt5sql5-mysql")
+       AC_SUBST(DOC_PATH,"/usr/share/doc/rivendell")
+       AC_SUBST(HAVE_USERMODE,"no")
+       AC_SUBST(RDALSACONFIG_DESKTOP_FILE,"rivendell-rdalsaconfig-sudo.desktop")
+       AC_SUBST(RDDBCONFIG_DESKTOP_FILE,"rivendell-rddbconfig-sudo.desktop")
+       AC_SUBST(PYPAD_DEPS,"python3 python3-pycurl python3-requests python3-pyserial python3-mysql python3-urllib3")
+     ;;
+
+     centos|fedora|rhel|rocky)
+       AC_MSG_NOTICE([Distro is RedHat-ish])
+       DISTRO_FAMILY="|                       Distribution Family ... RedHat    |"
+       if test $ar_distro_id = "centos" ; then
+         DISTRO_NAME="|                         Distribution Name ... CentOS    |"
+       fi
+       if test $ar_distro_id = "fedora" ; then
+         DISTRO_NAME="|                         Distribution Name ... Fedora    |"
+       fi
+       if test $ar_distro_id = "rhel" ; then
+         DISTRO_NAME="|                         Distribution Name ... RHEL      |"
+       fi
+       if test $ar_distro_id = "rocky" ; then
+         DISTRO_NAME="|                         Distribution Name ... Rocky     |"
+       fi
+       AC_SUBST(APACHE_PKG,"httpd")
+       AC_SUBST(APACHE_CONFIG_DIR,"/etc/httpd/conf.d")
+       AC_SUBST(USERMODE_PKG,"usermode usermode-gtk")
+       AC_SUBST(MYSQL_PKG,"mariadb")
+       AC_SUBST(QT_MYSQL_PKG,"qt5-qtbase-mysql")
+       AC_SUBST(DOC_PATH,"/usr/share/doc/rivendell-$PACKAGE_VERSION")
+       AC_SUBST(HAVE_USERMODE,"yes")
+       AC_SUBST(RDALSACONFIG_DESKTOP_FILE,"rivendell-rdalsaconfig-root.desktop")
+       AC_SUBST(RDDBCONFIG_DESKTOP_FILE,"rivendell-rddbconfig-root.desktop")
+       if test $ar_distro_major -lt 8 ; then
+       	  AC_SUBST(PYPAD_DEPS,"python36 python36-pycurl python36-requests python36-pyserial python36-mysql python36-urllib3")
+       else
+       	  AC_SUBST(PYPAD_DEPS,"python3 python3-pycurl python3-requests python3-pyserial python3-mysql python3-urllib3")
+       fi
+       ;;
+
+     *)
+       AC_MSG_NOTICE([Distro is unknown])
+       DISTRO_FAMILY="|                       Distribution Family ... Unknown   |"
+       AC_SUBST(APACHE_PKG,"apache2")
+       AC_SUBST(APACHE_CONFIG_DIR,"/etc/apache2/conf.d")
+       AC_SUBST(USERMODE_PKG,"")
+       AC_SUBST(MYSQL_PKG,"mysql")
+       AC_SUBST(QT_MYSQL_PKG,"qt-mysql")
+       AC_SUBST(DOC_PATH,"/usr/share/doc/rivendell")
+       AC_SUBST(HAVE_USERMODE,"no")
+       AC_SUBST(RDALSACONFIG_DESKTOP_FILE,"rivendell-rdalsaconfig.desktop")
+       AC_SUBST(RDDBCONFIG_DESKTOP_FILE,"rivendell-rddbconfig.desktop")
+       AC_SUBST(PYPAD_DEPS,"python3 python3-pycurl python3-requests python3-pyserial python3-mysql python3-urllib3")
+     ;;
+esac
+
+#
 # Check for Python (Mandatory)
 #
-AM_PATH_PYTHON([3])
+if test -z $DISTRO_IS_DEBIANISH ; then
+   AM_PATH_PYTHON([3])
+   AC_SUBST(PYTHON_BASE_DEP,"python"`echo $PYTHON_VERSION | sed -e s/3./3/`)
+else
+   #
+   # FIXME: Horrible hack to make Python install correctly on Debianish setups
+   #
+   AC_MSG_NOTICE([Configuring Debian-style Python installation])
+   PYTHON="/usr/bin/python3"
+   AC_ARG_VAR(PYTHON,[the Python interpreter])
+   pythondir="/usr/lib/python3/dist-packages"
+   AC_ARG_VAR(pythondir,[the Python modules directory])
+   pyexecdir="/usr/lib/python3/dist-packages"
+   AC_ARG_VAR(pyexecdir,[the Python extension modules directory])
+fi
 
 #
 # Check for SystemD (Optional)

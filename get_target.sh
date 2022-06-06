@@ -5,7 +5,7 @@
 # Return machine target information from gcc(1)
 # Used as part of the AR_GCC_TARGET() macro.
 #
-#   (C) Copyright 2012 Fred Gleason <fredg@salemradiolabs.com>
+#   (C) Copyright 2012,2016 Fred Gleason <fredg@salemradiolabs.com>
 #
 #   This program is free software; you can redistribute it and/or modify
 #   it under the terms of the GNU General Public License as

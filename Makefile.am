@@ -45,7 +45,7 @@ rpm:	dist
 
 EXTRA_DIST = autogen.sh\
              build_debs.sh.in\
-             get_distro.sh\
+             get_distro.pl\
              get_target.sh\
              GFDL-1.3\
              link_common.sh\
