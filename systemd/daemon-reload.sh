@@ -21,5 +21,7 @@
 #
 
 if test $UID -eq 0 ; then
-    /bin/systemctl daemon-reload
+    if test -z $FAKEROOTKEY ; then
+	/bin/systemctl daemon-reload
+    fi
 fi
