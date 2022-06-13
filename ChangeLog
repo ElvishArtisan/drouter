@@ -686,3 +686,6 @@
 	* Updated auto-tools distro-detection scripts.
 2022-06-13 Fred Gleason <fredg@paravelsystems.com>
 	* Fixed bugs that broke the 'make deb' target.
+2022-06-13 Fred Gleason <fredg@paravelsystems.com>
+	* Fixed a bug in the DEB packaging that caused the protocol
+	modules to fail to start.

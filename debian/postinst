@@ -12,6 +12,7 @@ case "$1" in
 	    chown root:root /var/cache/drouter
 	    chmod 0600 /var/cache/drouter
 	fi
+	mkdir -p /var/cache/drouter
 	if [ -x /bin/systemctl ] ; then
 	    /bin/systemctl daemon-reload
 	    /bin/systemctl start drouter.socket
