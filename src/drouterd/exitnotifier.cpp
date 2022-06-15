@@ -55,6 +55,7 @@ ExitNotifier::ExitNotifier(QObject *parent)
 
   ::signal(SIGINT,__ExitNotifierSigHandler);
   ::signal(SIGTERM,__ExitNotifierSigHandler);
+  syslog(LOG_DEBUG,"installed exit notifier");
 }
 
 
@@ -63,15 +64,15 @@ ExitNotifier::~ExitNotifier()
   delete exit_notifier;
   close(__exit_notifier_sockets[0]);
   close(__exit_notifier_sockets[1]);
+  syslog(LOG_DEBUG,"removed exit notifier");
 }
 
 
 void ExitNotifier::activatedData(int sock)
 {
-  char data[1024];
-
-  while(read(sock,data,255)>0);
+  syslog(LOG_DEBUG,"emitting exit notification");
   emit aboutToExit();
 
+  syslog(LOG_DEBUG,"exiting normally");
   exit(0);
 }

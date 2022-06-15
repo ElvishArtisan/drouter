@@ -2,7 +2,7 @@
 //
 // Dynamic router service for Livewire networks
 //
-//   (C) Copyright 2017-2021 Fred Gleason <fredg@paravelsystems.com>
+//   (C) Copyright 2017-2022 Fred Gleason <fredg@paravelsystems.com>
 //
 //   This program is free software; you can redistribute it and/or modify
 //   it under the terms of the GNU General Public License version 2 as
@@ -33,9 +33,6 @@
 #endif  // LIBSYSTEMD
 
 #include "drouterd.h"
-
-bool global_reload=false;
-bool global_exiting=false;
 
 MainObject::MainObject(QObject *parent)
   : QObject(parent)
@@ -206,6 +203,9 @@ void MainObject::instanceStateChangedData(bool state)
 
 void MainObject::exitData()
 {
+  if(!main_no_tether) {
+    main_tether->cleanup();
+  }
   main_drouter->disconnect();
   main_drouter->setWriteable(false);
 }

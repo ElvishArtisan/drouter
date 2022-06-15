@@ -689,3 +689,6 @@
 2022-06-13 Fred Gleason <fredg@paravelsystems.com>
 	* Fixed a bug in the DEB packaging that caused the protocol
 	modules to fail to start.
+2022-06-15 Fred Gleason <fredg@paravelsystems.com>
+	* Fixed a bug that caused exit cleanup to fail to be executed
+	by drouterd(8) on Ubuntu.
