@@ -2,7 +2,7 @@
 //
 // Global configuration for DRouter
 //
-//   (C) Copyright 2018-2021 Fred Gleason <fredg@paravelsystems.com>
+//   (C) Copyright 2018-2022 Fred Gleason <fredg@paravelsystems.com>
 //
 //   This program is free software; you can redistribute it and/or modify
 //   it under the terms of the GNU General Public License version 2 as
@@ -34,7 +34,7 @@
 #define DROUTER_DEFAULT_SILENCE_THRESHOLD -500
 #define DROUTER_DEFAULT_SILENCE_TIMEOUT 10000
 #define DROUTER_DEFAULT_IPC_LOG_PRIORITY -1
-#define DROUTER_DEFAULT_NODE_LOG_PRIORITY 5
+#define DROUTER_DEFAULT_NODE_LOG_PRIORITY -1
 #define DROUTER_DEFAULT_MAX_HEAP_TABLE_SIZE 33554432
 #define DROUTER_TETHER_UDP_PORT 6245
 #define DROUTER_TETHER_TTY_SPEED 9600

@@ -71,7 +71,7 @@ IpcLogPriority=-1
 ;  6 - Info (informational)
 ;  7 - Debug (debug-level messages)
 ; -1 - Disable (disable logging)
-NodeLogPriority=5
+NodeLogPriority=-1
 
 
 ; LwrpPassword=<passwd>

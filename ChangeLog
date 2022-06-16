@@ -699,3 +699,7 @@
 	* Fixed a bug in drouterd(8) that would cause the protocol modules
 	to fail to start when built without a './configure' argument
 	of '--prefix=/usr'.
+2022-06-16 Fred Gleason <fredg@paravelsystems.com>
+	* Changed the default value of the 'NodeLogPriority=' directive
+	in the '[Drouterd]' section of drouter.conf(5) from '5' (LOG_NOTICE)
+	to '-1' (disable logging).
