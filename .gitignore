@@ -31,6 +31,7 @@ depcomp
 install-sh
 missing
 moc_*
+paths.h
 py-compile
 scripts/install_python.sh
 src/buttonpanel/buttonpanel
