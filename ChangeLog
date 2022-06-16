@@ -692,3 +692,6 @@
 2022-06-15 Fred Gleason <fredg@paravelsystems.com>
 	* Fixed a bug that caused exit cleanup to fail to be executed
 	by drouterd(8) on Ubuntu.
+2022-06-16 Fred Gleason <fredg@paravelsystems.com>
+	* Added a syslog message to drouterd(8) to notify when no longer
+	the active instance.

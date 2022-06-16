@@ -198,6 +198,9 @@ void MainObject::instanceStateChangedData(bool state)
   if(state) {
     syslog(LOG_INFO,"we are now the active instance");
   }
+  else {
+    syslog(LOG_INFO,"we are no longer the active instance");
+  }
 }
 
 
