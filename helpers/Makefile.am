@@ -1,8 +1,10 @@
 ## Makefile.am
 ##
-## Makefile for 'src/common/'
+## helper/ Makefile.am for drouter
 ##
-## (C) Copyright 2017-2020 Fred Gleason <fredg@paravelsystems.com>
+## (C) Copyright 2022 Fred Gleason <fredg@paravelsystems.com>
+##
+## Use automake to process this into a Makefile.in
 ##
 ##   This program is free software; you can redistribute it and/or modify
 ##   it under the terms of the GNU General Public License version 2 as
@@ -17,24 +19,21 @@
 ##   License along with this program; if not, write to the Free Software
 ##   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
 ##
-##
-## Use automake to process this into a Makefile.in
 
-EXTRA_DIST = combobox.cpp combobox.h\
-             config.cpp config.h\
-             dparser.cpp dparser.h\
-             endpointmap.cpp endpointmap.h\
-             logindialog.cpp logindialog.h\
-             multistatewidget.cpp multistatewidget.h\
-             paths.h.in\
-             saparser.cpp saparser.h
+
+AM_CFLAGS = -Wall
+
+EXTRA_DIST = c_file_warning\
+             script_file_warning\
+             xml_file_warning
 
 CLEANFILES = *~\
-             moc_*\
-             *.obj\
-             *.idb\
-             *.pdb\
-             *ilk
-DISTCLEANFILES = paths.h
+             *.tar.gz\
+             moc_*
+
 MAINTAINERCLEANFILES = *~\
-                       Makefile.in
+                       *.tar.gz\
+                       aclocal.m4\
+                       configure\
+                       Makefile.in\
+                       moc_*

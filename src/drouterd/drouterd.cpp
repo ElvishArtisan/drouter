@@ -33,6 +33,7 @@
 #endif  // LIBSYSTEMD
 
 #include "drouterd.h"
+#include "paths.h"
 
 MainObject::MainObject(QObject *parent)
   : QObject(parent)
@@ -152,11 +153,12 @@ void MainObject::protocolData()
 
   if((pid=fork())==0) {
     if(main_protocol_socks[0]<0) {
-      execl("/usr/sbin/dprotod","dprotod","--protocol-d",(char *)NULL);
+      execl((QString(PATH_SBIN)+"/dprotod").toUtf8(),"dprotod","--protocol-d",
+	    (char *)NULL);
     }
     else {
-      execl("/usr/sbin/dprotod","dprotod","--protocol-d","--systemd",
-	    (char *)NULL);
+      execl((QString(PATH_SBIN)+"/dprotod").toUtf8(),"dprotod","--protocol-d",
+	    "--systemd",(char *)NULL);
     }
   }
   main_protocol_pids.push_back(pid);
@@ -164,11 +166,12 @@ void MainObject::protocolData()
 
   if((pid=fork())==0) {
     if(main_protocol_socks[1]<0) {
-      execl("/usr/sbin/dprotod","dprotod","--protocol-sa",(char *)NULL);
+      execl((QString(PATH_SBIN)+"/dprotod").toUtf8(),"dprotod","--protocol-sa",
+	    (char *)NULL);
     }
     else {
-      execl("/usr/sbin/dprotod","dprotod","--protocol-sa","--systemd",
-	    (char *)NULL);
+      execl((QString(PATH_SBIN)+"/dprotod").toUtf8(),"dprotod","--protocol-sa",
+	    "--systemd",(char *)NULL);
     }
   }
   main_protocol_pids.push_back(pid);

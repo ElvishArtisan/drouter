@@ -52,6 +52,9 @@ ln -s ../../src/common/multistatewidget.cpp src/$DESTDIR/multistatewidget.cpp
 rm -f src/$DESTDIR/multistatewidget.h
 ln -s ../../src/common/multistatewidget.h src/$DESTDIR/multistatewidget.h
 
+rm -f src/$DESTDIR/paths.h
+ln -s ../../src/common/paths.h src/$DESTDIR/paths.h
+
 rm -f src/$DESTDIR/saparser.cpp
 ln -s ../../src/common/saparser.cpp src/$DESTDIR/saparser.cpp
 rm -f src/$DESTDIR/saparser.h

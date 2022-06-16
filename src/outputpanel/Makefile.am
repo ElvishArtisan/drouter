@@ -57,6 +57,7 @@ DISTCLEANFILES = combobox.cpp combobox.h\
                  endpointmap.cpp endpointmap.h\
                  logindialog.cpp logindialog.h\
                  multistatewidget.cpp multistatewidget.h\
+                 paths.h\
                  saparser.cpp saparser.h
 
 MAINTAINERCLEANFILES = *~\

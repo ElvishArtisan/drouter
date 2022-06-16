@@ -2,7 +2,7 @@
 ##
 ## Makefile for the dmap(8) map generation utility
 ##
-## (C) Copyright 2017-2021 Fred Gleason <fredg@paravelsystems.com>
+## (C) Copyright 2017-2022 Fred Gleason <fredg@paravelsystems.com>
 ##
 ##   This program is free software; you can redistribute it and/or modify
 ##   it under the terms of the GNU General Public License version 2 as
@@ -51,6 +51,7 @@ DISTCLEANFILES = combobox.cpp combobox.h\
                  endpointmap.cpp endpointmap.h\
                  logindialog.cpp logindialog.h\
                  multistatewidget.cpp multistatewidget.h\
+                 paths.h\
                  saparser.cpp saparser.h
 MAINTAINERCLEANFILES = *~\
                        Makefile.in

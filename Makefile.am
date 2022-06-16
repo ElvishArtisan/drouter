@@ -24,7 +24,8 @@ if DOCBOOK_AM
   DOCBOOK_AM_OPT = docs
 endif
 
-SUBDIRS = conf\
+SUBDIRS = helpers\
+          conf\
           debian\
           icons\
           python\

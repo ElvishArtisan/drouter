@@ -1,3 +1,5 @@
+@GENERATED_SCRIPT_FILE_WARNING@
+
 [Unit]
 Description=DRouter Service
 After=network.target remote-fs.target nss-lookup.target
