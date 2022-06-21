@@ -2,7 +2,7 @@
 //
 // Dynamic router service for Livewire networks
 //
-//   (C) Copyright 2018 Fred Gleason <fredg@paravelsystems.com>
+//   (C) Copyright 2018-2022 Fred Gleason <fredg@paravelsystems.com>
 //
 //   This program is free software; you can redistribute it and/or modify
 //   it under the terms of the GNU General Public License version 2 as
@@ -25,9 +25,10 @@
 #include <QObject>
 #include <QTimer>
 
+#include <sy5/sysignalnotifier.h>
+
 #include "config.h"
 #include "drouter.h"
-#include "exitnotifier.h"
 #include "scriptengine.h"
 #include "tether.h"
 
@@ -44,7 +45,7 @@ class MainObject : public QObject
   void protocolData();
   void scriptsData();
   void instanceStateChangedData(bool this_state);
-  void exitData();
+  void exitData(int signum);
 
  private:
   DRouter *main_drouter;
@@ -55,7 +56,7 @@ class MainObject : public QObject
   bool main_no_tether;
   QTimer *main_scripts_timer;
   ScriptEngine *main_script_engine;
-  ExitNotifier *main_exit_notifier;
+  SySignalNotifier *main_exit_notifier;
   Tether *main_tether;
   Config *main_config;
 };

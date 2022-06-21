@@ -102,8 +102,10 @@ MainObject::MainObject(QObject *parent)
   //
   // Exit Notifier
   //
-  main_exit_notifier=new ExitNotifier(this);
-  connect(main_exit_notifier,SIGNAL(aboutToExit()),this,SLOT(exitData()));
+  main_exit_notifier=new SySignalNotifier(this);
+  connect(main_exit_notifier,SIGNAL(activated(int)),this,SLOT(exitData(int)));
+  main_exit_notifier->addSignal(SIGINT);
+  main_exit_notifier->addSignal(SIGTERM);
 
   //
   // State Scripts
@@ -120,7 +122,6 @@ MainObject::MainObject(QObject *parent)
   main_tether=new Tether(this);
   connect(main_tether,SIGNAL(instanceStateChanged(bool)),
 	  this,SLOT(instanceStateChangedData(bool)));
-  connect(main_exit_notifier,SIGNAL(aboutToExit()),main_tether,SLOT(cleanup()));
 
   //
   // Start Router Process
@@ -207,13 +208,15 @@ void MainObject::instanceStateChangedData(bool state)
 }
 
 
-void MainObject::exitData()
+void MainObject::exitData(int signum)
 {
   if(!main_no_tether) {
-    main_tether->cleanup();
+    main_tether->cleanup();  // Remove shared address
   }
-  main_drouter->disconnect();
   main_drouter->setWriteable(false);
+  qApp->processEvents();
+  main_drouter->disconnect();
+  exit(0);
 }
 
 

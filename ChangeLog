@@ -703,3 +703,8 @@
 	* Changed the default value of the 'NodeLogPriority=' directive
 	in the '[Drouterd]' section of drouter.conf(5) from '5' (LOG_NOTICE)
 	to '-1' (disable logging).
+2022-06-21 Fred Gleason <fredg@paravelsystems.com>
+	* Fixed a bug in drouterd(8) that caused the GPIO state notifier
+	to fail to be reset properly upon exit.
+	* Updated 'INSTALL' to reflect a minimum version of 'v0.22.0'
+	for the Switchyard dependency.
