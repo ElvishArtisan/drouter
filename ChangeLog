@@ -705,3 +705,8 @@
 	to '-1' (disable logging).
 2022-06-21 Fred Gleason <fredg@paravelsystems.com>
 	* Fixed regressions that cause the build to break under Qt-5.9.7.
+2022-06-21 Fred Gleason <fredg@paravelsystems.com>
+	* Fixed a bug in drouterd(8) that caused the GPIO state notifier
+	to fail to be reset properly upon exit.
+	* Updated 'INSTALL' to reflect a minimum version of 'v0.22.0'
+	for the Switchyard dependency.
