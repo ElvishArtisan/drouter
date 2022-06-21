@@ -710,3 +710,7 @@
 	to fail to be reset properly upon exit.
 	* Updated 'INSTALL' to reflect a minimum version of 'v0.22.0'
 	for the Switchyard dependency.
+2022-06-21 Fred Gleason <fredg@paravelsystems.com>
+	* Fixed a bug in drouterd(8) where the UDP tether would fail to
+	properly detect the opposite instance if IPv6 support were enabled
+	in the network stack.

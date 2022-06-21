@@ -112,7 +112,9 @@ void Tether::udpReadyReadData()
   int n;
 
   while((n=tether_udp_socket->readDatagram(data,1,&addr))>0) {
-    if(addr==tether_config->tetherIpAddress(Config::That)) {
+    if(addr.isEqual(tether_config->tetherIpAddress(Config::That),
+		    QHostAddress::ConvertV4MappedToIPv4|
+		    QHostAddress::ConvertV4CompatToIPv4)) {
       if(tether_window_timer->isActive()) {
 	if(data[0]=='?') {
 	  Backoff();
