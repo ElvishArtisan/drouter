@@ -174,7 +174,7 @@ void Config::load()
   conf_silence_alarm_timeout=
     p->intValue("Drouterd","SilenceAlarmTimeout",DROUTER_DEFAULT_SILENCE_TIMEOUT);
   QStringList f0=p->stringValue("Drouterd","NoAudioAlarmDevices").
-    split(",",Qt::SkipEmptyParts);
+    split(",",QString::SkipEmptyParts);
   for(int i=0;i<f0.size();i++) {
     conf_no_audio_alarm_devices.push_back(f0.at(i).toLower().trimmed());
   }

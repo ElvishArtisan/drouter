@@ -67,7 +67,7 @@ void AutoPushButton::resizeEvent(QResizeEvent *e)
 void AutoPushButton::ComposeText()
 {
   int lines;
-  QStringList f0=auto_plain_text.split(" ",Qt::SkipEmptyParts);
+  QStringList f0=auto_plain_text.split(" ",QString::SkipEmptyParts);
   QFont font(auto_font_family,(double)size().height()/2.0,QFont::Bold);
   QString accum;
   QString text;
@@ -84,8 +84,8 @@ void AutoPushButton::ComposeText()
     QFontMetrics fm(font);
     lines=1;
     for(int i=0;i<f0.size();i++) {
-      if((fm.horizontalAdvance(accum+f0.at(i)+" "))>w) {
-	if(fm.horizontalAdvance(f0.at(i))>w) {
+      if((fm.width(accum+f0.at(i)+" "))>w) {
+	if(fm.width(f0.at(i))>w) {
 	  singleton=true;
 	  break;
 	}

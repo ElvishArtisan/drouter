@@ -703,3 +703,5 @@
 	* Changed the default value of the 'NodeLogPriority=' directive
 	in the '[Drouterd]' section of drouter.conf(5) from '5' (LOG_NOTICE)
 	to '-1' (disable logging).
+2022-06-21 Fred Gleason <fredg@paravelsystems.com>
+	* Fixed regressions that cause the build to break under Qt-5.9.7.

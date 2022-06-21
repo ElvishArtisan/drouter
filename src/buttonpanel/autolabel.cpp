@@ -90,7 +90,7 @@ void AutoLabel::resizeEvent(QResizeEvent *e)
 void AutoLabel::ComposeText()
 {
   int lines;
-  QStringList f0=auto_plain_text.split(" ",Qt::SkipEmptyParts);
+  QStringList f0=auto_plain_text.split(" ",QString::SkipEmptyParts);
   QFont font(auto_font_family,(double)size().height()/(2.0*auto_aspect_scale),
 	     QFont::Bold);
   QString accum;
@@ -106,8 +106,8 @@ void AutoLabel::ComposeText()
     QFontMetrics fm(font);
     lines=1;
     for(int i=0;i<f0.size();i++) {
-      if((fm.horizontalAdvance(accum+f0.at(i)+" "))>size().width()) {
-	if(fm.horizontalAdvance(f0.at(i))>size().width()) {
+      if((fm.width(accum+f0.at(i)+" "))>size().width()) {
+	if(fm.width(f0.at(i))>size().width()) {
 	  singleton=true;
 	  break;
 	}
