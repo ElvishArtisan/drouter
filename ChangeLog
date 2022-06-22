@@ -714,3 +714,6 @@
 	* Fixed a bug in drouterd(8) where the UDP tether would fail to
 	properly detect the opposite instance if IPv6 support were enabled
 	in the network stack.
+2022-06-22 Fred Gleason <fredg@paravelsystems.com>
+	* Added 'AlertAddress=' and 'FromAddress=' directives to the
+	'[Drouterd]' section of drouter.conf(5).

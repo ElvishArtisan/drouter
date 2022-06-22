@@ -34,6 +34,7 @@
 
 #include "drouterd.h"
 #include "paths.h"
+#include "sendmail.h"
 
 MainObject::MainObject(QObject *parent)
   : QObject(parent)
@@ -199,11 +200,23 @@ void MainObject::scriptsData()
 
 void MainObject::instanceStateChangedData(bool state)
 {
+  QString err_msg;
+  QString body;
+
   if(state) {
     syslog(LOG_INFO,"we are now the active instance");
+    body="Server "+main_config->tetherHostname(Config::This)+
+      " is now the active instance\r\n";
   }
   else {
     syslog(LOG_INFO,"we are no longer the active instance");
+    body="Server "+main_config->tetherHostname(Config::This)+
+      " is no longer the active instance\r\n";
+  }
+  if((Config::emailIsValid(main_config->alertAddress()))&&
+     (Config::emailIsValid(main_config->fromAddress()))) {
+    SendMail(&err_msg,tr("Drouter Server Alert"),body,
+	     main_config->fromAddress(),main_config->alertAddress());
   }
 }
 

@@ -39,6 +39,16 @@ SilenceAlarmTimeout=10000
 ;
 NoAudioAlarmDevices=VX Engine, Engine
 
+;
+; Send system status alerts to an e-mail address.
+; 
+; AlertAddress=someone@example.com
+
+;
+; Address that alert messages originate from.
+; 
+FromAddress=noreply@example.com
+
 ; IpcLogPriority=<prio>
 ;
 ; Integer indicating the priority to use when logging internal IPC

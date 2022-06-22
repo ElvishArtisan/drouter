@@ -56,7 +56,8 @@ nodist_drouterd_SOURCES = config.cpp config.h\
                           moc_scriptengine.cpp\
                           moc_tether.cpp\
                           moc_ttydevice.cpp\
-                          protoipc.h
+                          protoipc.h\
+                          sendmail.cpp sendmail.h
 
 drouterd_LDADD = @QT5CLI_LIBS@ @SWITCHYARD5_LIBS@ @LIBSYSTEMD_LIBS@
 
@@ -101,7 +102,8 @@ DISTCLEANFILES = combobox.cpp combobox.h\
                  logindialog.cpp logindialog.h\
                  multistatewidget.cpp multistatewidget.h\
                  paths.h\
-                 saparser.cpp saparser.h
+                 saparser.cpp saparser.h\
+                 sendmail.cpp sendmail.h
 
 MAINTAINERCLEANFILES = *~\
                        Makefile.in

@@ -60,5 +60,10 @@ ln -s ../../src/common/saparser.cpp src/$DESTDIR/saparser.cpp
 rm -f src/$DESTDIR/saparser.h
 ln -s ../../src/common/saparser.h src/$DESTDIR/saparser.h
 
+rm -f src/$DESTDIR/sendmail.cpp
+ln -s ../../src/common/sendmail.cpp src/$DESTDIR/sendmail.cpp
+rm -f src/$DESTDIR/sendmail.h
+ln -s ../../src/common/sendmail.h src/$DESTDIR/sendmail.h
+
 
 # End of link_common.sh

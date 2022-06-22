@@ -73,7 +73,8 @@ DISTCLEANFILES = combobox.cpp combobox.h\
                  logindialog.cpp logindialog.h\
                  multistatewidget.cpp multistatewidget.h\
                  paths.h\
-                 saparser.cpp saparser.h
+                 saparser.cpp saparser.h\
+                 sendmail.cpp sendmail.h
 
 MAINTAINERCLEANFILES = *~\
                        Makefile.in

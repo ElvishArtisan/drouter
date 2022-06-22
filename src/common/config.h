@@ -54,6 +54,8 @@ class Config
   int silenceAlarmThreshold() const;
   int silenceAlarmTimeout() const;
   bool configureAudioAlarms(const QString &dev_name) const;
+  QString alertAddress() const;
+  QString fromAddress() const;
   int ipcLogPriority() const;
   int nodeLogPriority() const;
   QString lwrpPassword() const;
@@ -72,6 +74,7 @@ class Config
   void load();
   static QHostAddress normalizedStreamAddress(const QHostAddress &addr);
   static QHostAddress normalizedStreamAddress(const QString &addr);
+  static bool emailIsValid(const QString &addr);
 
  private:
   QString conf_lwrp_password;
@@ -81,6 +84,8 @@ class Config
   int conf_silence_alarm_timeout;
   int conf_ipc_log_priority;
   int conf_node_log_priority;
+  QString conf_alert_address;
+  QString conf_from_address;
   QStringList conf_no_audio_alarm_devices;
   int conf_max_heap_table_size;
   bool conf_tether_is_activated;

@@ -2,7 +2,7 @@
 ##
 ## Makefile for the shotpanel(1) applet
 ##
-## (C) Copyright 2017-2021 Fred Gleason <fredg@paravelsystems.com>
+## (C) Copyright 2017-2022 Fred Gleason <fredg@paravelsystems.com>
 ##
 ##   This program is free software; you can redistribute it and/or modify
 ##   it under the terms of the GNU General Public License as
@@ -56,7 +56,8 @@ DISTCLEANFILES = combobox.cpp combobox.h\
                  logindialog.cpp logindialog.h\
                  multistatewidget.cpp multistatewidget.h\
                  paths.h\
-                 saparser.cpp saparser.h
+                 saparser.cpp saparser.h\
+                 sendmail.cpp sendmail.h
 
 MAINTAINERCLEANFILES = *~\
                        Makefile.in

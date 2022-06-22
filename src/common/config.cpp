@@ -69,6 +69,18 @@ bool Config::configureAudioAlarms(const QString &dev_name) const
 }
 
 
+QString Config::alertAddress() const
+{
+  return conf_alert_address;
+}
+
+
+QString Config::fromAddress() const
+{
+  return conf_from_address;
+}
+
+
 int Config::ipcLogPriority() const
 {
   return conf_ipc_log_priority;
@@ -178,6 +190,8 @@ void Config::load()
   for(int i=0;i<f0.size();i++) {
     conf_no_audio_alarm_devices.push_back(f0.at(i).toLower().trimmed());
   }
+  conf_alert_address=p->stringValue("Drouterd","AlertAddress");
+  conf_from_address=p->stringValue("Drouterd","FromAddress");
   conf_ipc_log_priority=
     p->intValue("Drouterd","IpcLogPriority",DROUTER_DEFAULT_IPC_LOG_PRIORITY);
   conf_node_log_priority=
@@ -277,4 +291,19 @@ QHostAddress Config::normalizedStreamAddress(const QHostAddress &addr)
 QHostAddress Config::normalizedStreamAddress(const QString &addr)
 {
   return Config::normalizedStreamAddress(QHostAddress(addr));
+}
+
+
+bool Config::emailIsValid(const QString &addr)
+{
+  QStringList f0=addr.split("@",QString::KeepEmptyParts);
+
+  if(f0.size()!=2) {
+    return false;
+  }
+  QStringList f1=f0.last().split(".");
+  if(f1.size()<2) {
+    return false;
+  }
+  return true;
 }
