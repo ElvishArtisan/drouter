@@ -56,6 +56,9 @@ QByteArray __SendMail_EncodeBody(QString *charset,QString *encoding,
     // Ensure no naked CR or LF characters (RFC5322 Section 2.3)
     //
     ret=str.toUtf8();
+    //
+    // Add LFs to naked CRs
+    //
     index=0;
     while((index=ret.indexOf("/r",index))>=0) {
       if(ret.mid(index+1,1)!="/n") {
@@ -63,12 +66,20 @@ QByteArray __SendMail_EncodeBody(QString *charset,QString *encoding,
 	index++;
       }
     }
-    index=0;
+    //
+    // Add CRs to naked LFs
+    //
+    index=1;
+    if(ret.at(0)==QChar('\n')) {
+      ret.insert(0,"\r");
+      index=2;
+    }
     while((index=ret.indexOf("\n",index))>=0) {
-      if((index==0)||(ret.mid(index-1,1)!="\r")) {
+      if(ret.mid(index-1,1)!="\r") {
 	ret.insert(index,"\r");
-	index+=2;
+	index++;
       }
+      index++;
     }
     return ret;
   }

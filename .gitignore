@@ -138,6 +138,7 @@ src/tests/saparser.cpp
 src/tests/saparser.h
 src/tests/sendmail.cpp
 src/tests/sendmail.h
+src/tests/sendmailtest
 src/xpointpanel/combobox.cpp
 src/xpointpanel/combobox.h
 src/xpointpanel/config.cpp
