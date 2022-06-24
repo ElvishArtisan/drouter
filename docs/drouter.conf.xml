@@ -354,6 +354,73 @@
 	    </para>
 	  </listitem>
 	</varlistentry>
+	<varlistentry>
+	  <term>
+	    <userinput>SystemAGpioIpAddress=<replaceable>ip-addr</replaceable></userinput>
+	  </term>
+	  <term>
+	      <userinput>SystemBGpioIpAddress=<replaceable>dev-name</replaceable></userinput>
+	  </term>
+	  <listitem>
+	    <para>
+	      The IPv4 address, in dotted-quad notation, of the GPIO node(s)
+	      to send state changes to indicate the respective instance's
+	      active state. These state changes are sent by means of LWRP.
+	    </para>
+	  </listitem>
+	</varlistentry>
+	<varlistentry>
+	  <term>
+	    <userinput>SystemAGpioSlot=<replaceable>slot-num</replaceable></userinput>
+	  </term>
+	  <term>
+	      <userinput>SystemBGpioSlot=<replaceable>slot-num</replaceable></userinput>
+	  </term>
+	  <listitem>
+	    <para>
+	      The slot number on the GPIO node(s) indicated in the
+	      <userinput>SystemAIpAddress</userinput> or
+	      <userinput>SystemBIpAddress</userinput> to which to
+	      send state changes to indicate the respective instance's
+	      active state.
+	    </para>
+	  </listitem>
+	</varlistentry>
+	<varlistentry>
+	  <term>
+	    <userinput>SystemAGpioType=GPI</userinput>|<userinput>GPO</userinput>
+	  </term>
+	  <term>
+	    <userinput>SystemBGpioType=GPI</userinput>|<userinput>GPO</userinput>
+	  </term>
+	  <listitem>
+	    <para>
+	      The type of GPIO to use on the GPIO node(s) indicated in the
+	      <userinput>SystemAIpAddress</userinput> or
+	      <userinput>SystemBIpAddress</userinput> to which to
+	      send state changes to indicate the respective instance's
+	      active state.
+	    </para>
+	  </listitem>
+	</varlistentry>
+
+	<varlistentry>
+	  <term>
+	    <userinput>SystemAGpioCode=<replaceable>code-str</replaceable></userinput>
+	  </term>
+	  <term>
+	    <userinput>SystemBGpioCode=<replaceable>code-str</replaceable></userinput>
+	  </term>
+	  <listitem>
+	    <para>
+	      The code string to apply on the GPIO node(s) indicated in the
+	      <userinput>SystemAIpAddress</userinput> or
+	      <userinput>SystemBIpAddress</userinput> to which to
+	      send state changes to indicate the respective instance's
+	      active state.
+	    </para>
+	  </listitem>
+	</varlistentry>
       </variablelist>
     </refsect2>
   </refsect1>

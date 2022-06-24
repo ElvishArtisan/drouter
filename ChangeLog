@@ -717,3 +717,7 @@
 2022-06-22 Fred Gleason <fredg@paravelsystems.com>
 	* Added 'AlertAddress=' and 'FromAddress=' directives to the
 	'[Drouterd]' section of drouter.conf(5).
+2022-06-24 Fred Gleason <fredg@paravelsystems.com>
+	* Documented the 'System<n>GpioIpAddress=', 'System<n>GpioSlot=',
+	'System<n>GpioType=' and 'System<n>GpioCode=' directives in the
+	'[Tether]' section of the drouter.conf(5) man page.
