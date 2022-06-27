@@ -725,3 +725,6 @@
 	* Fixed a bug in the mail handler routines that caused drouterd(8)
 	to lock up when processing e-mail text containing CR/LF line
 	endings.
+2022-06-24 Fred Gleason <fredg@paravelsystems.com>
+	* Fixed a bug in 'src/tests/Makefile.am' that broke the 'make dist'
+	target.

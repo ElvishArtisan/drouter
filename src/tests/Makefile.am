@@ -31,13 +31,13 @@ moc_%.cpp:	%.h
 noinst_PROGRAMS = dparsertest\
                   sendmailtest
 
-dist_dparsertest_SOURCES = dparsertest.cpp dparsertest.h\
+dist_dparsertest_SOURCES = dparsertest.cpp dparsertest.h
 nodist_dparsertest_SOURCES = dparser.cpp dparser.h\
                              moc_dparsertest.cpp\
                              moc_dparser.cpp
 dparsertest_LDADD = @QT5CLI_LIBS@ @SWITCHYARD5_LIBS@
 
-dist_sendmailtest_SOURCES = sendmailtest.cpp sendmailtest.h\
+dist_sendmailtest_SOURCES = sendmailtest.cpp sendmailtest.h
 nodist_sendmailtest_SOURCES = config.cpp config.h\
                               moc_sendmailtest.cpp\
                               sendmail.cpp sendmail.h
