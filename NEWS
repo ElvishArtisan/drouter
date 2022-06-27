@@ -1,6 +1,14 @@
 This is the NEWS file for the drouter package.
 
 -------------------------------------------------------------------------------
+v1.0.0rc4int0 - 27 June 2021
+
+Changes:
+   Dependency Changes. Updated the entire package to use Qt5 and Switchyard5.
+   See the 'INSTALL' file for details.
+
+   Various bugfixes. See the 'ChangeLog' for details.
+-------------------------------------------------------------------------------
 v1.0.0rc4 - 24 June 2021
 
 Release Candidate

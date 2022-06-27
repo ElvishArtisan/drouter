@@ -728,3 +728,5 @@
 2022-06-24 Fred Gleason <fredg@paravelsystems.com>
 	* Fixed a bug in 'src/tests/Makefile.am' that broke the 'make dist'
 	target.
+2022-06-24 Fred Gleason <fredg@paravelsystems.com>
+	* Incremented the package version to 1.0.0rc4int0.
