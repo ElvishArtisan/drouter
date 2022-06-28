@@ -730,3 +730,5 @@
 	target.
 2022-06-24 Fred Gleason <fredg@paravelsystems.com>
 	* Incremented the package version to 1.0.0rc4int0.
+2022-06-28 Fred Gleason <fredg@paravelsystems.com>
+	* Fixed a bug in drouterd(8) that caused random segfaults.

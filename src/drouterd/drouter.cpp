@@ -213,7 +213,6 @@ bool DRouter::isWriteable() const
 void DRouter::setWriteable(bool state)
 {
   QString sql;
-  SqlQuery *q;
 
   if(drouter_writeable!=state) {
     drouter_flasher->setActive(state);
@@ -226,8 +225,7 @@ void DRouter::setWriteable(bool state)
       letter="Y";
     }
     sql=QString("update `TETHER` set `IS_ACTIVE`='"+letter+"'");
-    q=new SqlQuery(sql);
-    delete q;
+    SqlQuery::apply(sql);
     drouter_writeable=state;
     NotifyProtocols("TETHER",letter);
   }
@@ -480,7 +478,6 @@ void DRouter::nodeConnectedData(unsigned id,bool state)
     sql=QString("delete from `NODES` where ")+
       "`HOST_ADDRESS`='"+QHostAddress(id).toString()+"'";
     SqlQuery::apply(sql);
-    delete q;
     drouter_nodes.erase(drouter_nodes.find(id));
     UnlockTables();
   }
