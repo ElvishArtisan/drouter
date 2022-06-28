@@ -734,4 +734,8 @@
 	* Fixed a bug in drouterd(8) that caused random segfaults.
 2022-06-28 Fred Gleason <fredg@paravelsystems.com>
 	* Incremented the package version to 1.0.0rc4int1.
-
+2022-06-28 Fred Gleason <fredg@paravelsystems.com>
+	* Added a 'DrouterMaskGpiStat' command to Software Authority Protocol.
+	* Added a 'DrouterMaskGpoStat' command to Software Authority Protocol.
+	* Added a 'DrouterMaskRouteStat' command to Software Authority Protocol.
+	* Added a 'DrouterMaskStat' command to Software Authority Protocol.

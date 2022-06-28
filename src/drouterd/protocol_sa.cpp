@@ -42,6 +42,9 @@ ProtocolSa::ProtocolSa(int sock,QObject *parent)
   proto_sources_subscribed=false;
   proto_clips_subscribed=false;
   proto_silences_subscribed=false;
+  proto_gpistat_masked=false;
+  proto_gpostat_masked=false;
+  proto_routestat_masked=false;
 
   openlog("dprotod(SA)",LOG_PID,LOG_DAEMON);
 
@@ -148,16 +151,18 @@ void ProtocolSa::destinationCrosspointChanged(const QHostAddress &host_addr,int 
   QString sql;
   SqlQuery *q;
  
-  sql=RouteStatSqlFields(EndPointMap::AudioRouter)+
-    " `SA_DESTINATIONS`.`HOST_ADDRESS`='"+host_addr.toString()+"' && "+
-    QString::asprintf("`SA_DESTINATIONS`.`SLOT`=%d ",slotnum)+
-    "order by `SA_DESTINATIONS`.`SOURCE_NUMBER`,`SA_DESTINATIONS`.`ROUTER_NUMBER`";
-  q=new SqlQuery(sql);
-  while(q->next()) {
-    proto_socket->write(RouteStatMessage(q).toUtf8());
-    proto_socket->write(">>",2);
+  if(!proto_routestat_masked) {
+    sql=RouteStatSqlFields(EndPointMap::AudioRouter)+
+      " `SA_DESTINATIONS`.`HOST_ADDRESS`='"+host_addr.toString()+"' && "+
+      QString::asprintf("`SA_DESTINATIONS`.`SLOT`=%d ",slotnum)+
+      "order by `SA_DESTINATIONS`.`SOURCE_NUMBER`,`SA_DESTINATIONS`.`ROUTER_NUMBER`";
+    q=new SqlQuery(sql);
+    while(q->next()) {
+      proto_socket->write(RouteStatMessage(q).toUtf8());
+      proto_socket->write(">>",2);
+    }
+    delete q;
   }
-  delete q;
 }
 
 
@@ -166,15 +171,17 @@ void ProtocolSa::gpiCodeChanged(const QHostAddress &host_addr,int slotnum)
   QString sql;
   SqlQuery *q;
 
-  sql=GPIStatSqlFields()+" where "+
-    "`GPIS`.`HOST_ADDRESS`='"+host_addr.toString()+"' && "+
-    QString::asprintf("`GPIS`.`SLOT`=%d",slotnum);
-  q=new SqlQuery(sql);
-  while(q->next()) {
-    proto_socket->write(GPIStatMessage(q).toUtf8());
-    proto_socket->write(">>",2);
+  if(!proto_gpistat_masked) {
+    sql=GPIStatSqlFields()+" where "+
+      "`GPIS`.`HOST_ADDRESS`='"+host_addr.toString()+"' && "+
+      QString::asprintf("`GPIS`.`SLOT`=%d",slotnum);
+    q=new SqlQuery(sql);
+    while(q->next()) {
+      proto_socket->write(GPIStatMessage(q).toUtf8());
+      proto_socket->write(">>",2);
+    }
+    delete q;
   }
-  delete q;
 }
 
 
@@ -183,15 +190,17 @@ void ProtocolSa::gpoCodeChanged(const QHostAddress &host_addr,int slotnum)
   QString sql;
   SqlQuery *q;
 
-  sql=GPOStatSqlFields()+" where "+
-    "`GPOS`.`HOST_ADDRESS`='"+host_addr.toString()+"' && "+
-    QString::asprintf("`GPOS`.`SLOT`=%d",slotnum);
-  q=new SqlQuery(sql);
-  while(q->next()) {
-    proto_socket->write(GPOStatMessage(q).toUtf8());
-    proto_socket->write(">>",2);
+  if(!proto_gpostat_masked) {
+    sql=GPOStatSqlFields()+" where "+
+      "`GPOS`.`HOST_ADDRESS`='"+host_addr.toString()+"' && "+
+      QString::asprintf("`GPOS`.`SLOT`=%d",slotnum);
+    q=new SqlQuery(sql);
+    while(q->next()) {
+      proto_socket->write(GPOStatMessage(q).toUtf8());
+      proto_socket->write(">>",2);
+    }
+    delete q;
   }
-  delete q;
 }
 
 
@@ -200,16 +209,18 @@ void ProtocolSa::gpoCrosspointChanged(const QHostAddress &host_addr,int slotnum)
   QString sql;
   SqlQuery *q;
 
-  sql=RouteStatSqlFields(EndPointMap::GpioRouter)+
-    " `SA_GPOS`.`HOST_ADDRESS`='"+host_addr.toString()+"' && "+
-    QString::asprintf("`SA_GPOS`.`SLOT`=%d ",slotnum)+
-    "order by `SA_GPOS`.`SOURCE_NUMBER`,`SA_GPOS`.`ROUTER_NUMBER`";
-  q=new SqlQuery(sql);
-  while(q->next()) {
-    proto_socket->write(RouteStatMessage(q).toUtf8());
-    proto_socket->write(">>",2);
+  if(!proto_routestat_masked) {
+    sql=RouteStatSqlFields(EndPointMap::GpioRouter)+
+      " `SA_GPOS`.`HOST_ADDRESS`='"+host_addr.toString()+"' && "+
+      QString::asprintf("`SA_GPOS`.`SLOT`=%d ",slotnum)+
+      "order by `SA_GPOS`.`SOURCE_NUMBER`,`SA_GPOS`.`ROUTER_NUMBER`";
+    q=new SqlQuery(sql);
+    while(q->next()) {
+      proto_socket->write(RouteStatMessage(q).toUtf8());
+      proto_socket->write(">>",2);
+    }
+    delete q;
   }
-  delete q;
 }
 
 
@@ -699,6 +710,32 @@ QString ProtocolSa::RouteStatMessage(SqlQuery *q)
 }
 
 
+void ProtocolSa::DrouterMaskGpiStat(bool state)
+{
+  proto_gpistat_masked=state;
+}
+
+
+void ProtocolSa::DrouterMaskGpoStat(bool state)
+{
+  proto_gpostat_masked=state;
+}
+
+
+void ProtocolSa::DrouterMaskRouteStat(bool state)
+{
+  proto_routestat_masked=state;
+}
+
+
+void ProtocolSa::DrouterMaskStat(bool state)
+{
+  proto_gpistat_masked=state;
+  proto_gpostat_masked=state;
+  proto_routestat_masked=state;
+}
+
+
 void ProtocolSa::ProcessCommand(const QString &cmd)
 {
   unsigned cardnum=0;
@@ -918,6 +955,50 @@ void ProtocolSa::ProcessCommand(const QString &cmd)
     }
     proto_socket->write(">>",2);
   }
+
+  if((cmds[0].toLower()=="droutermaskgpistat")&&(cmds.size()==2)) {
+    if((cmds.at(1).toLower()=="true")||(cmds.at(1).toLower()=="false")) {
+      DrouterMaskGpiStat(cmds.at(1).toLower()=="true");
+    }
+    else {
+      proto_socket->
+	write(QString("Error - Invalid boolean value.\r\n").toUtf8());
+    }
+    proto_socket->write(">>",2);
+  }
+
+  if((cmds[0].toLower()=="droutermaskgpostat")&&(cmds.size()==2)) {
+    if((cmds.at(1).toLower()=="true")||(cmds.at(1).toLower()=="false")) {
+      DrouterMaskGpoStat(cmds.at(1).toLower()=="true");
+    }
+    else {
+      proto_socket->
+	write(QString("Error - Invalid boolean value.\r\n").toUtf8());
+    }
+    proto_socket->write(">>",2);
+  }
+
+  if((cmds[0].toLower()=="droutermaskroutestat")&&(cmds.size()==2)) {
+    if((cmds.at(1).toLower()=="true")||(cmds.at(1).toLower()=="false")) {
+      DrouterMaskRouteStat(cmds.at(1).toLower()=="true");
+    }
+    else {
+      proto_socket->
+	write(QString("Error - Invalid boolean value.\r\n").toUtf8());
+    }
+    proto_socket->write(">>",2);
+  }
+
+  if((cmds[0].toLower()=="droutermaskstat")&&(cmds.size()==2)) {
+    if((cmds.at(1).toLower()=="true")||(cmds.at(1).toLower()=="false")) {
+      DrouterMaskStat(cmds.at(1).toLower()=="true");
+    }
+    else {
+      proto_socket->
+	write(QString("Error - Invalid boolean value.\r\n").toUtf8());
+    }
+    proto_socket->write(">>",2);
+  }
 }
 
 
@@ -941,9 +1022,14 @@ void ProtocolSa::LoadHelp()
     ", ActivateScene"+
     ", ActivateSnap"+
     ", DestNames"+
+    ", DrouterMaskGPIStat"+
+    ", DrouterMaskGPOStat"+
+    ", DrouterMaskRouteStat"+
+    ", DrouterMaskStat"+
     ", Exit"+
     ", GPIStat"+
     ", GPOStat"+
+    ", RouteStat"+
     ", Quit"+
     ", RouterNames"+
     ", RouteStat"+
@@ -956,6 +1042,11 @@ void ProtocolSa::LoadHelp()
   proto_help_strings["activatescene"]="ActivateScene <router> <snapshot>\r\n\r\nActivate the specified snapshot.";
   proto_help_strings["activatesnap"]="ActivateSnap <router> <snapshot>\r\n\r\nActivate the specified snapshot.";
   proto_help_strings["destnames"]="DestNames <router>\r\n\r\nReturn names of all outputs on the specified router.";
+  proto_help_strings["droutermaskgpistat"]="DrouterMaskGPIStat True | False\r\n\r\nSuppress generation of GPIStat update messages on this connection.";
+  proto_help_strings["droutermaskgpostat"]="DrouterMaskGPOStat True | False\r\n\r\nSuppress generation of GPOStat update messages on this connection.";
+  proto_help_strings["droutermaskroutestat"]="DrouterMaskRouteStat True | False\r\n\r\nSuppress generation of RouteStat update messages on this connection.";
+  proto_help_strings["droutermaskstat"]="DrouterMaskStat True | False\r\n\r\nSuppress generation of all state update messages on this connection.";
+  proto_help_strings["droutermaskroutestat"]="DrouterMaskRouteStat True | False\r\n\r\nSuppress generation of RouteStat update messages on this connection.";
   proto_help_strings["exit"]="Exit\r\n\r\nClose TCP/IP connection.";
   proto_help_strings["gpistat"]="GPIStat <router> [<gpi-num>]\r\n\r\nQuery the state of one or more GPIs.\r\nIf <gpi-num> is not given, the entire set of GPIs for the specified\r\n<router> will be returned.";
   proto_help_strings["gpostat"]="GPOStat <router> [<gpo-num>]\r\n\r\nQuery the state of one or more GPOs.\r\nIf <gpo-num> is not given, the entire set of GPOs for the specified\r\n<router> will be returned.";

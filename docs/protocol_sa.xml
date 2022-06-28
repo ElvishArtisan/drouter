@@ -177,6 +177,14 @@
       </para>
     </sect3>
   </sect2>
+  <sect2 id="sect.booleans">
+    <title>Booleans</title>
+    <para>
+      Those commands that require and/or return boolean values do so
+      by using the strings <userinput>True</userinput> or
+      <userinput>False</userinput>.
+    </para>
+  </sect2>
 </sect1>
 
 <sect1 id="sect.connection_management">
@@ -676,6 +684,86 @@ GPOStat 3 11 hhlhh
     </programlisting>
   </sect2>
 
+</sect1>
+
+<sect1 id="sect.extended_protocol_messages">
+  <title>Extended Protocol Messages</title>
+  <caution>
+    The messages described in this section are all &quot;extended&quot;
+    inasmuch as they are Drouter-specific extensions to Software Authority
+    Protocol. Hence, they are not present in non-Drouter implementations of
+    the protocol!
+  </caution>
+  <sect2 id="sect.extended_protocol_messages.mask_gpistat_update_messages">
+    <title>Mask <command>GPIStat</command> Update Messages</title>
+    <para>
+      <command>DrouterMaskGPIStat</command>
+      <userinput>True</userinput> | <userinput>False</userinput>
+    </para>
+    <para>
+      If set to <userinput>True</userinput>, this command will suppress
+      any <command>GPIStat</command> response message(s) that would
+      otherwise have been received on the connection upon which it was
+      issued.
+    </para>
+    <note>
+      The <command>DrouterMaskGPIStat</command> command affects only the
+      specific protocol connection in which it is used.
+    </note>
+  </sect2>
+  <sect2 id="sect.extended_protocol_messages.mask_gpostat_update_messages">
+    <title>Mask <command>GPOStat</command> Update Messages</title>
+    <para>
+      <command>DrouterMaskGPOStat</command>
+      <userinput>True</userinput> | <userinput>False</userinput>
+    </para>
+    <para>
+      If set to <userinput>True</userinput>, this command will suppress
+      any <command>GPOStat</command> response message(s) that would
+      otherwise have been received on the connection upon which it was
+      issued.
+    </para>
+    <note>
+      The <command>DrouterMaskGPOStat</command> command affects only the
+      specific protocol connection in which it is used.
+    </note>
+  </sect2>
+  <sect2 id="sect.extended_protocol_messages.mask_routestat_update_messages">
+    <title>Mask <command>RouteStat</command> Update Messages</title>
+    <para>
+      <command>DrouterMaskRouteStat</command>
+      <userinput>True</userinput> | <userinput>False</userinput>
+    </para>
+    <para>
+      If set to <userinput>True</userinput>, this command will suppress
+      any <command>RouteStat</command> response message(s) that would
+      otherwise have been received on the connection upon which it was
+      issued.
+    </para>
+    <note>
+      The <command>DrouterMaskRouteStat</command> command affects only the
+      specific protocol connection in which it is used.
+    </note>
+  </sect2>
+  <sect2 id="sect.extended_protocol_messages.mask_stat_update_messages">
+    <title>Mask All Update Messages</title>
+    <para>
+      <command>DrouterMaskStat</command>
+      <userinput>True</userinput> | <userinput>False</userinput>
+    </para>
+    <para>
+      If set to <userinput>True</userinput>, this command will suppress
+      all route state update messages --i.e. <command>GPIStat</command>, 
+      <command>GPOStat</command> and <command>RouteStat</command> messages -- 
+      that would otherwise have been received on the connection upon which
+      it was issued.
+    </para>
+    <note>
+      The <command>DrouterMaskRouteStat</command> command affects only the
+      specific protocol connection in which it is used.
+    </note>
+  </sect2>
+    
 </sect1>
 
 </article>

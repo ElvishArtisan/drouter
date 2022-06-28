@@ -69,6 +69,10 @@ class ProtocolSa : public Protocol
   void SendRouteInfo(unsigned router,int output);
   QString RouteStatSqlFields(EndPointMap::RouterType type);
   QString RouteStatMessage(SqlQuery *q);
+  void DrouterMaskGpiStat(bool state);
+  void DrouterMaskGpoStat(bool state);
+  void DrouterMaskRouteStat(bool state);
+  void DrouterMaskStat(bool state);
   void ProcessCommand(const QString &cmd);
   void LoadMaps();
   void LoadHelp();
@@ -85,6 +89,9 @@ class ProtocolSa : public Protocol
   bool proto_sources_subscribed;
   bool proto_clips_subscribed;
   bool proto_silences_subscribed;
+  bool proto_gpistat_masked;
+  bool proto_gpostat_masked;
+  bool proto_routestat_masked;
 };
 
 
