@@ -1,11 +1,14 @@
 This is the NEWS file for the drouter package.
 
 -------------------------------------------------------------------------------
-v1.0.0rc4int1 - 28 June 2021
+v1.0.0rc4int2 - 28 June 2021
 
 Changes:
    Dependency Changes. Updated the entire package to use Qt5 and Switchyard5.
    See the 'INSTALL' file for details.
+
+   Software Authority Protocol. Added extended commands 'DrouterMaskGPIStat',
+   'DrouterMaskGPOStat', 'DrouterMaskRouteStat' and 'DrouterMaskStat'.
 
    Various bugfixes. See the 'ChangeLog' for details.
 -------------------------------------------------------------------------------
