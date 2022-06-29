@@ -744,3 +744,6 @@
 2022-06-29 Fred Gleason <fredg@paravelsystems.com>
 	* Added the '/var/cache/drouter' sub-directory to the package
 	manifest for the 'drouter' RPM package.
+2022-06-29 Fred Gleason <fredg@paravelsystems.com>
+	* Fixed a regression in outputpanel(1) that caused the values of the
+	'--output=' switch to be improperly validated.

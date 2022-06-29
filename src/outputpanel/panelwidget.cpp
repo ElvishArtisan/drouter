@@ -116,15 +116,15 @@ void PanelWidget::changeConnectionState(bool state,
 					SaParser::ConnectionState cstate)
 {
   if(state) {
-    if(!widget_parser->routers().contains(widget_router)) {
+    if(!widget_parser->routers().contains(widget_router+1)) {
       QMessageBox::warning(this,"OutputPanel - "+tr("Error"),
-	  tr("Router")+QString::asprintf(" %u ",widget_router)+
+	  tr("Router")+QString::asprintf(" %u ",widget_router+1)+
 	  tr("does not exist!"));
       exit(256);
     }
-    if(widget_output>widget_parser->outputQuantity(widget_router)) {
+    if(!widget_parser->outputIsReal(widget_router,widget_output+1)) {
       QMessageBox::warning(this,"OutputPanel - "+tr("Error"),
-	  tr("Output")+QString::asprintf(" %u ",widget_output)+
+	  tr("Output")+QString::asprintf(" %u ",widget_output+1)+
 	  tr("does not exist!"));
       exit(256);
     }
