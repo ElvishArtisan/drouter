@@ -551,7 +551,7 @@ QString ProtocolSa::GPIStatSqlFields() const
     "`SA_GPIS`.`ROUTER_NUMBER`,"+  // 00
     "`SA_GPIS`.`SOURCE_NUMBER`,"+  // 01
     "`GPIS`.`CODE` "+              // 02
-    "from `GPIS` left join `SA_GPIS` on `GPIS`.`ID`=`SA_GPIS`.`GPI_ID` ";
+    "from `GPIS` right join `SA_GPIS` on `GPIS`.`ID`=`SA_GPIS`.`GPI_ID` ";
 }
 
 
@@ -602,7 +602,7 @@ QString ProtocolSa::GPOStatSqlFields() const
     "`SA_GPOS`.`ROUTER_NUMBER`,"+  // 00
     "`SA_GPOS`.`SOURCE_NUMBER`,"+  // 01
     "`GPOS`.`CODE` "+              // 02
-    "from `GPOS` left join `SA_GPOS` on `GPOS`.`ID`=`SA_GPOS`.`GPO_ID` ";
+    "from `GPOS` right join `SA_GPOS` on `GPOS`.`ID`=`SA_GPOS`.`GPO_ID` ";
 }
 
 

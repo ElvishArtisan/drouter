@@ -747,3 +747,7 @@
 2022-06-29 Fred Gleason <fredg@paravelsystems.com>
 	* Fixed a regression in outputpanel(1) that caused the values of the
 	'--output=' switch to be improperly validated.
+2022-06-29 Fred Gleason <fredg@paravelsystems.com>
+	* Fixed a bug in drouterd(8) that caused Software Authority Protocol
+	to emit phantom 'GPIStat' and 'GPOStat' updates for GPIO devices
+	that did not appear in any endpoint maps.
