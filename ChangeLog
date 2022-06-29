@@ -741,3 +741,6 @@
 	* Added a 'DrouterMaskStat' command to Software Authority Protocol.
 2022-06-28 Fred Gleason <fredg@paravelsystems.com>
 	* Incremented the package version to 1.0.0rc4int2.
+2022-06-29 Fred Gleason <fredg@paravelsystems.com>
+	* Added the '/var/cache/drouter' sub-directory to the package
+	manifest for the 'drouter' RPM package.

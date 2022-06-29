@@ -143,6 +143,7 @@ rm -rf $RPM_BUILD_ROOT
 %{_datadir}/man/man5/drouter.conf.5.gz
 %{_datadir}/man/man5/drouter.map.5.gz
 %{_datadir}/man/man8/drouterd.8.gz
+%dir /var/cache/drouter
 /lib/systemd/system/drouter.service
 /lib/systemd/system/drouter.socket
 %dir /etc/drouter/maps.d
