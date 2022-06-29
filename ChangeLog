@@ -751,3 +751,5 @@
 	* Fixed a bug in drouterd(8) that caused Software Authority Protocol
 	to emit phantom 'GPIStat' and 'GPOStat' updates for GPIO devices
 	that did not appear in any endpoint maps.
+2022-06-29 Fred Gleason <fredg@paravelsystems.com>
+	* Incremented the package version to 1.0.0rc4int3.
