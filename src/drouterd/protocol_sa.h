@@ -76,6 +76,7 @@ class ProtocolSa : public Protocol
   void ProcessCommand(const QString &cmd);
   void LoadMaps();
   void LoadHelp();
+  void LogEvent(int router,int output,int input) const;
   QMap<QString,QString> proto_help_strings;
   QTcpSocket *proto_socket;
   QTcpServer *proto_server;

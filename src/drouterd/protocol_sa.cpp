@@ -23,6 +23,7 @@
 #include <syslog.h>
 #include <unistd.h>
 
+#include <QSqlError>
 #include <QStringList>
 
 #include <sy5/syrouting.h>
@@ -33,6 +34,7 @@ ProtocolSa::ProtocolSa(int sock,QObject *parent)
   : Protocol(parent)
 {
   int flags;
+  QString sql;
 
   proto_socket=NULL;
   proto_destinations_subscribed=false;
@@ -228,6 +230,7 @@ void ProtocolSa::ActivateRoute(unsigned router,unsigned output,unsigned input)
 {
   EndPointMap *map;
 
+  LogEvent(router,output,input-1);
   if((map=proto_maps.value(router))!=NULL) {
     QHostAddress dst_addr=map->hostAddress(EndPointMap::Output,output);
     int dst_slotnum=map->slot(EndPointMap::Output,output);
@@ -1057,4 +1060,16 @@ void ProtocolSa::LoadHelp()
   proto_help_strings["triggergpi"]="TriggerGPI <router> <gpi-num> <state> [<duration>]\r\n\r\nSet the specified GPI to <state> for <duration> milliseconds.\r\n(Supported only by virtual GPI devices.)";
   proto_help_strings["triggergpo"]="TriggerGPO <router> <gpo-num> <state> [<duration>]\r\n\r\nSet the specified GPO to <state> for <duration> milliseconds.";
   proto_help_strings["snapshots"]="SnapShots <router>\r\n\r\nReturn list of available snapshots on the specified router.";
+}
+
+
+void ProtocolSa::LogEvent(int router,int output,int input) const
+{
+  QString sql=QString("insert into `SA_EVENTS` set ")+
+    "`DATETIME`=now(),"+
+    "`ORIGINATING_ADDRESS`='"+proto_socket->peerAddress().toString()+"',"+
+    QString::asprintf("`ROUTER_NUMBER`=%d,",router)+
+    QString::asprintf("`DESTINATION_NUMBER`=%d,",output)+
+    QString::asprintf("`SOURCE_NUMBER`=%d",input);
+  SqlQuery::apply(sql);
 }

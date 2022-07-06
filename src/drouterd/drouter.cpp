@@ -51,6 +51,11 @@ DRouter::DRouter(int *proto_socks,QObject *parent)
   drouter_config->load();
 
   drouter_flasher=new GpioFlasher(this);
+
+  drouter_finalize_timer=new QTimer(this);
+  drouter_finalize_timer->setSingleShot(false);
+  connect(drouter_finalize_timer,SIGNAL(timeout()),
+	  this,SLOT(finalizeEventsData()));
 }
 
 
@@ -220,9 +225,14 @@ void DRouter::setWriteable(bool state)
     //
     // Update Protocols
     //
-    QString letter="N";
+    QString letter;
     if(state) {
       letter="Y";
+      drouter_finalize_timer->start(1000);
+    }
+    else {
+      letter="N";
+      drouter_finalize_timer->stop();
     }
     sql=QString("update `TETHER` set `IS_ACTIVE`='"+letter+"'");
     SqlQuery::apply(sql);
@@ -776,6 +786,41 @@ void DRouter::ipcReadyReadData(int sock)
 }
 
 
+void DRouter::finalizeEventsData()
+{
+  QString sql;
+  SqlQuery *q;
+
+  sql=QString("select ")+
+    "`ID`,"+                  // 00
+    "`ROUTER_NUMBER`,"+       // 01
+    "`DESTINATION_NUMBER`,"+  // 02
+    "`SOURCE_NUMBER` "+       // 03
+    "from `SA_EVENTS` where "+
+    "`STATUS`='O' && "+
+    "`DATETIME`<'"+QDateTime::currentDateTime().addSecs(-1).
+    toString("yyyy-MM-dd hh:mm:ss")+"'";
+  q=new SqlQuery(sql);
+  while(q->next()) {
+    switch(drouter_maps.value(q->value(1).toInt())->routerType()) {
+    case EndPointMap::AudioRouter:
+      FinalizeSAAudioRoute(q->value(0).toInt(),q->value(1).toInt(),
+			   q->value(2).toInt(),q->value(3).toInt());
+      break;
+
+    case EndPointMap::GpioRouter:
+      FinalizeSAGpioRoute(q->value(0).toInt(),q->value(1).toInt(),
+			  q->value(2).toInt(),q->value(3).toInt());
+      break;
+
+    case EndPointMap::LastRouter:
+      break;
+    }
+  }
+  delete q;
+}
+
+
 void DRouter::NotifyProtocols(const QString &type,const QString &id,
 			      int srcs,int dsts,int gpis,int gpos)
 {
@@ -1112,6 +1157,18 @@ bool DRouter::StartDb(QString *err_msg)
     "engine MEMORY character set utf8 collate utf8_general_ci";
   SqlQuery::apply(sql);
 
+  sql=QString("create table if not exists `SA_EVENTS` (")+
+    "`ID` int auto_increment not null primary key,"+
+    "`DATETIME` datetime not null,"+
+    "`STATUS` enum('O','N','Y') not null default 'O',"+
+    "`ORIGINATING_ADDRESS` varchar(22) not null,"+
+    "`ROUTER_NUMBER` int not null,"+
+    "`SOURCE_NUMBER` int not null,"+
+    "`DESTINATION_NUMBER` int not null,"+
+    "index STATUS_IDX(`STATUS`)) "+
+    "engine MEMORY character set utf8 collate utf8_general_ci";
+  SqlQuery::apply(sql);
+
   sql=QString("create table if not exists `TETHER` (")+
     "`IS_ACTIVE` enum('N','Y') not null default 'N') "+
     "engine MEMORY character set utf8 collate utf8_general_ci";
@@ -1225,5 +1282,103 @@ void DRouter::Log(int prio,const QString &msg) const
 {
   if(prio>=0) {
     syslog(prio,"%s",msg.toUtf8().constData());
+  }
+}
+
+
+void DRouter::FinalizeSAAudioRoute(int event_id,int router,int output,int input)
+{
+  QString sql;
+  SqlQuery *q;
+
+  if(input<0) {  // No route --i.e. destination is "OFF"
+    sql=QString("select ")+
+      "`STREAM_ADDRESS` "+  // 00
+      "from `SA_DESTINATIONS` where "+
+      QString::asprintf("`ROUTER_NUMBER`=%d && ",router)+
+      QString::asprintf("`SOURCE_NUMBER`=%d",output);
+    q=new SqlQuery(sql);
+    if(q->first()) {
+      FinalizeSAEvent(event_id,
+		      q->value(0).toString()==DROUTER_NULL_STREAM_ADDRESS);
+    }
+    else {
+      FinalizeSAEvent(event_id,false);
+    }
+    delete q;
+  }
+  else {
+    sql=QString("select ")+
+      "`SA_DESTINATIONS`.`ID` "+  // 00
+      "from `SA_DESTINATIONS` left join `SA_SOURCES` "+
+      "on `SA_DESTINATIONS`.`STREAM_ADDRESS`=`SA_SOURCES`.`STREAM_ADDRESS` && "+
+      "`SA_SOURCES`.`ROUTER_NUMBER`=`SA_DESTINATIONS`.`ROUTER_NUMBER` "+
+      "where "+
+      QString::asprintf("`SA_DESTINATIONS`.`ROUTER_NUMBER`=%d && ",
+			router)+
+      QString::asprintf("`SA_SOURCES`.`SOURCE_NUMBER`=%d && ",
+			input)+
+      QString::asprintf("`SA_DESTINATIONS`.`SOURCE_NUMBER`=%d",
+			output);
+    //printf("finalize SQL: %s\n",sql.toUtf8().constData());
+    q=new SqlQuery(sql);
+    FinalizeSAEvent(event_id,q->first());
+    delete q;
+  }
+}
+
+
+void DRouter::FinalizeSAGpioRoute(int event_id,int router,int output,int input)
+{
+  QString sql;
+  SqlQuery *q;
+
+  if(input<0) {  // No route --i.e. destination is "OFF"
+    sql=QString("select ")+
+      "`SOURCE_SLOT` "+  // 00
+      "from `SA_GPOS` where "+
+      QString::asprintf("`ROUTER_NUMBER`=%d && ",router)+
+      QString::asprintf("`SOURCE_NUMBER`=%d && ",output)+
+      "`SOURCE_SLOT`<0";
+    q=new SqlQuery(sql);
+    FinalizeSAEvent(event_id,q->first());
+    delete q;
+  }
+  else {
+    sql=QString("select ")+
+      "`SA_GPOS`.`ID` "+  // 00
+      "from `SA_GPOS` left join `SA_GPIS` "+
+      "on `SA_GPOS`.`SOURCE_ADDRESS`=`SA_GPIS`.`HOST_ADDRESS` && "+
+      "`SA_GPOS`.`SOURCE_SLOT`=`SA_GPIS`.`SLOT` && "+
+      "`SA_GPIS`.`ROUTER_NUMBER`=`SA_GPOS`.`ROUTER_NUMBER` "+
+      "where "+
+      QString::asprintf("`SA_GPOS`.`ROUTER_NUMBER`=%d && ",
+			router)+
+      QString::asprintf("`SA_GPIS`.`SOURCE_NUMBER`=%d && ",
+			input)+
+      QString::asprintf("`SA_GPOS`.`SOURCE_NUMBER`=%d",
+			output);
+    q=new SqlQuery(sql);
+    FinalizeSAEvent(event_id,q->first());
+    delete q;
+  }
+}
+
+
+void DRouter::FinalizeSAEvent(int event_id,bool status) const
+{
+  QString sql;
+
+  if(status) {
+    sql=QString("update `SA_EVENTS` set ")+
+      "`STATUS`='Y' where "+
+      QString::asprintf("`ID`=%d",event_id);
+    SqlQuery::apply(sql);
+  }
+  else {
+    sql=QString("update `SA_EVENTS` set ")+
+      "`STATUS`='N' where "+
+      QString::asprintf("`ID`=%d",event_id);
+    SqlQuery::apply(sql);
   }
 }

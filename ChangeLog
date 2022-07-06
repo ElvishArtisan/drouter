@@ -753,3 +753,6 @@
 	that did not appear in any endpoint maps.
 2022-06-29 Fred Gleason <fredg@paravelsystems.com>
 	* Incremented the package version to 1.0.0rc4int3.
+2022-07-06 Fred Gleason <fredg@paravelsystems.com>
+	* Implemented basic route change logging to the 'SA_EVENTS' table in
+	the database.
