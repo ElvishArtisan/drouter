@@ -796,7 +796,7 @@ void DRouter::finalizeEventsData()
     "`ROUTER_NUMBER`,"+       // 01
     "`DESTINATION_NUMBER`,"+  // 02
     "`SOURCE_NUMBER` "+       // 03
-    "from `SA_EVENTS` where "+
+    "from `PERM_SA_EVENTS` where "+
     "`STATUS`='O' && "+
     "`DATETIME`<'"+QDateTime::currentDateTime().addSecs(-1).
     toString("yyyy-MM-dd hh:mm:ss")+"'";
@@ -998,6 +998,7 @@ bool DRouter::StartDb(QString *err_msg)
 {
   QString sql;
   SqlQuery *q;
+  int schema_ver=0;
 
   //
   // Connect to Database
@@ -1021,13 +1022,76 @@ bool DRouter::StartDb(QString *err_msg)
   sql="show tables";
   q=new SqlQuery(sql);
   while(q->next()) {
-    sql=QString("drop table `")+q->value(0).toString()+"`";
-    SqlQuery::apply(sql);
+    if(q->value(0).toString()=="PERM_VERSION") {
+      schema_ver=1;
+    }
+    if(q->value(0).toString().left(5)!="PERM_") {
+      sql=QString("drop table `")+q->value(0).toString()+"`";
+      SqlQuery::apply(sql);
+    }
   }
   delete q;
 
   //
-  // Create Schema
+  // Permanent Tables
+  //
+  if(schema_ver<1) {
+    sql=QString("create table if not exists `PERM_VERSION` (")+
+      "`DB` int not null primary key"+
+      ") "+
+      "engine InnoDB character set utf8 collate utf8_general_ci";
+    SqlQuery::apply(sql);
+
+    schema_ver=1;
+    sql=QString("insert into `PERM_VERSION` set ")+
+      QString::asprintf("`DB`=%d",schema_ver);
+    SqlQuery::apply(sql);
+    syslog(LOG_DEBUG,"applied schema version %d",schema_ver);
+  }
+
+  if(schema_ver<2) {
+    sql=QString("create table if not exists `PERM_SA_EVENTS` (")+
+      "`ID` int auto_increment not null primary key,"+
+      "`DATETIME` datetime not null,"+
+      "`STATUS` enum('O','N','Y') not null default 'O',"+
+      "`ORIGINATING_ADDRESS` varchar(22) not null,"+
+      "`ROUTER_NUMBER` int not null,"+
+      "`SOURCE_NUMBER` int not null,"+
+      "`DESTINATION_NUMBER` int not null,"+
+      "index STATUS_IDX(`STATUS`)) "+
+      "engine InnoDB character set utf8 collate utf8_general_ci";
+    SqlQuery::apply(sql);
+
+    schema_ver=2;
+    sql=QString("update `PERM_VERSION` set ")+
+      QString::asprintf("`DB`=%d",schema_ver);
+    SqlQuery::apply(sql);
+    syslog(LOG_DEBUG,"applied schema version %d",schema_ver);
+  }
+
+  if(schema_ver<3) {
+    sql=QString("alter table `PERM_SA_EVENTS` ")+
+      "add column `USERNAME` varchar(32) after `STATUS`";
+    SqlQuery::apply(sql);
+
+    sql=QString("alter table `PERM_SA_EVENTS` ")+
+      "add column `HOSTNAME` varchar(32) after `USERNAME`";
+    SqlQuery::apply(sql);
+
+    schema_ver=3;
+    sql=QString("update `PERM_VERSION` set ")+
+      QString::asprintf("`DB`=%d",schema_ver);
+    SqlQuery::apply(sql);
+    syslog(LOG_DEBUG,"applied schema version %d",schema_ver);
+  }
+
+  // New schema updates go here
+
+
+  syslog(LOG_INFO,"using DB schema version %d",schema_ver);
+
+  //
+  // Ephemeral Tables
   //
   sql=QString("create table if not exists `NODES` (")+
     "`HOST_ADDRESS` char(15) not null primary key,"+
@@ -1154,18 +1218,6 @@ bool DRouter::StartDb(QString *err_msg)
     "index HOST_ADDRESS_IDX(`HOST_ADDRESS`,`SLOT`),"+
     "index ROUTER_IDX(`ROUTER_NUMBER`),"+
     "index ROUTER_SOURCE_IDX(`ROUTER_NUMBER`,`SOURCE_NUMBER`))"+
-    "engine MEMORY character set utf8 collate utf8_general_ci";
-  SqlQuery::apply(sql);
-
-  sql=QString("create table if not exists `SA_EVENTS` (")+
-    "`ID` int auto_increment not null primary key,"+
-    "`DATETIME` datetime not null,"+
-    "`STATUS` enum('O','N','Y') not null default 'O',"+
-    "`ORIGINATING_ADDRESS` varchar(22) not null,"+
-    "`ROUTER_NUMBER` int not null,"+
-    "`SOURCE_NUMBER` int not null,"+
-    "`DESTINATION_NUMBER` int not null,"+
-    "index STATUS_IDX(`STATUS`)) "+
     "engine MEMORY character set utf8 collate utf8_general_ci";
   SqlQuery::apply(sql);
 
@@ -1370,13 +1422,13 @@ void DRouter::FinalizeSAEvent(int event_id,bool status) const
   QString sql;
 
   if(status) {
-    sql=QString("update `SA_EVENTS` set ")+
+    sql=QString("update `PERM_SA_EVENTS` set ")+
       "`STATUS`='Y' where "+
       QString::asprintf("`ID`=%d",event_id);
     SqlQuery::apply(sql);
   }
   else {
-    sql=QString("update `SA_EVENTS` set ")+
+    sql=QString("update `PERM_SA_EVENTS` set ")+
       "`STATUS`='N' where "+
       QString::asprintf("`ID`=%d",event_id);
     SqlQuery::apply(sql);

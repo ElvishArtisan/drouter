@@ -756,3 +756,9 @@
 2022-07-06 Fred Gleason <fredg@paravelsystems.com>
 	* Implemented basic route change logging to the 'SA_EVENTS' table in
 	the database.
+2022-07-07 Fred Gleason <fredg@paravelsystems.com>
+	* Renamed the 'SA_EVENTS' table to 'PERM_SA_EVENTS'.
+	* Made the 'PERM_SA_EVENTS' table persistent.
+	* Added 'PERM_SA_EVENTS.USERNAME' and 'PERM_SA_EVENTS.HOSTNAME'
+	fields to the database.
+	* Incremented the database version to 3.

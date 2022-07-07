@@ -23,6 +23,7 @@
 
 #include <signal.h>
 
+#include <QHostInfo>
 #include <QTcpServer>
 
 #include <sy5/sylwrp_client.h>
@@ -41,6 +42,7 @@ class ProtocolSa : public Protocol
   void newConnectionData();
   void readyReadData();
   void disconnectedData();
+  void hostLookupFinishedData(const QHostInfo &info);
 
  protected:
   void destinationCrosspointChanged(const QHostAddress &host_addr,int slotnum);
@@ -76,12 +78,15 @@ class ProtocolSa : public Protocol
   void ProcessCommand(const QString &cmd);
   void LoadMaps();
   void LoadHelp();
-  void LogEvent(int router,int output,int input) const;
+  void LogEvent(int router,int output,int input);
   QMap<QString,QString> proto_help_strings;
   QTcpSocket *proto_socket;
   QTcpServer *proto_server;
   QString proto_accum;
   QMap<int,EndPointMap *> proto_maps;
+  int proto_event_id;
+  QString proto_username;
+  QString proto_hostname;
 
   bool proto_destinations_subscribed;
   bool proto_gpis_subscribed;

@@ -148,6 +148,15 @@ void ProtocolSa::disconnectedData()
 }
 
 
+void ProtocolSa::hostLookupFinishedData(const QHostInfo &info)
+{
+  QString sql=QString("update `PERM_SA_EVENTS` set ")+
+    "`HOSTNAME`='"+SqlQuery::escape(info.hostName())+"' where "+
+    QString::asprintf("`ID`=%d",proto_event_id);
+  SqlQuery::apply(sql);
+}
+
+
 void ProtocolSa::destinationCrosspointChanged(const QHostAddress &host_addr,int slotnum)
 {
   QString sql;
@@ -748,7 +757,8 @@ void ProtocolSa::ProcessCommand(const QString &cmd)
   bool ok=false;
   QStringList cmds=cmd.split(" ");
 
-  if(cmds[0].toLower()=="login") {  // FIXME: We should check the password here!
+  if((cmds[0].toLower()=="login")&&(cmds.size()>=2)) {
+    proto_username=cmds.at(1);
     proto_socket->write(QString("Login Successful\r\n").toUtf8());
     proto_socket->write(">>",2);
   }
@@ -1063,13 +1073,21 @@ void ProtocolSa::LoadHelp()
 }
 
 
-void ProtocolSa::LogEvent(int router,int output,int input) const
+void ProtocolSa::LogEvent(int router,int output,int input)
 {
-  QString sql=QString("insert into `SA_EVENTS` set ")+
+  QString sql=QString("insert into `PERM_SA_EVENTS` set ")+
     "`DATETIME`=now(),"+
     "`ORIGINATING_ADDRESS`='"+proto_socket->peerAddress().toString()+"',"+
     QString::asprintf("`ROUTER_NUMBER`=%d,",router)+
     QString::asprintf("`DESTINATION_NUMBER`=%d,",output)+
-    QString::asprintf("`SOURCE_NUMBER`=%d",input);
-  SqlQuery::apply(sql);
+    QString::asprintf("`SOURCE_NUMBER`=%d,",input);
+  if(proto_username.isEmpty()) {
+    sql+="`USERNAME`=NULL";
+  }
+  else {
+    sql+="`USERNAME`='"+SqlQuery::escape(proto_username)+"'";
+  }
+  proto_event_id=SqlQuery::run(sql).toInt();
+  QHostInfo::lookupHost(proto_socket->peerAddress().toString(),
+			this,SLOT(hostLookupFinishedData(const QHostInfo &)));
 }
