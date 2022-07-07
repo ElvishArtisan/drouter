@@ -245,6 +245,20 @@
 
 	<varlistentry>
 	  <term>
+	    <userinput>RetainEventRecordsDuration=<replaceable>hours</replaceable></userinput>
+	  </term>
+	  <listitem>
+	    <para>
+	      Where <replaceable>hours</replaceable> is the interval of time
+	      (in hours) to retains event records in the event log, with older
+	      records being periodically purged. Setting this parameter to
+	      <userinput>0</userinput> will completely disable automatic
+	      record purging (not recommended).
+	    </para>
+	  </listitem>
+	</varlistentry>
+	<varlistentry>
+	  <term>
 	    <userinput>SilenceAlarmThreshold=<replaceable>level</replaceable></userinput>
 	  </term>
 	  <listitem>

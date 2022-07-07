@@ -56,6 +56,14 @@ DRouter::DRouter(int *proto_socks,QObject *parent)
   drouter_finalize_timer->setSingleShot(false);
   connect(drouter_finalize_timer,SIGNAL(timeout()),
 	  this,SLOT(finalizeEventsData()));
+
+  drouter_purge_events_timer=new QTimer(this);
+  connect(drouter_purge_events_timer,SIGNAL(timeout()),
+	  this,SLOT(purgeEventsData()));
+  if(drouter_config->retainEventRecordsDuration()>0) {
+    drouter_purge_events_timer->
+      start(drouter_config->retainEventRecordsDuration());
+  }
 }
 
 
@@ -818,6 +826,16 @@ void DRouter::finalizeEventsData()
     }
   }
   delete q;
+}
+
+
+void DRouter::purgeEventsData()
+{
+  QString sql=QString("delete from `PERM_SA_EVENTS` where ")+
+    "`DATETIME`<'"+QDateTime::currentDateTime().
+    addSecs(-3600*drouter_config->retainEventRecordsDuration()).
+    toString("yyyy-MM-dd hh:mm:ss")+"'";
+  SqlQuery::apply(sql);
 }
 
 

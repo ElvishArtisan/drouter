@@ -762,3 +762,6 @@
 	* Added 'PERM_SA_EVENTS.USERNAME' and 'PERM_SA_EVENTS.HOSTNAME'
 	fields to the database.
 	* Incremented the database version to 3.
+2022-07-07 Fred Gleason <fredg@paravelsystems.com>
+	* Added a 'RetainEventRecordsDuration=' directive to the '[Drouterd]'
+	section of drouter.conf(5).

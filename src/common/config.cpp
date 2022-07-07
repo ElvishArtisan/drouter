@@ -69,6 +69,12 @@ bool Config::configureAudioAlarms(const QString &dev_name) const
 }
 
 
+int Config::retainEventRecordsDuration() const
+{
+  return conf_retain_event_records_duration;
+}
+
+
 QString Config::alertAddress() const
 {
   return conf_alert_address;
@@ -190,6 +196,9 @@ void Config::load()
   for(int i=0;i<f0.size();i++) {
     conf_no_audio_alarm_devices.push_back(f0.at(i).toLower().trimmed());
   }
+  conf_retain_event_records_duration=
+    p->intValue("Drouterd","RetainEventRecordsDuration",
+		DEFAULT_DEFAULT_RETAIN_EVENT_RECORDS_DURATION);
   conf_alert_address=p->stringValue("Drouterd","AlertAddress");
   conf_from_address=p->stringValue("Drouterd","FromAddress");
   conf_ipc_log_priority=

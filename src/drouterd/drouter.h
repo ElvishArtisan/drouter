@@ -77,6 +77,7 @@ class DRouter : public QObject
   void newIpcConnectionData(int listen_sock);
   void ipcReadyReadData(int sock);
   void finalizeEventsData();
+  void purgeEventsData();
 
  private:
   void NotifyProtocols(const QString &type,const QString &id,
@@ -104,6 +105,7 @@ class DRouter : public QObject
   bool drouter_writeable;
   GpioFlasher *drouter_flasher;
   QTimer *drouter_finalize_timer;
+  QTimer *drouter_purge_events_timer;
   Config *drouter_config;
 };
 

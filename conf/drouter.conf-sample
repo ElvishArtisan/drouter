@@ -40,6 +40,14 @@ SilenceAlarmTimeout=10000
 NoAudioAlarmDevices=VX Engine, Engine
 
 ;
+; RetainEventRecordsDuration=<hours>
+;
+; Delete event log records older than <hours> hours. Setting a value of 0
+; will disable automatic record purging (not recommended).
+;
+RetainEventRecordsDuration=168
+
+;
 ; Send system status alerts to an e-mail address.
 ; 
 ; AlertAddress=someone@example.com

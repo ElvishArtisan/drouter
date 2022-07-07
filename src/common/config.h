@@ -33,6 +33,7 @@
 #define DROUTER_DEFAULT_CLIP_TIMEOUT 1000
 #define DROUTER_DEFAULT_SILENCE_THRESHOLD -500
 #define DROUTER_DEFAULT_SILENCE_TIMEOUT 10000
+#define DEFAULT_DEFAULT_RETAIN_EVENT_RECORDS_DURATION 168
 #define DROUTER_DEFAULT_IPC_LOG_PRIORITY -1
 #define DROUTER_DEFAULT_NODE_LOG_PRIORITY -1
 #define DROUTER_DEFAULT_MAX_HEAP_TABLE_SIZE 33554432
@@ -54,6 +55,7 @@ class Config
   int silenceAlarmThreshold() const;
   int silenceAlarmTimeout() const;
   bool configureAudioAlarms(const QString &dev_name) const;
+  int retainEventRecordsDuration() const;
   QString alertAddress() const;
   QString fromAddress() const;
   int ipcLogPriority() const;
@@ -84,6 +86,7 @@ class Config
   int conf_silence_alarm_timeout;
   int conf_ipc_log_priority;
   int conf_node_log_priority;
+  int conf_retain_event_records_duration;
   QString conf_alert_address;
   QString conf_from_address;
   QStringList conf_no_audio_alarm_devices;
