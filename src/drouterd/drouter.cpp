@@ -1016,6 +1016,7 @@ bool DRouter::StartDb(QString *err_msg)
 {
   QString sql;
   SqlQuery *q;
+  SqlQuery *q1;
   int schema_ver=0;
 
   //
@@ -1042,6 +1043,14 @@ bool DRouter::StartDb(QString *err_msg)
   while(q->next()) {
     if(q->value(0).toString()=="PERM_VERSION") {
       schema_ver=1;
+      sql=QString("select ")+
+	"`DB` "+  // 00
+	"from `PERM_VERSION`";
+      q1=new SqlQuery(sql);
+      if(q1->first()) {
+	schema_ver=q1->value(0).toInt();
+      }
+      delete q1;
     }
     if(q->value(0).toString().left(5)!="PERM_") {
       sql=QString("drop table `")+q->value(0).toString()+"`";
@@ -1097,6 +1106,44 @@ bool DRouter::StartDb(QString *err_msg)
     SqlQuery::apply(sql);
 
     schema_ver=3;
+    sql=QString("update `PERM_VERSION` set ")+
+      QString::asprintf("`DB`=%d",schema_ver);
+    SqlQuery::apply(sql);
+    syslog(LOG_DEBUG,"applied schema version %d",schema_ver);
+  }
+
+  if(schema_ver<4) {
+    sql=QString("alter table `PERM_SA_EVENTS` ")+
+      "add column `TYPE` enum('C','R') after `ID`";
+    SqlQuery::apply(sql);
+    sql=QString("update `PERM_SA_EVENTS` set ")+
+      "`TYPE`='R'";
+    SqlQuery::apply(sql);
+    sql=QString("alter table `PERM_SA_EVENTS` ")+
+      "modify column `TYPE` enum('C','R') not null after `ID`";
+    SqlQuery::apply(sql);
+    
+    sql=QString("alter table `PERM_SA_EVENTS` ")+
+      "add column `COMMENT` text after `DESTINATION_NUMBER`";
+    SqlQuery::apply(sql);
+
+    sql=QString("alter table `PERM_SA_EVENTS` ")+
+      "modify column `ORIGINATING_ADDRESS` varchar(22) after `HOSTNAME`";
+    SqlQuery::apply(sql);
+
+    sql=QString("alter table `PERM_SA_EVENTS` ")+
+      "modify column `ROUTER_NUMBER` int after `ORIGINATING_ADDRESS`";
+    SqlQuery::apply(sql);
+
+    sql=QString("alter table `PERM_SA_EVENTS` ")+
+      "modify column `SOURCE_NUMBER` int after `ROUTER_NUMBER`";
+    SqlQuery::apply(sql);
+
+    sql=QString("alter table `PERM_SA_EVENTS` ")+
+      "modify column `DESTINATION_NUMBER` int after `SOURCE_NUMBER`";
+    SqlQuery::apply(sql);
+
+    schema_ver=4;
     sql=QString("update `PERM_VERSION` set ")+
       QString::asprintf("`DB`=%d",schema_ver);
     SqlQuery::apply(sql);

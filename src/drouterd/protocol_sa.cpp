@@ -1077,6 +1077,7 @@ void ProtocolSa::LogEvent(int router,int output,int input)
 {
   QString sql=QString("insert into `PERM_SA_EVENTS` set ")+
     "`DATETIME`=now(),"+
+    "`TYPE`='R',"+
     "`ORIGINATING_ADDRESS`='"+proto_socket->peerAddress().toString()+"',"+
     QString::asprintf("`ROUTER_NUMBER`=%d,",router)+
     QString::asprintf("`DESTINATION_NUMBER`=%d,",output)+
