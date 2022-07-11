@@ -229,6 +229,7 @@ void MainObject::exitData(int signum)
   main_drouter->setWriteable(false);
   qApp->processEvents();
   main_drouter->disconnect();
+  delete main_drouter;
   exit(0);
 }
 

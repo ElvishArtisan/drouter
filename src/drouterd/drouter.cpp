@@ -69,6 +69,7 @@ DRouter::DRouter(int *proto_socks,QObject *parent)
 
 DRouter::~DRouter()
 {
+  WriteCommentEvent(tr("Stopping Drouter service"));
 }
 
 
@@ -212,6 +213,7 @@ bool DRouter::start(QString *err_msg)
   if(!StartLivewire(err_msg)) {
     return false;
   }
+  WriteCommentEvent(tr("Started drouter service"));
 
   return true;
 }
@@ -226,6 +228,7 @@ bool DRouter::isWriteable() const
 void DRouter::setWriteable(bool state)
 {
   QString sql;
+  QString comment;
 
   if(drouter_writeable!=state) {
     drouter_flasher->setActive(state);
@@ -237,15 +240,19 @@ void DRouter::setWriteable(bool state)
     if(state) {
       letter="Y";
       drouter_finalize_timer->start(1000);
+      comment=tr("This instance is now active.");
     }
     else {
       letter="N";
       drouter_finalize_timer->stop();
+      comment=tr("This instance is no longer active.");
     }
     sql=QString("update `TETHER` set `IS_ACTIVE`='"+letter+"'");
     SqlQuery::apply(sql);
     drouter_writeable=state;
     NotifyProtocols("TETHER",letter);
+
+    WriteCommentEvent(comment);
   }
 }
 
@@ -1499,3 +1506,17 @@ void DRouter::FinalizeSAEvent(int event_id,bool status) const
     SqlQuery::apply(sql);
   }
 }
+
+
+void DRouter::WriteCommentEvent(const QString &str) const
+{
+  QString sql;
+
+  sql=QString("insert into `PERM_SA_EVENTS` set ")+
+    "`TYPE`='C',"+
+    "`DATETIME`=now(),"+
+    "`STATUS`='Y',"+
+    "`COMMENT`='"+SqlQuery::escape(str)+"'";
+  SqlQuery::apply(sql);
+}
+

@@ -773,3 +773,5 @@
 	'PERM_SA_EVENTS.SOURCE_NUMBER' and 'PERM_SA_EVENTS.DESTINATION_NUMBER'
 	database fields.
 	* Incremented the database version to 4.
+2022-07-11 Fred Gleason <fredg@paravelsystems.com>
+	* Added start and stop event messages to drouterd(8).
