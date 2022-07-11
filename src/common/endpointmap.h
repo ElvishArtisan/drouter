@@ -70,6 +70,7 @@ class EndPointMap
   int slot(Type type,int n) const;
   void setSlot(Type type,int n,int slot);
   QString name(Type type,int n,const QString &orig_name=QString()) const;
+  bool nameIsCustom(Type type,int n) const;
   void setName(Type type,int n,const QString &str);
   int endPoint(Type type,const QHostAddress &hostaddr,int slot) const;
   int endPoint(Type type,const QString &hostaddr,int slot) const;
@@ -95,6 +96,7 @@ class EndPointMap
   QList<QHostAddress> map_host_addresses[EndPointMap::LastType];
   QList<int> map_slots[EndPointMap::LastType];
   QStringList map_names[EndPointMap::LastType];
+  QList<bool> map_name_is_customs[EndPointMap::LastType];
   QList<Snapshot *> map_snapshots;
 };
 

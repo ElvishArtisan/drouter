@@ -93,7 +93,7 @@ class DRouter : public QObject
   void Log(int prio,const QString &msg) const;
   void FinalizeSAAudioRoute(int event_id,int router,int output,int input);
   void FinalizeSAGpioRoute(int event_id,int router,int output,int input);
-  void FinalizeSAEvent(int event_id,bool status) const;
+  void FinalizeSARouteEvent(int event_id,bool status) const;
   void WriteCommentEvent(const QString &str) const;
   QMap<unsigned,SyLwrpClient *> drouter_nodes;
   QList<SyMcastSocket *> drouter_advt_sockets;

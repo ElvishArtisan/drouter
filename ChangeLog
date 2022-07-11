@@ -775,3 +775,6 @@
 	* Incremented the database version to 4.
 2022-07-11 Fred Gleason <fredg@paravelsystems.com>
 	* Added start and stop event messages to drouterd(8).
+2022-07-11 Fred Gleason <fredg@paravelsystems.com>
+	* Added code to generate comments when finalizing Route records
+	in event logging.

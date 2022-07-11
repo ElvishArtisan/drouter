@@ -162,13 +162,31 @@ QString EndPointMap::name(EndPointMap::Type type,int n,const QString &orig_name)
 {
   QString ret;
 
-  if(n<map_names[type].size()) {
-    ret=map_names[type].at(n);
+  if(n<0) {
+    ret=QObject::tr("OFF");
   }
-  if(ret.isEmpty()) {
-    ret=orig_name;
+  else {
+    if(n<map_names[type].size()) {
+      ret=map_names[type].at(n);
+    }
+    if(ret.isEmpty()) {
+      ret=orig_name;
+    }
   }
+
   return ret;
+}
+
+
+bool EndPointMap::nameIsCustom(Type type,int n) const
+{
+  if(n<0) {
+    return true;
+  }
+  if(n<map_name_is_customs[type].size()) {
+    return map_name_is_customs[type].at(n);
+  }
+  return false;
 }
 
 
@@ -202,6 +220,7 @@ void EndPointMap::insert(EndPointMap::Type type,int n,const QHostAddress &host_a
   map_host_addresses[type].insert(n,host_addr);
   map_slots[type].insert(n,slot);
   map_names[type].insert(n,name);
+  map_name_is_customs[type].insert(n,true);
 }
 
 
@@ -211,6 +230,7 @@ void EndPointMap::insert(EndPointMap::Type type,int n,const QString &host_addr,i
   map_host_addresses[type].insert(n,QHostAddress(host_addr));
   map_slots[type].insert(n,slot);
   map_names[type].insert(n,name);
+  map_name_is_customs[type].insert(n,true);
 }
 
 
@@ -246,6 +266,8 @@ Snapshot *EndPointMap::snapshot(const QString &name)
 
 bool EndPointMap::load(const QString &filename,QStringList *unused_lines)
 {
+  bool ok=false;
+
   SyProfile *p=new SyProfile();
   if(!p->setSource(filename)) {
     delete p;
@@ -278,7 +300,8 @@ bool EndPointMap::load(const QString &filename,QStringList *unused_lines)
       map_slots[type].push_back(p->intValue(EndPointMap::typeString(type)+
 	       QString::asprintf("%d",count+1),"Slot")-1);
       map_names[type].push_back(p->stringValue(EndPointMap::typeString(type)+
-	       QString::asprintf("%d",count+1),"Name"));
+	       QString::asprintf("%d",count+1),"Name","",&ok));
+      map_name_is_customs[type].push_back(ok);
       count++;
       addr=p->addressValue(EndPointMap::typeString(type)+
 	       QString::asprintf("%d",count+1),"HostAddress",QHostAddress(),&ok);
@@ -291,7 +314,6 @@ bool EndPointMap::load(const QString &filename,QStringList *unused_lines)
   QString name;
   int snap=0;
   QString section=QString::asprintf("Snapshot%d",snap+1);
-  bool ok=false;
 
   for(int i=0;i<map_snapshots.size();i++) {
     delete map_snapshots.at(i);

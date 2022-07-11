@@ -340,10 +340,13 @@ void DRouter::nodeConnectedData(unsigned id,bool state)
 	      Config::normalizedStreamAddress(lwrp->srcAddress(i)).toString()+"',"+
 	      "`HOST_ADDRESS`='"+QHostAddress(id).toString()+"',"+
 	      QString::asprintf("SLOT=%d",i);
-	    if(!it.value()->name(EndPointMap::Input,endpt).isEmpty()) {
-	      sql+=",`NAME`='"+
-	       SqlQuery::escape(it.value()->name(EndPointMap::Input,endpt))+"'";
+	    // *************************
+	    if(!it.value()->nameIsCustom(EndPointMap::Input,endpt)) {
+	      it.value()->setName(EndPointMap::Input,endpt,lwrp->srcName(i));
 	    }
+	    // *************************
+	    sql+=",`NAME`='"+
+	      SqlQuery::escape(it.value()->name(EndPointMap::Input,endpt))+"'";
 	    SqlQuery::apply(sql);
 	  }
 	}
@@ -370,10 +373,11 @@ void DRouter::nodeConnectedData(unsigned id,bool state)
 	      Config::normalizedStreamAddress(lwrp->dstAddress(i)).toString()+"',"+
 	      "`HOST_ADDRESS`='"+QHostAddress(id).toString()+"',"+
 	      QString::asprintf("`SLOT`=%d",i);
-	    if(!it.value()->name(EndPointMap::Output,endpt).isEmpty()) {
-	      sql+=",`NAME`='"+
-	      SqlQuery::escape(it.value()->name(EndPointMap::Output,endpt))+"'";
+	    if(!it.value()->nameIsCustom(EndPointMap::Output,endpt)) {
+	      it.value()->setName(EndPointMap::Output,endpt,lwrp->dstName(i));
 	    }
+	    sql+=",`NAME`='"+
+	      SqlQuery::escape(it.value()->name(EndPointMap::Output,endpt))+"'";
 	    SqlQuery::apply(sql);
 	  }
 	}
@@ -395,10 +399,11 @@ void DRouter::nodeConnectedData(unsigned id,bool state)
 	      QString::asprintf("`GPI_ID`=%d,",last_id)+
 	      "`HOST_ADDRESS`='"+QHostAddress(id).toString()+"',"+
 	      QString::asprintf("`SLOT`=%d",i);
-	    if(!it.value()->name(EndPointMap::Input,endpt).isEmpty()) {
-	      sql+=",`NAME`='"+
-	       SqlQuery::escape(it.value()->name(EndPointMap::Input,endpt))+"'";
+	    if(!it.value()->nameIsCustom(EndPointMap::Input,endpt)) {
+	      it.value()->setName(EndPointMap::Input,endpt,QString::asprintf("GPI-%d",i+1));
 	    }
+	    sql+=",`NAME`='"+
+	      SqlQuery::escape(it.value()->name(EndPointMap::Input,endpt))+"'";
 	    SqlQuery::run(sql);
 	  }
 	}
@@ -429,10 +434,12 @@ void DRouter::nodeConnectedData(unsigned id,bool state)
 	      QString::asprintf("`SOURCE_SLOT`=%d,",lwrp->gpo(i)->sourceSlot())+
 	      "`HOST_ADDRESS`='"+QHostAddress(id).toString()+"',"+
 	      QString::asprintf("`SLOT`=%d",i);
-	    if(!it.value()->name(EndPointMap::Output,endpt).isEmpty()) {
-	      sql+=",`NAME`='"+
-	      SqlQuery::escape(it.value()->name(EndPointMap::Output,endpt))+"'";
+	    if(!it.value()->nameIsCustom(EndPointMap::Output,endpt)) {
+	      it.value()->
+		setName(EndPointMap::Output,endpt,lwrp->gpo(i)->name());
 	    }
+	    sql+=",`NAME`='"+
+	      SqlQuery::escape(it.value()->name(EndPointMap::Output,endpt))+"'";
 	    SqlQuery::apply(sql);
 	  }
 	}
@@ -1423,11 +1430,11 @@ void DRouter::FinalizeSAAudioRoute(int event_id,int router,int output,int input)
       QString::asprintf("`SOURCE_NUMBER`=%d",output);
     q=new SqlQuery(sql);
     if(q->first()) {
-      FinalizeSAEvent(event_id,
-		      q->value(0).toString()==DROUTER_NULL_STREAM_ADDRESS);
+      FinalizeSARouteEvent(event_id,
+			   q->value(0).toString()==DROUTER_NULL_STREAM_ADDRESS);
     }
     else {
-      FinalizeSAEvent(event_id,false);
+      FinalizeSARouteEvent(event_id,false);
     }
     delete q;
   }
@@ -1446,7 +1453,7 @@ void DRouter::FinalizeSAAudioRoute(int event_id,int router,int output,int input)
 			output);
     //printf("finalize SQL: %s\n",sql.toUtf8().constData());
     q=new SqlQuery(sql);
-    FinalizeSAEvent(event_id,q->first());
+    FinalizeSARouteEvent(event_id,q->first());
     delete q;
   }
 }
@@ -1465,7 +1472,7 @@ void DRouter::FinalizeSAGpioRoute(int event_id,int router,int output,int input)
       QString::asprintf("`SOURCE_NUMBER`=%d && ",output)+
       "`SOURCE_SLOT`<0";
     q=new SqlQuery(sql);
-    FinalizeSAEvent(event_id,q->first());
+    FinalizeSARouteEvent(event_id,q->first());
     delete q;
   }
   else {
@@ -1483,28 +1490,64 @@ void DRouter::FinalizeSAGpioRoute(int event_id,int router,int output,int input)
       QString::asprintf("`SA_GPOS`.`SOURCE_NUMBER`=%d",
 			output);
     q=new SqlQuery(sql);
-    FinalizeSAEvent(event_id,q->first());
+    FinalizeSARouteEvent(event_id,q->first());
     delete q;
   }
 }
 
 
-void DRouter::FinalizeSAEvent(int event_id,bool status) const
+void DRouter::FinalizeSARouteEvent(int event_id,bool status) const
 {
+  QString comment="";
   QString sql;
+  SqlQuery *q=NULL;
+
+  sql=QString("select ")+
+    "`STATUS`,"+              // 00
+    "`ROUTER_NUMBER`,"+       // 01
+    "`DESTINATION_NUMBER`,"+  // 02
+    "`SOURCE_NUMBER`,"+       // 03
+    "`USERNAME`,"+            // 04
+    "`HOSTNAME`,"+            // 05
+    "`ORIGINATING_ADDRESS` "+ // 06
+    "from `PERM_SA_EVENTS` where "+
+    QString::asprintf("`ID`=%d",event_id);
+  q=new SqlQuery(sql);
+  if(q->first()) {
+    EndPointMap *map=drouter_maps.value(q->value(1).toInt());
+    comment+=map->name(EndPointMap::Input,q->value(3).toInt())+
+      QString::asprintf("[%d] to ",1+q->value(3).toInt());
+    comment+=
+      map->routerName()+QString::asprintf("[%d]:",1+q->value(1).toInt());
+    comment+=map->name(EndPointMap::Output,q->value(2).toInt())+
+      QString::asprintf("[%d] by ",1+q->value(2).toInt());
+    if(!q->value(4).isNull()) {
+      comment+=q->value(4).toString()+"@";
+    }
+    if(!q->value(5).isNull()) {
+      comment+=q->value(5).toString();
+      comment+="["+q->value(6).toString()+"]";
+    }
+    else {
+      comment+=q->value(6).toString();
+    }
+  }
+  delete q;
 
   if(status) {
     sql=QString("update `PERM_SA_EVENTS` set ")+
-      "`STATUS`='Y' where "+
-      QString::asprintf("`ID`=%d",event_id);
-    SqlQuery::apply(sql);
+      "`STATUS`='Y',"+
+      "`COMMENT`='"+SqlQuery::escape(tr("Route taken")+": "+comment)+"' "+
+      QString::asprintf("where `ID`=%d",event_id);
   }
   else {
     sql=QString("update `PERM_SA_EVENTS` set ")+
-      "`STATUS`='N' where "+
+      "`STATUS`='Y',"+
+      "`COMMENT`='"+SqlQuery::escape(tr("Route failed")+": "+comment)+"' "+
+      QString::asprintf("where `ID`=%d",event_id);
       QString::asprintf("`ID`=%d",event_id);
-    SqlQuery::apply(sql);
   }
+  SqlQuery::apply(sql);
 }
 
 
