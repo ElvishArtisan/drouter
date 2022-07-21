@@ -38,6 +38,11 @@ EXTRA_DIST = drouter-16x16.png\
              drouter-16x16.xpm\
              drouter-32x32.png\
              drouter-48x48.png\
+             event-fail-16x16.xpm\
+             event-info-16x16.xcf\
+             event-info-16x16.xpm\
+             event-info-256x256.xcf\
+             event-switch-16x16.xpm\
              greenx.xpm
 
 CLEANFILES = *~

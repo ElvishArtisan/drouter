@@ -65,5 +65,10 @@ ln -s ../../src/common/sendmail.cpp src/$DESTDIR/sendmail.cpp
 rm -f src/$DESTDIR/sendmail.h
 ln -s ../../src/common/sendmail.h src/$DESTDIR/sendmail.h
 
+rm -f src/$DESTDIR/sqlquery.cpp
+ln -s ../../src/common/sqlquery.cpp src/$DESTDIR/sqlquery.cpp
+rm -f src/$DESTDIR/sqlquery.h
+ln -s ../../src/common/sqlquery.h src/$DESTDIR/sqlquery.h
+
 
 # End of link_common.sh

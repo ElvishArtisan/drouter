@@ -28,7 +28,8 @@ EXTRA_DIST = combobox.cpp combobox.h\
              multistatewidget.cpp multistatewidget.h\
              paths.h.in\
              saparser.cpp saparser.h\
-             sendmail.cpp sendmail.h
+             sendmail.cpp sendmail.h\
+             sqlquery.cpp sqlquery.h
 
 CLEANFILES = *~\
              moc_*\

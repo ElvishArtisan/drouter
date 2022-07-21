@@ -44,7 +44,6 @@ dist_drouterd_SOURCES = drouter.cpp drouter.h\
                         gpioflasher.cpp gpioflasher.h\
                         protoipc.h\
                         scriptengine.cpp scriptengine.h\
-                        sqlquery.cpp sqlquery.h\
                         tether.cpp tether.h\
                         ttydevice.cpp ttydevice.h
 
@@ -57,7 +56,8 @@ nodist_drouterd_SOURCES = config.cpp config.h\
                           moc_tether.cpp\
                           moc_ttydevice.cpp\
                           protoipc.h\
-                          sendmail.cpp sendmail.h
+                          sendmail.cpp sendmail.h\
+                          sqlquery.cpp sqlquery.h
 
 drouterd_LDADD = @QT5CLI_LIBS@ @SWITCHYARD5_LIBS@ @LIBSYSTEMD_LIBS@
 
@@ -65,15 +65,15 @@ dist_dprotod_SOURCES = dprotod.cpp dprotod.h\
                        protocol.cpp protocol.h\
                        protocol_d.cpp protocol_d.h\
                        protocol_sa.cpp protocol_sa.h\
-                       protoipc.h\
-                       sqlquery.cpp sqlquery.h
+                       protoipc.h
 
 nodist_dprotod_SOURCES = config.cpp config.h\
                          endpointmap.cpp endpointmap.h\
                          moc_dprotod.cpp\
                          moc_protocol.cpp\
                          moc_protocol_d.cpp\
-                         moc_protocol_sa.cpp
+                         moc_protocol_sa.cpp\
+                         sqlquery.cpp sqlquery.h
 
 dprotod_LDADD = @QT5CLI_LIBS@ @SWITCHYARD5_LIBS@ @LIBSYSTEMD_LIBS@
 
@@ -103,7 +103,8 @@ DISTCLEANFILES = combobox.cpp combobox.h\
                  multistatewidget.cpp multistatewidget.h\
                  paths.h\
                  saparser.cpp saparser.h\
-                 sendmail.cpp sendmail.h
+                 sendmail.cpp sendmail.h\
+                 sqlquery.cpp sqlquery.h
 
 MAINTAINERCLEANFILES = *~\
                        Makefile.in

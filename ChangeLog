@@ -778,3 +778,6 @@
 2022-07-11 Fred Gleason <fredg@paravelsystems.com>
 	* Added code to generate comments when finalizing Route records
 	in event logging.
+2022-07-21 Fred Gleason <fredg@paravelsystems.com>
+	* Moved the 'SqlQuery' class from 'src/drouterd/' to 'src/common/'.
+	* Added eventlogpanel(1).

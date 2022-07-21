@@ -1542,7 +1542,7 @@ void DRouter::FinalizeSARouteEvent(int event_id,bool status) const
   }
   else {
     sql=QString("update `PERM_SA_EVENTS` set ")+
-      "`STATUS`='Y',"+
+      "`STATUS`='N',"+
       "`COMMENT`='"+SqlQuery::escape(tr("Route failed")+": "+comment)+"' "+
       QString::asprintf("where `ID`=%d",event_id);
       QString::asprintf("`ID`=%d",event_id);

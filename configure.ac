@@ -262,6 +262,7 @@ AC_CONFIG_FILES([ \
     src/common/paths.h\
     src/dmap/Makefile \
     src/drouterd/Makefile \
+    src/eventlogpanel/Makefile \
     src/outputpanel/Makefile \
     src/shotpanel/Makefile \
     src/tests/Makefile \
@@ -282,6 +283,7 @@ chmod 755 scripts/install_python.sh
 ./link_common.sh buttonpanel
 ./link_common.sh dmap
 ./link_common.sh drouterd
+./link_common.sh eventlogpanel
 ./link_common.sh outputpanel
 ./link_common.sh shotpanel
 ./link_common.sh tests

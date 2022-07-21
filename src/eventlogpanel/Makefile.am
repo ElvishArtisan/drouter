@@ -1,8 +1,8 @@
-## Makefile.am
+## automake.am
 ##
-## Makefile for the xpointpanel(1) applet
+## Makefile for the eventlogpanel(1) applet
 ##
-## (C) Copyright 2017-2022 Fred Gleason <fredg@paravelsystems.com>
+## (C) Copyright 2016-2022 Fred Gleason <fredg@paravelsystems.com>
 ##
 ##   This program is free software; you can redistribute it and/or modify
 ##   it under the terms of the GNU General Public License as
@@ -28,29 +28,17 @@ moc_%.cpp:	%.h
 	$(MOC) $< -o $@
 
 
-bin_PROGRAMS = xpointpanel
+bin_PROGRAMS = eventlogpanel
 
-dist_xpointpanel_SOURCES = endpointlist.cpp endpointlist.h\
-                           statedialog.cpp statedialog.h\
-                           xpointpanel.cpp xpointpanel.h\
-                           xpointview.cpp xpointview.h
+dist_eventlogpanel_SOURCES = eventlogmodel.cpp eventlogmodel.h\
+                             eventlogpanel.cpp eventlogpanel.h
 
-nodist_xpointpanel_SOURCES = combobox.cpp combobox.h\
-                             dparser.cpp dparser.h\
-                             logindialog.cpp logindialog.h\
-                             multistatewidget.cpp multistatewidget.h\
-                             saparser.cpp saparser.h\
-                             moc_combobox.cpp\
-                             moc_dparser.cpp\
-                             moc_endpointlist.cpp\
-                             moc_logindialog.cpp\
-                             moc_multistatewidget.cpp\
-                             moc_saparser.cpp\
-                             moc_statedialog.cpp\
-                             moc_xpointpanel.cpp\
-                             moc_xpointview.cpp
+nodist_eventlogpanel_SOURCES = moc_eventlogmodel.cpp\
+                               moc_eventlogpanel.cpp\
+                               moc_sqlquery.cpp\
+                               sqlquery.cpp sqlquery.h
 
-xpointpanel_LDADD = @QT5GUI_LIBS@ @SWITCHYARD5_LIBS@
+eventlogpanel_LDADD = @QT5GUI_LIBS@ @SWITCHYARD5_LIBS@
 
 CLEANFILES = *~\
              moc_*\

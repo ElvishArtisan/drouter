@@ -58,7 +58,8 @@ DISTCLEANFILES = combobox.cpp combobox.h\
                  multistatewidget.cpp multistatewidget.h\
                  paths.h\
                  saparser.cpp saparser.h\
-                 sendmail.cpp sendmail.h
+                 sendmail.cpp sendmail.h\
+                 sqlquery.cpp sqlquery.h
 
 MAINTAINERCLEANFILES = *~\
                        Makefile.in
