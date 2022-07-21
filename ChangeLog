@@ -781,3 +781,5 @@
 2022-07-21 Fred Gleason <fredg@paravelsystems.com>
 	* Moved the 'SqlQuery' class from 'src/drouterd/' to 'src/common/'.
 	* Added eventlogpanel(1).
+2022-07-21 Fred Gleason <fredg@paravelsystems.com>
+	* Fixed regressions that broke the 'make rpm' target.
