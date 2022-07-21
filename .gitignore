@@ -51,6 +51,8 @@ src/buttonpanel/saparser.cpp
 src/buttonpanel/saparser.h
 src/buttonpanel/sendmail.cpp
 src/buttonpanel/sendmail.h
+src/buttonpanel/sqlquery.cpp
+src/buttonpanel/sqlquery.h
 src/dmap/combobox.cpp
 src/dmap/combobox.h
 src/dmap/config.cpp
@@ -68,6 +70,8 @@ src/dmap/saparser.cpp
 src/dmap/saparser.h
 src/dmap/sendmail.cpp
 src/dmap/sendmail.h
+src/dmap/sqlquery.cpp
+src/dmap/sqlquery.h
 src/drouterd/combobox.cpp
 src/drouterd/combobox.h
 src/drouterd/config.cpp
@@ -87,6 +91,27 @@ src/drouterd/saparser.cpp
 src/drouterd/saparser.h
 src/drouterd/sendmail.cpp
 src/drouterd/sendmail.h
+src/drouterd/sqlquery.cpp
+src/drouterd/sqlquery.h
+src/eventlogpanel/combobox.cpp
+src/eventlogpanel/combobox.h
+src/eventlogpanel/config.cpp
+src/eventlogpanel/config.h
+src/eventlogpanel/dparser.cpp
+src/eventlogpanel/dparser.h
+src/eventlogpanel/endpointmap.cpp
+src/eventlogpanel/endpointmap.h
+src/eventlogpanel/eventlogpanel
+src/eventlogpanel/logindialog.cpp
+src/eventlogpanel/logindialog.h
+src/eventlogpanel/multistatewidget.cpp
+src/eventlogpanel/multistatewidget.h
+src/eventlogpanel/saparser.cpp
+src/eventlogpanel/saparser.h
+src/eventlogpanel/sendmail.cpp
+src/eventlogpanel/sendmail.h
+src/eventlogpanel/sqlquery.cpp
+src/eventlogpanel/sqlquery.h
 src/outputpanel/combobox.cpp
 src/outputpanel/combobox.h
 src/outputpanel/config.cpp
@@ -104,6 +129,8 @@ src/outputpanel/saparser.cpp
 src/outputpanel/saparser.h
 src/outputpanel/sendmail.cpp
 src/outputpanel/sendmail.h
+src/outputpanel/sqlquery.cpp
+src/outputpanel/sqlquery.h
 src/shotpanel/combobox.cpp
 src/shotpanel/combobox.h
 src/shotpanel/config.cpp
@@ -121,6 +148,8 @@ src/shotpanel/saparser.h
 src/shotpanel/shotpanel
 src/shotpanel/sendmail.cpp
 src/shotpanel/sendmail.h
+src/shotpanel/sqlquery.cpp
+src/shotpanel/sqlquery.h
 src/tests/combobox.cpp
 src/tests/combobox.h
 src/tests/config.cpp
@@ -139,6 +168,8 @@ src/tests/saparser.h
 src/tests/sendmail.cpp
 src/tests/sendmail.h
 src/tests/sendmailtest
+src/tests/sqlquery.cpp
+src/tests/sqlquery.h
 src/xpointpanel/combobox.cpp
 src/xpointpanel/combobox.h
 src/xpointpanel/config.cpp
@@ -156,6 +187,8 @@ src/xpointpanel/saparser.h
 src/xpointpanel/sendmail.cpp
 src/xpointpanel/sendmail.h
 src/xpointpanel/xpointpanel
+src/xpointpanel/sqlquery.cpp
+src/xpointpanel/sqlquery.h
 src/xypanel/combobox.cpp
 src/xypanel/combobox.h
 src/xypanel/config.cpp
@@ -173,3 +206,5 @@ src/xypanel/saparser.h
 src/xypanel/sendmail.cpp
 src/xypanel/sendmail.h
 src/xypanel/xypanel
+src/xypanel/sqlquery.cpp
+src/xypanel/sqlquery.h
