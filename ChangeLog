@@ -785,3 +785,5 @@
 	* Fixed regressions that broke the 'make rpm' target.
 2022-07-21 Fred Gleason <fredg@paravelsystems.com>
 	* Parallelized the 'make rpm' target.
+2022-07-21 Fred Gleason <fredg@paravelsystems.com>
+	* Added eventlogpanel(1) to the 'drouter-panels' DEB package.

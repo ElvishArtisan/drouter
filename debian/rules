@@ -66,6 +66,7 @@ binary:
 #
 	mkdir -p debian/drouter-panels/usr/bin
 	mv debian/tmp/usr/bin/buttonpanel debian/drouter-panels/usr/bin/
+	mv debian/tmp/usr/bin/eventlogpanel debian/drouter-panels/usr/bin/
 	mv debian/tmp/usr/bin/outputpanel debian/drouter-panels/usr/bin/
 	mv debian/tmp/usr/bin/shotpanel debian/drouter-panels/usr/bin/
 	mv debian/tmp/usr/bin/xpointpanel debian/drouter-panels/usr/bin/
