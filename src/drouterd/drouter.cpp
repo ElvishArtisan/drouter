@@ -1164,6 +1164,26 @@ bool DRouter::StartDb(QString *err_msg)
     syslog(LOG_DEBUG,"applied schema version %d",schema_ver);
   }
 
+  if(schema_ver<5) {
+    sql=QString("alter table `PERM_SA_EVENTS` ")+
+      "add column `ROUTER_NAME` varchar(191) after `ROUTER_NUMBER`";
+    SqlQuery::apply(sql);
+
+    sql=QString("alter table `PERM_SA_EVENTS` ")+
+      "add column `SOURCE_NAME` varchar(191) after `SOURCE_NUMBER`";
+    SqlQuery::apply(sql);
+
+    sql=QString("alter table `PERM_SA_EVENTS` ")+
+      "add column `DESTINATION_NAME` varchar(191) after `DESTINATION_NUMBER`";
+    SqlQuery::apply(sql);
+
+    schema_ver=5;
+    sql=QString("update `PERM_VERSION` set ")+
+      QString::asprintf("`DB`=%d",schema_ver);
+    SqlQuery::apply(sql);
+    syslog(LOG_DEBUG,"applied schema version %d",schema_ver);
+  }
+
   // New schema updates go here
 
 
@@ -1501,6 +1521,9 @@ void DRouter::FinalizeSARouteEvent(int event_id,bool status) const
   QString comment="";
   QString sql;
   SqlQuery *q=NULL;
+  QString router_name;
+  QString input_name;
+  QString output_name;
 
   sql=QString("select ")+
     "`STATUS`,"+              // 00
@@ -1514,6 +1537,11 @@ void DRouter::FinalizeSARouteEvent(int event_id,bool status) const
     QString::asprintf("`ID`=%d",event_id);
   q=new SqlQuery(sql);
   if(q->first()) {
+    EndPointMap *map=drouter_maps.value(q->value(1).toInt());
+    router_name=map->routerName();
+    output_name=map->name(EndPointMap::Output,q->value(2).toInt());
+    input_name=map->name(EndPointMap::Input,q->value(3).toInt());
+    /*
     EndPointMap *map=drouter_maps.value(q->value(1).toInt());
     comment+=map->name(EndPointMap::Input,q->value(3).toInt())+
       QString::asprintf("[%d] to ",1+q->value(3).toInt());
@@ -1531,21 +1559,25 @@ void DRouter::FinalizeSARouteEvent(int event_id,bool status) const
     else {
       comment+=q->value(6).toString();
     }
+    */
   }
   delete q;
 
   if(status) {
     sql=QString("update `PERM_SA_EVENTS` set ")+
       "`STATUS`='Y',"+
-      "`COMMENT`='"+SqlQuery::escape(tr("Route taken")+": "+comment)+"' "+
+      "`ROUTER_NAME`='"+SqlQuery::escape(router_name)+"',"+
+      "`DESTINATION_NAME`='"+SqlQuery::escape(output_name)+"',"+
+      "`SOURCE_NAME`='"+SqlQuery::escape(input_name)+"' "+
       QString::asprintf("where `ID`=%d",event_id);
   }
   else {
     sql=QString("update `PERM_SA_EVENTS` set ")+
       "`STATUS`='N',"+
-      "`COMMENT`='"+SqlQuery::escape(tr("Route failed")+": "+comment)+"' "+
+      "`ROUTER_NAME`='"+SqlQuery::escape(router_name)+"',"+
+      "`DESTINATION_NAME`='"+SqlQuery::escape(output_name)+"',"+
+      "`SOURCE_NAME`='"+SqlQuery::escape(input_name)+"' "+
       QString::asprintf("where `ID`=%d",event_id);
-      QString::asprintf("`ID`=%d",event_id);
   }
   SqlQuery::apply(sql);
 }
