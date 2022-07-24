@@ -792,3 +792,6 @@
 	* Added a 'PERM_SA_EVENTS.DESTINATION_NAME' field to the database.
 	* Added a 'PERM_SA_EVENTS.SOURCE_NAME' field to the database.
 	* Incremented the database version to 5.
+2022-07-24 Fred Gleason <fredg@paravelsystems.com>
+	* Added a 'Line Format' control to eventlogpanel(1).
+	* Added a 'Scroll' button to eventlogpanel(1).

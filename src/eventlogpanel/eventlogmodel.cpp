@@ -34,6 +34,7 @@ EventLogModel::EventLogModel(QObject *parent)
   : QAbstractTableModel(parent)
 {
   d_max_id=0;
+  d_show_attributes=EventLogModel::NumberAttribute|EventLogModel::NameAttribute;
 
   //
   // Load Icons
@@ -165,9 +166,6 @@ QModelIndex EventLogModel::refresh()
     QString::asprintf("`PERM_SA_EVENTS`.`ID`>%d ",d_max_id)+
     "order by `PERM_SA_EVENTS`.`ID` ";
   beginResetModel();
-  //  d_line_ids.clear();
-  //  d_texts.clear();
-  //  d_icons.clear();
   q=new SqlQuery(sql);
   while(q->next()) {
     d_line_ids.push_back(-1);
@@ -210,6 +208,22 @@ void EventLogModel::refresh(int line_id)
 }
 
 
+int EventLogModel::showAttributes() const
+{
+  return d_show_attributes;
+}
+
+
+void EventLogModel::setShowAttributes(int attrs)
+{
+  if(attrs!=d_show_attributes) {
+    d_show_attributes=attrs;
+    d_max_id=0;
+    updateModel();
+  }
+}
+
+
 void EventLogModel::updateModel()
 {
   QList<QVariant> texts; 
@@ -220,13 +234,11 @@ void EventLogModel::updateModel()
     "order by `PERM_SA_EVENTS`.`ID` ";
   beginResetModel();
   d_line_ids.clear();
-  //  d_group_colors.clear();
   d_texts.clear();
   d_icons.clear();
   q=new SqlQuery(sql);
   while(q->next()) {
     d_line_ids.push_back(-1);
-    //    d_group_colors.push_back(QVariant());
     d_texts.push_back(texts);
     d_icons.push_back(QVariant());
     updateRow(d_texts.size()-1,q);
@@ -260,8 +272,10 @@ void EventLogModel::updateRow(int row,SqlQuery *q)
     if(q->value(2).toString()=="C") {  // Comment
       d_icons[row]=d_event_comment_icon;
     }
-    if(q->value(2).toString()=="R") {  // Route
-      d_icons[row]=d_event_route_icon;
+    else {
+      if(q->value(2).toString()=="R") {  // Route
+	d_icons[row]=d_event_route_icon;
+      }
     }
   }
   else {
@@ -278,7 +292,23 @@ void EventLogModel::updateRow(int row,SqlQuery *q)
   texts.push_back(q->value(3).toDateTime().toString("yyyy-MM-dd hh:mm:ss"));
 
   // Comment
-  texts.push_back(q->value(4));
+  if(q->value(2).toString()=="R") {
+    if(q->value(1).toString()=="Y") {
+      texts.push_back(Fmt(tr("Route taken"),Qt::black,false)+" - "+RouteString(q));
+    }
+    else {
+      texts.push_back(Fmt(tr("Route failed"),Qt::red,true)+" - "+RouteString(q));
+    }
+  }
+  else {
+    if(q->value(2).toString()=="C") {
+      texts.push_back(q->value(7));
+    }
+    else {
+      texts.push_back(tr("ERROR: invalid event type")+" \""+
+		      q->value(2).toString()+"\"");
+    }
+  }
 
   d_texts[row]=texts;
 }
@@ -287,12 +317,106 @@ void EventLogModel::updateRow(int row,SqlQuery *q)
 QString EventLogModel::sqlFields() const
 {
   QString sql=QString("select ")+
-    "`ID`,"+        // 00
-    "`STATUS`,"+    // 01
-    "`TYPE`,"+      // 02
-    "`DATETIME`,"+  // 03
-    "`COMMENT` "+   // 04
+    "`ID`,"+                   // 00
+    "`STATUS`,"+               // 01
+    "`TYPE`,"+                 // 02
+    "`DATETIME`,"+             // 03
+    "`USERNAME`,"+             // 04
+    "`HOSTNAME`,"+             // 05
+    "`ORIGINATING_ADDRESS`,"+  // 06
+    "`COMMENT`,"+              // 07
+    "`ROUTER_NUMBER`,"+        // 08
+    "`ROUTER_NAME`,"+          // 09
+    "`SOURCE_NUMBER`,"+        // 10
+    "`SOURCE_NAME`,"+          // 11
+    "`DESTINATION_NUMBER`,"+   // 12
+    "`DESTINATION_NAME` "+     // 13
     "from `PERM_SA_EVENTS` ";
 
     return sql;
+}
+
+
+QString EventLogModel::RouteString(SqlQuery *q) const
+{
+  QString ret;
+  QColor router_color;
+  QString router_name=RouteParameter(q->value(9),&router_color);
+
+  QColor input_color;
+  QString input_name=RouteParameter(q->value(11),&input_color);
+
+  QColor output_color;
+  QString output_name=RouteParameter(q->value(13),&output_color);
+
+  //
+  // Route attributes
+  //
+  switch(d_show_attributes) {
+  case EventLogModel::NumberAttribute:
+    ret=tr("Router")+": "+Fmt(1+q->value(8).toInt(),router_color,true)+" "+
+      tr("Dest")+": "+Fmt(1+q->value(12).toInt(),output_color,true)+" "+
+      tr("Source")+": "+Fmt(1+q->value(10).toInt(),input_color,true);
+    break;
+
+  case EventLogModel::NameAttribute:
+    ret=tr("Router")+": "+Fmt(router_name,router_color,true)+" "+
+      tr("Dest")+": "+Fmt(output_name,output_color,true)+" "+
+      tr("Source")+": "+Fmt(input_name,input_color,true);
+    break;
+
+    case EventLogModel::NumberAttribute|EventLogModel::NameAttribute:
+      ret=tr("Router")+": "+Fmt(router_name,router_color,true)+"["+Fmt(1+q->value(8).toInt(),router_color,true)+"] "+
+	tr("Dest")+": "+Fmt(output_name,output_color,true)+"["+Fmt(1+q->value(12).toInt(),output_color,true)+"] "+
+	tr("Source")+": "+Fmt(input_name,input_color,true)+"["+Fmt(1+q->value(10).toInt(),input_color,true)+"]";
+      break;
+  }
+
+  //
+  // Connection attributes
+  //
+  ret+=" "+tr("by")+" ";
+  if(!q->value(4).isNull()) {
+    ret+=Fmt(q->value(4).toString(),Qt::blue,true)+"@";
+  }
+  ret+=Fmt(q->value(5).toString(),Qt::blue,true);
+
+  return ret;
+}
+
+
+QString EventLogModel::RouteParameter(const QVariant &name,QColor *color) const
+{
+  QString ret=tr("NOT FOUND");
+  *color=Qt::red;
+
+  if(!name.toString().isEmpty()) {
+    ret=name.toString();
+    *color=Qt::black;
+  }
+
+  return ret;
+}
+
+
+QString EventLogModel::Fmt(const QString &str,const QColor &col,bool bold) const
+{
+  QString ret=str;
+
+  if(col.isValid()) {
+    ret="<font color=\""+col.name()+"\">"+
+      str+
+      "</font>";
+  }
+  if(bold) {
+    ret="<strong>"+ret+"</strong>";
+  }
+
+  return ret;
+}
+
+
+QString EventLogModel::Fmt(int num,const QColor &col,bool bold) const
+{
+  return Fmt(QString::asprintf("%d",num),col,bold);
 }

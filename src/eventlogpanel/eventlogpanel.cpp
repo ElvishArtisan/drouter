@@ -28,6 +28,7 @@
 #include <sy5/sycmdswitch.h>
 
 #include "eventlogpanel.h"
+#include "richtextdelegate.h"
 
 //
 // Icons
@@ -37,6 +38,8 @@
 MainWidget::MainWidget(QWidget *parent)
   : QWidget(parent)
 {
+  d_scrolling=false;
+
   QString db_hostname="localhost";
   QString db_username="drouter";
   QString db_password="drouter";
@@ -95,7 +98,34 @@ MainWidget::MainWidget(QWidget *parent)
     exit(1);
   }
 
+  //
+  // Attributes Filter
+  //
+  d_show_attributes_label=new QLabel(tr("Line Format")+":",this);
+  d_show_attributes_label->setFont(label_font);
+  d_show_attributes_label->setAlignment(Qt::AlignVCenter|Qt::AlignRight);
+  d_show_attributes_box=new QComboBox(this);
+  connect(d_show_attributes_box,SIGNAL(activated(int)),
+	  this,SLOT(showAttributesData(int)));
+  d_show_attributes_box->insertItem(0,tr("Show Names and Numbers"),
+				    EventLogModel::NumberAttribute|
+				    EventLogModel::NameAttribute);
+  d_show_attributes_box->insertItem(1,tr("Show Numbers"),
+				    EventLogModel::NumberAttribute);
+  d_show_attributes_box->insertItem(1,tr("Show Names"),
+				    EventLogModel::NameAttribute);
+
+  //
+  // Scroll Button
+  //
+  d_scroll_button=new QPushButton(tr("Scroll"),this);
+  connect(d_scroll_button,SIGNAL(clicked()),this,SLOT(toggleScrollingData()));
+
+  //
+  // Log View
+  //
   d_table_view=new QTableView(this);
+  d_table_view->setItemDelegate(new RichTextDelegate());
   d_log_model=new EventLogModel(this);
   d_table_view->setModel(d_log_model);
   d_table_view->setSelectionBehavior(QAbstractItemView::SelectRows);
@@ -111,7 +141,9 @@ MainWidget::MainWidget(QWidget *parent)
   d_refresh_timer=new QTimer(this);
   d_refresh_timer->setSingleShot(true);
   connect(d_refresh_timer,SIGNAL(timeout()),this,SLOT(refreshData()));
-  d_refresh_timer->start(1000);
+
+  d_refresh_timer->start(0);
+  toggleScrollingData();
 }
 
 
@@ -126,11 +158,31 @@ QSize MainWidget::sizeHint() const
 }
 
 
+void MainWidget::showAttributesData(int n)
+{
+  d_log_model->setShowAttributes(d_show_attributes_box->
+		     itemData(d_show_attributes_box->currentIndex()).toInt());
+}
+
+
+void MainWidget::toggleScrollingData()
+{
+  if(d_scrolling) {
+    d_scrolling=false;
+    d_scroll_button->setStyleSheet("");
+  }
+  else {
+    d_scrolling=true;
+    d_scroll_button->setStyleSheet("color: #FFFFFF; background-color: #0000FF");
+  }
+}
+
+
 void MainWidget::refreshData()
 {
   QModelIndex index=d_log_model->refresh();
 
-  if(index.isValid()) {
+  if(index.isValid()&&d_scrolling) {
     d_table_view->scrollTo(index);
   }
   d_refresh_timer->start(1000);
@@ -139,7 +191,11 @@ void MainWidget::refreshData()
 
 void MainWidget::resizeEvent(QResizeEvent *e)
 {
-  d_table_view->setGeometry(10,10,size().width()-20,size().height()-20);
+  d_show_attributes_label->setGeometry(10,6,90,20);
+  d_show_attributes_box->setGeometry(105,4,220,20);
+
+  d_scroll_button->setGeometry(340,5,45,20);
+  d_table_view->setGeometry(10,20+10,size().width()-20,size().height()-20-20);
 }
 
 

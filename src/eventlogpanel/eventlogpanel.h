@@ -22,6 +22,9 @@
 #ifndef EVENTLOGPANEL_H
 #define EVENTLOGPANEL_H
 
+#include <QComboBox>
+#include <QLabel>
+#include <QPushButton>
 #include <QTableView>
 #include <QTimer>
 #include <QWidget>
@@ -39,14 +42,20 @@ class MainWidget : public QWidget
   QSize sizeHint() const;
 
  private slots:
+  void showAttributesData(int n);
+  void toggleScrollingData();
   void refreshData();
 
  protected:
   void resizeEvent(QResizeEvent *e);
 
  private:
+  QLabel *d_show_attributes_label;
+  QComboBox *d_show_attributes_box;
+  QPushButton *d_scroll_button;
   QTableView *d_table_view;
   EventLogModel *d_log_model;
+  bool d_scrolling;
   QTimer *d_refresh_timer;
 };
 

@@ -32,6 +32,7 @@ class EventLogModel : public QAbstractTableModel
 {
   Q_OBJECT
  public:
+  enum EndpointAttributes {NumberAttribute=1,NameAttribute=2};
   EventLogModel(QObject *parent=0);
   ~EventLogModel();
   QPalette palette();
@@ -46,6 +47,10 @@ class EventLogModel : public QAbstractTableModel
   QModelIndex refresh();
   void refresh(const QModelIndex &index);
   void refresh(int line_id);
+  int showAttributes() const;
+
+ public slots:
+  void setShowAttributes(int attrs);
 
  protected:
   void updateModel();
@@ -54,6 +59,11 @@ class EventLogModel : public QAbstractTableModel
   QString sqlFields() const;
 
  private:
+  QString RouteString(SqlQuery *q) const;
+  QString RouteParameter(const QVariant &name,QColor *color) const;
+  QString Fmt(const QString &str,const QColor &col,bool bold) const;
+  QString Fmt(int num,const QColor &col,bool bold) const;
+  int d_show_attributes;
   QPalette d_palette;
   QFont d_font;
   QFont d_bold_font;
