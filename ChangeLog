@@ -795,3 +795,5 @@
 2022-07-24 Fred Gleason <fredg@paravelsystems.com>
 	* Added a 'Line Format' control to eventlogpanel(1).
 	* Added a 'Scroll' button to eventlogpanel(1).
+2022-07-24 Fred Gleason <fredg@paravelsystems.com>
+	* Cleaned up compile warnings in 'RichTextDelegate'.

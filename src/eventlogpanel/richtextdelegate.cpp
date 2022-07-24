@@ -28,29 +28,27 @@
 void RichTextDelegate::paint(QPainter *p,const QStyleOptionViewItem &option,
 			     const QModelIndex &index) const
 {
-  //  QStyledItemDelegate::paint(p,option,index);
+  QStyleOptionViewItem opt=option;
+  initStyleOption(&opt,index);
 
-  QStyleOptionViewItemV4 option_v4=option;
-  initStyleOption(&option_v4,index);
-
-  QStyle *style=option_v4.widget? option_v4.widget->style() : QApplication::style();
+  QStyle *style=opt.widget? opt.widget->style() : QApplication::style();
 
   QTextDocument doc;
-  doc.setHtml(option_v4.text);
+  doc.setHtml(opt.text);
 
   // No text?
-  option_v4.text=QString();
-  style->drawControl(QStyle::CE_ItemViewItem,&option_v4,p);
+  opt.text=QString();
+  style->drawControl(QStyle::CE_ItemViewItem,&opt,p);
 
   QAbstractTextDocumentLayout::PaintContext ctx;
 
   // Item Selected?
-  if(option_v4.state&QStyle::State_Selected) {
-    ctx.palette.setColor(QPalette::Text,option_v4.palette.
+  if(opt.state&QStyle::State_Selected) {
+    ctx.palette.setColor(QPalette::Text,opt.palette.
 			 color(QPalette::Active,QPalette::HighlightedText));
   }
 
-  QRect rect=style->subElementRect(QStyle::SE_ItemViewItemText,&option_v4);
+  QRect rect=style->subElementRect(QStyle::SE_ItemViewItemText,&opt);
   p->save();
   p->translate(rect.topLeft());
   p->setClipRect(rect.translated(-rect.topLeft()));
@@ -62,14 +60,12 @@ void RichTextDelegate::paint(QPainter *p,const QStyleOptionViewItem &option,
 QSize RichTextDelegate::sizeHint(const QStyleOptionViewItem &option,
 				 QModelIndex &index) const
 {
-  //  return QStyledItemDelegate::sizeHint(option,index);
-
-  QStyleOptionViewItemV4 option_v4=option;
-  initStyleOption(&option_v4,index);
+  QStyleOptionViewItem opt=option;
+  initStyleOption(&opt,index);
 
   QTextDocument doc;
-  doc.setHtml(option_v4.text);
-  doc.setTextWidth(option_v4.rect.width());
+  doc.setHtml(opt.text);
+  doc.setTextWidth(opt.rect.width());
 
   return QSize(doc.idealWidth(),doc.size().height());
 }
