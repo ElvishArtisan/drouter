@@ -812,6 +812,7 @@ void DRouter::finalizeEventsData()
 {
   QString sql;
   SqlQuery *q;
+  EndPointMap *map=NULL;
 
   sql=QString("select ")+
     "`ID`,"+                  // 00
@@ -824,19 +825,24 @@ void DRouter::finalizeEventsData()
     toString("yyyy-MM-dd hh:mm:ss")+"'";
   q=new SqlQuery(sql);
   while(q->next()) {
-    switch(drouter_maps.value(q->value(1).toInt())->routerType()) {
-    case EndPointMap::AudioRouter:
-      FinalizeSAAudioRoute(q->value(0).toInt(),q->value(1).toInt(),
-			   q->value(2).toInt(),q->value(3).toInt());
-      break;
+    if((map=drouter_maps.value(q->value(1).toInt()))==NULL) {
+      FinalizeSARouteEvent(q->value(0).toInt(),false);
+    }
+    else {
+      switch(drouter_maps.value(q->value(1).toInt())->routerType()) {
+      case EndPointMap::AudioRouter:
+	FinalizeSAAudioRoute(q->value(0).toInt(),q->value(1).toInt(),
+			     q->value(2).toInt(),q->value(3).toInt());
+	break;
 
-    case EndPointMap::GpioRouter:
-      FinalizeSAGpioRoute(q->value(0).toInt(),q->value(1).toInt(),
-			  q->value(2).toInt(),q->value(3).toInt());
-      break;
+      case EndPointMap::GpioRouter:
+	FinalizeSAGpioRoute(q->value(0).toInt(),q->value(1).toInt(),
+			    q->value(2).toInt(),q->value(3).toInt());
+	break;
 
-    case EndPointMap::LastRouter:
-      break;
+      case EndPointMap::LastRouter:
+	break;
+      }
     }
   }
   delete q;
@@ -1538,28 +1544,11 @@ void DRouter::FinalizeSARouteEvent(int event_id,bool status) const
   q=new SqlQuery(sql);
   if(q->first()) {
     EndPointMap *map=drouter_maps.value(q->value(1).toInt());
-    router_name=map->routerName();
-    output_name=map->name(EndPointMap::Output,q->value(2).toInt());
-    input_name=map->name(EndPointMap::Input,q->value(3).toInt());
-    /*
-    EndPointMap *map=drouter_maps.value(q->value(1).toInt());
-    comment+=map->name(EndPointMap::Input,q->value(3).toInt())+
-      QString::asprintf("[%d] to ",1+q->value(3).toInt());
-    comment+=
-      map->routerName()+QString::asprintf("[%d]:",1+q->value(1).toInt());
-    comment+=map->name(EndPointMap::Output,q->value(2).toInt())+
-      QString::asprintf("[%d] by ",1+q->value(2).toInt());
-    if(!q->value(4).isNull()) {
-      comment+=q->value(4).toString()+"@";
+    if(map!=NULL) {
+      router_name=map->routerName();
+      output_name=map->name(EndPointMap::Output,q->value(2).toInt());
+      input_name=map->name(EndPointMap::Input,q->value(3).toInt());
     }
-    if(!q->value(5).isNull()) {
-      comment+=q->value(5).toString();
-      comment+="["+q->value(6).toString()+"]";
-    }
-    else {
-      comment+=q->value(6).toString();
-    }
-    */
   }
   delete q;
 

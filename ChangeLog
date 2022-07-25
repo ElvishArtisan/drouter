@@ -801,3 +801,7 @@
 	* Added an instance indicator to eventlogpanel(1).
 2022-07-25 Fred Gleason <fredg@paravelsystems.com>
 	* Added an eventlogpanel(1) man page.
+2022-07-25 Fred Gleason <fredg@paravelsystems.com>
+	* Fixed a regression in drouterd(8) that caused a segfault when
+	processing an 'ActivateRoute' command with an invalid router-number
+	argument.
