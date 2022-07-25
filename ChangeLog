@@ -797,3 +797,5 @@
 	* Added a 'Scroll' button to eventlogpanel(1).
 2022-07-24 Fred Gleason <fredg@paravelsystems.com>
 	* Cleaned up compile warnings in 'RichTextDelegate'.
+2022-07-25 Fred Gleason <fredg@paravelsystems.com>
+	* Added an instance indicator to eventlogpanel(1).

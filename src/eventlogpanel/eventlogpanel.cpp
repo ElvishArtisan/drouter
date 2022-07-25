@@ -122,6 +122,11 @@ MainWidget::MainWidget(QWidget *parent)
   connect(d_scroll_button,SIGNAL(clicked()),this,SLOT(toggleScrollingData()));
 
   //
+  // Instance Indicator
+  //
+  d_instance_indicator=new InstanceIndicator(this);
+
+  //
   // Log View
   //
   d_table_view=new QTableView(this);
@@ -195,6 +200,9 @@ void MainWidget::resizeEvent(QResizeEvent *e)
   d_show_attributes_box->setGeometry(105,4,220,20);
 
   d_scroll_button->setGeometry(340,5,45,20);
+
+  d_instance_indicator->setGeometry(size().width()-100,2,90,26);
+
   d_table_view->setGeometry(10,20+10,size().width()-20,size().height()-20-20);
 }
 
