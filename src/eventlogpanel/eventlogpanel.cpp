@@ -44,6 +44,11 @@ MainWidget::MainWidget(QWidget *parent)
   QString db_username="drouter";
   QString db_password="drouter";
   QString db_dbname="drouter";
+
+  if(getenv("DROUTER_HOSTNAME")!=NULL) {
+    db_hostname=getenv("DROUTER_HOSTNAME");
+  }
+
   SyCmdSwitch *cmd=new SyCmdSwitch("eventlogpanel",VERSION,EVENTLOGPANEL_USAGE);
   for(int i=0;i<(cmd->keys());i++) {
     if(cmd->key(i)=="--hostname") {
@@ -73,7 +78,8 @@ MainWidget::MainWidget(QWidget *parent)
   // Create And Set Icon
   //
   setWindowIcon(QPixmap(drouter_16x16_xpm));
-  setWindowTitle(tr("Drouter - EventLogPanel")+" ["+VERSION+"]");
+  setWindowTitle(tr("Drouter - EventLogPanel")+" ["+VERSION+"] - "+
+		 tr("Server")+": "+db_hostname);
 
   //
   // Fonts

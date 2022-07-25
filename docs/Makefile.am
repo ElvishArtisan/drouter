@@ -2,7 +2,7 @@
 ##
 ## docs/Makefile.am
 ##
-## (C) Copyright 2017-2021 Fred Gleason <fredg@paravelsystems.com>
+## (C) Copyright 2017-2022 Fred Gleason <fredg@paravelsystems.com>
 ##
 ##   This program is free software; you can redistribute it and/or modify
 ##   it under the terms of the GNU General Public License version 2 as
@@ -47,6 +47,8 @@ all-local:	buttonpanel.1\
                 drouterd.xml\
                 dstate.1\
                 dstate.xml\
+                eventlogpanel.1\
+                eventlogpanel.xml\
                 outputpanel.1\
                 outputpanel.xml\
                 shotpanel.1\
@@ -74,6 +76,8 @@ EXTRA_DIST = buttonpanel.1\
              drouterd.xml\
              dstate.1\
              dstate.xml\
+             eventlogpanel.1\
+             eventlogpanel.xml\
              outputpanel.1\
              outputpanel.xml\
              shotpanel.1\
@@ -96,6 +100,7 @@ man_MANS = buttonpanel.1\
            drouter.map.5\
            drouterd.8\
            dstate.1\
+           eventlogpanel.1\
            outputpanel.1\
            shotpanel.1\
            xpointpanel.1\

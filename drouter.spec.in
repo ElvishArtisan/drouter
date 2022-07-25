@@ -166,6 +166,7 @@ rm -rf $RPM_BUILD_ROOT
 %{_bindir}/xpointpanel
 %{_bindir}/xypanel
 %{_datadir}/man/man1/buttonpanel.1.gz
+%{_datadir}/man/man1/eventlogpanel.1.gz
 %{_datadir}/man/man1/outputpanel.1.gz
 %{_datadir}/man/man1/shotpanel.1.gz
 %{_datadir}/man/man1/xpointpanel.1.gz
