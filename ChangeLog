@@ -807,3 +807,5 @@
 	argument.
 2022-07-26 Fred Gleason <fredg@paravelsystems.com>
 	* Added eventlogpanel(1) man page to the 'drouter-panels' DEB package.
+2022-07-26 Fred Gleason <fredg@paravelsystems.com>
+	* Incremented the package version to 1.0.0rc4int4.

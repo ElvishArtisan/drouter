@@ -1,9 +1,12 @@
 This is the NEWS file for the drouter package.
 
 -------------------------------------------------------------------------------
-v1.0.0rc4int3 - 29 June 2021
+v1.0.0rc4int4 - 26 July 2022
 
 Changes:
+   Event Logging. Added a event logging system to the drouterd(8) service,
+   along with an eventlogpanel(1) applet to read it.
+
    Dependency Changes. Updated the entire package to use Qt5 and Switchyard5.
    See the 'INSTALL' file for details.
 
