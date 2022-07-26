@@ -33,3 +33,6 @@ fi
 echo "CREATE DATABASE drouter;" | $MYSQL_COMMAND
 echo "CREATE USER 'drouter'@'localhost' IDENTIFIED BY 'drouter';" | $MYSQL_COMMAND
 echo "GRANT SELECT,INSERT,UPDATE,DELETE,CREATE,DROP,INDEX,ALTER,CREATE TEMPORARY TABLES,LOCK TABLES ON drouter.* TO 'drouter'@'localhost';" | $MYSQL_COMMAND
+echo "CREATE USER 'drouter'@'%' IDENTIFIED BY 'drouter';" | $MYSQL_COMMAND
+echo "GRANT SELECT ON drouter.PERM_SA_EVENTS to 'drouter'@'%';" | $MYSQL_COMMAND
+echo "GRANT SELECT ON drouter.TETHER to 'drouter'@'%';" | $MYSQL_COMMAND
