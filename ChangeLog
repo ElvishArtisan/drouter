@@ -805,3 +805,5 @@
 	* Fixed a regression in drouterd(8) that caused a segfault when
 	processing an 'ActivateRoute' command with an invalid router-number
 	argument.
+2022-07-26 Fred Gleason <fredg@paravelsystems.com>
+	* Added eventlogpanel(1) man page to the 'drouter-panels' DEB package.
