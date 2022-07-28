@@ -50,7 +50,8 @@ MainWidget::MainWidget(QWidget *parent)
   :QWidget(parent)
 {
   QString config_filename;
-  bool no_creds=false;
+  //  bool no_creds=false;
+  bool prompt=false;
   bool ok=false;
   panel_initial_connected=false;
   panel_initial_router=-1;
@@ -59,7 +60,7 @@ MainWidget::MainWidget(QWidget *parent)
   // Initialize Variables
   //
   panel_hostname="";
-  panel_username="admin";
+  panel_username="xpointpanel";
   panel_password="";
 
   //
@@ -89,8 +90,12 @@ MainWidget::MainWidget(QWidget *parent)
       panel_password=cmd->value(i);
       cmd->setProcessed(i,true);
     }
+    if(cmd->key(i)=="--prompt") {
+      prompt=true;
+      cmd->setProcessed(i,true);
+    }
     if(cmd->key(i)=="--no-creds") {
-      no_creds=true;
+      //      no_creds=true;
       cmd->setProcessed(i,true);
     }
     if(!cmd->processed(i)) {
@@ -200,9 +205,9 @@ MainWidget::MainWidget(QWidget *parent)
   connect(panel_dparser,SIGNAL(connected(bool)),
 	  this,SLOT(protocolDConnected(bool)));
 
-  setWindowTitle("XPointPanel ["+tr("Server")+": "+panel_hostname+"]");
+  setWindowTitle(QString("Drouter - XPointPanel [")+VERSION+"]");
 
-  if((!no_creds)&&panel_password.isEmpty()) {
+  if(prompt) {
     if(!panel_login_dialog->exec(&panel_username,&panel_password)) {
       exit(1);
     }

@@ -2,7 +2,7 @@
 //
 // Button applet for controlling an lwpath output.
 //
-//   (C) Copyright 2002-2021 Fred Gleason <fredg@paravelsystems.com>
+//   (C) Copyright 2002-2022 Fred Gleason <fredg@paravelsystems.com>
 //
 //   This program is free software; you can redistribute it and/or modify
 //   it under the terms of the GNU General Public License as
@@ -39,15 +39,15 @@ MainWidget::MainWidget(QWidget *parent)
 {
   panel_columns=0;
   panel_hostname="";
-  panel_username="Admin";
+  panel_username="buttonpanel";
   panel_arm_button=false;
   panel_no_max_size=false;
 
-  bool no_creds=false;
+  bool prompt=false;
   bool ok=false;
   QString err_msg;
 
-  setWindowTitle(QString("ButtonPanel v")+VERSION);
+  setWindowTitle(QString("Drouter - ButtonPanel [")+VERSION+"]");
   setWindowIcon(QPixmap(drouter_16x16_xpm));
 
   //
@@ -81,11 +81,14 @@ MainWidget::MainWidget(QWidget *parent)
       cmd->setProcessed(i,true);
     }
     if(cmd->key(i)=="--no-creds") {
-      no_creds=true;
       cmd->setProcessed(i,true);
     }
     if(cmd->key(i)=="--no-max-size") {
       panel_no_max_size=true;
+      cmd->setProcessed(i,true);
+    }
+    if(cmd->key(i)=="--prompt") {
+      prompt=true;
       cmd->setProcessed(i,true);
     }
     if(cmd->key(i)=="--username") {
@@ -193,7 +196,7 @@ MainWidget::MainWidget(QWidget *parent)
   //
   // Fire up the SAP connection
   //
-  if((!no_creds)&&panel_password.isEmpty()) {
+  if(prompt) {
     if(!panel_login_dialog->exec(&panel_username,&panel_password)) {
       exit(1);
     }

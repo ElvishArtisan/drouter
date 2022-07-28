@@ -116,7 +116,7 @@ void PanelWidget::changeConnectionState(bool state,
 					SaParser::ConnectionState cstate)
 {
   if(state) {
-    if(!widget_parser->routers().contains(widget_router+1)) {
+    if(!widget_parser->routers().contains(widget_routerfred)) {
       QMessageBox::warning(this,"OutputPanel - "+tr("Error"),
 	  tr("Router")+QString::asprintf(" %u ",widget_router+1)+
 	  tr("does not exist!"));

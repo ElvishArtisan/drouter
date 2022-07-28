@@ -6,12 +6,12 @@
   <refmeta>
     <refentrytitle>outputpanel</refentrytitle>
     <manvolnum>1</manvolnum>
-    <refmiscinfo class='source'>October 2017</refmiscinfo>
+    <refmiscinfo class='source'>July 2022</refmiscinfo>
     <refmiscinfo class='manual'>Linux Audio Manual</refmiscinfo>
   </refmeta>
   <refnamediv>
     <refname>outputpanel</refname>
-    <refpurpose>Button-based control panel applet for audio routing
+    <refpurpose>List-based control panel applet for audio routing
     systems</refpurpose>
   </refnamediv>
   <info>
@@ -40,7 +40,7 @@
     <command>outputpanel</command><manvolnum>1</manvolnum> is a GUI
     control applet that can be used to control one or more audio outputs
     on an audio routing system using Software Authority control protocol
-    (such as PathFinder or DRouter).
+    (such as PathFinder or Drouter).
   </para>
   </refsect1>
 
@@ -75,7 +75,7 @@
   <variablelist remap='TP'>
     <varlistentry>
       <term>
-	<option>--hostname <replaceable>host-name</replaceable></option>
+	<option>--hostname=<replaceable>host-name</replaceable></option>
       </term>
       <listitem>
 	<para>
@@ -93,7 +93,8 @@
     </term>
     <listitem>
       <para>
-	Skip the &quot;Login&quot; step when connecting to the server.
+	This option does nothing, and exists solely for backwards
+	compatibility.
       </para>
     </listitem>
   </varlistentry>
@@ -108,7 +109,7 @@
 	(default <userinput>1</userinput>) may also be given. This option
 	may be given multiple times, causing 
 	outputpanel<manvolnum>1</manvolnum> to display multiple panels
-	within a single window. (See also the <option>--cols=</option> option,
+	within a single window. (See also the <option>--columns</option> option,
 	above).
       </para>
     </listitem>
@@ -120,9 +121,18 @@
     </term>
     <listitem>
       <para>
-	Password to use when authenticating on the server. If not
-	given, outputpanel<manvolnum>1</manvolnum> will prompt for one
-	at startup.
+	Password to use when authenticating on the server.
+      </para>
+    </listitem>
+  </varlistentry>
+
+  <varlistentry>
+    <term>
+      <option>--prompt</option>
+    </term>
+    <listitem>
+      <para>
+	Prompt for Username and Password at startup.
       </para>
     </listitem>
   </varlistentry>
@@ -134,7 +144,7 @@
     <listitem>
       <para>
 	The username to use when authenticating on the server. Default
-	value is <userinput>Admin</userinput>.
+	value is <userinput>outputpanel</userinput>.
       </para>
     </listitem>
   </varlistentry>
@@ -166,7 +176,7 @@
 	<listitem>
 	  <para>
 	    If no <option>--hostname</option> option is given,
-	    <command>dlist</command><manvolnum>1</manvolnum> will
+	    <command>outputpanel</command><manvolnum>1</manvolnum> will
 	    attempt to use the Drouter server referenced in
 	    <userinput>$DROUTER_HOSTNAME</userinput>. If
 	    <userinput>$DROUTER_HOSTNAME</userinput> is not defined,
@@ -181,7 +191,10 @@
   <refsect1 id='see_also'><title>See Also</title>
   <para>
     <citerefentry>
-      <refentrytitle>buttonpanel</refentrytitle><manvolnum>5</manvolnum>
+      <refentrytitle>buttonpanel</refentrytitle><manvolnum>1</manvolnum>
+    </citerefentry>,
+    <citerefentry>
+      <refentrytitle>eventlogpanel</refentrytitle><manvolnum>1</manvolnum>
     </citerefentry>,
     <citerefentry>
       <refentrytitle>shotpanel</refentrytitle><manvolnum>1</manvolnum>

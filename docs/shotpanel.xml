@@ -6,7 +6,7 @@
   <refmeta>
     <refentrytitle>shotpanel</refentrytitle>
     <manvolnum>1</manvolnum>
-    <refmiscinfo class='source'>August 2019</refmiscinfo>
+    <refmiscinfo class='source'>July 2022</refmiscinfo>
     <refmiscinfo class='manual'>Linux Audio Manual</refmiscinfo>
   </refmeta>
   <refnamediv>
@@ -39,7 +39,7 @@
     <command>shotpanel</command><manvolnum>1</manvolnum> is an control
     applet that can be used to execute audio routing salvos with systems
     using the Software Authority control protocol (such as PathFinder or
-    DRouter's
+    Drouter's
     <command>drouterd</command><manvolnum>8</manvolnum>).
   </para>
   </refsect1>
@@ -79,7 +79,8 @@
     </term>
     <listitem>
       <para>
-	Skip the &quot;Login&quot; step when connecting to the server.
+	This option does nothing, and exists solely for backwards
+	compatibility.
       </para>
     </listitem>
   </varlistentry>
@@ -90,9 +91,18 @@
     </term>
     <listitem>
       <para>
-	Password to use when authenticating on the server. If not
-	given, shotpanel<manvolnum>1</manvolnum> will prompt for one
-	at startup.
+	Password to use when authenticating on the server.
+      </para>
+    </listitem>
+  </varlistentry>
+
+  <varlistentry>
+    <term>
+      <option>--prompt</option>
+    </term>
+    <listitem>
+      <para>
+	Prompt for Username and Password at startup.
       </para>
     </listitem>
   </varlistentry>
@@ -104,7 +114,7 @@
     <listitem>
       <para>
 	The username to use when authenticating on the server. Default
-	value is <userinput>Admin</userinput>.
+	value is <userinput>shotpanel</userinput>.
       </para>
     </listitem>
   </varlistentry>
@@ -136,7 +146,7 @@
 	<listitem>
 	  <para>
 	    If no <option>--hostname</option> option is given,
-	    <command>dlist</command><manvolnum>1</manvolnum> will
+	    <command>shotpanel</command><manvolnum>1</manvolnum> will
 	    attempt to use the Drouter server referenced in
 	    <userinput>$DROUTER_HOSTNAME</userinput>. If
 	    <userinput>$DROUTER_HOSTNAME</userinput> is not defined,
@@ -152,6 +162,9 @@
   <para>
     <citerefentry>
       <refentrytitle>buttonpanel</refentrytitle><manvolnum>1</manvolnum>
+    </citerefentry>,
+    <citerefentry>
+      <refentrytitle>eventlogpanel</refentrytitle><manvolnum>1</manvolnum>
     </citerefentry>,
     <citerefentry>
       <refentrytitle>outputpanel</refentrytitle><manvolnum>1</manvolnum>

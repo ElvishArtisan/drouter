@@ -43,7 +43,7 @@ MainWidget::MainWidget(QWidget *parent)
   :QWidget(parent)
 {
   QString config_filename;
-  bool no_creds=false;
+  bool prompt=false;
   bool ok=false;
 
   panel_clock_state=false;
@@ -55,7 +55,7 @@ MainWidget::MainWidget(QWidget *parent)
   // Initialize Variables
   //
   panel_hostname="";
-  panel_username="admin";
+  panel_username="xypanel";
   panel_password="";
 
   //
@@ -86,7 +86,10 @@ MainWidget::MainWidget(QWidget *parent)
       cmd->setProcessed(i,true);
     }
     if(cmd->key(i)=="--no-creds") {
-      no_creds=true;
+      cmd->setProcessed(i,true);
+    }
+    if(cmd->key(i)=="--prompt") {
+      prompt=true;
       cmd->setProcessed(i,true);
     }
     if(!cmd->processed(i)) {
@@ -200,9 +203,9 @@ MainWidget::MainWidget(QWidget *parent)
   connect(panel_parser,SIGNAL(outputCrosspointChanged(int,int,int)),
 	  this,SLOT(outputCrosspointChangedData(int,int,int)));
 
-  setWindowTitle("XYPanel ["+tr("Server")+": "+panel_hostname+"]");
+  setWindowTitle(QString("Drouter - XYPanel [")+VERSION+"]");
 
-  if((!no_creds)&&panel_password.isEmpty()) {
+  if(prompt) {
     if(!panel_login_dialog->exec(&panel_username,&panel_password)) {
       exit(1);
     }

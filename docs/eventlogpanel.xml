@@ -60,7 +60,7 @@
   <variablelist remap='TP'>
     <varlistentry>
       <term>
-	<option>--dbname <replaceable>db-name</replaceable></option>
+	<option>--dbname=<replaceable>db-name</replaceable></option>
       </term>
       <listitem>
 	<para>
@@ -72,7 +72,7 @@
 
     <varlistentry>
       <term>
-	<option>--hostname <replaceable>host-name</replaceable></option>
+	<option>--hostname=<replaceable>host-name</replaceable></option>
       </term>
       <listitem>
 	<para>
@@ -151,10 +151,10 @@
   <refsect1 id='see_also'><title>See Also</title>
   <para>
     <citerefentry>
-      <refentrytitle>buttonpanel</refentrytitle><manvolnum>5</manvolnum>
+      <refentrytitle>buttonpanel</refentrytitle><manvolnum>1</manvolnum>
     </citerefentry>,
     <citerefentry>
-      <refentrytitle>outputpanel</refentrytitle><manvolnum>5</manvolnum>
+      <refentrytitle>outputpanel</refentrytitle><manvolnum>1</manvolnum>
     </citerefentry>,
     <citerefentry>
       <refentrytitle>shotpanel</refentrytitle><manvolnum>1</manvolnum>

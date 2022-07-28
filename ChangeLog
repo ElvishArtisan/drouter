@@ -812,3 +812,19 @@
 2022-07-26 Fred Gleason <fredg@paravelsystems.com>
 	* Added statements to 'scripts/drouter_init_db.sh' to create
 	read-only DB account for eventlogpanel(1).
+2022-07-28 Fred Gleason <fredg@paravelsystems.com>
+	* Changed the '--no-creds' option in buttonpanel(1) to be a no-op.
+	* Changed the default username in buttonpanel(1) to 'buttonpanel'.
+	* Added a '--prompt' option to buttonpanel(1).
+	* Changed the '--no-creds' option in outputpanel(1) to be a no-op.
+	* Changed the default username in outputpanel(1) to 'outputpanel'.
+	* Added a '--prompt' option to outputpanel(1).
+	* Changed the '--no-creds' option in shotpanel(1) to be a no-op.
+	* Changed the default username in shotpanel(1) to 'shotpanel'.
+	* Added a '--prompt' option to shotpanel(1).
+	* Changed the '--no-creds' option in xpointpanel(1) to be a no-op.
+	* Changed the default username in xpointpanel(1) to 'xpointpanel'.
+	* Added a '--prompt' option to xpointpanel(1).
+	* Changed the '--no-creds' option in xypanel(1) to be a no-op.
+	* Changed the default username in xypanel(1) to 'xypanel'.
+	* Added a '--prompt' option to xypanel(1).

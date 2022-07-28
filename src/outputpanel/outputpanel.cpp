@@ -2,7 +2,7 @@
 //
 // An applet for controling an SA output
 //
-//   (C) Copyright 2002-2021 Fred Gleason <fredg@paravelsystems.com>
+//   (C) Copyright 2002-2022 Fred Gleason <fredg@paravelsystems.com>
 //
 //   This program is free software; you can redistribute it and/or modify
 //   it under the terms of the GNU General Public License as
@@ -44,14 +44,14 @@ MainWidget::MainWidget(QWidget *parent)
   // Initialize Variables
   //
   panel_hostname="";
-  panel_username="admin";
+  panel_username="outputpanel";
   panel_password="";
   int router;
   int output;
   bool ok;
   unsigned cols=0;
   int ypos=0;
-  bool no_creds=false;
+  bool prompt=false;
   panel_quantity=0;
   panel_columns=0;
   panel_rows=0;
@@ -72,7 +72,10 @@ MainWidget::MainWidget(QWidget *parent)
       cmd->setProcessed(i,true);
     }
     if(cmd->key(i)=="--no-creds") {
-      no_creds=true;
+      cmd->setProcessed(i,true);
+    }
+    if(cmd->key(i)=="--prompt") {
+      prompt=true;
       cmd->setProcessed(i,true);
     }
     if(cmd->key(i)=="--username") {
@@ -212,7 +215,7 @@ MainWidget::MainWidget(QWidget *parent)
   //
   // Fire up the SAP connection
   //
-  if((!no_creds)&&panel_password.isEmpty()) {
+  if(prompt) {
     if(!panel_login_dialog->exec(&panel_username,&panel_password)) {
       exit(1);
     }

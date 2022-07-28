@@ -6,7 +6,7 @@
   <refmeta>
     <refentrytitle>buttonpanel</refentrytitle>
     <manvolnum>1</manvolnum>
-    <refmiscinfo class='source'>October 2017</refmiscinfo>
+    <refmiscinfo class='source'>July 2022</refmiscinfo>
     <refmiscinfo class='manual'>Linux Audio Manual</refmiscinfo>
   </refmeta>
   <refnamediv>
@@ -153,7 +153,7 @@
   <variablelist remap='TP'>
     <varlistentry>
       <term>
-	<option>--hostname <replaceable>host-name</replaceable></option>
+	<option>--hostname=<replaceable>host-name</replaceable></option>
       </term>
       <listitem>
 	<para>
@@ -171,7 +171,8 @@
     </term>
     <listitem>
       <para>
-	Skip the &quot;Login&quot; step when connecting to the server.
+	This option does nothing, and exists solely for backwards
+	compatibility.
       </para>
     </listitem>
   </varlistentry>
@@ -208,9 +209,18 @@
     </term>
     <listitem>
       <para>
-	Password to use when authenticating on the server. If not
-	given, buttonpanel<manvolnum>1</manvolnum> will prompt for one
-	at startup.
+	Password to use when authenticating on the server.
+      </para>
+    </listitem>
+  </varlistentry>
+
+  <varlistentry>
+    <term>
+      <option>--prompt</option>
+    </term>
+    <listitem>
+      <para>
+	Prompt for Username and Password at startup.
       </para>
     </listitem>
   </varlistentry>
@@ -399,7 +409,7 @@
 	<listitem>
 	  <para>
 	    If no <option>--hostname</option> option is given,
-	    <command>dlist</command><manvolnum>1</manvolnum> will
+	    <command>buttonpanel</command><manvolnum>1</manvolnum> will
 	    attempt to use the Drouter server referenced in
 	    <userinput>$DROUTER_HOSTNAME</userinput>. If
 	    <userinput>$DROUTER_HOSTNAME</userinput> is not defined,
@@ -413,6 +423,9 @@
 
   <refsect1 id='see_also'><title>See Also</title>
   <para>
+    <citerefentry>
+      <refentrytitle>eventlogpanel</refentrytitle><manvolnum>1</manvolnum>
+    </citerefentry>,
     <citerefentry>
       <refentrytitle>outputpanel</refentrytitle><manvolnum>1</manvolnum>
     </citerefentry>,
