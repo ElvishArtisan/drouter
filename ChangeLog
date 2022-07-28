@@ -828,3 +828,6 @@
 	* Changed the '--no-creds' option in xypanel(1) to be a no-op.
 	* Changed the default username in xypanel(1) to 'xypanel'.
 	* Added a '--prompt' option to xypanel(1).
+2022-07-28 Fred Gleason <fredg@paravelsystems.com>
+	* Fixed a typo in 'src/outputpanel/panelwidget.cpp' that broke the
+	build.
