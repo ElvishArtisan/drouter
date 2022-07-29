@@ -42,7 +42,8 @@ class ProtocolSa : public Protocol
   void newConnectionData();
   void readyReadData();
   void disconnectedData();
-  void hostLookupFinishedData(const QHostInfo &info);
+  void snapshotHostLookupFinishedData(const QHostInfo &info);
+  void routeHostLookupFinishedData(const QHostInfo &info);
 
  protected:
   void destinationCrosspointChanged(const QHostAddress &host_addr,int slotnum);
@@ -78,13 +79,15 @@ class ProtocolSa : public Protocol
   void ProcessCommand(const QString &cmd);
   void LoadMaps();
   void LoadHelp();
-  void LogEvent(int router,int output,int input);
+  void AddRouteEvent(int router,int output,int input);
+  void AddSnapEvent(int router,const QString &name);
   QMap<QString,QString> proto_help_strings;
   QTcpSocket *proto_socket;
   QTcpServer *proto_server;
   QString proto_accum;
   QMap<int,EndPointMap *> proto_maps;
-  int proto_event_id;
+  //  int proto_event_id;
+  QMap <int,int> proto_event_lookups;
   QString proto_username;
   QString proto_hostname;
 

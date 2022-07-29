@@ -1,6 +1,6 @@
-## automake.am
+## Makefile.am
 ##
-## icons/automake.am
+## icons/Makefile.am
 ##
 ## (C) Copyright 2017 Fred Gleason <fredg@paravelsystems.com>
 ##
@@ -43,6 +43,7 @@ EXTRA_DIST = drouter-16x16.png\
              event-comment-256x256.xcf\
              event-fail-16x16.xpm\
              event-route-16x16.xpm\
+             event-snapshot-16x16.xpm\
              greenx.xpm
 
 CLEANFILES = *~

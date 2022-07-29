@@ -29,6 +29,7 @@
 #include "../../icons/event-fail-16x16.xpm"
 #include "../../icons/event-comment-16x16.xpm"
 #include "../../icons/event-route-16x16.xpm"
+#include "../../icons/event-snapshot-16x16.xpm"
 
 EventLogModel::EventLogModel(QObject *parent)
   : QAbstractTableModel(parent)
@@ -42,6 +43,7 @@ EventLogModel::EventLogModel(QObject *parent)
   d_event_comment_icon=QVariant(QPixmap(event_comment_16x16_xpm));
   d_event_fail_icon=QVariant(QPixmap(event_fail_16x16_xpm));
   d_event_route_icon=QVariant(QPixmap(event_route_16x16_xpm));
+  d_event_snapshot_icon=QVariant(QPixmap(event_snapshot_16x16_xpm));
 
   //
   // Column Attributes
@@ -128,23 +130,14 @@ QVariant EventLogModel::data(const QModelIndex &index,int role) const
       return d_alignments.at(col);
 
     case Qt::FontRole:
-      /*
-      if(col==1) {
-	return d_bold_font;
-      }
-      */
       return d_font;
 
     case Qt::TextColorRole:
-      /*
-      if(col==1) {
-	return d_group_colors.at(row);
-      }
-      */
+      // Nothing to do here!
       break;
 
     case Qt::BackgroundRole:
-      // Nothing to do!
+      // Nothing to do here!
       break;
 
     default:
@@ -265,17 +258,27 @@ void EventLogModel::updateRowLine(int line)
 
 void EventLogModel::updateRow(int row,SqlQuery *q)
 {
+  QString str;
   QList<QVariant> texts;
 
   // Icon
+  d_icons.push_back(QVariant());
   if(q->value(1).toString()=="Y") {
-    if(q->value(2).toString()=="C") {  // Comment
+    switch(q->value(2).toString().at(0).cell()) {
+    case 'C':  // Comment
       d_icons[row]=d_event_comment_icon;
-    }
-    else {
-      if(q->value(2).toString()=="R") {  // Route
-	d_icons[row]=d_event_route_icon;
-      }
+      break;
+
+    case 'R':  // Route
+      d_icons[row]=d_event_route_icon;
+      break;
+
+    case 'S':  // Snapshot
+      d_icons[row]=d_event_snapshot_icon;
+      break;
+
+    default:
+      d_icons[row]=d_event_fail_icon;
     }
   }
   else {
@@ -291,23 +294,33 @@ void EventLogModel::updateRow(int row,SqlQuery *q)
   // Date/Time
   texts.push_back(q->value(3).toDateTime().toString("yyyy-MM-dd hh:mm:ss"));
 
-  // Comment
-  if(q->value(2).toString()=="R") {
+  switch(q->value(2).toString().at(0).cell()) {
+  case 'R':  // Route
     if(q->value(1).toString()=="Y") {
       texts.push_back(Fmt(tr("Route taken"),Qt::black,false)+" - "+RouteString(q));
     }
     else {
       texts.push_back(Fmt(tr("Route failed"),Qt::red,true)+" - "+RouteString(q));
     }
-  }
-  else {
-    if(q->value(2).toString()=="C") {
-      texts.push_back(q->value(7));
+    break;
+
+  case 'C':  // Comment
+    texts.push_back(q->value(7));
+    break;
+
+  case 'S':  // Snapshot
+    str=q->value(7).toString()+" "+tr("by")+" ";
+    if(!q->value(4).isNull()) {
+      str+=Fmt(q->value(4).toString(),Qt::blue,true)+"@";
     }
-    else {
-      texts.push_back(tr("ERROR: invalid event type")+" \""+
-		      q->value(2).toString()+"\"");
-    }
+    str+=Fmt(q->value(5).toString(),Qt::blue,true);
+    texts.push_back(str);
+    break;
+
+  default:
+    texts.push_back(tr("ERROR: invalid event type")+" \""+
+		    q->value(2).toString()+"\"");
+    break;
   }
 
   d_texts[row]=texts;

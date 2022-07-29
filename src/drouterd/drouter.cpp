@@ -1190,6 +1190,30 @@ bool DRouter::StartDb(QString *err_msg)
     syslog(LOG_DEBUG,"applied schema version %d",schema_ver);
   }
 
+  if(schema_ver<6) {
+    sql=QString("alter table `PERM_SA_EVENTS` ")+
+      "modify column `TYPE` enum('C','R','S') not null";
+    SqlQuery::apply(sql);
+
+    sql=QString("alter table `PERM_SA_EVENTS` ")+
+      "modify column `USERNAME` varchar(191)";
+    SqlQuery::apply(sql);
+
+    sql=QString("alter table `PERM_SA_EVENTS` ")+
+      "modify column `HOSTNAME` varchar(191)";
+    SqlQuery::apply(sql);
+
+    sql=QString("alter table `PERM_SA_EVENTS` ")+
+      "modify column `ORIGINATING_ADDRESS` varchar(45)";
+    SqlQuery::apply(sql);
+
+    schema_ver=6;
+    sql=QString("update `PERM_VERSION` set ")+
+      QString::asprintf("`DB`=%d",schema_ver);
+    SqlQuery::apply(sql);
+    syslog(LOG_DEBUG,"applied schema version %d",schema_ver);
+  }
+
   // New schema updates go here
 
 

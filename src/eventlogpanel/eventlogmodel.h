@@ -70,6 +70,7 @@ class EventLogModel : public QAbstractTableModel
   QVariant d_event_fail_icon;
   QVariant d_event_comment_icon;
   QVariant d_event_route_icon;
+  QVariant d_event_snapshot_icon;
   QList<QVariant> d_headers;
   QList<QVariant> d_alignments;
   QList<QList<QVariant> > d_texts;

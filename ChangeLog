@@ -831,3 +831,11 @@
 2022-07-28 Fred Gleason <fredg@paravelsystems.com>
 	* Fixed a typo in 'src/outputpanel/panelwidget.cpp' that broke the
 	build.
+2022-07-29 Fred Gleason <fredg@paravelsystems.com>
+	* Added 'S' to the 'PERM_SA_EVENTS.TYPE' enumeration.
+	* Changed the 'PERM_SA_EVENTS.USERNAME' field to 'varchar(191)'.
+	* Changed the 'PERM_SA_EVENTS.HOSTNAME' field to 'varchar(191)'.
+	* Changed the 'PERM_SA_EVENTS.ORIGINATING_ADDRESS' field to
+	'varchar(45)'.
+	* Incremented the database version to 6.
+	* Added snapshots to the types of events logged in eventlogpanel(1).

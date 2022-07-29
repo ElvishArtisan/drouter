@@ -148,11 +148,21 @@ void ProtocolSa::disconnectedData()
 }
 
 
-void ProtocolSa::hostLookupFinishedData(const QHostInfo &info)
+void ProtocolSa::snapshotHostLookupFinishedData(const QHostInfo &info)
+{
+  QString sql=QString("update `PERM_SA_EVENTS` set ")+
+    "`HOSTNAME`='"+SqlQuery::escape(info.hostName())+"',"+
+    "`STATUS`='Y' where "+
+    QString::asprintf("`ID`=%d",proto_event_lookups.value(info.lookupId()));
+  SqlQuery::apply(sql);
+}
+
+
+void ProtocolSa::routeHostLookupFinishedData(const QHostInfo &info)
 {
   QString sql=QString("update `PERM_SA_EVENTS` set ")+
     "`HOSTNAME`='"+SqlQuery::escape(info.hostName())+"' where "+
-    QString::asprintf("`ID`=%d",proto_event_id);
+    QString::asprintf("`ID`=%d",proto_event_lookups.value(info.lookupId()));
   SqlQuery::apply(sql);
 }
 
@@ -239,7 +249,7 @@ void ProtocolSa::ActivateRoute(unsigned router,unsigned output,unsigned input)
 {
   EndPointMap *map;
 
-  LogEvent(router,output,input-1);
+  AddRouteEvent(router,output,input-1);
   if((map=proto_maps.value(router))!=NULL) {
     QHostAddress dst_addr=map->hostAddress(EndPointMap::Output,output);
     int dst_slotnum=map->slot(EndPointMap::Output,output);
@@ -346,6 +356,7 @@ void ProtocolSa::SendSnapshotNames(unsigned router)
 
 void ProtocolSa::ActivateSnapshot(unsigned router,const QString &snapshot_name)
 {
+  QString sql;
   EndPointMap *map=NULL;
   Snapshot *ss=NULL;
 
@@ -355,6 +366,7 @@ void ProtocolSa::ActivateSnapshot(unsigned router,const QString &snapshot_name)
   }
   proto_socket->write(QString("Snapshot Initiated\r\n").toUtf8());
   if((ss=map->snapshot(snapshot_name))!=NULL) {
+    AddSnapEvent(router,snapshot_name);
     for(int i=0;i<ss->routeQuantity();i++) {
       ActivateRoute(router,ss->routeOutput(i)-1,ss->routeInput(i));
     }
@@ -1073,7 +1085,7 @@ void ProtocolSa::LoadHelp()
 }
 
 
-void ProtocolSa::LogEvent(int router,int output,int input)
+void ProtocolSa::AddRouteEvent(int router,int output,int input)
 {
   QString sql=QString("insert into `PERM_SA_EVENTS` set ")+
     "`DATETIME`=now(),"+
@@ -1088,7 +1100,32 @@ void ProtocolSa::LogEvent(int router,int output,int input)
   else {
     sql+="`USERNAME`='"+SqlQuery::escape(proto_username)+"'";
   }
-  proto_event_id=SqlQuery::run(sql).toInt();
-  QHostInfo::lookupHost(proto_socket->peerAddress().toString(),
-			this,SLOT(hostLookupFinishedData(const QHostInfo &)));
+  proto_event_lookups
+    [QHostInfo::lookupHost(proto_socket->peerAddress().toString(),
+     this,SLOT(routeHostLookupFinishedData(const QHostInfo &)))]=
+    SqlQuery::run(sql).toInt();
+}
+
+
+void ProtocolSa::AddSnapEvent(int router,const QString &name)
+{
+  QString sql=QString("insert into `PERM_SA_EVENTS` set ")+
+    "`DATETIME`=now(),"+
+    "`STATUS`='Y',"+
+    "`TYPE`='S',"+
+    "`ORIGINATING_ADDRESS`='"+proto_socket->peerAddress().toString()+"',"+
+    QString::asprintf("`ROUTER_NUMBER`=%d,",router)+
+    "`COMMENT`='"+tr("Executing snapshot")+" "+
+    SqlQuery::escape("<strong>"+name+"</strong>")+" - "+
+    tr("Router")+": "+QString::asprintf("<strong>%d</strong>",1+router)+"',";
+  if(proto_username.isEmpty()) {
+    sql+="`USERNAME`=NULL";
+  }
+  else {
+    sql+="`USERNAME`='"+SqlQuery::escape(proto_username)+"'";
+  }
+  proto_event_lookups
+    [QHostInfo::lookupHost(proto_socket->peerAddress().toString(),
+     this,SLOT(snapshotHostLookupFinishedData(const QHostInfo &)))]=
+    SqlQuery::run(sql).toInt();
 }
