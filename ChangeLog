@@ -849,3 +849,5 @@
 2022-07-30 Fred Gleason <fredg@paravelsystems.com>
 	* Refreshed the 'drouter' icon image.
 	* Removed the 32x32 resolution of the 'drouter' icon.
+2022-07-30 Fred Gleason <fredg@paravelsystems.com>
+	* Incremented the package version to 1.0.0rc4int5.

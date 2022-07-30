@@ -1,7 +1,7 @@
 This is the NEWS file for the drouter package.
 
 -------------------------------------------------------------------------------
-v1.0.0rc4int4 - 26 July 2022
+v1.0.0rc4int5 - 30 July 2022
 
 Changes:
    Event Logging. Added a event logging system to the drouterd(8) service,
@@ -11,7 +11,8 @@ Changes:
    See the 'INSTALL' file for details.
 
    Software Authority Protocol. Added extended commands 'DrouterMaskGPIStat',
-   'DrouterMaskGPOStat', 'DrouterMaskRouteStat' and 'DrouterMaskStat'.
+   'DrouterMaskGPOStat', 'DrouterMaskRouteStat', 'DrouterMaskStat' and
+   'SnapShotRoutes'.
 
    Various bugfixes. See the 'ChangeLog' for details.
 -------------------------------------------------------------------------------
