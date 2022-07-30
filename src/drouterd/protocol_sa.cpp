@@ -47,7 +47,6 @@ ProtocolSa::ProtocolSa(int sock,QObject *parent)
   proto_gpistat_masked=false;
   proto_gpostat_masked=false;
   proto_routestat_masked=false;
-
   openlog("dprotod(SA)",LOG_PID,LOG_DAEMON);
 
   //
@@ -351,6 +350,37 @@ void ProtocolSa::SendSnapshotNames(unsigned router)
     proto_socket->write(QString("   "+map->snapshot(i)->name()+"\r\n").toUtf8());
   }
   proto_socket->write(QString::asprintf("End SnapshotNames - %u\r\n",router+1).toUtf8());
+}
+
+
+void ProtocolSa::SendSnapshotRoutes(unsigned router,const QString &snap_name)
+{
+  EndPointMap *map=NULL;
+  Snapshot *ss=NULL;
+
+  if((map=proto_maps.value(router))==NULL) {
+    proto_socket->write(QString("Error - Bay Does Not exist.\r\n").toUtf8());
+    proto_socket->write(">>",2);
+    return;
+  }
+  if((ss=map->snapshot(snap_name))==NULL) {
+    proto_socket->write(QString("Error - Snapshot Does Not exist.\r\n").toUtf8());
+    proto_socket->write(">>",2);
+    return;
+  }
+  proto_socket->write((QString("Begin SnapshotRoutes - ")+
+		       QString::asprintf("%u ",router+1)+
+		       snap_name+"\r\n").toUtf8());
+  for(int i=0;i<ss->routeQuantity();i++) {
+    proto_socket->write(QString("   ActivateRoute "+
+				QString::asprintf("%d ",1+router)+
+				QString::asprintf("%d ",1+ss->routeOutput(i))+
+				QString::asprintf("%d",1+ss->routeInput(i))+
+				"\r\n").toUtf8());
+  }
+  proto_socket->write((QString("End SnapshotRoutes - ")+
+		       QString::asprintf("%u ",router+1)+
+		       snap_name+"\r\n").toUtf8());
 }
 
 
@@ -965,6 +995,17 @@ void ProtocolSa::ProcessCommand(const QString &cmd)
     proto_socket->write(">>",2);
   }
 
+  if((cmds[0].toLower()=="snapshotnames")&&(cmds.size()==3)) {
+    cardnum=cmds[1].toUInt(&ok);
+    if(ok) {
+      SendSnapshotRoutes(cardnum-1,cmds[2]);
+    }
+    else {
+      proto_socket->write(QString("Error - Bay Does Not exist.\r\n").toUtf8());
+    }
+    proto_socket->write(">>",2);
+  }
+
   if(((cmds[0].toLower()=="activatescene")||
       (cmds[0].toLower()=="activatesnap"))&&(cmds.size()>=3)) {
     cardnum=cmds[1].toUInt(&ok);
@@ -1059,6 +1100,7 @@ void ProtocolSa::LoadHelp()
     ", RouterNames"+
     ", RouteStat"+
     ", SnapShots"+
+    ", SnapShotRoutes"+
     ", SourceNames"+
     ", TriggerGPI"+
     ", TriggerGPO"+
@@ -1082,6 +1124,7 @@ void ProtocolSa::LoadHelp()
   proto_help_strings["triggergpi"]="TriggerGPI <router> <gpi-num> <state> [<duration>]\r\n\r\nSet the specified GPI to <state> for <duration> milliseconds.\r\n(Supported only by virtual GPI devices.)";
   proto_help_strings["triggergpo"]="TriggerGPO <router> <gpo-num> <state> [<duration>]\r\n\r\nSet the specified GPO to <state> for <duration> milliseconds.";
   proto_help_strings["snapshots"]="SnapShots <router>\r\n\r\nReturn list of available snapshots on the specified router.";
+  proto_help_strings["snapshotroutes"]="SnapShotRoutes <router> <snap-name>\r\n\r\nReturn list of routes on the specified snapshot.";
 }
 
 

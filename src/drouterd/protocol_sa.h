@@ -56,6 +56,7 @@ class ProtocolSa : public Protocol
   void TriggerGpi(unsigned router,unsigned input,unsigned msecs,const QString &code);
   void TriggerGpo(unsigned router,unsigned output,unsigned msecs,const QString &code);
   void SendSnapshotNames(unsigned router);
+  void SendSnapshotRoutes(unsigned router,const QString &snap_name);
   void ActivateSnapshot(unsigned router,const QString &snapshot_name);
   void SendSourceInfo(unsigned router);
   QString SourceNamesSqlFields(EndPointMap::RouterType type) const;
@@ -86,7 +87,6 @@ class ProtocolSa : public Protocol
   QTcpServer *proto_server;
   QString proto_accum;
   QMap<int,EndPointMap *> proto_maps;
-  //  int proto_event_id;
   QMap <int,int> proto_event_lookups;
   QString proto_username;
   QString proto_hostname;

@@ -844,3 +844,5 @@
 	shotpanel(1).
 	* Corrected the order of the snapshots listed in the 'Snapshot'
 	dropdown in shotpanel(1).
+2022-07-30 Fred Gleason <fredg@paravelsystems.com>
+	* Added a 'SnapShotRoutes' command to SoftwareAuthority	protocol.
