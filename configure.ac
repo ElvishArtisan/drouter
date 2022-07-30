@@ -144,11 +144,7 @@ case "$ar_distro_id" in
        AC_SUBST(HAVE_USERMODE,"yes")
        AC_SUBST(RDALSACONFIG_DESKTOP_FILE,"rivendell-rdalsaconfig-root.desktop")
        AC_SUBST(RDDBCONFIG_DESKTOP_FILE,"rivendell-rddbconfig-root.desktop")
-       if test $ar_distro_major -lt 8 ; then
-       	  AC_SUBST(PYPAD_DEPS,"python36 python36-pycurl python36-requests python36-pyserial python36-mysql python36-urllib3")
-       else
-       	  AC_SUBST(PYPAD_DEPS,"python3 python3-pycurl python3-requests python3-pyserial python3-mysql python3-urllib3")
-       fi
+       AC_SUBST(PYPAD_DEPS,"python36 python36-pycurl python36-requests python36-pyserial python36-mysql python36-urllib3")
        ;;
 
      *)

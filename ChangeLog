@@ -851,3 +851,6 @@
 	* Removed the 32x32 resolution of the 'drouter' icon.
 2022-07-30 Fred Gleason <fredg@paravelsystems.com>
 	* Incremented the package version to 1.0.0rc4int5.
+2022-07-30 Fred Gleason <fredg@paravelsystems.com>
+	* Tweaked the python dependencies for the RPM packages so as to work
+	on RHEL-8.

@@ -25,9 +25,9 @@ Version: @VERSION@
 Release: @RPM_RELEASE@%{?dist}
 License: GPLv2
 Source: %{name}-@VERSION@.tar.gz
-BuildRequires: qt5-qtbase-devel, systemd-devel, python
+BuildRequires: qt5-qtbase-devel, systemd-devel, python36
 BuildRoot: /var/tmp/%{name}-@VERSION@
-Requires: drouter-python = @VERSION@, mariadb-server, qt-mysql
+Requires: drouter-python = @VERSION@, mariadb-server, qt5-qtbase-mysql
 
 
 %package panels
@@ -37,7 +37,7 @@ Requires: firefox lwmon
 
 %package python
 Summary: Python API for using state scripts with Drouter
-Requires: python34
+Requires: python36
 
 
 %description
