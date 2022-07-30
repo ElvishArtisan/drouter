@@ -172,7 +172,6 @@ rm -rf $RPM_BUILD_ROOT
 %{_datadir}/man/man1/xpointpanel.1.gz
 %{_datadir}/man/man1/xypanel.1.gz
 %{_datadir}/icons/hicolor/16x16/apps/drouter.png
-%{_datadir}/icons/hicolor/32x32/apps/drouter.png
 %{_datadir}/icons/hicolor/48x48/apps/drouter.png
 
 
@@ -186,6 +185,8 @@ rm -rf $RPM_BUILD_ROOT
 
 
 %changelog
+* Sat Jul 30 2022 Fred Gleason <fredg@paravelsystems.com>
+-- Removed the 32x32 version of the 'drouter' icon.
 * Thu Jul 21 2022 Fred Gleason <fredg@paravelsystems.com>
 -- Added eventlogpanel(1).
 * Thu May  7 2020 Fred Gleason <fredg@paravelsystems.com>

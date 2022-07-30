@@ -23,20 +23,16 @@
 install-exec-am:	
 	mkdir -p $(DESTDIR)@prefix@/share/icons/hicolor/16x16/apps
 	cp drouter-16x16.png $(DESTDIR)@prefix@/share/icons/hicolor/16x16/apps/drouter.png
-	mkdir -p $(DESTDIR)@prefix@/share/icons/hicolor/32x32/apps
-	cp drouter-32x32.png $(DESTDIR)@prefix@/share/icons/hicolor/32x32/apps/drouter.png
 	mkdir -p $(DESTDIR)@prefix@/share/icons/hicolor/48x48/apps
 	cp drouter-48x48.png $(DESTDIR)@prefix@/share/icons/hicolor/48x48/apps/drouter.png
 
 
 uninstall-local:	
 	rm -f $(DESTDIR)@prefix@/share/icons/hicolor/16x16/apps/drouter.png
-	rm -f $(DESTDIR)@prefix@/share/icons/hicolor/32x32/apps/drouter.png
 	rm -f $(DESTDIR)@prefix@/share/icons/hicolor/48x48/apps/drouter.png
 
 EXTRA_DIST = drouter-16x16.png\
              drouter-16x16.xpm\
-             drouter-32x32.png\
              drouter-48x48.png\
              event-comment-16x16.xcf\
              event-comment-16x16.xpm\

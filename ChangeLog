@@ -846,3 +846,6 @@
 	dropdown in shotpanel(1).
 2022-07-30 Fred Gleason <fredg@paravelsystems.com>
 	* Added a 'SnapShotRoutes' command to SoftwareAuthority	protocol.
+2022-07-30 Fred Gleason <fredg@paravelsystems.com>
+	* Refreshed the 'drouter' icon image.
+	* Removed the 32x32 resolution of the 'drouter' icon.
