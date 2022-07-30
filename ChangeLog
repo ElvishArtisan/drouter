@@ -839,3 +839,8 @@
 	'varchar(45)'.
 	* Incremented the database version to 6.
 	* Added snapshots to the types of events logged in eventlogpanel(1).
+2022-07-30 Fred Gleason <fredg@paravelsystems.com>
+	* Added the router number to the values in the 'Router' dropdown in
+	shotpanel(1).
+	* Corrected the order of the snapshots listed in the 'Snapshot'
+	dropdown in shotpanel(1).

@@ -2,7 +2,7 @@
 //
 // An applet for activating a snapshot
 //
-//   (C) Copyright 2017-2021 Fred Gleason <fredg@paravelsystems.com>
+//   (C) Copyright 2017-2022 Fred Gleason <fredg@paravelsystems.com>
 //
 //   This program is free software; you can redistribute it and/or modify
 //   it under the terms of the GNU General Public License as
@@ -158,7 +158,7 @@ MainWidget::MainWidget(QWidget *parent)
   connect(panel_parser,SIGNAL(error(QAbstractSocket::SocketError)),
 	  this,SLOT(errorData(QAbstractSocket::SocketError)));
 
-  setWindowTitle("ShotPanel ["+tr("Server")+": "+panel_hostname+"]");
+  setWindowTitle(QString("Drouter - ShotPanel [")+VERSION+"]");
 
   if(prompt) {
     if(!panel_login_dialog->exec(&panel_username,&panel_password)) {
@@ -192,7 +192,8 @@ void MainWidget::routerBoxActivatedData(int n)
   int router=panel_router_box->currentItemData().toInt();
   panel_snapshot_box->clear();
   for(int i=0;i<panel_parser->snapshotQuantity(router);i++) {
-    panel_snapshot_box->insertItem(-1,panel_parser->snapshotName(router,i));
+    panel_snapshot_box->insertItem(panel_snapshot_box->count(),
+				   panel_parser->snapshotName(router,i));
   }
   panel_snapshot_label->setEnabled(panel_parser->snapshotQuantity(router)>0);
   panel_snapshot_box->setEnabled(panel_parser->snapshotQuantity(router)>0);
@@ -213,7 +214,8 @@ void MainWidget::connectedData(bool state,SaParser::ConnectionState cstate)
     for(QMap<int,QString>::const_iterator it=routers.begin();it!=routers.end();
 	it++) {
       panel_router_box->
-	insertItem(panel_router_box->count(),it.value(),it.key());
+	insertItem(panel_router_box->count(),
+		   QString::asprintf("%d - ",it.key())+it.value(),it.key());
     }
     panel_router_box->setCurrentIndex(0);
     routerBoxActivatedData(panel_router_box->currentIndex());
