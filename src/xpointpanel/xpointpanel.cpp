@@ -50,7 +50,6 @@ MainWidget::MainWidget(QWidget *parent)
   :QWidget(parent)
 {
   QString config_filename;
-  //  bool no_creds=false;
   bool prompt=false;
   bool ok=false;
   panel_initial_connected=false;
@@ -577,7 +576,10 @@ void MainWidget::resizeEvent(QResizeEvent *e)
     bar_width=0;
     bar_height=0;
   }
-  panel_view->setGeometry(info_width+bar_x+9,panel_output_list->sizeHint().width()+bar_y+9,view_width+bar_width,view_height+bar_height);
+  panel_view->setGeometry(info_width+bar_x+9,
+			  panel_output_list->sizeHint().width()+bar_y+9,
+			  10+view_width+bar_width,
+			  10+view_height+bar_height);
 }
 
 
