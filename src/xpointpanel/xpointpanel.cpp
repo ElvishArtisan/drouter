@@ -293,11 +293,11 @@ void MainWidget::routerBoxActivatedData(int n)
   //
   for(int i=0;i<(panel_input_list->endpointQuantity()+1);i++) {
     panel_scene->
-      addLine(0,26*i-1,26*panel_output_list->endpointQuantity(),26*i-1);
+      addLine(0,26*i-1,26*panel_output_list->endpointQuantity()-1,26*i-1);
   }
   for(int i=0;i<(panel_output_list->endpointQuantity()+1);i++) {
     panel_scene->
-      addLine(26*i-1,0,26*i-1,26*panel_input_list->endpointQuantity());
+      addLine(26*i-1,0,26*i-1,26*panel_input_list->endpointQuantity()-1);
   }
   QList<int> input_endpts=panel_input_list->endpoints();
   QList<int> output_endpts=panel_output_list->endpoints();
@@ -327,9 +327,11 @@ void MainWidget::routerBoxActivatedData(int n)
 	      panel_output_list->sizeHint().width());
   if(panel.width()>screen.width()) {
     panel.setWidth(screen.width()-10);
+    panel.setHeight(panel.height()+10);
   }
   if(panel.height()>screen.height()) {
-    panel.setHeight(screen.height());
+    panel.setHeight(screen.height()-10);
+    panel.setWidth(panel.width()+10);
   }
   resize(panel);
   show();
@@ -578,8 +580,11 @@ void MainWidget::resizeEvent(QResizeEvent *e)
   }
   panel_view->setGeometry(info_width+bar_x+9,
 			  panel_output_list->sizeHint().width()+bar_y+9,
-			  10+view_width+bar_width,
-			  10+view_height+bar_height);
+			  view_width+bar_width,
+			  view_height+bar_height);
+
+  setMinimumWidth(10+panel_input_list->width());
+  setMinimumHeight(10+panel_output_list->height());
 }
 
 
