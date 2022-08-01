@@ -294,6 +294,11 @@ void Protocol::logIpc(const QString &msg)
 }
 
 
+void Protocol::quitting()
+{
+}
+
+
 void Protocol::quit()
 {
   proto_ipc_socket->write("QUIT\r\n",6);

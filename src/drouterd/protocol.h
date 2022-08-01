@@ -73,6 +73,7 @@ class Protocol : public QObject
 			      const QString &tbl_name,int chan);
   Config *config();
   void logIpc(const QString &msg);
+  virtual void quitting();
   void quit();
 
  private:

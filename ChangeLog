@@ -858,3 +858,6 @@
 	* Fixed a regression in xpointpanel(1) that caused the final input
 	and output strips to be partially obscured by scrollbars when
 	maximized.
+2022-08-01 Fred Gleason <fredg@paravelsystems.com>
+	* Added code to dprotod(8) to shutdown TCP connections for Software
+	Authority Protocol explicitly.

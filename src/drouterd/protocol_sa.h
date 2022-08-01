@@ -50,6 +50,7 @@ class ProtocolSa : public Protocol
   void gpiCodeChanged(const QHostAddress &host_addr,int slotnum);
   void gpoCodeChanged(const QHostAddress &host_addr,int slotnum);
   void gpoCrosspointChanged(const QHostAddress &host_addr,int slotnum);
+  void quitting();
 
  private:
   void ActivateRoute(unsigned router,unsigned output,unsigned input);

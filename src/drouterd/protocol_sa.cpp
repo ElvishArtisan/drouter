@@ -244,6 +244,12 @@ void ProtocolSa::gpoCrosspointChanged(const QHostAddress &host_addr,int slotnum)
 }
 
 
+void ProtocolSa::quitting()
+{
+  shutdown(proto_socket->socketDescriptor(),SHUT_RDWR);
+}
+
+
 void ProtocolSa::ActivateRoute(unsigned router,unsigned output,unsigned input)
 {
   EndPointMap *map;
