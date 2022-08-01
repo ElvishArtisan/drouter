@@ -861,3 +861,5 @@
 2022-08-01 Fred Gleason <fredg@paravelsystems.com>
 	* Added code to dprotod(8) to shutdown TCP connections for Software
 	Authority Protocol explicitly.
+2022-08-01 Fred Gleason <fredg@paravelsystems.com>
+	* Incremented the package version to 1.0.0rc4int6.
