@@ -868,3 +868,5 @@
 	xypanel(1).
 	* Added a 'Source' sub-label to the 'Output' inputdown in
 	xypanel(1).
+2022-08-03 Fred Gleason <fredg@paravelsystems.com>
+	* Incremented the package version to 1.0.0rc4int7.
