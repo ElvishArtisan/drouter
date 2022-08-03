@@ -151,7 +151,7 @@ MainWidget::MainWidget(QWidget *parent)
   //
   // Output Control
   //
-  panel_output_label=new QLabel(tr("Output"),this);
+  panel_output_label=new QLabel(tr("Output (Destination)"),this);
   panel_output_label->setFont(button_font);
   panel_output_label->setDisabled(true);
   panel_output_box=new ComboBox(this);
@@ -162,7 +162,7 @@ MainWidget::MainWidget(QWidget *parent)
   //
   // Input Control
   //
-  panel_input_label=new QLabel(tr("Input"),this);
+  panel_input_label=new QLabel(tr("Input (Source)"),this);
   panel_input_label->setFont(button_font);
   panel_input_label->setDisabled(true);
   panel_input_box=new ComboBox(this);
@@ -407,10 +407,10 @@ void MainWidget::resizeEvent(QResizeEvent *e)
   panel_router_label->setGeometry(15,8,60,20);
   panel_router_box->setGeometry(80,8,200,20);
 
-  panel_output_label->setGeometry(15,38,100,20);
+  panel_output_label->setGeometry(15,38,size().width()/2-25,20);
   panel_output_box->setGeometry(10,60,size().width()/2-15,20);
 
-  panel_input_label->setGeometry(size().width()/2+10,38,100,20);
+  panel_input_label->setGeometry(size().width()/2+10,38,size().width()/4,20);
   panel_input_box->setGeometry(size().width()/2+5,60,size().width()/2-15,20);
 
   panel_take_button->

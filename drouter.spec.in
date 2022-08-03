@@ -32,7 +32,7 @@ Requires: drouter-python = @VERSION@, mariadb-server, qt5-qtbase-mysql
 
 %package panels
 Summary: GUI control panels for DRouter
-Requires: firefox lwmon
+Requires: qt5-qtbase-mysql firefox lwmon
 
 
 %package python
