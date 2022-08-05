@@ -2,7 +2,7 @@
 //
 // An applet for activating a snapshot
 //
-//   (C) Copyright 2017 Fred Gleason <fredg@paravelsystems.com>
+//   (C) Copyright 2017-2022 Fred Gleason <fredg@paravelsystems.com>
 //
 //   This program is free software; you can redistribute it and/or modify
 //   it under the terms of the GNU General Public License as
@@ -58,6 +58,7 @@ class MainWidget : public QWidget
   QString panel_hostname;
   QString panel_username;
   QString panel_password;
+  int panel_initial_router;
   QLabel *panel_router_label;
   ComboBox *panel_router_box;
   QLabel *panel_snapshot_label;

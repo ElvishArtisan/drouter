@@ -870,3 +870,5 @@
 	xypanel(1).
 2022-08-03 Fred Gleason <fredg@paravelsystems.com>
 	* Incremented the package version to 1.0.0rc4int7.
+2022-08-05 Fred Gleason <fredg@paravelsystems.com>
+	* Added a '--initial-router=' switch to shotpanel(1).
