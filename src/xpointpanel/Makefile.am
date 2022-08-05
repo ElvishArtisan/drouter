@@ -31,6 +31,7 @@ moc_%.cpp:	%.h
 bin_PROGRAMS = xpointpanel
 
 dist_xpointpanel_SOURCES = endpointlist.cpp endpointlist.h\
+                           sidelabel.cpp sidelabel.h\
                            statedialog.cpp statedialog.h\
                            xpointpanel.cpp xpointpanel.h\
                            xpointview.cpp xpointview.h
@@ -46,6 +47,7 @@ nodist_xpointpanel_SOURCES = combobox.cpp combobox.h\
                              moc_logindialog.cpp\
                              moc_multistatewidget.cpp\
                              moc_saparser.cpp\
+                             moc_sidelabel.cpp\
                              moc_statedialog.cpp\
                              moc_xpointpanel.cpp\
                              moc_xpointview.cpp

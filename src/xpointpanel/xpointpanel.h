@@ -2,7 +2,7 @@
 //
 // Full graphical crosspoint panel for SA devices.
 //
-//   (C) Copyright 2002-2020 Fred Gleason <fredg@paravelsystems.com>
+//   (C) Copyright 2002-2022 Fred Gleason <fredg@paravelsystems.com>
 //
 //   This program is free software; you can redistribute it and/or modify
 //   it under the terms of the GNU General Public License as
@@ -35,6 +35,7 @@
 #include "endpointlist.h"
 #include "logindialog.h"
 #include "saparser.h"
+#include "sidelabel.h"
 #include "xpointview.h"
 
 #define XPOINTPANEL_USAGE "[options]\n"
@@ -60,6 +61,7 @@ class MainWidget : public QWidget
 
  protected:
   void resizeEvent(QResizeEvent *e);
+  void paintEvent(QPaintEvent *e);
 
  private:
   LoginDialog *panel_login_dialog;
@@ -68,6 +70,8 @@ class MainWidget : public QWidget
   QString panel_password;
   int panel_initial_router;
   QLabel *panel_router_label;
+  QLabel *panel_inputs_label;
+  SideLabel *panel_outputs_label;
   ComboBox *panel_router_box;
   QLabel *panel_description_name_label;
   QLabel *panel_description_text_label;

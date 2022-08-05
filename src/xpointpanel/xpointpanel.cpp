@@ -129,6 +129,8 @@ MainWidget::MainWidget(QWidget *parent)
   label_font.setPixelSize(12);
   QFont button_font("helvetica",14,QFont::Bold);
   button_font.setPixelSize(14);
+  QFont endpoint_label_font("helvetica",18,QFont::Bold);
+  endpoint_label_font.setPixelSize(18);
 
   //
   // Dialogs
@@ -147,7 +149,15 @@ MainWidget::MainWidget(QWidget *parent)
   panel_router_box->setDisabled(true);
   connect(panel_router_box,SIGNAL(activated(int)),
 	  this,SLOT(routerBoxActivatedData(int)));
-  
+
+  panel_inputs_label=new QLabel(tr("Inputs (Sources)"),this);
+  panel_inputs_label->setAlignment(Qt::AlignCenter|Qt::AlignVCenter);
+  panel_inputs_label->setFont(endpoint_label_font);
+
+  panel_outputs_label=new SideLabel(tr("Outputs (Destinations)"),this);
+  panel_outputs_label->setAlignment(Qt::AlignCenter|Qt::AlignVCenter);
+  panel_outputs_label->setFont(endpoint_label_font);
+
   //
   // Endpoint Lists
   //
@@ -321,8 +331,7 @@ void MainWidget::routerBoxActivatedData(int n)
   if(panel_output_list->sizeHint().width()>info_width) {
     info_width=15+panel_output_list->sizeHint().width();
   }
-  QSize panel(15+panel_output_list->sizeHint().height()+
-	      info_width-10,
+  QSize panel(24+panel_output_list->sizeHint().height()+info_width,
 	      15+panel_view->sizeHint().height()+
 	      panel_output_list->sizeHint().width());
   if(panel.width()>screen.width()) {
@@ -528,20 +537,19 @@ void MainWidget::outputHoveredEndpointChangedData(int router,int output)
 
 void MainWidget::resizeEvent(QResizeEvent *e)
 {
-  int info_width=panel_input_list->sizeHint().width();
+  int info_width=panel_input_list->sizeHint().width()+20;
   if(panel_output_list->sizeHint().width()>info_width) {
-    info_width=panel_output_list->sizeHint().width();
+    info_width=panel_output_list->sizeHint().width()+20;
   }
 
   panel_router_label->
     setGeometry(15,10,info_width-10,20);
-  panel_router_box->
-    setGeometry(10,32,info_width-10,20);
+  panel_router_box->setGeometry(10,32,info_width-30,20);
 
 
   panel_description_name_label->
     setGeometry(0,64,
-		info_width+10,20);
+		info_width,20);
   panel_description_text_label->
     setGeometry(10,90,
 		info_width,
@@ -549,11 +557,22 @@ void MainWidget::resizeEvent(QResizeEvent *e)
 
 
 
+  panel_inputs_label->
+    setGeometry(10,
+		panel_output_list->sizeHint().width()-15,
+		info_width-23,
+		26);
   panel_input_list->
     setGeometry(10,
 		panel_output_list->sizeHint().width()+10,
-		info_width-0,
+		info_width,
 		e->size().height()-(panel_output_list->sizeHint().width()-45));
+
+  panel_outputs_label->
+    setGeometry(info_width-14,
+		10,
+		26,
+		panel_output_list->sizeHint().width()-24);
   panel_output_list->
     setGeometry(info_width+10,10,
 		e->size().width()-10,panel_output_list->sizeHint().width()+1);
@@ -585,6 +604,43 @@ void MainWidget::resizeEvent(QResizeEvent *e)
 
   setMinimumWidth(10+panel_input_list->width());
   setMinimumHeight(10+panel_output_list->height());
+}
+
+
+void MainWidget::paintEvent(QPaintEvent *e)
+{
+  QPainter *p=new QPainter(this);
+  int info_width=panel_input_list->sizeHint().width()+20;
+  if(panel_output_list->sizeHint().width()>info_width) {
+    info_width=panel_output_list->sizeHint().width()+20;
+  }
+  p->setPen(Qt::black);
+  p->setBrush(Qt::black);
+
+  p->drawLine(10,
+	      panel_output_list->sizeHint().width()+10,
+	      10,
+	      panel_output_list->sizeHint().width()-16);
+  p->drawLine(10,
+	      panel_output_list->sizeHint().width()-16,
+	      info_width-16,
+	      panel_output_list->sizeHint().width()-16);
+
+
+  p->drawLine(info_width+10,
+	      10,
+	      info_width-16,
+	      10);
+  p->drawLine(info_width-16,
+	      10,
+	      info_width-16,
+	      panel_output_list->sizeHint().width()-16);	      
+
+  p->drawLine(info_width-16,
+	      panel_output_list->sizeHint().width()-16,
+	      info_width+10,
+	      panel_output_list->sizeHint().width()+10);	      
+  delete p;
 }
 
 
