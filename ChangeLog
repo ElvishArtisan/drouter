@@ -882,3 +882,5 @@
 2022-08-08 Fred Gleason <fredg@paravelsystems.com>
 	* Added code to highlight the selected endpoint labels in
 	xpointpanel(1).
+2022-08-08 Fred Gleason <fredg@paravelsystems.com>
+	* Added code to highlight selected crosspoint in xpointpanel(1).

@@ -25,6 +25,8 @@
 #include <QGraphicsScene>
 #include <QGraphicsView>
 
+#define XPOINTVIEW_CROSSPOINT_COLOR "#CCFFCC"
+
 class XPointView : public QGraphicsView
 {
   Q_OBJECT
@@ -44,6 +46,8 @@ class XPointView : public QGraphicsView
  private:
   int d_prev_hover_x;
   int d_prev_hover_y;
+  QGraphicsRectItem *d_input_cursor;
+  QGraphicsRectItem *d_output_cursor;
 };
 
 

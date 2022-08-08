@@ -19,6 +19,7 @@
 //   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
 //
 
+#include <QGraphicsRectItem>
 #include <QMouseEvent>
 #include <QScrollBar>
 
@@ -29,6 +30,9 @@ XPointView::XPointView(QGraphicsScene *scene,QWidget *parent)
 {
   d_prev_hover_x=-1;
   d_prev_hover_y=-1;
+  d_input_cursor=NULL;
+  d_output_cursor=NULL;
+
   setMouseTracking(true);
 }
 
@@ -42,6 +46,27 @@ void XPointView::mouseMoveEvent(QMouseEvent *e)
     d_prev_hover_x=x_slot;
     d_prev_hover_y=y_slot;
     e->accept();
+    if(d_input_cursor!=NULL) {
+      scene()->removeItem(d_input_cursor);
+      delete d_input_cursor;
+    }
+    if(d_output_cursor!=NULL) {
+      scene()->removeItem(d_output_cursor);
+      delete d_output_cursor;
+    }
+    if((x_slot>=0)&&(y_slot>=0)) {
+      d_input_cursor=
+	scene()->addRect(0,26*(y_slot-1),26*x_slot-2,24,
+			 QPen(XPOINTVIEW_CROSSPOINT_COLOR),
+			 QBrush(XPOINTVIEW_CROSSPOINT_COLOR));
+      d_input_cursor->setZValue(-1);
+
+      d_output_cursor=
+	scene()->addRect(26*(x_slot-1),0,24,26*y_slot-2,
+			 QPen(XPOINTVIEW_CROSSPOINT_COLOR),
+			 QBrush(XPOINTVIEW_CROSSPOINT_COLOR));
+      d_output_cursor->setZValue(-1);
+    }
     emit crosspointSelected(x_slot,y_slot);
   }
 }
@@ -51,6 +76,16 @@ void XPointView::leaveEvent(QEvent *e)
 {
   d_prev_hover_x=-1;
   d_prev_hover_y=-1;
+  if(d_input_cursor!=NULL) {
+    scene()->removeItem(d_input_cursor);
+    delete d_input_cursor;
+    d_input_cursor=NULL;
+  }
+  if(d_output_cursor!=NULL) {
+    scene()->removeItem(d_output_cursor);
+    delete d_output_cursor;
+    d_output_cursor=NULL;
+  }
   emit crosspointSelected(-1,-1);
 }
 
