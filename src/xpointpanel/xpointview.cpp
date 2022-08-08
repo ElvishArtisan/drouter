@@ -2,7 +2,7 @@
 //
 // QGraphicsScene viewer for xpointpanel(1)
 //
-//   (C) Copyright 2017 Fred Gleason <fredg@paravelsystems.com>
+//   (C) Copyright 2017-2022 Fred Gleason <fredg@paravelsystems.com>
 //
 //   This program is free software; you can redistribute it and/or modify
 //   it under the terms of the GNU General Public License as
@@ -27,12 +27,37 @@
 XPointView::XPointView(QGraphicsScene *scene,QWidget *parent)
   : QGraphicsView(scene,parent)
 {
+  d_prev_hover_x=-1;
+  d_prev_hover_y=-1;
+  setMouseTracking(true);
+}
+
+
+void XPointView::mouseMoveEvent(QMouseEvent *e)
+{
+  int x_slot=1+(horizontalScrollBar()->value()+e->x()-1)/26;
+  int y_slot=1+(verticalScrollBar()->value()+e->y()-1)/26;
+
+  if((d_prev_hover_x!=x_slot)||(d_prev_hover_y!=y_slot)) {
+    d_prev_hover_x=x_slot;
+    d_prev_hover_y=y_slot;
+    e->accept();
+    emit crosspointSelected(x_slot,y_slot);
+  }
+}
+
+
+void XPointView::leaveEvent(QEvent *e)
+{
+  d_prev_hover_x=-1;
+  d_prev_hover_y=-1;
+  emit crosspointSelected(-1,-1);
 }
 
 
 void XPointView::mouseDoubleClickEvent(QMouseEvent *e)
 {
-  emit doubleClicked(1+(horizontalScrollBar()->value()+e->x())/26,
-		     1+(verticalScrollBar()->value()+e->y())/26);
+  emit crosspointDoubleClicked(1+(horizontalScrollBar()->value()+e->x()-1)/26,
+			       1+(verticalScrollBar()->value()+e->y()-1)/26);
   QGraphicsView::mouseDoubleClickEvent(e);
 }

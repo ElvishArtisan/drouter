@@ -33,9 +33,17 @@ class XPointView : public QGraphicsView
 
  signals:
   void doubleClicked(int x_slot,int y_slot);
+  void crosspointSelected(int x_slot,int y_slot);
+  void crosspointDoubleClicked(int x_slot,int y_slot);
 
  protected:
+  void mouseMoveEvent(QMouseEvent *e);
+  void leaveEvent(QEvent *e);
   void mouseDoubleClickEvent(QMouseEvent *e);
+
+ private:
+  int d_prev_hover_x;
+  int d_prev_hover_y;
 };
 
 

@@ -185,7 +185,7 @@ MainWidget::MainWidget(QWidget *parent)
   panel_scene->setBackgroundBrush(Qt::blue);
   panel_view=new XPointView(panel_scene,this);
   panel_view->setAlignment(Qt::AlignLeft|Qt::AlignTop);
-  connect(panel_view,SIGNAL(doubleClicked(int,int)),
+  connect(panel_view,SIGNAL(crosspointDoubleClicked(int,int)),
 	  this,SLOT(xpointDoubleClickedData(int,int)));
   connect(panel_view->verticalScrollBar(),SIGNAL(valueChanged(int)),
 	  panel_input_list,SLOT(setPosition(int)));

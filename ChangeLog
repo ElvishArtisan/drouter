@@ -875,3 +875,7 @@
 2022-08-05 Fred Gleason <fredg@paravelsystems.com>
 	* Added labels to indicate the Inputs and Outputs endpoints in
 	xpointpanel(1).
+2022-08-08 Fred Gleason <fredg@paravelsystems.com>
+	* Added 'XPointView::crosspointSelected()' signal in xpointpanel(1).
+	* Renamed the 'XPointView::doubleClicked()' signal to
+	'XPointView::crosspointDoubleClicked()' in xpointpanel(1).
