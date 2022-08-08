@@ -57,6 +57,7 @@ class EndpointList : public QWidget
   int endpointQuantity() const;
 
  public slots:
+  void selectCrosspoint(int slot_x,int slot_y);
   void setPosition(int pixels);
   void setGpioState(int router,int linenum,const QString &code);
 
@@ -106,6 +107,9 @@ class EndpointList : public QWidget
   QList<int> list_endpoints;
   Qt::MouseButtons list_mouse_buttons;
   QString list_description_text;
+  int list_selected_slot;
+  int list_selected_endpoint;
+  QFont list_selected_font;
 };
 
 

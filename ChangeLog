@@ -879,3 +879,6 @@
 	* Added 'XPointView::crosspointSelected()' signal in xpointpanel(1).
 	* Renamed the 'XPointView::doubleClicked()' signal to
 	'XPointView::crosspointDoubleClicked()' in xpointpanel(1).
+2022-08-08 Fred Gleason <fredg@paravelsystems.com>
+	* Added code to highlight the selected endpoint labels in
+	xpointpanel(1).
