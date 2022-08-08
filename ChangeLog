@@ -884,3 +884,5 @@
 	xpointpanel(1).
 2022-08-08 Fred Gleason <fredg@paravelsystems.com>
 	* Added code to highlight selected crosspoint in xpointpanel(1).
+2022-08-08 Fred Gleason <fredg@paravelsystems.com>
+	* Incremented the package version to 1.0.0rc4int8.

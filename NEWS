@@ -1,7 +1,7 @@
 This is the NEWS file for the drouter package.
 
 -------------------------------------------------------------------------------
-v1.0.0rc4int7 - 3 August 2022
+v1.0.0rc4int8 - 8 August 2022
 
 Changes:
    Event Logging. Added a event logging system to the drouterd(8) service,
