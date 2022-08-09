@@ -32,7 +32,10 @@ XPointView::XPointView(QGraphicsScene *scene,QWidget *parent)
   d_prev_hover_y=-1;
   d_input_cursor=NULL;
   d_output_cursor=NULL;
-
+  d_selection_color=QColor("#CCFFCC");
+  if(palette().color(QPalette::Window).value()<128) {
+    d_selection_color=QColor("#225522");
+  }
   setMouseTracking(true);
 }
 
@@ -57,14 +60,14 @@ void XPointView::mouseMoveEvent(QMouseEvent *e)
     if((x_slot>=0)&&(y_slot>=0)) {
       d_input_cursor=
 	scene()->addRect(0,26*(y_slot-1),26*x_slot-2,24,
-			 QPen(XPOINTVIEW_CROSSPOINT_COLOR),
-			 QBrush(XPOINTVIEW_CROSSPOINT_COLOR));
+			 QPen(d_selection_color),
+			 QBrush(d_selection_color));
       d_input_cursor->setZValue(-1);
 
       d_output_cursor=
 	scene()->addRect(26*(x_slot-1),0,24,26*y_slot-2,
-			 QPen(XPOINTVIEW_CROSSPOINT_COLOR),
-			 QBrush(XPOINTVIEW_CROSSPOINT_COLOR));
+			 QPen(d_selection_color),
+			 QBrush(d_selection_color));
       d_output_cursor->setZValue(-1);
     }
     emit crosspointSelected(x_slot,y_slot);

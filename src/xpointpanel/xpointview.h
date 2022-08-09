@@ -48,6 +48,7 @@ class XPointView : public QGraphicsView
   int d_prev_hover_y;
   QGraphicsRectItem *d_input_cursor;
   QGraphicsRectItem *d_output_cursor;
+  QColor d_selection_color;
 };
 
 
