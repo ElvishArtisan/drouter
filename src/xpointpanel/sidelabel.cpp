@@ -53,8 +53,8 @@ void SideLabel::paintEvent(QPaintEvent *e)
   QPainter *p=new QPainter(this);
 
   p->rotate(90);
-  p->setPen(Qt::black);
-  p->setBrush(Qt::black);
+  p->setPen(palette().color(QPalette::WindowText));
+  p->setBrush(palette().color(QPalette::WindowText));
   p->setFont(font());
 
   p->drawText((size().height()-p->fontMetrics().width(text()))/2,-6,text());

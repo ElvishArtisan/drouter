@@ -307,13 +307,16 @@ void MainWidget::routerBoxActivatedData(int n)
   //
   // Populate Crosspoints
   //
+  QPen line_pen(palette().color(QPalette::WindowText));
   for(int i=0;i<(panel_input_list->endpointQuantity()+1);i++) {
     panel_scene->
-      addLine(0,26*i-1,26*panel_output_list->endpointQuantity()-1,26*i-1);
+      addLine(0,26*i-1,26*panel_output_list->endpointQuantity()-1,26*i-1,
+	      line_pen);
   }
   for(int i=0;i<(panel_output_list->endpointQuantity()+1);i++) {
     panel_scene->
-      addLine(26*i-1,0,26*i-1,26*panel_input_list->endpointQuantity()-1);
+      addLine(26*i-1,0,26*i-1,26*panel_input_list->endpointQuantity()-1,
+	      line_pen);
   }
   QList<int> input_endpts=panel_input_list->endpoints();
   QList<int> output_endpts=panel_output_list->endpoints();
@@ -558,6 +561,7 @@ void MainWidget::crosspointSelectedData(int slot_x,int slot_y)
 
 void MainWidget::resizeEvent(QResizeEvent *e)
 {
+  //      printf("STYLE: %s\n",QApplication::style()->metaObject()->className());
   int info_width=panel_input_list->sizeHint().width()+20;
   if(panel_output_list->sizeHint().width()>info_width) {
     info_width=panel_output_list->sizeHint().width()+20;
@@ -575,8 +579,6 @@ void MainWidget::resizeEvent(QResizeEvent *e)
     setGeometry(10,90,
 		info_width,
 		panel_output_list->sizeHint().width()-90);
-
-
 
   panel_inputs_label->
     setGeometry(10,
@@ -618,6 +620,17 @@ void MainWidget::resizeEvent(QResizeEvent *e)
     bar_width=0;
     bar_height=0;
   }
+
+  //
+  // Horrible Hack to deal with the idiotic "disappearing" scroll bars in
+  // Adwaita styles.
+  //
+  if(QString(QApplication::style()->metaObject()->className()).toLower().
+     contains("adwaita")) {
+    bar_width+=2;
+    bar_height+=2;
+  }
+
   panel_view->setGeometry(info_width+bar_x+9,
 			  panel_output_list->sizeHint().width()+bar_y+9,
 			  view_width+bar_width,
@@ -635,8 +648,8 @@ void MainWidget::paintEvent(QPaintEvent *e)
   if(panel_output_list->sizeHint().width()>info_width) {
     info_width=panel_output_list->sizeHint().width()+20;
   }
-  p->setPen(Qt::black);
-  p->setBrush(Qt::black);
+  p->setPen(palette().color(QPalette::WindowText));
+  p->setBrush(palette().color(QPalette::WindowText));
 
   p->drawLine(10,
 	      panel_output_list->sizeHint().width()+10,

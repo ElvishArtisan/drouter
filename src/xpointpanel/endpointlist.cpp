@@ -490,8 +490,8 @@ void EndpointList::paintEvent(QPaintEvent *e)
   p->setFont(font());
   int text_y=(ENDPOINTLIST_ITEM_HEIGHT-p->fontMetrics().height())/2+
     p->fontMetrics().height();
-  p->setPen(Qt::black);
-  p->setBrush(Qt::black);
+  p->setPen(palette().color(QPalette::WindowText));
+  p->setBrush(palette().color(QPalette::WindowText));
   
   if(list_orientation==Qt::Vertical) {
     //
