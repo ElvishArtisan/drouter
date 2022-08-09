@@ -58,12 +58,15 @@ class MainWidget : public QWidget
   void xpointDoubleClickedData(int output_num,int input_num);
   void inputHoveredEndpointChangedData(int router,int input);
   void outputHoveredEndpointChangedData(int router,int output);
+  void crosspointSelectedData(int slot_x,int slot_y);
 
  protected:
   void resizeEvent(QResizeEvent *e);
   void paintEvent(QPaintEvent *e);
 
  private:
+  QString InputDescriptionTitle(int router,int input) const;
+  QString OutputDescriptionTitle(int router,int output) const;
   LoginDialog *panel_login_dialog;
   QString panel_hostname;
   QString panel_username;

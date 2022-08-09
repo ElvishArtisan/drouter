@@ -181,7 +181,8 @@ void EndpointList::addEndpoint(int router,int endpt,const QString &name)
     new MultiStateWidget(router,endpt,list_orientation,this);
   list_gpio_widgets.value(endpt)->setVisible(list_show_gpio);
 
-  QFontMetrics fm(font());
+  //  QFontMetrics fm(font());
+  QFontMetrics fm(list_selected_font);
   for(QMap<int,QString>::const_iterator it=list_labels.begin();
       it!=list_labels.end();it++) {
     if(fm.width(it.value())>list_width) {

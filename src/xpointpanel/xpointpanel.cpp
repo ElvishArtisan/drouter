@@ -188,6 +188,8 @@ MainWidget::MainWidget(QWidget *parent)
   connect(panel_view,SIGNAL(crosspointSelected(int,int)),
 	  panel_input_list,SLOT(selectCrosspoint(int,int)));
   connect(panel_view,SIGNAL(crosspointSelected(int,int)),
+	  this,SLOT(crosspointSelectedData(int,int)));
+  connect(panel_view,SIGNAL(crosspointSelected(int,int)),
   	  panel_output_list,SLOT(selectCrosspoint(int,int)));
   connect(panel_view,SIGNAL(crosspointDoubleClicked(int,int)),
 	  this,SLOT(xpointDoubleClickedData(int,int)));
@@ -471,12 +473,7 @@ void MainWidget::inputHoveredEndpointChangedData(int router,int input)
   //
   // Set Description Title
   //
-  tt="";
-  tt+="<strong>"+QString::asprintf("%d - ",input);
-  tt+=panel_parser->inputName(router,input)+"</strong>";
-  tt+=" ON ";
-  tt+="<strong>"+panel_parser->inputNodeName(router,input)+"</strong>";
-  panel_description_name_label->setText(tt);
+  panel_description_name_label->setText(InputDescriptionTitle(router,input));
   
   //
   // Set Description Text
@@ -515,12 +512,7 @@ void MainWidget::outputHoveredEndpointChangedData(int router,int output)
   //
   // Set Description Title
   //
-  tt="";
-  tt+="<strong>"+QString::asprintf("%d - ",output);
-  tt+=panel_parser->outputName(router,output)+"</strong>";
-  tt+=" ON ";
-  tt+="<strong>"+panel_parser->outputNodeName(router,output)+"</strong>";
-  panel_description_name_label->setText(tt);
+  panel_description_name_label->setText(OutputDescriptionTitle(router,output));
 
   //
   // Set Description Text
@@ -536,6 +528,31 @@ void MainWidget::outputHoveredEndpointChangedData(int router,int output)
 			1+panel_parser->
 			outputNodeSlotNumber(router,output));
   panel_description_text_label->setText(tt);
+}
+
+
+void MainWidget::crosspointSelectedData(int slot_x,int slot_y)
+{
+  if((slot_x<0)||(slot_y<0)) {
+    panel_description_name_label->clear();
+    panel_description_text_label->clear();
+  }
+  else {
+    int router=panel_router_box->
+      itemData(panel_router_box->currentIndex()).toInt();
+    panel_description_name_label->
+      setText("<strong>"+tr("Selected Crosspoint")+"</strong>");
+    panel_description_text_label->
+      setText("<strong>"+tr("Output (Destination)")+":"+"</strong><br>"+
+	      "&nbsp;&nbsp;&nbsp;"+
+	      OutputDescriptionTitle(router,
+				     1+panel_output_list->endpoint(slot_x))+
+	      "<br><br>"+
+	      "<strong>"+tr("Input (Source)")+":"+"</strong><br>"+
+	      "&nbsp;&nbsp;&nbsp;"+
+	      InputDescriptionTitle(router,
+				     1+panel_input_list->endpoint(slot_y)));
+  }
 }
 
 
@@ -645,6 +662,30 @@ void MainWidget::paintEvent(QPaintEvent *e)
 	      info_width+10,
 	      panel_output_list->sizeHint().width()+10);	      
   delete p;
+}
+
+
+QString MainWidget::InputDescriptionTitle(int router,int input) const
+{
+  QString ret="";
+  ret+="<strong>"+QString::asprintf("%d - ",input);
+  ret+=panel_parser->inputName(router,input)+"</strong>";
+  ret+=" ON ";
+  ret+="<strong>"+panel_parser->inputNodeName(router,input)+"</strong>";
+
+  return ret;
+}
+
+
+QString MainWidget::OutputDescriptionTitle(int router,int output) const
+{
+  QString ret="";
+  ret+="<strong>"+QString::asprintf("%d - ",output);
+  ret+=panel_parser->outputName(router,output)+"</strong>";
+  ret+=" ON ";
+  ret+="<strong>"+panel_parser->outputNodeName(router,output)+"</strong>";
+
+  return ret;
 }
 
 
