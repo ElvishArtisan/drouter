@@ -330,6 +330,8 @@ void MainWidget::routerBoxActivatedData(int n)
       }
     }
   }
+  panel_view->setXSlotQuantity(output_endpts.size());
+  panel_view->setYSlotQuantity(input_endpts.size());
   //
   // FIXME: Make this play better with multiple screens!
   //

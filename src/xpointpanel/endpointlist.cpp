@@ -142,6 +142,9 @@ void EndpointList::setShowGpio(bool state)
 
 int EndpointList::endpoint(int slot) const
 {
+  if((slot<0)||(slot>=list_labels.size())) {
+    return -1;
+  }
   return (list_labels.begin()+slot-1).key();
 }
 
@@ -464,6 +467,9 @@ void EndpointList::mouseMoveEvent(QMouseEvent *e)
 
   if(endpt!=list_move_endpoint) {
     list_move_endpoint=endpt;
+    list_selected_slot=listpos;
+    list_selected_endpoint=endpt-1;
+    update();
     emit hoveredEndpointChanged(list_router,endpt);
   }
 }
@@ -473,6 +479,9 @@ void EndpointList::leaveEvent(QEvent *event)
 {
   if(list_move_endpoint>=0) {
     list_move_endpoint=-1;
+    list_selected_slot=-1;
+    list_selected_endpoint=-1;
+    update();
     emit hoveredEndpointChanged(list_router,list_move_endpoint);
   }
 }

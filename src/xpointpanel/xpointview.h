@@ -32,6 +32,10 @@ class XPointView : public QGraphicsView
   Q_OBJECT
  public:
   XPointView(QGraphicsScene *scene,QWidget *parent=0);
+  int xSlotQuantity() const;
+  void setXSlotQuantity(int quan);
+  int ySlotQuantity() const;
+  void setYSlotQuantity(int quan);
 
  signals:
   void doubleClicked(int x_slot,int y_slot);
@@ -49,6 +53,8 @@ class XPointView : public QGraphicsView
   QGraphicsRectItem *d_input_cursor;
   QGraphicsRectItem *d_output_cursor;
   QColor d_selection_color;
+  int d_x_slot_quantity;
+  int d_y_slot_quantity;
 };
 
 
