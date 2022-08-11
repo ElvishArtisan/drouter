@@ -54,6 +54,7 @@ MainWidget::MainWidget(QWidget *parent)
   bool ok=false;
   panel_initial_connected=false;
   panel_initial_router=-1;
+  panel_size_hint=QSize(400,400);
 
   //
   // Initialize Variables
@@ -94,7 +95,6 @@ MainWidget::MainWidget(QWidget *parent)
       cmd->setProcessed(i,true);
     }
     if(cmd->key(i)=="--no-creds") {
-      //      no_creds=true;
       cmd->setProcessed(i,true);
     }
     if(!cmd->processed(i)) {
@@ -240,7 +240,7 @@ MainWidget::~MainWidget()
 
 QSize MainWidget::sizeHint() const
 {
-  return QSize(440,400);
+  return panel_size_hint;
 }
 
 
@@ -279,7 +279,7 @@ void MainWidget::routerBoxActivatedData(int n)
     if(panel_parser->inputIsReal(router,i+1)) {
       panel_input_list->addEndpoint(router,endpt,
 				    QString::asprintf("%d - ",endpt+1)+
-				  panel_parser->inputLongName(router,i+1));
+				    panel_parser->inputLongName(router,i+1));
       panel_input_list->
 	setGpioState(router,endpt,panel_parser->gpiState(router,i));
     }
@@ -332,11 +332,7 @@ void MainWidget::routerBoxActivatedData(int n)
   }
   panel_view->setXSlotQuantity(output_endpts.size());
   panel_view->setYSlotQuantity(input_endpts.size());
-  //
-  // FIXME: Make this play better with multiple screens!
-  //
-  //  QRect screen=QApplication::desktop()->availableGeometry();
-  QRect screen=QGuiApplication::screens()[0]->availableGeometry();
+  QRect screen=QApplication::desktop()->availableGeometry(this);
 
   int info_width=15+panel_input_list->sizeHint().width();
   if(panel_output_list->sizeHint().width()>info_width) {
@@ -344,7 +340,7 @@ void MainWidget::routerBoxActivatedData(int n)
   }
   QSize panel(24+panel_output_list->sizeHint().height()+info_width,
 	      15+panel_view->sizeHint().height()+
-	      panel_output_list->sizeHint().width());
+  	      panel_output_list->sizeHint().width());
   if(panel.width()>screen.width()) {
     panel.setWidth(screen.width()-10);
     panel.setHeight(panel.height()+10);
@@ -353,7 +349,16 @@ void MainWidget::routerBoxActivatedData(int n)
     panel.setHeight(screen.height()-10);
     panel.setWidth(panel.width()+10);
   }
-  resize(panel);
+  panel_size_hint=panel;
+  if(panel_initial_connected) {
+    resize(panel);
+  }
+  else {
+    setGeometry((screen.width()-panel.width())/2,
+		(screen.height()-panel.height())/2,
+		panel.width(),
+		panel.height());
+  }
   show();
 }
 
@@ -444,11 +449,6 @@ void MainWidget::outputCrosspointChangedData(int router,int output,int input)
 
 void MainWidget::xpointDoubleClickedData(int x_slot,int y_slot)
 {
-  /*
-  printf("x_slot: %d  y_slot: %d\n",x_slot,y_slot);
-  printf("output: %d  input: %d\n",panel_output_list->endpoint(x_slot),
-	 panel_input_list->endpoint(y_slot));
-  */
   int input=panel_input_list->endpoint(y_slot)+1;
   int output=panel_output_list->endpoint(x_slot)+1;
   if(panel_parser->outputCrosspoint(panel_router_box->currentItemData().toInt(),
@@ -563,7 +563,6 @@ void MainWidget::crosspointSelectedData(int slot_x,int slot_y)
 
 void MainWidget::resizeEvent(QResizeEvent *e)
 {
-  //      printf("STYLE: %s\n",QApplication::style()->metaObject()->className());
   int info_width=panel_input_list->sizeHint().width()+20;
   if(panel_output_list->sizeHint().width()>info_width) {
     info_width=panel_output_list->sizeHint().width()+20;
@@ -707,11 +706,6 @@ QString MainWidget::OutputDescriptionTitle(int router,int output) const
 int main(int argc,char *argv[])
 {
   QApplication a(argc,argv);
-
-  //
-  // Start Event Loop
-  //
-  MainWidget *w=new MainWidget(NULL);
-  w->setGeometry(w->geometry().x(),w->geometry().y(),w->sizeHint().width(),w->sizeHint().height());
+  new MainWidget(NULL);
   return a.exec();
 }

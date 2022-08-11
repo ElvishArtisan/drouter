@@ -23,6 +23,7 @@
 #include <QMouseEvent>
 #include <QScrollBar>
 
+#include "endpointlist.h"
 #include "xpointview.h"
 
 XPointView::XPointView(QGraphicsScene *scene,QWidget *parent)
@@ -39,6 +40,13 @@ XPointView::XPointView(QGraphicsScene *scene,QWidget *parent)
     d_selection_color=QColor("#225522");
   }
   setMouseTracking(true);
+}
+
+
+QSize XPointView::sizeHint() const
+{
+  return QSize(3+ENDPOINTLIST_ITEM_HEIGHT*d_x_slot_quantity,
+	       3+ENDPOINTLIST_ITEM_HEIGHT*d_y_slot_quantity);
 }
 
 
@@ -68,8 +76,9 @@ void XPointView::setYSlotQuantity(int quan)
 
 void XPointView::mouseMoveEvent(QMouseEvent *e)
 {
-  int x_slot=1+(horizontalScrollBar()->value()+e->x()-1)/26;
-  int y_slot=1+(verticalScrollBar()->value()+e->y()-1)/26;
+  int x_slot=
+    1+(horizontalScrollBar()->value()+e->x()-1)/ENDPOINTLIST_ITEM_HEIGHT;
+  int y_slot=1+(verticalScrollBar()->value()+e->y()-1)/ENDPOINTLIST_ITEM_HEIGHT;
 
   if((d_prev_hover_x!=x_slot)||(d_prev_hover_y!=y_slot)) {
     if((x_slot<=d_x_slot_quantity)&&(y_slot<=d_y_slot_quantity)) { 
@@ -86,13 +95,15 @@ void XPointView::mouseMoveEvent(QMouseEvent *e)
       }
       if((x_slot>=0)&&(y_slot>=0)) {
 	d_input_cursor=
-	  scene()->addRect(0,26*(y_slot-1),26*x_slot-2,24,
+	  scene()->addRect(0,ENDPOINTLIST_ITEM_HEIGHT*(y_slot-1),
+			   ENDPOINTLIST_ITEM_HEIGHT*x_slot-2,24,
 			   QPen(d_selection_color),
 			   QBrush(d_selection_color));
 	d_input_cursor->setZValue(-1);
 	
 	d_output_cursor=
-	  scene()->addRect(26*(x_slot-1),0,24,26*y_slot-2,
+	  scene()->addRect(ENDPOINTLIST_ITEM_HEIGHT*(x_slot-1),0,24,
+			   ENDPOINTLIST_ITEM_HEIGHT*y_slot-2,
 			   QPen(d_selection_color),
 			   QBrush(d_selection_color));
 	d_output_cursor->setZValue(-1);
@@ -128,7 +139,9 @@ void XPointView::leaveEvent(QEvent *e)
 
 void XPointView::mouseDoubleClickEvent(QMouseEvent *e)
 {
-  emit crosspointDoubleClicked(1+(horizontalScrollBar()->value()+e->x()-1)/26,
-			       1+(verticalScrollBar()->value()+e->y()-1)/26);
+  emit crosspointDoubleClicked(1+(horizontalScrollBar()->value()+e->x()-1)/
+			       ENDPOINTLIST_ITEM_HEIGHT,
+			       1+(verticalScrollBar()->value()+e->y()-1)/
+			       ENDPOINTLIST_ITEM_HEIGHT);
   QGraphicsView::mouseDoubleClickEvent(e);
 }

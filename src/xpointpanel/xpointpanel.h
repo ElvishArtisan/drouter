@@ -86,6 +86,7 @@ class MainWidget : public QWidget
   EndpointList *panel_input_list;
   EndpointList *panel_output_list;
   QPixmap *panel_greenx_map;
+  QSize panel_size_hint;
 };
 
 

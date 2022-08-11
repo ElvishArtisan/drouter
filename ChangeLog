@@ -897,3 +897,6 @@
 2022-08-10 Fred Gleason <fredg@paravelsystems.com>
 	* Fixed a bug in xpointpanel(1) that could throw a segfault when
 	floating the mouse cursor near the edges of the crosspoint widget.
+2022-08-11 Fred Gleason <fredg@paravelsystems.com>
+	* Overhauled the layout code in xpointpanel(1) to better deal with
+	multi-monitor setups.

@@ -2,7 +2,7 @@
 //
 // QGraphicsScene viewer for xpointpanel(1)
 //
-//   (C) Copyright 2017 Fred Gleason <fredg@paravelsystems.com>
+//   (C) Copyright 2017-2022 Fred Gleason <fredg@paravelsystems.com>
 //
 //   This program is free software; you can redistribute it and/or modify
 //   it under the terms of the GNU General Public License as
@@ -32,6 +32,7 @@ class XPointView : public QGraphicsView
   Q_OBJECT
  public:
   XPointView(QGraphicsScene *scene,QWidget *parent=0);
+  QSize sizeHint() const;
   int xSlotQuantity() const;
   void setXSlotQuantity(int quan);
   int ySlotQuantity() const;
