@@ -333,6 +333,7 @@ void MainWidget::routerBoxActivatedData(int n)
   panel_view->setXSlotQuantity(output_endpts.size());
   panel_view->setYSlotQuantity(input_endpts.size());
   QRect screen=QApplication::desktop()->availableGeometry(this);
+  screen.setHeight(screen.height()-30); // Hack to compensate for window titlebar
 
   int info_width=15+panel_input_list->sizeHint().width();
   if(panel_output_list->sizeHint().width()>info_width) {

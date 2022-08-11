@@ -900,3 +900,6 @@
 2022-08-11 Fred Gleason <fredg@paravelsystems.com>
 	* Overhauled the layout code in xpointpanel(1) to better deal with
 	multi-monitor setups.
+2022-08-11 Fred Gleason <fredg@paravelsystems.com>
+	* Tweaked the layout code in xpointpanel to account for window
+	title bar geometry.
