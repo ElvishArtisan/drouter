@@ -903,3 +903,5 @@
 2022-08-11 Fred Gleason <fredg@paravelsystems.com>
 	* Tweaked the layout code in xpointpanel to account for window
 	title bar geometry.
+2022-08-18 Fred Gleason <fredg@paravelsystems.com>
+	* Incremented the package version to 1.0.0rc4int9.
