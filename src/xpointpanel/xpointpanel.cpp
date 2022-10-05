@@ -292,14 +292,16 @@ void MainWidget::routerBoxActivatedData(int n)
   endpt=0;
   panel_output_list->setShowGpio(panel_parser->gpioSupported(router));
   endpts.clear();
-  for(int i=0;i<panel_parser->outputQuantity(router);i++) {
-    name=panel_parser->outputLongName(router,i+1);
-    if(panel_parser->outputIsReal(router,i+1)) {
+  int count=0;
+  while(count<panel_parser->outputQuantity(router)) {
+    name=panel_parser->outputLongName(router,endpt+1);
+    if(panel_parser->outputIsReal(router,endpt+1)) {
       panel_output_list->addEndpoint(router,endpt,
 				     QString::asprintf("%d - ",endpt+1)+
-				     panel_parser->outputLongName(router,i+1));
+				     panel_parser->outputLongName(router,endpt+1));
       panel_output_list->
-	setGpioState(router,endpt,panel_parser->gpoState(router,i));
+	setGpioState(router,endpt,panel_parser->gpoState(router,endpt));
+      count++;
     }
     endpt++;
   }

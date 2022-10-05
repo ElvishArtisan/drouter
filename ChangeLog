@@ -905,3 +905,6 @@
 	title bar geometry.
 2022-08-18 Fred Gleason <fredg@paravelsystems.com>
 	* Incremented the package version to 1.0.0rc4int9.
+2022-10-05 Fred Gleason <fredg@paravelsystems.com>
+	* Fixed a bug in xpointpanel(1) that could cause certain outputs to
+	not appear on the 'Outputs' list.
