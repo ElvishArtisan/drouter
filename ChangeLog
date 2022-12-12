@@ -913,3 +913,5 @@
 2022-12-12 Fred Gleason <fredg@paravelsystems.com>
 	* Added a 'FileDescriptorLimit=' directive to the '[Drouter]'
 	section of drouter.conf(5).
+2022-12-12 Fred Gleason <fredg@paravelsystems.com>
+	* Modified dprotod(8) to log all error messages to syslog.

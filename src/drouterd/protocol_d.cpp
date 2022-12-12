@@ -58,7 +58,7 @@ ProtocolD::ProtocolD(int sock,QObject *parent)
   }
   flags=flags|FD_CLOEXEC;
   if((flags=fcntl(proto_server->socketDescriptor(),F_SETFD,&flags))<0) {
-    syslog(LOG_ERR,"socket error [%s], aborting",(const char *)strerror(errno));
+    syslog(LOG_ERR,"socket error [%s], aborting",strerror(errno));
     exit(1);
   }
 }
@@ -74,12 +74,12 @@ void ProtocolD::newConnectionData()
   //
   proto_socket=proto_server->nextPendingConnection();
   if((flags=fcntl(proto_socket->socketDescriptor(),F_GETFD,NULL))<0) {
-    syslog(LOG_ERR,"socket error [%s], aborting",(const char *)strerror(errno));
+    syslog(LOG_ERR,"socket error [%s], aborting",strerror(errno));
     exit(1);
   }
   flags=flags|FD_CLOEXEC;
   if((flags=fcntl(proto_socket->socketDescriptor(),F_SETFD,&flags))<0) {
-    syslog(LOG_ERR,"socket error [%s], aborting",(const char *)strerror(errno));
+    syslog(LOG_ERR,"socket error [%s], aborting",strerror(errno));
     exit(1);
   }
   
@@ -380,6 +380,7 @@ void ProtocolD::ProcessCommand(const QString &cmd)
   SqlQuery *q;
 
   if(keyword=="exit") {
+    syslog(LOG_DEBUG,"exiting normally");
     quit();
   }
 

@@ -62,7 +62,7 @@ ProtocolSa::ProtocolSa(int sock,QObject *parent)
   }
   flags=flags|FD_CLOEXEC;
   if((flags=fcntl(proto_server->socketDescriptor(),F_SETFD,&flags))<0) {
-    syslog(LOG_ERR,"socket error [%s], aborting",(const char *)strerror(errno));
+    syslog(LOG_ERR,"socket error [%s], aborting",strerror(errno));
     exit(1);
   }
 
@@ -81,12 +81,12 @@ void ProtocolSa::newConnectionData()
   //
   proto_socket=proto_server->nextPendingConnection();
   if((flags=fcntl(proto_socket->socketDescriptor(),F_GETFD,NULL))<0) {
-    syslog(LOG_ERR,"socket error [%s], aborting",(const char *)strerror(errno));
+    syslog(LOG_ERR,"socket error [%s], aborting",strerror(errno));
     exit(1);
   }
   flags=flags|FD_CLOEXEC;
   if((flags=fcntl(proto_socket->socketDescriptor(),F_SETFD,&flags))<0) {
-    syslog(LOG_ERR,"socket error [%s], aborting",(const char *)strerror(errno));
+    syslog(LOG_ERR,"socket error [%s], aborting",strerror(errno));
     exit(1);
   }
   
@@ -282,14 +282,14 @@ void ProtocolSa::ActivateRoute(unsigned router,unsigned output,unsigned input)
 	    setCrosspoint(dst_addr,dst_slotnum,src_addr,src_slotnum);
 	    syslog(LOG_INFO,"activated audio route router: %d  input: %d to output: %d from %s",
 		   router+1,output+1,input,
-		   (const char *)proto_socket->peerAddress().toString().toUtf8());
+		   proto_socket->peerAddress().toString().toUtf8().constData());
 	    break;
 	  
 	  case EndPointMap::GpioRouter:
 	    setGpioCrosspoint(dst_addr,dst_slotnum,src_addr,src_slotnum);
 	    syslog(LOG_INFO,"activated gpio route router: %d  input: %d to output: %d from %s",
 		   router+1,output+1,input,
-		   (const char *)proto_socket->peerAddress().toString().toUtf8());
+		   proto_socket->peerAddress().toString().toUtf8().constData());
 	    break;
 
 	  case EndPointMap::LastRouter:
@@ -312,10 +312,10 @@ void ProtocolSa::TriggerGpi(unsigned router,unsigned input,unsigned msecs,const 
       int slotnum=map->slot(EndPointMap::Input,input);
       if((!addr.isNull())&&(slotnum>=0)) {
 	setGpiState(addr,slotnum,code);
-	syslog(LOG_INFO,"set gpi state router: %d  input: %d to state: %s from %s",
-	       router+1,input+1,
-	       (const char *)code.toUtf8(),
-	       (const char *)proto_socket->peerAddress().toString().toUtf8());
+	syslog(LOG_INFO,
+	       "set gpi state router: %d  input: %d to state: %s from %s",
+	       router+1,input+1,code.toUtf8().constData(),
+	       proto_socket->peerAddress().toString().toUtf8().constData());
       }
     }
   }
@@ -332,10 +332,11 @@ void ProtocolSa::TriggerGpo(unsigned router,unsigned output,unsigned msecs,const
       int slotnum=map->slot(EndPointMap::Output,output);
       if((!addr.isNull())&&(slotnum>=0)) {
 	setGpoState(addr,slotnum,code);
-	syslog(LOG_INFO,"set gpo state router: %d  output: %d to state: %s from %s",
+	syslog(LOG_INFO,
+	       "set gpo state router: %d  output: %d to state: %s from %s",
 	       router+1,output+1,
-	       (const char *)code.toUtf8(),
-	       (const char *)proto_socket->peerAddress().toString().toUtf8());
+	       code.toUtf8().constData(),
+	       proto_socket->peerAddress().toString().toUtf8().constData());
       }
     }
   }
@@ -408,8 +409,8 @@ void ProtocolSa::ActivateSnapshot(unsigned router,const QString &snapshot_name)
     }
   }
   syslog(LOG_INFO,"activated snapshot %d:%s from %s",router+1,
-	 (const char *)snapshot_name.toUtf8(),
-	 (const char *)proto_socket->peerAddress().toString().toUtf8());
+	 snapshot_name.toUtf8().constData(),
+	 proto_socket->peerAddress().toString().toUtf8().constData());
 }
 
 
@@ -812,6 +813,7 @@ void ProtocolSa::ProcessCommand(const QString &cmd)
   }
 
   if((cmds[0].toLower()=="exit")||(cmds[0].toLower()=="quit")) {
+    syslog(LOG_DEBUG,"exiting normally");
     quit();
   }
 
@@ -1082,7 +1084,7 @@ void ProtocolSa::LoadMaps()
   QStringList msgs;
   if(!EndPointMap::loadSet(&proto_maps,&msgs)) {
     syslog(LOG_ERR,"map load error: %s, aborting",
-	   (const char *)msgs.join("\n").toUtf8());
+	   msgs.join("\n").toUtf8().constData());
     exit(1);
   }
 }

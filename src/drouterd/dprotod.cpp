@@ -22,6 +22,7 @@
 #include <syslog.h>
 #include <unistd.h>
 #include <linux/un.h>
+#include <syslog.h>
 #include <sys/socket.h>
 #include <sys/types.h>
 
@@ -44,6 +45,8 @@ MainObject::MainObject(QObject *parent)
   int protocols_defined=0;
   QString err_msg;
 
+  openlog("dprotod",LOG_PID,LOG_DAEMON);
+
   SyCmdSwitch *cmd=new SyCmdSwitch("dprotod",VERSION,DPROTOD_USAGE);
   for(int i=0;i<cmd->keys();i++) {
     if(cmd->key(i)=="--protocol-d") {
@@ -61,23 +64,23 @@ MainObject::MainObject(QObject *parent)
       cmd->setProcessed(i,true);
     }
     if(!cmd->processed(i)) {
-      fprintf(stderr,"dprotod: unrecognized option\n");
+      syslog(LOG_ERR,"unrecognized option \"%s\"",
+	     cmd->key(i).toUtf8().constData());
       exit(1);
     }
   }
   if(protocols_defined==0) {
-    fprintf(stderr,"dprotod: no --protocol specified\n");
+    syslog(LOG_ERR,"no --protocol specified");
     exit(1);
   }
   if(protocols_defined>1) {
-    fprintf(stderr,
-	    "dprotod: only one --protocol may be specified per instance\n");
+    syslog(LOG_ERR,"only one --protocol may be specified per instance");
     exit(1);
   }
 
   if(systemd) {
     if(!StartIpc(&err_msg)) {
-      fprintf(stderr,"dprotod: %s\n",(const char *)err_msg.toUtf8());
+      syslog(LOG_ERR,"%s",err_msg.toUtf8().constData());
       exit(1);
     }
   }
@@ -119,14 +122,12 @@ bool MainObject::StartIpc(QString *err_msg)
   }
   if(main_protocol_d) {
     if(write(sock,"SEND_D_SOCK\r\n",13)<0) {
-      fprintf(stderr,"dprotod: error writing SEND_D_SOCK [%s]\n",
-	      strerror(errno));
+      syslog(LOG_WARNING,"error writing SEND_D_SOCK [%s]",strerror(errno));
     }
   }
   if(main_protocol_sa) {
     if(write(sock,"SEND_SA_SOCK\r\n",14)<0) {
-      fprintf(stderr,"dprotod: error writing SEND_SA_SOCK [%s]\n",
-	      strerror(errno));
+      syslog(LOG_WARNING,"error writing SEND_SA_SOCK [%s]",strerror(errno));
     }
   }
 
