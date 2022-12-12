@@ -111,6 +111,12 @@ int Config::maxHeapTableSize() const
 }
 
 
+int Config::fileDescriptorLimit() const
+{
+  return conf_file_descriptor_limit;
+}
+
+
 bool Config::tetherIsActivated() const
 {
   return conf_tether_is_activated;
@@ -211,6 +217,8 @@ void Config::load()
 
   conf_max_heap_table_size=p->intValue("Drouterd","MaxHeapTableSize",
 				       DROUTER_DEFAULT_MAX_HEAP_TABLE_SIZE);
+  conf_file_descriptor_limit=p->intValue("Drouterd","FileDescriptorLimit",
+					 DROUTER_DEFAULT_FILE_DESCRIPTOR_LIMIT);
 
   if(conf_tether_is_activated) {
     conf_tether_shared_ip_address.

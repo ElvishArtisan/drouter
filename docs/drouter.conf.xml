@@ -109,6 +109,19 @@
 	    </para>
 	  </listitem>
 	</varlistentry>
+
+	<varlistentry>
+	  <term>
+	    <userinput>FileDescriptorLimit=<replaceable>num</replaceable></userinput>
+	  </term>
+	  <listitem>
+	    <para>
+	      Set the limit on the number of simultaneously open file
+	      descriptors to <replaceable>num</replaceable>. Default value is
+	      <userinput>1024</userinput>.
+	    </para>
+	  </listitem>
+	</varlistentry>
 	<varlistentry>
 	  <term>
 	    <userinput>FromAddress=<replaceable>email-addr</replaceable></userinput>

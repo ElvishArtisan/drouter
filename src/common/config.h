@@ -37,6 +37,7 @@
 #define DROUTER_DEFAULT_IPC_LOG_PRIORITY -1
 #define DROUTER_DEFAULT_NODE_LOG_PRIORITY -1
 #define DROUTER_DEFAULT_MAX_HEAP_TABLE_SIZE 33554432
+#define DROUTER_DEFAULT_FILE_DESCRIPTOR_LIMIT 1024
 #define DROUTER_TETHER_UDP_PORT 6245
 #define DROUTER_TETHER_TTY_SPEED 9600
 #define DROUTER_TETHER_TTY_PARITY TTYDevice::None
@@ -62,6 +63,7 @@ class Config
   int nodeLogPriority() const;
   QString lwrpPassword() const;
   int maxHeapTableSize() const;
+  int fileDescriptorLimit() const;
   bool tetherIsActivated() const;
   QHostAddress tetherSharedIpAddress() const;
   QString tetherHostId(TetherRole role) const;
@@ -91,6 +93,7 @@ class Config
   QString conf_from_address;
   QStringList conf_no_audio_alarm_devices;
   int conf_max_heap_table_size;
+  int conf_file_descriptor_limit;
   bool conf_tether_is_activated;
   QHostAddress conf_tether_shared_ip_address;
   QString conf_tether_host_ids[2];

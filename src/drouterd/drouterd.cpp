@@ -23,6 +23,8 @@
 #include <stdlib.h>
 #include <syslog.h>
 #include <unistd.h>
+#include <sys/time.h>
+#include <sys/resource.h>
 
 #include <QCoreApplication>
 
@@ -47,6 +49,8 @@ MainObject::MainObject(QObject *parent)
   bool no_protocols=false;
   QString err_msg;
   int log_options=0;
+  struct rlimit rlim;
+
   SyCmdSwitch *cmd=new SyCmdSwitch("drouterd",VERSION,DROUTERD_USAGE);
   for(int i=0;i<(cmd->keys());i++) {
     if(cmd->key(i)=="-d") {
@@ -82,6 +86,23 @@ MainObject::MainObject(QObject *parent)
   //
   openlog("drouterd",log_options,LOG_DAEMON);
 
+  //
+  // Set process soft limits
+  //
+  memset(&rlim,0,sizeof(rlim));
+  rlim.rlim_cur=main_config->fileDescriptorLimit();
+  rlim.rlim_max=main_config->fileDescriptorLimit();
+  if(setrlimit(RLIMIT_NOFILE,&rlim)!=0) {
+    syslog(LOG_WARNING,"failed to set RLIMIT_NOFILE limit");
+  }
+  memset(&rlim,0,sizeof(rlim));
+  if(getrlimit(RLIMIT_NOFILE,&rlim)==0) {
+    syslog(LOG_DEBUG,"using RLIMIT_FILE limit values %lu/%lu",
+	   rlim.rlim_cur,rlim.rlim_max);
+  }
+  else {
+    syslog(LOG_WARNING,"failed to get RLIMIT_NOFILE limit");
+  }
 
 #ifdef LIBSYSTEMD
   //

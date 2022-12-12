@@ -108,6 +108,14 @@ LwrpPassword=
 MaxHeapTableSize=33554432
 
 
+; FileDescriptorLimit=<num>
+;
+; Set the soft limit on the number of open file descriptors. Sites with
+; large AoIP networks may need to increase this.
+;
+FileDescriptorLimit=1024
+
+
 [Tether]
 ; IsActivated=Yes|No
 ;

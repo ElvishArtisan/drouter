@@ -910,3 +910,6 @@
 	not appear on the 'Outputs' list.
 2022-10-06 Fred Gleason <fredg@paravelsystems.com>
 	* Incremented the package version to 1.0.0rc4int10.
+2022-12-12 Fred Gleason <fredg@paravelsystems.com>
+	* Added a 'FileDescriptorLimit=' directive to the '[Drouter]'
+	section of drouter.conf(5).
