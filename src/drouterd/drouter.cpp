@@ -457,6 +457,19 @@ void DRouter::nodeConnectedData(unsigned id,bool state)
     }
 
     UnlockTables();
+
+    //
+    // Send Startup LWRP
+    //
+    QStringList lwrp_lines=
+      drouter_config->nodesStartupLwrp(lwrp->hostAddress());
+    for(int i=0;i<lwrp_lines.size();i++) {
+      lwrp->sendRawLwrp(lwrp_lines.at(i));
+      syslog(LOG_DEBUG,"sending \"%s\" to node at %s",
+	     lwrp_lines.at(i).toUtf8().constData(),
+	     lwrp->hostAddress().toString().toUtf8().constData());
+    }
+
     NotifyProtocols("NODEADD",QHostAddress(id).toString());
   }
   else {

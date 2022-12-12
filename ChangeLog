@@ -915,3 +915,5 @@
 	section of drouter.conf(5).
 2022-12-12 Fred Gleason <fredg@paravelsystems.com>
 	* Modified dprotod(8) to log all error messages to syslog.
+2022-12-12 Fred Gleason <fredg@paravelsystems.com>
+	* Added a '[Nodes]' section to drouter.conf(5).

@@ -117,6 +117,12 @@ int Config::fileDescriptorLimit() const
 }
 
 
+QStringList Config::nodesStartupLwrp(const QHostAddress &addr) const
+{
+  return conf_nodes_startup_lwrps.value(addr.toIPv4Address(),QStringList());
+}
+
+
 bool Config::tetherIsActivated() const
 {
   return conf_tether_is_activated;
@@ -187,8 +193,12 @@ void Config::load()
 {
   char hostname[HOST_NAME_MAX];
   SyProfile *p=new SyProfile();
+  bool ok=false;
   p->setSource(DROUTER_CONF_FILE);
 
+  //
+  // [Drouterd] Section
+  //
   conf_clip_alarm_threshold=
     p->intValue("Drouterd","ClipAlarmThreshold",DROUTER_DEFAULT_CLIP_THRESHOLD);
   conf_clip_alarm_timeout=
@@ -220,6 +230,31 @@ void Config::load()
   conf_file_descriptor_limit=p->intValue("Drouterd","FileDescriptorLimit",
 					 DROUTER_DEFAULT_FILE_DESCRIPTOR_LIMIT);
 
+  //
+  // [Nodes] Section
+  //
+  int n=0;
+  QHostAddress host_addr=
+    p->addressValue("Nodes",QString::asprintf("HostAddress%d",n+1),"",&ok);
+  while(ok) {
+    QString lwrp=
+      p->stringValue("Nodes",QString::asprintf("StartupLwrp%d",n+1),"",&ok).
+      trimmed();
+    if(!lwrp.isEmpty()) {
+      QStringList f0=lwrp.split(",");
+      for(int i=0;i<f0.size();i++) {
+	f0[i]=f0.at(i).trimmed();
+      }
+      conf_nodes_startup_lwrps[host_addr.toIPv4Address()]=f0;
+    }
+    n++;
+    host_addr=
+    p->addressValue("Nodes",QString::asprintf("HostAddress%d",n+1),"",&ok);
+  }
+
+  //
+  // [Tether] Section
+  //
   if(conf_tether_is_activated) {
     conf_tether_shared_ip_address.
       setAddress(p->stringValue("Tether","SharedIpAddress"));

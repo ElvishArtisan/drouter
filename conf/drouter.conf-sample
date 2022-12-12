@@ -116,6 +116,22 @@ MaxHeapTableSize=33554432
 FileDescriptorLimit=1024
 
 
+[Nodes]
+; HostAddress<n>=<ipv4-address>
+;
+; The IPv4 address of a node.
+;
+;HostAddress1=1234
+
+
+; StartupLwrp<n>=<lwrp>[,<lwrp>][...]
+;
+; Set of LWRP statments (comma delimited) to be sent to a node at connection
+; startup.
+;
+;StartupLwrp1=CFG GPO 8 SRCA:"6000" FUNC:"FOLLOW"
+
+
 [Tether]
 ; IsActivated=Yes|No
 ;

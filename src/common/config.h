@@ -22,6 +22,7 @@
 #define CONFIG_H
 
 #include <QHostAddress>
+#include <QMap>
 #include <QString>
 #include <QStringList>
 
@@ -64,6 +65,7 @@ class Config
   QString lwrpPassword() const;
   int maxHeapTableSize() const;
   int fileDescriptorLimit() const;
+  QStringList nodesStartupLwrp(const QHostAddress &addr) const;
   bool tetherIsActivated() const;
   QHostAddress tetherSharedIpAddress() const;
   QString tetherHostId(TetherRole role) const;
@@ -94,6 +96,7 @@ class Config
   QStringList conf_no_audio_alarm_devices;
   int conf_max_heap_table_size;
   int conf_file_descriptor_limit;
+  QMap<uint32_t,QStringList> conf_nodes_startup_lwrps;
   bool conf_tether_is_activated;
   QHostAddress conf_tether_shared_ip_address;
   QString conf_tether_host_ids[2];
