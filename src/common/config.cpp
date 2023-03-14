@@ -123,6 +123,42 @@ QStringList Config::nodesStartupLwrp(const QHostAddress &addr) const
 }
 
 
+QHostAddress Config::drouterdogdDrouterAddress() const
+{
+  return conf_drouterdogd_drouter_address;
+}
+
+
+int Config::drouterdogdRouterNumber() const
+{
+  return conf_drouterdogd_router_number;
+}
+
+
+int Config::drouterdogdGpioNumber() const
+{
+  return conf_drouterdogd_gpio_number;
+}
+
+
+QHostAddress Config::drouterdogdInterfaceAddress() const
+{
+  return conf_drouterdogd_interface_address;
+}
+
+
+QHostAddress Config::drouterdogdInterfaceMask() const
+{
+  return conf_drouterdogd_interface_mask;
+}
+
+
+bool Config::drouterdogdUseInternalNode() const
+{
+  return conf_drouterdogd_use_internal_node;
+}
+
+
 bool Config::tetherIsActivated() const
 {
   return conf_tether_is_activated;
@@ -251,6 +287,25 @@ void Config::load()
     host_addr=
     p->addressValue("Nodes",QString::asprintf("HostAddress%d",n+1),"",&ok);
   }
+
+  //
+  // [Drouterdogd] Section
+  //
+  conf_drouterdogd_drouter_address=
+    p->addressValue("Drouterdogd","DrouterAddress",
+		    DROUTERDOGD_DEFAULT_DROUTER_ADDRESS);
+  conf_drouterdogd_router_number=
+    p->intValue("Drouterdogd","RouterNumber",DROUTERDOGD_DEFAULT_ROUTER_NUMBER);
+  conf_drouterdogd_gpio_number=
+    p->intValue("Drouterdogd","GpioNumber",DROUTERDOGD_DEFAULT_GPIO_NUMBER);
+  conf_drouterdogd_interface_address=
+    p->addressValue("Drouterdogd","InterfaceAddress",
+		    DROUTERDOGD_DEFAULT_INTERFACE_ADDRESS);
+  conf_drouterdogd_interface_mask=
+    p->addressValue("Drouterdogd","InterfaceMask",
+		    DROUTERDOGD_DEFAULT_INTERFACE_MASK);
+  conf_drouterdogd_use_internal_node=
+    p->boolValue("Drouterdogd","UseInternalNode",false);
 
   //
   // [Tether] Section

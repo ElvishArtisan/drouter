@@ -4,7 +4,7 @@ dnl Autoconf configuration
 dnl
 dnl Use autoconf to process this into a configure script
 dnl
-dnl   (C) Copyright 2014-2022 Fred Gleason <fredg@paravelsystems.com>
+dnl   (C) Copyright 2014-2023 Fred Gleason <fredg@paravelsystems.com>
 dnl
 dnl   This program is free software; you can redistribute it and/or modify
 dnl   it under the terms of the GNU General Public License version 2 as
@@ -272,6 +272,7 @@ AC_CONFIG_FILES([ \
     src/common/paths.h\
     src/dmap/Makefile \
     src/drouterd/Makefile \
+    src/drouterdogd/Makefile \
     src/eventlogpanel/Makefile \
     src/outputpanel/Makefile \
     src/shotpanel/Makefile \
@@ -293,6 +294,7 @@ chmod 755 scripts/install_python.sh
 ./link_common.sh buttonpanel
 ./link_common.sh dmap
 ./link_common.sh drouterd
+./link_common.sh drouterdogd
 ./link_common.sh eventlogpanel
 ./link_common.sh outputpanel
 ./link_common.sh shotpanel

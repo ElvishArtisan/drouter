@@ -922,3 +922,5 @@
 2023-03-11 Fred Gleason <fredg@paravelsystems.com>
 	* Fixed a bug in the software authority parser that could cause
 	segfaults when reading an empty router instance.
+2023-03-14 Fred Gleason <fredg@paravelsystems.com>
+	* Stubbed out drouterdogd(8) watchdog utility.

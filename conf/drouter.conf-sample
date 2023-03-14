@@ -116,6 +116,14 @@ MaxHeapTableSize=33554432
 FileDescriptorLimit=1024
 
 
+[Drouterdogd]
+DrouterAddress=192.168.21.21
+RouterNumber=9999
+GpoNumber=1
+InterfaceAddress=192.168.21.21
+UseInternalNode=No
+
+
 [Nodes]
 ; HostAddress<n>=<ipv4-address>
 ;

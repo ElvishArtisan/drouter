@@ -2,7 +2,7 @@
 //
 // Global configuration for DRouter
 //
-//   (C) Copyright 2018-2022 Fred Gleason <fredg@paravelsystems.com>
+//   (C) Copyright 2018-2023 Fred Gleason <fredg@paravelsystems.com>
 //
 //   This program is free software; you can redistribute it and/or modify
 //   it under the terms of the GNU General Public License version 2 as
@@ -39,6 +39,14 @@
 #define DROUTER_DEFAULT_NODE_LOG_PRIORITY -1
 #define DROUTER_DEFAULT_MAX_HEAP_TABLE_SIZE 33554432
 #define DROUTER_DEFAULT_FILE_DESCRIPTOR_LIMIT 1024
+
+#define DROUTERDOGD_DEFAULT_DROUTER_ADDRESS "127.0.0.1"
+#define DROUTERDOGD_DEFAULT_ROUTER_NUMBER 999
+#define DROUTERDOGD_DEFAULT_GPIO_NUMBER 1
+#define DROUTERDOGD_DEFAULT_SOURCE_NUMBER 31000
+#define DROUTERDOGD_DEFAULT_INTERFACE_ADDRESS "127.0.0.1"
+#define DROUTERDOGD_DEFAULT_INTERFACE_MASK "255.0.0.0"
+
 #define DROUTER_TETHER_UDP_PORT 6245
 #define DROUTER_TETHER_TTY_SPEED 9600
 #define DROUTER_TETHER_TTY_PARITY TTYDevice::None
@@ -66,6 +74,12 @@ class Config
   int maxHeapTableSize() const;
   int fileDescriptorLimit() const;
   QStringList nodesStartupLwrp(const QHostAddress &addr) const;
+  QHostAddress drouterdogdDrouterAddress() const;
+  int drouterdogdRouterNumber() const;
+  int drouterdogdGpioNumber() const;
+  QHostAddress drouterdogdInterfaceAddress() const;
+  QHostAddress drouterdogdInterfaceMask() const;
+  bool drouterdogdUseInternalNode() const;
   bool tetherIsActivated() const;
   QHostAddress tetherSharedIpAddress() const;
   QString tetherHostId(TetherRole role) const;
@@ -97,6 +111,12 @@ class Config
   int conf_max_heap_table_size;
   int conf_file_descriptor_limit;
   QMap<uint32_t,QStringList> conf_nodes_startup_lwrps;
+  QHostAddress conf_drouterdogd_drouter_address;
+  int conf_drouterdogd_router_number;
+  int conf_drouterdogd_gpio_number;
+  QHostAddress conf_drouterdogd_interface_address;
+  QHostAddress conf_drouterdogd_interface_mask;
+  bool conf_drouterdogd_use_internal_node;
   bool conf_tether_is_activated;
   QHostAddress conf_tether_shared_ip_address;
   QString conf_tether_host_ids[2];
