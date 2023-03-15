@@ -22,6 +22,7 @@
 #include <syslog.h>
 #include <unistd.h>
 
+#include <QObject>
 #include <QStringList>
 
 #include <sy5/syprofile.h>
@@ -156,6 +157,12 @@ QHostAddress Config::drouterdogdInterfaceMask() const
 bool Config::drouterdogdUseInternalNode() const
 {
   return conf_drouterdogd_use_internal_node;
+}
+
+
+int Config::drouterdogdSyslogLevel() const
+{
+  return conf_drouterdogd_syslog_level;
 }
 
 
@@ -306,6 +313,32 @@ void Config::load()
 		    DROUTERDOGD_DEFAULT_INTERFACE_MASK);
   conf_drouterdogd_use_internal_node=
     p->boolValue("Drouterdogd","UseInternalNode",false);
+  QString syslog_str=
+    p->stringValue("Drouterdogd","SyslogLevel","LOG_WARNING");
+  if(syslog_str=="LOG_EMERG") {
+    conf_drouterdogd_syslog_level=LOG_EMERG;
+  }
+  if(syslog_str=="LOG_ALERT") {
+    conf_drouterdogd_syslog_level=LOG_ALERT;
+  }
+  if(syslog_str=="LOG_CRIT") {
+    conf_drouterdogd_syslog_level=LOG_CRIT;
+  }
+  if(syslog_str=="LOG_ERR") {
+    conf_drouterdogd_syslog_level=LOG_ERR;
+  }
+  if(syslog_str=="LOG_WARNING") {
+    conf_drouterdogd_syslog_level=LOG_WARNING;
+  }
+  if(syslog_str=="LOG_NOTICE") {
+    conf_drouterdogd_syslog_level=LOG_NOTICE;
+  }
+  if(syslog_str=="LOG_INFO") {
+    conf_drouterdogd_syslog_level=LOG_INFO;
+  }
+  if(syslog_str=="LOG_DEBUG") {
+    conf_drouterdogd_syslog_level=LOG_DEBUG;
+  }
 
   //
   // [Tether] Section
@@ -413,4 +446,33 @@ bool Config::emailIsValid(const QString &addr)
     return false;
   }
   return true;
+}
+
+
+QString Config::watchdogErrorString(WatchdogError werr)
+{
+  QString ret=QObject::tr("Unknown error")+QString::asprintf(" [%u]",werr);
+
+  switch(werr) {
+  case Config::DogErrorOk:
+    ret=QObject::tr("OK");
+    break;
+
+  case Config::DogErrorLoginFailed:
+    ret=QObject::tr("Service login failed");
+    break;
+
+  case Config::DogErrorGpioNoResponse:
+    ret=QObject::tr("GPIO state change - no response");
+    break;
+
+  case Config::DogErrorGpioWrongResponse:
+    ret=QObject::tr("GPIO state change - wrong response");
+    break;
+
+  case Config::DogErrorLast:
+    break;
+  }
+
+  return ret;
 }

@@ -51,6 +51,7 @@ class MainObject : public QObject
   void stepTimeoutData();
 
  private:
+  void ProcessTestResult(Config::WatchdogError werr);
   void StartStateChangeTest();
   QString NextTestCode(const QString &prev_code) const;
   QString GetRandomCode() const;
@@ -59,6 +60,7 @@ class MainObject : public QObject
   QTimer *d_timeout_timer;
   QString d_current_code;
   int d_istate;
+  Config::WatchdogError d_current_error;
 
   VGpioNode *d_gpio_node;
   SyLwrpClient *d_lwrp_client;

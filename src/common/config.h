@@ -59,6 +59,9 @@ class Config
 {
  public:
   enum TetherRole {This=0,That=1};
+  enum WatchdogError {DogErrorOk=0,DogErrorLoginFailed=1,
+		      DogErrorGpioNoResponse=2,DogErrorGpioWrongResponse=3,
+		      DogErrorLast=4};
   Config();
   int clipAlarmThreshold() const;
   int clipAlarmTimeout() const;
@@ -80,6 +83,7 @@ class Config
   QHostAddress drouterdogdInterfaceAddress() const;
   QHostAddress drouterdogdInterfaceMask() const;
   bool drouterdogdUseInternalNode() const;
+  int drouterdogdSyslogLevel() const;
   bool tetherIsActivated() const;
   QHostAddress tetherSharedIpAddress() const;
   QString tetherHostId(TetherRole role) const;
@@ -95,6 +99,7 @@ class Config
   static QHostAddress normalizedStreamAddress(const QHostAddress &addr);
   static QHostAddress normalizedStreamAddress(const QString &addr);
   static bool emailIsValid(const QString &addr);
+  static QString watchdogErrorString(WatchdogError werr);
 
  private:
   QString conf_lwrp_password;
@@ -117,6 +122,7 @@ class Config
   QHostAddress conf_drouterdogd_interface_address;
   QHostAddress conf_drouterdogd_interface_mask;
   bool conf_drouterdogd_use_internal_node;
+  int conf_drouterdogd_syslog_level;
   bool conf_tether_is_activated;
   QHostAddress conf_tether_shared_ip_address;
   QString conf_tether_host_ids[2];

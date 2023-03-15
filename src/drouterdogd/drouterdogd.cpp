@@ -18,7 +18,9 @@
 //   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
 //
 
+#include <signal.h>
 #include <stdlib.h>
+#include <syslog.h>
 
 #include <QCoreApplication>
 
@@ -26,12 +28,25 @@
 
 // #define DROUTERDOGD_DEBUG 1
 
+void SigHandler(int signo)
+{
+  switch(signo) {
+  case SIGINT:
+  case SIGTERM:
+    syslog(LOG_NOTICE,"exiting normally");
+    exit(0);
+    break;
+  }
+}
+
+
 MainObject::MainObject(QObject *parent)
   : QObject(parent)
 {
   d_current_code="hhhhh";
   d_sa_parser=NULL;
   d_gpio_node=NULL;
+  d_current_error=Config::DogErrorOk;
 
   //
   // Initialize Random Number Generator
@@ -77,6 +92,14 @@ MainObject::MainObject(QObject *parent)
   connect(d_timeout_timer,SIGNAL(timeout()),this,SLOT(stepTimeoutData()));
 
   d_step_timer->start(DROUTERDOGD_STEP_INTERVAL);
+
+  //
+  // Exit Handler
+  //
+  ::signal(SIGINT,SigHandler);
+  ::signal(SIGTERM,SigHandler);
+
+  syslog(LOG_NOTICE,"started");
 }
 
 
@@ -148,8 +171,7 @@ void MainObject::saGpiChangedData(int router,int input,const QString &code)
   if((router==d_config->drouterdogdRouterNumber())&&
      (input==d_config->drouterdogdGpioNumber())) {
     if(code==d_current_code) {  // Success
-      printf("%s: PASS!\n",
-	     QTime::currentTime().toString("hh:mm:ss").toUtf8().constData());
+      ProcessTestResult(Config::DogErrorOk);
     }
     else {
       if(d_istate<2) {
@@ -158,8 +180,7 @@ void MainObject::saGpiChangedData(int router,int input,const QString &code)
 	return;
       }
       else {
-	printf("%s: GPIO State Change Failed - Wrong Pattern Returned!\n",
-	       QTime::currentTime().toString("hh:mm:ss").toUtf8().constData());
+	ProcessTestResult(Config::DogErrorGpioWrongResponse);
       }
     }
     d_step_timer->start(DROUTERDOGD_STEP_INTERVAL);
@@ -175,8 +196,7 @@ void MainObject::stepTimeoutData()
 
   switch(d_istate) {
   case 0:
-    printf("%s: Service Login Failed!\n",
-	   QTime::currentTime().toString("hh:mm:ss").toUtf8().constData());
+    ProcessTestResult(Config::DogErrorLoginFailed);
     d_step_timer->start(DROUTERDOGD_STEP_INTERVAL);  // Restart the test
     break;
 
@@ -185,10 +205,21 @@ void MainObject::stepTimeoutData()
     break;
 
   case 2:
-    printf("%s: GPIO State Change Failed - No Response!\n",
-	   QTime::currentTime().toString("hh:mm:ss").toUtf8().constData());
+    ProcessTestResult(Config::DogErrorGpioNoResponse);
     d_step_timer->start(DROUTERDOGD_STEP_INTERVAL);  // Restart the test
     break;
+  }
+}
+
+
+void MainObject::ProcessTestResult(Config::WatchdogError werr)
+{
+  if(werr!=d_current_error) {
+    syslog(d_config->drouterdogdSyslogLevel(),"%s: %s",
+	   QObject::tr("watchdog state changed").toUtf8().constData(),
+	   Config::watchdogErrorString(werr).toUtf8().constData());
+
+    d_current_error=werr;
   }
 }
 

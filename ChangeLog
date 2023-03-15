@@ -928,3 +928,5 @@
 	* Updated the '[Drouterdogd]' section in 'conf/drouter.conf-sample'.
 	* Disabled the 'DROUTERDOGD_DEBUG' define in
 	'src/drouterdogd/drouterdogd.cpp'.
+2023-03-15 Fred Gleason <fredg@paravelsystems.com>
+	* Added syslog support to drouterdogd(8).
