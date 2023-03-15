@@ -121,6 +121,7 @@ DrouterAddress=192.168.21.21
 RouterNumber=9999
 GpoNumber=1
 InterfaceAddress=192.168.21.21
+InterfaceMask=255.255.255.0
 UseInternalNode=No
 
 

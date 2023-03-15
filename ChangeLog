@@ -924,3 +924,7 @@
 	segfaults when reading an empty router instance.
 2023-03-14 Fred Gleason <fredg@paravelsystems.com>
 	* Stubbed out drouterdogd(8) watchdog utility.
+2023-03-15 Fred Gleason <fredg@paravelsystems.com>
+	* Updated the '[Drouterdogd]' section in 'conf/drouter.conf-sample'.
+	* Disabled the 'DROUTERDOGD_DEBUG' define in
+	'src/drouterdogd/drouterdogd.cpp'.

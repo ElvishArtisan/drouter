@@ -24,7 +24,7 @@
 
 #include "drouterdogd.h"
 
-#define DROUTERDOGD_DEBUG 1
+// #define DROUTERDOGD_DEBUG 1
 
 MainObject::MainObject(QObject *parent)
   : QObject(parent)
