@@ -297,6 +297,102 @@
       </variablelist>
     </refsect2>
 
+    <refsect2 id='drouterdogd_section'>
+      <title>The [Drouterdogd] Section</title>
+      <para>
+	The <userinput>[Drouterdogd]</userinput> section configures operation
+	of the <command>drouterdogd</command><manvolnum>8</manvolnum> service
+	daemon. It contains the following parameters:
+      </para>
+      <variablelist>
+	<varlistentry>
+	  <term>
+	    <userinput>DrouterAddress=<replaceable>ipv4-addr</replaceable></userinput>
+	  </term>
+	  <listitem>
+	    <para>
+	      Where <replaceable>ipv4-addr</replaceable> is the IPv4 address
+	      of the Drouter server to monitor.
+	    </para>
+	  </listitem>
+	</varlistentry>
+	<varlistentry>
+	  <term>
+	    <userinput>RouterNumber=<replaceable>num</replaceable></userinput>
+	  </term>
+	  <listitem>
+	    <para>
+	      Where <replaceable>num</replaceable> is the Software Authority
+	      Protocol router number of the GPIO device to use as the monitor
+	      endpoint.
+	    </para>
+	  </listitem>
+	</varlistentry>
+	<varlistentry>
+	  <term>
+	    <userinput>GpoNumber=<replaceable>num</replaceable></userinput>
+	  </term>
+	  <listitem>
+	    <para>
+	      Where <replaceable>num</replaceable> is the Software Authority
+	      Protocol input number of the GPIO device to use as the monitor
+	      endpoint.
+	    </para>
+	  </listitem>
+	</varlistentry>
+	<varlistentry>
+	  <term>
+	    <userinput>InterfaceAddress=<replaceable>ipv4-addr</replaceable></userinput>
+	  </term>
+	  <listitem>
+	    <para>
+	      Where <replaceable>ipv4-addr</replaceable> is the IPv4 address
+	      of the local interface that is connected to the Livewire subnet.
+	    </para>
+	  </listitem>
+	</varlistentry>
+	<varlistentry>
+	  <term>
+	    <userinput>InterfaceMask=<replaceable>ipv4-mask</replaceable></userinput>
+	  </term>
+	  <listitem>
+	    <para>
+	      Where <replaceable>ipv4-mask</replaceable> is the IPv4 netmask
+	      of the local interface that is connected to the Livewire subnet
+	      in dotted-quad notation.
+	    </para>
+	  </listitem>
+	</varlistentry>
+	<varlistentry>
+	  <term>
+	    <userinput>UseInternalNode=Yes</userinput>|<userinput>No</userinput>
+	  </term>
+	  <listitem>
+	    <para>
+	      Instate a virtual GPIO node to use as the monitor endpoint
+	      (EXPERIMENTAL).
+	    </para>
+	  </listitem>
+	</varlistentry>
+	<varlistentry>
+	  <term>
+	    <userinput>WatchdogLogPriority=<replaceable>prio</replaceable></userinput>
+	  </term>
+	  <listitem>
+	    <para>
+	      The priority to use when sending notifications of watchdog
+	      state changes to the syslog.
+	    </para>
+	    <para>
+	      See the <userinput>IpcLogPriority</userinput> entry (above)
+	      for the list of values recognized for
+	      <replaceable>prio</replaceable>.
+	    </para>
+	  </listitem>
+	</varlistentry>
+      </variablelist>
+    </refsect2>
+
     <refsect2 id='tether_section'>
       <title>The [Tether] Section</title>
       <para>

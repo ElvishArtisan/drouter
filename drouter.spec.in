@@ -227,6 +227,7 @@ rm -rf $RPM_BUILD_ROOT
 %files watchdog
 %{_sbindir}/drouterdogd
 /lib/systemd/system/drouter-watchdog.service
+%{_datadir}/man/man5/drouter.conf.5.gz
 
 
 %changelog
