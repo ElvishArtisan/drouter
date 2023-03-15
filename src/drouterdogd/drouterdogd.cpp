@@ -25,6 +25,7 @@
 #include <QCoreApplication>
 
 #include "drouterdogd.h"
+#include "sendmail.h"
 
 // #define DROUTERDOGD_DEBUG 1
 
@@ -214,11 +215,21 @@ void MainObject::stepTimeoutData()
 
 void MainObject::ProcessTestResult(Config::WatchdogError werr)
 {
+  QString err_msg;
+
   if(werr!=d_current_error) {
     if(d_config->drouterdogdWatchdogLogPriority()>=0) {
       syslog(d_config->drouterdogdWatchdogLogPriority(),"%s: %s",
 	     QObject::tr("watchdog state changed").toUtf8().constData(),
 	     Config::watchdogErrorString(werr).toUtf8().constData());
+      if(Config::emailIsValid(d_config->alertAddress())&&
+	 Config::emailIsValid(d_config->fromAddress())) {
+	if(!SendMail(&err_msg,tr("Drouter watchdog alert"),
+		     tr("Drouter watchdog alert: status changed to")+" \""+
+		     Config::watchdogErrorString(werr)+"\".",
+		     d_config->fromAddress(),d_config->alertAddress())) {
+	}
+      }
     }
     d_current_error=werr;
   }

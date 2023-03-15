@@ -933,3 +933,5 @@
 2023-03-15 Fred Gleason <fredg@paravelsystems.com>
 	* Changed the 'SyslogLog=' directive to 'WatchdogLogPriority=' in the
 	'[Drouterdogd]' section of drouter.conf(5).
+2023-03-15 Fred Gleason <fredg@paravelsystems.com>
+	* Added e-mail alerts to drouterdogd(8).

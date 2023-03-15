@@ -169,14 +169,6 @@ UseInternalNode=No
 WatchdogLogPriority=4
 
 
-; SyslogLevel=<syslog-level>
-;
-; The importance level to use when reporting changes in watchdog state to
-; the syslog. See the 'level' parameter in the syslog(3) man page for
-; supported level values.
-;SyslogLevel=LOG_WARNING
-
-
 [Nodes]
 ; HostAddress<n>=<ipv4-address>
 ;

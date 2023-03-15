@@ -32,11 +32,13 @@ sbin_PROGRAMS = drouterdogd
 
 dist_drouterdogd_SOURCES = drouterdogd.cpp drouterdogd.h\
                            saparser.cpp saparser.h\
+                           sendmail.cpp sendmail.h\
                            vgpionode.cpp vgpionode.h
 
 nodist_drouterdogd_SOURCES = config.cpp config.h\
                              moc_drouterdogd.cpp\
                              moc_saparser.cpp\
+                             moc_sendmail.cpp\
                              moc_vgpionode.cpp
 
 drouterdogd_LDADD = @QT5CLI_LIBS@ @SWITCHYARD5_LIBS@
