@@ -152,12 +152,29 @@ InterfaceMask=255.255.255.0
 ; Instate a virtual GPIO node to use as the monitor endpoint (EXPERIMENTAL).
 UseInternalNode=No
 
+; WatchdogLogPriority=<prio>
+;
+; Integer indicating the priority to use when logging changes in watchdog
+; state to the syslog. The following values are recognized:
+;
+;  0 - Emergency (system is unusable)
+;  1 - Alert (action must be taken immediately)
+;  2 - Critical (critical conditions)
+;  3 - Error (error conditions)
+;  4 - Warning (warning conditions)
+;  5 - Notice (normal but significant condition)
+;  6 - Info (informational)
+;  7 - Debug (debug-level messages)
+; -1 - Disable (disable logging)
+WatchdogLogPriority=4
+
+
 ; SyslogLevel=<syslog-level>
 ;
 ; The importance level to use when reporting changes in watchdog state to
 ; the syslog. See the 'level' parameter in the syslog(3) man page for
 ; supported level values.
-SyslogLevel=LOG_WARNING
+;SyslogLevel=LOG_WARNING
 
 
 [Nodes]

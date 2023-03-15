@@ -83,7 +83,7 @@ class Config
   QHostAddress drouterdogdInterfaceAddress() const;
   QHostAddress drouterdogdInterfaceMask() const;
   bool drouterdogdUseInternalNode() const;
-  int drouterdogdSyslogLevel() const;
+  int drouterdogdWatchdogLogPriority() const;
   bool tetherIsActivated() const;
   QHostAddress tetherSharedIpAddress() const;
   QString tetherHostId(TetherRole role) const;
@@ -122,7 +122,7 @@ class Config
   QHostAddress conf_drouterdogd_interface_address;
   QHostAddress conf_drouterdogd_interface_mask;
   bool conf_drouterdogd_use_internal_node;
-  int conf_drouterdogd_syslog_level;
+  int conf_drouterdogd_watchdog_log_priority;
   bool conf_tether_is_activated;
   QHostAddress conf_tether_shared_ip_address;
   QString conf_tether_host_ids[2];

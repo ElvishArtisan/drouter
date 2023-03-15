@@ -160,9 +160,9 @@ bool Config::drouterdogdUseInternalNode() const
 }
 
 
-int Config::drouterdogdSyslogLevel() const
+int Config::drouterdogdWatchdogLogPriority() const
 {
-  return conf_drouterdogd_syslog_level;
+  return conf_drouterdogd_watchdog_log_priority;
 }
 
 
@@ -313,32 +313,8 @@ void Config::load()
 		    DROUTERDOGD_DEFAULT_INTERFACE_MASK);
   conf_drouterdogd_use_internal_node=
     p->boolValue("Drouterdogd","UseInternalNode",false);
-  QString syslog_str=
-    p->stringValue("Drouterdogd","SyslogLevel","LOG_WARNING");
-  if(syslog_str=="LOG_EMERG") {
-    conf_drouterdogd_syslog_level=LOG_EMERG;
-  }
-  if(syslog_str=="LOG_ALERT") {
-    conf_drouterdogd_syslog_level=LOG_ALERT;
-  }
-  if(syslog_str=="LOG_CRIT") {
-    conf_drouterdogd_syslog_level=LOG_CRIT;
-  }
-  if(syslog_str=="LOG_ERR") {
-    conf_drouterdogd_syslog_level=LOG_ERR;
-  }
-  if(syslog_str=="LOG_WARNING") {
-    conf_drouterdogd_syslog_level=LOG_WARNING;
-  }
-  if(syslog_str=="LOG_NOTICE") {
-    conf_drouterdogd_syslog_level=LOG_NOTICE;
-  }
-  if(syslog_str=="LOG_INFO") {
-    conf_drouterdogd_syslog_level=LOG_INFO;
-  }
-  if(syslog_str=="LOG_DEBUG") {
-    conf_drouterdogd_syslog_level=LOG_DEBUG;
-  }
+  conf_drouterdogd_watchdog_log_priority=
+    p->intValue("Drouterdogd","WatchdogLogPriority",LOG_WARNING);
 
   //
   // [Tether] Section

@@ -930,3 +930,6 @@
 	'src/drouterdogd/drouterdogd.cpp'.
 2023-03-15 Fred Gleason <fredg@paravelsystems.com>
 	* Added syslog support to drouterdogd(8).
+2023-03-15 Fred Gleason <fredg@paravelsystems.com>
+	* Changed the 'SyslogLog=' directive to 'WatchdogLogPriority=' in the
+	'[Drouterdogd]' section of drouter.conf(5).

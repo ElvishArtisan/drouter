@@ -215,10 +215,11 @@ void MainObject::stepTimeoutData()
 void MainObject::ProcessTestResult(Config::WatchdogError werr)
 {
   if(werr!=d_current_error) {
-    syslog(d_config->drouterdogdSyslogLevel(),"%s: %s",
-	   QObject::tr("watchdog state changed").toUtf8().constData(),
-	   Config::watchdogErrorString(werr).toUtf8().constData());
-
+    if(d_config->drouterdogdWatchdogLogPriority()>=0) {
+      syslog(d_config->drouterdogdWatchdogLogPriority(),"%s: %s",
+	     QObject::tr("watchdog state changed").toUtf8().constData(),
+	     Config::watchdogErrorString(werr).toUtf8().constData());
+    }
     d_current_error=werr;
   }
 }
