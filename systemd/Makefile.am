@@ -2,7 +2,7 @@
 ##
 ## Use automake to process this into a Makefile.in
 ##
-##   (C) Copyright 2017 Fred Gleason <fredg@paravelsystems.com>
+##   (C) Copyright 2017-2023 Fred Gleason <fredg@paravelsystems.com>
 ##
 ##   This program is free software; you can redistribute it and/or modify
 ##   it under the terms of the GNU General Public License version 2 as
@@ -22,16 +22,19 @@ install-exec-local:
 	mkdir -p $(DESTDIR)/lib/systemd/system
 	cp drouter.service $(DESTDIR)/lib/systemd/system/drouter.service
 	cp drouter.socket $(DESTDIR)/lib/systemd/system/drouter.socket
+	cp drouter-watchdog.service $(DESTDIR)/lib/systemd/system/drouter-watchdog.service
 	./daemon-reload.sh
 
 uninstall-local:	
 	rm -f $(DESTDIR)/lib/systemd/system/drouter.service
 	rm -f $(DESTDIR)/lib/systemd/system/drouter.socket
+	rm -f $(DESTDIR)/lib/systemd/system/drouter-watchdog.service
 	./daemon-reload.sh
 
 EXTRA_DIST = daemon-reload.sh\
              drouter.service.in\
-             drouter.socket
+             drouter.socket\
+             drouter-watchdog.service.in
 
 CLEANFILES = *~
 

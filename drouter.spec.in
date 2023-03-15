@@ -40,6 +40,10 @@ Summary: Python API for using state scripts with Drouter
 Requires: python36
 
 
+%package watchdog
+Summary: Service monitoring watchdog for Drouter
+
+
 %description
 DRouter is a dynamic router framework for controling a Livewire audio network.
 In addition to its own native ProtocolD, it also provides support for
@@ -56,6 +60,11 @@ versions as well.
 Python API for the Drouter framework. This allows creation of "state scripts"
 that can be used to provide automated responses to changes in the state
 of the Livewire network.
+
+
+%description watchdog
+Watchdog monitor for the Drouter framework. Can send alerts via GPIO events
+and e-mail in the event of a failure of the service.
 
 
 %prep
@@ -113,6 +122,24 @@ if test ! -e /etc/drouter/drouter.conf ; then
 fi
 
 
+%post watchdog
+if [ -x %{_bindir}/systemctl ] ; then
+    /bin/systemctl daemon-reload
+    /bin/systemctl start drouter-watchdog.service
+    /bin/systemctl enable drouter-watchdog.service
+fi
+if test "@DISTRO@" = "suse" ; then
+  PACKAGE_DOC_DIR=%_docdir/%{name}-watchdog
+fi
+if test "@DISTRO@" = "redhat" ; then
+  PACKAGE_DOC_DIR=%_docdir/%{name}-watchdog-@VERSION@
+fi
+if test ! -e /etc/drouter/drouter.conf ; then
+  mkdir -p /etc/drouter
+  cp $PACKAGE_DOC_DIR/drouter.conf-sample /etc/drouter/drouter.conf
+fi
+
+
 %preun
 if [ -x %{_bindir}/systemctl ] ; then
     /bin/systemctl stop drouter.socket
@@ -122,7 +149,20 @@ if [ -x %{_bindir}/systemctl ] ; then
 fi
 
 
+%preun watchdog
+if [ -x %{_bindir}/systemctl ] ; then
+    /bin/systemctl stop drouter-watchdog.service
+    /bin/systemctl disable drouter-watchdog.service
+fi
+
+
 %postun
+if [ -x %{_bindir}/systemctl ] ; then
+  systemctl daemon-reload
+fi
+
+
+%postun watchdog
 if [ -x %{_bindir}/systemctl ] ; then
   systemctl daemon-reload
 fi
@@ -184,7 +224,14 @@ rm -rf $RPM_BUILD_ROOT
 %{_datadir}/doc/drouter-%{version}/examples/*
 
 
+%files watchdog
+%{_sbindir}/drouterdogd
+/lib/systemd/system/drouter-watchdog.service
+
+
 %changelog
+* Wed Mar 15 2023 Fred Gleason <fredg@paravelsystems.com>
+-- Added the 'watchdog' subpackage.
 * Sat Jul 30 2022 Fred Gleason <fredg@paravelsystems.com>
 -- Removed the 32x32 version of the 'drouter' icon.
 * Thu Jul 21 2022 Fred Gleason <fredg@paravelsystems.com>

@@ -935,3 +935,6 @@
 	'[Drouterdogd]' section of drouter.conf(5).
 2023-03-15 Fred Gleason <fredg@paravelsystems.com>
 	* Added e-mail alerts to drouterdogd(8).
+2023-03-15 Fred Gleason <fredg@paravelsystems.com>
+	* Added a 'drouter-watchdog' Systemd service.
+	* Added a 'drouter-watchdog' RPM package.

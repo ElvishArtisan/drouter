@@ -1,0 +1,16 @@
+@GENERATED_SCRIPT_FILE_WARNING@
+
+[Unit]
+Description=DRouter Watchdog Monitor
+After=network.target remote-fs.target nss-lookup.target
+Documentation=man:drouterdogd(8)
+
+[Service]
+Type=simple
+ExecStart=@prefix@/sbin/drouterdogd
+TimeoutStopSec=10
+PrivateTmp=true
+Restart=always
+
+[Install]
+WantedBy=multi-user.target

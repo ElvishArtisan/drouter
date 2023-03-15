@@ -281,6 +281,7 @@ AC_CONFIG_FILES([ \
     src/xypanel/Makefile \
     systemd/Makefile \
     systemd/drouter.service \
+    systemd/drouter-watchdog.service \
     drouter.spec \
     build_debs.sh \
     Makefile ])
