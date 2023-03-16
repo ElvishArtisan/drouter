@@ -939,4 +939,4 @@
 	* Added a 'drouter-watchdog' Systemd service.
 	* Added a 'drouter-watchdog' RPM package.
 2023-03-15 Fred Gleason <fredg@paravelsystems.com>
-	* Documented the '[Drouterddog]' section of drouter.conf(5).
+	* Documented the '[Drouterdogd]' section of drouter.conf(5).
