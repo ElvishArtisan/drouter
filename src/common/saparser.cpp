@@ -462,12 +462,14 @@ void SaParser::DispatchCommand(QString cmd)
 	if((f0[1]=="snapshotnames")&&(sa_current_router==sa_last_router)) {
 	  for(QMap<int,QString>::const_iterator it=sa_router_names.begin();
 	      it!=sa_router_names.end();it++) {
-	    SendCommand(QString::asprintf("RouteStat %u\r\n",it.key()));
-	    sa_last_xpoint_router=it.key();
-	    QMap<int,QString>::const_iterator it2=
-	      sa_output_names[it.key()].end();
-	    it2--;
-	    sa_last_xpoint_output=it2.key();
+	    if(sa_output_names[it.key()].size()>0) {
+	      SendCommand(QString::asprintf("RouteStat %u\r\n",it.key()));
+	      sa_last_xpoint_router=it.key();
+	      QMap<int,QString>::const_iterator it2=
+		sa_output_names[it.key()].end();
+	      it2--;
+	      sa_last_xpoint_output=it2.key();
+	    }
 	  }
 	  sa_reading_snapshots=false;
 	  sa_reading_xpoints=true;
