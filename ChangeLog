@@ -920,4 +920,5 @@
 2022-12-12 Fred Gleason <fredg@paravelsystems.com>
 	* Incremented the package version to 1.0.0rc4int11.
 2023-03-20 Fred Gleason <fredg@paravelsystems.com>
-	* Fixed a bug in 'SaParser' that could cause a segfault.
+	* Fixed a bug in the software authority parser that could cause
+	segfaults when reading an empty router instance.
