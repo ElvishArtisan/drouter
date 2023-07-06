@@ -85,6 +85,10 @@ class PanelWidget : public QWidget
   int widget_input;
   QMap<int,QString> widget_input_names;
   bool widget_xpoint_synced;
+  QPalette widget_blue_palette;
+  QString widget_blue_stylesheet;
+  QPalette widget_red_palette;
+  QString widget_red_stylesheet;
 };
 
 

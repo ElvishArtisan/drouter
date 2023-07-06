@@ -61,6 +61,16 @@ PanelWidget::PanelWidget(SaParser *parser,int router,int output,QWidget *parent)
   QFont cancel_font("helvetica",14,QFont::Bold);
   cancel_font.setPixelSize(14);
 
+  widget_blue_palette=palette();
+  widget_blue_palette.setColor(QPalette::Window,Qt::blue);
+  widget_blue_palette.setColor(QPalette::WindowText,Qt::white);
+  widget_blue_stylesheet=QString("color:white;background-color:blue;");
+
+  widget_red_palette=palette();
+  widget_red_palette.setColor(QPalette::Window,Qt::red);
+  widget_red_palette.setColor(QPalette::WindowText,Qt::white);
+  widget_red_stylesheet=QString("color:white;background-color:red;");
+  
   widget_parser=parser;
   widget_router=router;
   widget_output=output;
@@ -178,13 +188,17 @@ void PanelWidget::tickClock(bool state)
   if(widget_input!=widget_input_box->currentItemData().toInt()) {
     if(state) {
       widget_take_button->
-	setStyleSheet("color: #FFFFFF;background-color: #FF0000;");
+	setStyleSheet(widget_red_stylesheet);
+      widget_take_button->setPalette(widget_red_palette);
       widget_cancel_button->setStyleSheet("");
+      widget_cancel_button->setPalette(palette());
     }
     else {
       widget_take_button->setStyleSheet("");
+      widget_take_button->setPalette(palette());
       widget_cancel_button->
-	setStyleSheet("color: #FFFFFF;background-color: #0000FF;");
+	setStyleSheet(widget_blue_stylesheet);
+      widget_cancel_button->setPalette(widget_blue_palette);
     }
   }
 }
@@ -263,7 +277,9 @@ void PanelWidget::SetArmedState(bool state)
   }
   else {
     widget_take_button->setStyleSheet("");
+    widget_take_button->setPalette(palette());
     widget_cancel_button->setStyleSheet("");
+    widget_cancel_button->setPalette(palette());
     widget_take_button->setDisabled(true);
     widget_cancel_button->setDisabled(true);
   }

@@ -924,3 +924,6 @@
 	segfaults when reading an empty router instance.
 2023-03-20 Fred Gleason <fredg@paravelsystems.com>
 	* Incremented the package version to 1.0.0rc4int12.
+2023-07-06 Fred Gleason <fredg@paravelsystems.com>
+	* Tweaked button color management in outputpanel(1) to be more
+	compatible across different desktop themes.
