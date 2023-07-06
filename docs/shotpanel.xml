@@ -6,12 +6,12 @@
   <refmeta>
     <refentrytitle>shotpanel</refentrytitle>
     <manvolnum>1</manvolnum>
-    <refmiscinfo class='source'>July 2022</refmiscinfo>
+    <refmiscinfo class='source'>July 2023</refmiscinfo>
     <refmiscinfo class='manual'>Linux Audio Manual</refmiscinfo>
   </refmeta>
   <refnamediv>
     <refname>shotpanel</refname>
-    <refpurpose>Control panel for executing audio routing salvos</refpurpose>
+    <refpurpose>Control panel for executing routing salvos</refpurpose>
   </refnamediv>
   <info>
     <author>
@@ -37,7 +37,7 @@
   <refsect1 id='description'><title>Description</title>
   <para>
     <command>shotpanel</command><manvolnum>1</manvolnum> is an control
-    applet that can be used to execute audio routing salvos with systems
+    applet that can be used to execute routing salvos with systems
     using the Software Authority control protocol (such as PathFinder or
     Drouter's
     <command>drouterd</command><manvolnum>8</manvolnum>).
@@ -171,6 +171,16 @@
 	</listitem>
       </varlistentry>
     </variablelist>
+  </refsect1>
+
+  <refsect1 id='bugs'>
+    <title>Bugs</title>
+    <para>
+      The GTK windowing styles do not support overriding the background color
+      of button elements (as is commonly done in Drouter panel widgets). This
+      can be worked around by using the <userinput>-style</userinput> option
+      to specify a different window style --e.g. <userinput>-style plastique</userinput>
+    </para>
   </refsect1>
 
   <refsect1 id='see_also'><title>See Also</title>

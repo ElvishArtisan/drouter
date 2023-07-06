@@ -6,7 +6,7 @@
   <refmeta>
     <refentrytitle>eventlogpanel</refentrytitle>
     <manvolnum>1</manvolnum>
-    <refmiscinfo class='source'>July 2022</refmiscinfo>
+    <refmiscinfo class='source'>July 2023</refmiscinfo>
     <refmiscinfo class='manual'>Linux Audio Manual</refmiscinfo>
   </refmeta>
   <refnamediv>
@@ -146,6 +146,16 @@
 	</listitem>
       </varlistentry>
     </variablelist>
+  </refsect1>
+
+  <refsect1 id='bugs'>
+    <title>Bugs</title>
+    <para>
+      The GTK windowing styles do not support overriding the background color
+      of button elements (as is commonly done in Drouter panel widgets). This
+      can be worked around by using the <userinput>-style</userinput> option
+      to specify a different window style --e.g. <userinput>-style plastique</userinput>
+    </para>
   </refsect1>
 
   <refsect1 id='see_also'><title>See Also</title>

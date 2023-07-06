@@ -6,12 +6,12 @@
   <refmeta>
     <refentrytitle>outputpanel</refentrytitle>
     <manvolnum>1</manvolnum>
-    <refmiscinfo class='source'>July 2022</refmiscinfo>
+    <refmiscinfo class='source'>July 2023</refmiscinfo>
     <refmiscinfo class='manual'>Linux Audio Manual</refmiscinfo>
   </refmeta>
   <refnamediv>
     <refname>outputpanel</refname>
-    <refpurpose>List-based control panel applet for audio routing
+    <refpurpose>List-based control panel applet for signal routing
     systems</refpurpose>
   </refnamediv>
   <info>
@@ -38,8 +38,8 @@
   <refsect1 id='description'><title>Description</title>
   <para>
     <command>outputpanel</command><manvolnum>1</manvolnum> is a GUI
-    control applet that can be used to control one or more audio outputs
-    on an audio routing system using Software Authority control protocol
+    control applet that can be used to control one or more signal outputs
+    on an signal routing system using Software Authority control protocol
     (such as PathFinder or Drouter).
   </para>
   </refsect1>
@@ -186,6 +186,16 @@
 	</listitem>
       </varlistentry>
     </variablelist>
+  </refsect1>
+
+  <refsect1 id='bugs'>
+    <title>Bugs</title>
+    <para>
+      The GTK windowing styles do not support overriding the background color
+      of button elements (as is commonly done in Drouter panel widgets). This
+      can be worked around by using the <userinput>-style</userinput> option
+      to specify a different window style --e.g. <userinput>-style plastique</userinput>
+    </para>
   </refsect1>
 
   <refsect1 id='see_also'><title>See Also</title>

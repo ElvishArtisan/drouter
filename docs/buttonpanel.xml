@@ -6,12 +6,12 @@
   <refmeta>
     <refentrytitle>buttonpanel</refentrytitle>
     <manvolnum>1</manvolnum>
-    <refmiscinfo class='source'>July 2022</refmiscinfo>
+    <refmiscinfo class='source'>July 2023</refmiscinfo>
     <refmiscinfo class='manual'>Linux Audio Manual</refmiscinfo>
   </refmeta>
   <refnamediv>
     <refname>buttonpanel</refname>
-    <refpurpose>Button-based control panel applet for audio routing
+    <refpurpose>Button-based control panel applet for signal routing
     systems</refpurpose>
   </refnamediv>
   <info>
@@ -38,7 +38,7 @@
   <refsect1 id='description'><title>Description</title>
   <para>
     <command>buttonpanel</command><manvolnum>1</manvolnum> is a button-based
-    control applet that can be used to control audio routing and GPIO devices
+    control applet that can be used to control signal routing and GPIO devices
     with systems using Software Authority control protocol (such as PathFinder
     or Drouter).
   </para>
@@ -419,6 +419,16 @@
 	</listitem>
       </varlistentry>
     </variablelist>
+  </refsect1>
+
+  <refsect1 id='bugs'>
+    <title>Bugs</title>
+    <para>
+      The GTK windowing styles do not support overriding the background color
+      of button elements (as is commonly done in Drouter panel widgets). This
+      can be worked around by using the <userinput>-style</userinput> option
+      to specify a different window style --e.g. <userinput>-style plastique</userinput>
+    </para>
   </refsect1>
 
   <refsect1 id='see_also'><title>See Also</title>

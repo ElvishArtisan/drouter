@@ -927,3 +927,7 @@
 2023-07-06 Fred Gleason <fredg@paravelsystems.com>
 	* Tweaked button color management in outputpanel(1) to be more
 	compatible across different desktop themes.
+2023-07-06 Fred Gleason <fredg@paravelsystems.com>
+	* Added a 'Bugs' section describing a workaround for GTK windowing
+	style issues to the buttonpanel(1), eventlogpanel(1), outputpanel(1),
+	shotpanel(1), xypanel(1) and xpointpanel(1) man pages.
