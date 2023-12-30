@@ -931,3 +931,6 @@
 	* Added a 'Bugs' section describing a workaround for GTK windowing
 	style issues to the buttonpanel(1), eventlogpanel(1), outputpanel(1),
 	shotpanel(1), xypanel(1) and xpointpanel(1) man pages.
+2023-12-30 Fred Gleason <fredg@paravelsystems.com>
+	* Removed superfluous SQL statements from
+	'scripts/drouter_init_db.sh'.

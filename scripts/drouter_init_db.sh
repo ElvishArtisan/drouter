@@ -4,7 +4,7 @@
 #
 # Initialize MySQL/MariaDB for DRouter
 #
-#   (C) Copyright 2018 Fred Gleason <fredg@paravelsystems.com>
+#   (C) Copyright 2018-2023 Fred Gleason <fredg@paravelsystems.com>
 #
 #   This program is free software; you can redistribute it and/or modify
 #   it under the terms of the GNU General Public License version 2 as
@@ -34,5 +34,3 @@ echo "CREATE DATABASE drouter;" | $MYSQL_COMMAND
 echo "CREATE USER 'drouter'@'localhost' IDENTIFIED BY 'drouter';" | $MYSQL_COMMAND
 echo "GRANT SELECT,INSERT,UPDATE,DELETE,CREATE,DROP,INDEX,ALTER,CREATE TEMPORARY TABLES,LOCK TABLES ON drouter.* TO 'drouter'@'localhost';" | $MYSQL_COMMAND
 echo "CREATE USER 'drouter'@'%' IDENTIFIED BY 'drouter';" | $MYSQL_COMMAND
-echo "GRANT SELECT ON drouter.PERM_SA_EVENTS to 'drouter'@'%';" | $MYSQL_COMMAND
-echo "GRANT SELECT ON drouter.TETHER to 'drouter'@'%';" | $MYSQL_COMMAND
