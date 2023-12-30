@@ -109,7 +109,12 @@ if test "@DISTRO@" = "redhat" ; then
 fi
 if test ! -e /etc/drouter/drouter.conf ; then
   mkdir -p /etc/drouter
+  mkdir -p /etc/drouter/maps.d
+  mkdir -p /etc/drouter/scripts.d
   cp $PACKAGE_DOC_DIR/drouter.conf-sample /etc/drouter/drouter.conf
+  mkdir -p /var/cache/drouter
+  chown root:root /var/cache/drouter
+  chmod 0600 /var/cache/drouter
 fi
 
 

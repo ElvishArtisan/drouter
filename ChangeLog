@@ -934,3 +934,6 @@
 2023-12-30 Fred Gleason <fredg@paravelsystems.com>
 	* Removed superfluous SQL statements from
 	'scripts/drouter_init_db.sh'.
+2023-12-30 Fred Gleason <fredg@paravelsystems.com>
+	* Added code to create needed configuration directories to the
+	'drouter' RPM package.
