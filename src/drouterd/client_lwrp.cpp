@@ -78,12 +78,7 @@ QString ClientLwrp::deviceName() const
   return d_lwrp_client->deviceName();
 }
 
-/*
-QString ClientLwrp::productName() const
-{
-}
 
-*/
 unsigned ClientLwrp::dstSlots() const
 {
   return d_lwrp_client->dstSlots();
@@ -125,17 +120,7 @@ QString ClientLwrp::hostName() const
   return d_lwrp_client->hostName();
 }
 
-/*
-QHostAddress ClientLwrp::hostAddress() const
-{
-}
 
-
-uint16_t ClientLwrp::port() const
-{
-}
-
-*/
 int ClientLwrp::srcNumber(int slot) const
 {
   return d_lwrp_client->srcNumber(slot);
@@ -147,86 +132,31 @@ QHostAddress ClientLwrp::srcAddress(int slot) const
   return d_lwrp_client->srcAddress(slot);
 }
 
-/*
-void ClientLwrp::setSrcAddress(int slot,const QHostAddress &addr)
-{
-}
 
-
-void ClientLwrp::setSrcAddress(int slot,const QString &addr)
-{
-}
-
-*/
 QString ClientLwrp::srcName(int slot) const
 {
   return d_lwrp_client->srcName(slot);
 }
-/*
-
-void ClientLwrp::setSrcName(int slot,const QString &str)
-{
-}
 
 
-QString ClientLwrp::srcLabel(int slot) const
-{
-}
-
-
-void ClientLwrp::setSrcLabel(int slot,const QString &str)
-{
-}
-
-*/
 bool ClientLwrp::srcEnabled(int slot) const
 {
   return d_lwrp_client->srcEnabled(slot);
 }
-/*
 
-void ClientLwrp::setSrcEnabled(int slot,bool state)
-{
-}
 
-*/
 unsigned ClientLwrp::srcChannels(int slot) const
 {
   return d_lwrp_client->srcChannels(slot);
 }
-/*
 
-void ClientLwrp::setSrcChannels(int slot,unsigned chans)
-{
-}
 
-*/
 unsigned ClientLwrp::srcPacketSize(int slot)
 {
   return d_lwrp_client->srcPacketSize(slot);
 }
-/*
-
-void ClientLwrp::setSrcPacketSize(int slot,unsigned size)
-{
-}
 
 
-bool ClientLwrp::srcShareable(int slot) const
-{
-}
-
-
-void ClientLwrp::setSrcShareable(int slot,bool state)
-{
-}
-
-
-int ClientLwrp::srcMeterLevel(int slot,int chan) const
-{
-}
-
-*/
 QHostAddress ClientLwrp::dstAddress(int slot) const
 {
   return d_lwrp_client->dstAddress(slot);
@@ -249,29 +179,14 @@ QString ClientLwrp::dstName(int slot) const
 {
   return d_lwrp_client->dstName(slot);
 }
-/*
 
-void ClientLwrp::setDstName(int slot,const QString &str)
-{
-}
 
-*/
 unsigned ClientLwrp::dstChannels(int slot) const
 {
   return d_lwrp_client->dstChannels(slot);
 }
-/*
-
-void ClientLwrp::setDstChannels(int slot,unsigned chans)
-{
-}
 
 
-int ClientLwrp::dstMeterLevel(int slot,int chan) const
-{
-}
-
-*/
 SyGpioBundle *ClientLwrp::gpiBundle(int slot) const
 {
   return d_lwrp_client->gpiBundle(slot);
@@ -295,24 +210,14 @@ void ClientLwrp::setGpoCode(int slot,const QString &code)
   d_lwrp_client->setGpoCode(slot,code);
 }
 
-/*
-void ClientLwrp::setGpoName(int slot,const QString &str)
-{
-}
 
-*/
 void ClientLwrp::setGpoSourceAddress(int slot,const QHostAddress &s_addr,
 				     int s_slot)
 {
   d_lwrp_client->setGpoSourceAddress(slot,s_addr,s_slot);
 }
-/*
 
-void ClientLwrp::setGpoFollow(int slot,bool state)
-{
-}
 
-*/
 bool ClientLwrp::clipAlarmActive(int slot,SyLwrpClient::MeterType type,
 				 int chan) const
 {
@@ -340,54 +245,18 @@ void ClientLwrp::setSilenceMonitor(int slot,SyLwrpClient::MeterType type,
   d_lwrp_client->setSilenceMonitor(slot,type,lvl,msec);
 }
 
-/*
-void ClientLwrp::startMeter(SyLwrpClient::MeterType type)
-{
-}
 
-
-void ClientLwrp::stopMeter(SyLwrpClient::MeterType type)
-{
-}
-
-
-QHostAddress ClientLwrp::nicAddress() const
-{
-}
-
-
-void ClientLwrp::setNicAddress(const QHostAddress &addr)
-{
-}
-
-*/
 void ClientLwrp::connectToHost(const QHostAddress &addr,uint16_t port,
 			       const QString &pwd,bool persistent)
 {
   d_lwrp_client->connectToHost(addr,port,pwd,persistent);
 }
-/*
-
-int ClientLwrp::timeoutInterval() const
-{
-}
 
 
-void ClientLwrp::setTimeoutInterval(int msec)
-{
-}
-
-*/
 void ClientLwrp::sendRawLwrp(const QString &cmd)
 {
   return d_lwrp_client->sendRawLwrp(cmd);
 }
-/*
-
-void ClientLwrp::close()
-{
-}
-*/
 
 
 void ClientLwrp::nodeConnectedData(unsigned id,bool state)

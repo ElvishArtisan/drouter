@@ -44,7 +44,6 @@ class Client :public QObject
   virtual bool isConnected() const=0;
   virtual QHostAddress hostAddress() const=0;
   virtual QString deviceName() const=0;
-  // virtual QString productName() const=0;
   virtual unsigned dstSlots() const=0;
   virtual unsigned srcSlots() const=0;
   virtual SySource *src(int slot) const=0;
@@ -52,41 +51,23 @@ class Client :public QObject
   virtual unsigned gpis() const=0;
   virtual unsigned gpos() const=0;
   virtual QString hostName() const=0;
-  // virtual QHostAddress hostAddress() const=0;
-  // virtual uint16_t port() const=0;
   virtual int srcNumber(int slot) const=0;
   virtual QHostAddress srcAddress(int slot) const=0;
-  // virtual void setSrcAddress(int slot,const QHostAddress &addr)=0;
-  // virtual void setSrcAddress(int slot,const QString &addr)=0;
   virtual QString srcName(int slot) const=0;
-  // virtual void setSrcName(int slot,const QString &str)=0;
-  // virtual QString srcLabel(int slot) const=0;
-  // virtual void setSrcLabel(int slot,const QString &str)=0;
   virtual bool srcEnabled(int slot) const=0;
-  // virtual void setSrcEnabled(int slot,bool state)=0;
   virtual unsigned srcChannels(int slot) const=0;
-  // virtual void setSrcChannels(int slot,unsigned chans)=0;
   virtual unsigned srcPacketSize(int slot)=0;
-  // virtual void setSrcPacketSize(int slot,unsigned size)=0;
-  // virtual bool srcShareable(int slot) const=0;
-  // virtual void setSrcShareable(int slot,bool state)=0;
-  // virtual int srcMeterLevel(int slot,int chan) const=0;
   virtual QHostAddress dstAddress(int slot) const=0;
   virtual void setDstAddress(int slot,const QHostAddress &addr)=0;
   virtual void setDstAddress(int slot,const QString &addr)=0;
   virtual QString dstName(int slot) const=0;
-  // virtual void setDstName(int slot,const QString &str)=0;
   virtual unsigned dstChannels(int slot) const=0;
-  //virtual void setDstChannels(int slot,unsigned chans)=0;
-  // virtual int dstMeterLevel(int slot,int chan) const=0;
   virtual SyGpioBundle *gpiBundle(int slot) const=0;
   virtual void setGpiCode(int slot,const QString &code)=0;
   virtual SyGpo *gpo(int slot) const=0;
   virtual void setGpoCode(int slot,const QString &code)=0;
-  // virtual void setGpoName(int slot,const QString &str)=0;
   virtual void setGpoSourceAddress(int slot,const QHostAddress &s_addr,
 				   int s_slot)=0;
-  // virtual void setGpoFollow(int slot,bool state)=0;
   virtual bool clipAlarmActive(int slot,SyLwrpClient::MeterType type,
 			       int chan) const=0;
   virtual bool silenceAlarmActive(int slot,SyLwrpClient::MeterType type,
@@ -95,16 +76,9 @@ class Client :public QObject
 			      int msec)=0;
   virtual void setSilenceMonitor(int slot,SyLwrpClient::MeterType type,int lvl,
 				 int msec)=0;
-  // virtual void startMeter(SyLwrpClient::MeterType type)=0;
-  // virtual void stopMeter(SyLwrpClient::MeterType type)=0;
-  // virtual QHostAddress nicAddress() const=0;
-  // virtual void setNicAddress(const QHostAddress &addr)=0;
   virtual void connectToHost(const QHostAddress &addr,uint16_t port,
   			     const QString &pwd,bool persistent=false)=0;
-  // virtual int timeoutInterval() const=0;
-  // virtual void setTimeoutInterval(int msec)=0;
   virtual void sendRawLwrp(const QString &cmd)=0;
-  // virtual void close()=0;
   static QString typeString(Type type);
 
  signals:

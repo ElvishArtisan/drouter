@@ -941,3 +941,5 @@
 	* Added definition of an abstract matrix class 'Client' in
 	drouterd(8).
 	* Modified the LWRP matrix driver to use the 'Client' API.
+2023-12-31 Fred Gleason <fredg@paravelsystems.com>
+	* Removed dead method stubs from the 'Client' API classes.

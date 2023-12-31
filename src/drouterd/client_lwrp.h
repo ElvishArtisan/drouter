@@ -35,7 +35,6 @@ class ClientLwrp :public Client
   bool isConnected() const;
   QHostAddress hostAddress() const;
   QString deviceName() const;
-  // QString productName() const;
   unsigned dstSlots() const;
   unsigned srcSlots() const;
   SySource *src(int slot) const;
@@ -43,56 +42,31 @@ class ClientLwrp :public Client
   unsigned gpis() const;
   unsigned gpos() const;
   QString hostName() const;
-  // QHostAddress hostAddress() const;
-  // uint16_t port() const;
   int srcNumber(int slot) const;
   QHostAddress srcAddress(int slot) const;
-  // void setSrcAddress(int slot,const QHostAddress &addr);
-  // void setSrcAddress(int slot,const QString &addr);
   QString srcName(int slot) const;
-  // void setSrcName(int slot,const QString &str);
-  // QString srcLabel(int slot) const;
-  // void setSrcLabel(int slot,const QString &str);
   bool srcEnabled(int slot) const;
-  // void setSrcEnabled(int slot,bool state);
   unsigned srcChannels(int slot) const;
-  // void setSrcChannels(int slot,unsigned chans);
   unsigned srcPacketSize(int slot);
-  // void setSrcPacketSize(int slot,unsigned size);
-  // bool srcShareable(int slot) const;
-  // void setSrcShareable(int slot,bool state);
-  // int srcMeterLevel(int slot,int chan) const;
   QHostAddress dstAddress(int slot) const;
   void setDstAddress(int slot,const QHostAddress &addr);
   void setDstAddress(int slot,const QString &addr);
   QString dstName(int slot) const;
-  // void setDstName(int slot,const QString &str);
   unsigned dstChannels(int slot) const;
-  // void setDstChannels(int slot,unsigned chans);
-  // int dstMeterLevel(int slot,int chan) const;
   SyGpioBundle *gpiBundle(int slot) const;
   void setGpiCode(int slot,const QString &code);
   SyGpo *gpo(int slot) const;
   void setGpoCode(int slot,const QString &code);
-  // void setGpoName(int slot,const QString &str);
   void setGpoSourceAddress(int slot,const QHostAddress &s_addr,
 			   int s_slot);
-  // void setGpoFollow(int slot,bool state);
   bool clipAlarmActive(int slot,SyLwrpClient::MeterType type,int chan) const;
   bool silenceAlarmActive(int slot,SyLwrpClient::MeterType type,int chan) const;
   void setClipMonitor(int slot,SyLwrpClient::MeterType type,int lvl,int msec);
   void setSilenceMonitor(int slot,SyLwrpClient::MeterType type,int lvl,
 			 int msec);
-  // void startMeter(SyLwrpClient::MeterType type);
-  // void stopMeter(SyLwrpClient::MeterType type);
-  // QHostAddress nicAddress() const;
-  // void setNicAddress(const QHostAddress &addr);
   void connectToHost(const QHostAddress &addr,uint16_t port,
 		     const QString &pwd,bool persistent=false);
-  // int timeoutInterval() const;
-  // void setTimeoutInterval(int msec);
   void sendRawLwrp(const QString &cmd);
-  // void close();
 
  private slots:
   void nodeConnectedData(unsigned id,bool state);
