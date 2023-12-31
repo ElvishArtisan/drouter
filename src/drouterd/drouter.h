@@ -28,9 +28,10 @@
 #include <QTcpServer>
 #include <QTimer>
 
-#include <sy5/sylwrp_client.h>
+//#include <sy5/sylwrp_client.h>
 #include <sy5/symcastsocket.h>
 
+#include "client.h"
 #include "config.h"
 #include "endpointmap.h"
 #include "gpioflasher.h"
@@ -42,8 +43,8 @@ class DRouter : public QObject
   DRouter(int *proto_socks,QObject *parent=0);
   ~DRouter();
   QList<QHostAddress> nodeHostAddresses() const;
-  SyLwrpClient *node(const QHostAddress &hostaddr);
-  SyLwrpClient *nodeBySrcStream(const QHostAddress &strmaddress,int *slot);
+  Client *node(const QHostAddress &hostaddr);
+  Client *nodeBySrcStream(const QHostAddress &strmaddress,int *slot);
   SySource *src(int srcnum) const;
   SySource *src(const QHostAddress &hostaddr,int slot) const;
   SyDestination *dst(const QHostAddress &hostaddr,int slot) const;
@@ -95,7 +96,8 @@ class DRouter : public QObject
   void FinalizeSAGpioRoute(int event_id,int router,int output,int input);
   void FinalizeSARouteEvent(int event_id,bool status) const;
   void WriteCommentEvent(const QString &str) const;
-  QMap<unsigned,SyLwrpClient *> drouter_nodes;
+  //  QMap<unsigned,SyLwrpClient *> drouter_nodes;
+  QMap<unsigned,Client *> drouter_nodes;
   QList<SyMcastSocket *> drouter_advt_sockets;
   QMap<int,QTcpSocket *> drouter_ipc_sockets;
   QMap<int,QString> drouter_ipc_accums;
