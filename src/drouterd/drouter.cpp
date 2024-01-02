@@ -1389,31 +1389,36 @@ bool DRouter::StartStaticMatrices(QString *err_msg)
 
 bool DRouter::StartLivewire(QString *err_msg)
 {
-  //
-  // Livewire Advertisement Sockets
-  //
-  QSignalMapper *mapper=new QSignalMapper(this);
-  connect(mapper,SIGNAL(mapped(int)),this,SLOT(advtReadyReadData(int)));
-  SyInterfaces *ifaces=new SyInterfaces();
-  if(!ifaces->update()) {
-    syslog(LOG_ERR,"unable to get network interface information, aborting");
-    exit(1);
-  }
-  for(int i=0;i<ifaces->quantity();i++) {
-    drouter_advt_sockets.
-      push_back(new SyMcastSocket(SyMcastSocket::ReadOnly,this));
-    if(!drouter_advt_sockets.back()->
-       bind(ifaces->ipv4Address(i),SWITCHYARD_ADVERTS_PORT)) {
-      syslog(LOG_ERR,"unable to bind %s:%d, aborting",
-	      (const char *)ifaces->ipv4Address(i).toString().toUtf8(),
-	      SWITCHYARD_ADVERTS_PORT);
+  if(drouter_config->livewireIsEnabled()) {
+    //
+    // Livewire Advertisement Sockets
+    //
+    QSignalMapper *mapper=new QSignalMapper(this);
+    connect(mapper,SIGNAL(mapped(int)),this,SLOT(advtReadyReadData(int)));
+    SyInterfaces *ifaces=new SyInterfaces();
+    if(!ifaces->update()) {
+      syslog(LOG_ERR,"unable to get network interface information, aborting");
       exit(1);
     }
-    drouter_advt_sockets.back()->subscribe(SWITCHYARD_ADVERTS_ADDRESS);
-    mapper->setMapping(drouter_advt_sockets.back(),
-		       drouter_advt_sockets.size()-1);
-    connect(drouter_advt_sockets.back(),SIGNAL(readyRead()),
-	    mapper,SLOT(map()));
+    for(int i=0;i<ifaces->quantity();i++) {
+      drouter_advt_sockets.
+	push_back(new SyMcastSocket(SyMcastSocket::ReadOnly,this));
+      if(!drouter_advt_sockets.back()->
+	 bind(ifaces->ipv4Address(i),SWITCHYARD_ADVERTS_PORT)) {
+	syslog(LOG_ERR,"unable to bind %s:%d, aborting",
+	       (const char *)ifaces->ipv4Address(i).toString().toUtf8(),
+	       SWITCHYARD_ADVERTS_PORT);
+	exit(1);
+      }
+      drouter_advt_sockets.back()->subscribe(SWITCHYARD_ADVERTS_ADDRESS);
+      mapper->setMapping(drouter_advt_sockets.back(),
+			 drouter_advt_sockets.size()-1);
+      connect(drouter_advt_sockets.back(),SIGNAL(readyRead()),
+	      mapper,SLOT(map()));
+    }
+  }
+  else {
+    Log(LOG_INFO,"Livewire support has been disabled in the configuration");
   }
 
   return true;

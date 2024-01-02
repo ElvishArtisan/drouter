@@ -72,6 +72,7 @@ class Config
   MatrixType matrixType(int n) const;
   QHostAddress matrixHostAddress(int n) const;
   uint16_t matrixPort(int n) const;
+  bool livewireIsEnabled() const;
 
   bool tetherIsActivated() const;
   QHostAddress tetherSharedIpAddress() const;

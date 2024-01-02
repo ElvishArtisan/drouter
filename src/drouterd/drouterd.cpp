@@ -164,7 +164,12 @@ MainObject::MainObject(QObject *parent)
   main_protocol_timer->setSingleShot(true);
   connect(main_protocol_timer,SIGNAL(timeout()),this,SLOT(protocolData()));
   if(!no_protocols) {
-    main_protocol_timer->start(DROUTERD_PROTOCOL_START_INTERVAL);
+    if(main_config->livewireIsEnabled()) {
+      main_protocol_timer->start(DROUTERD_PROTOCOL_START_INTERVAL);
+    }
+    else {
+      main_protocol_timer->start(1000);
+    }
   }
 }
 

@@ -949,3 +949,6 @@
 	* Added a '[Matrix<n>]' section to drouter.conf(5).
 	* Added audio matrix support for the
 	Broadcast Tools Universal 4.1 MLR>>Web switcher.
+2024-01-02 Fred Gleason <fredg@paravelsystems.com>
+	* Changed startup behavior so as to require an entry for LWRP in the
+	'[Matrix<num>]' section for Livewire support to be activated.

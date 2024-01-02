@@ -147,6 +147,12 @@ uint16_t Config::matrixPort(int n) const
 }
 
 
+bool Config::livewireIsEnabled() const
+{
+  return conf_matrix_types.contains(Config::LwrpMatrix);
+}
+
+
 bool Config::tetherIsActivated() const
 {
   return conf_tether_is_activated;

@@ -132,6 +132,17 @@ FileDescriptorLimit=1024
 ;StartupLwrp1=CFG GPO 8 SRCA:"6000" FUNC:"FOLLOW"
 
 
+; Livewire Support
+[Matrix1]
+Type=LWRP
+
+; Other matrix types can be enabled here, see the drouter.conf(5) man page.
+;[Matrix2]
+;Type=BT-41MLR
+;HostAddress=192.168.21.49
+;HostPort=56
+
+
 [Tether]
 ; IsActivated=Yes|No
 ;
