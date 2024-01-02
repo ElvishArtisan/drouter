@@ -47,6 +47,14 @@ MatrixBt41Mlr::MatrixBt41Mlr(unsigned id,Config *conf,QObject *parent)
   }
 
   //
+  // GPI Bundles
+  //
+  for(int i=0;i<MATRIX_BT41MLR_GPI_QUAN;i++) {
+    d_gpio_bundles[i]=new SyGpioBundle();
+    d_gpio_bundles[i]->setCode("hhhhh");
+  }
+
+  //
   // Connection Socket
   //
   d_socket=new QTcpSocket(this);
@@ -72,6 +80,9 @@ MatrixBt41Mlr::~MatrixBt41Mlr()
   }
   for(int i=0;i<MATRIX_BT41MLR_DEST_QUAN;i++) {
     delete d_destinations[i];
+  }
+  for(int i=0;i<MATRIX_BT41MLR_GPI_QUAN;i++) {
+    delete d_gpio_bundles[i];
   }
 }
 
@@ -189,18 +200,13 @@ unsigned MatrixBt41Mlr::dstChannels(int slot) const
 
 unsigned MatrixBt41Mlr::gpis() const
 {
-  return 0;
+  return MATRIX_BT41MLR_GPI_QUAN;
 }
 
 
 SyGpioBundle *MatrixBt41Mlr::gpiBundle(int slot) const
 {
-  return NULL;
-}
-
-
-void MatrixBt41Mlr::setGpiCode(int slot,const QString &code)
-{
+  return d_gpio_bundles[slot];
 }
 
 
@@ -249,10 +255,11 @@ void MatrixBt41Mlr::readyReadData()
 {
   bool found=false;
   QByteArray data=d_socket->readAll();
-  QStringList f0=QString::fromUtf8(data).split(",",QString::KeepEmptyParts);
-  if((f0.at(0)=="S0L")&&(f0.size()==5)) {
+  QStringList f0=QString::fromUtf8(data).trimmed().
+    split(",",QString::KeepEmptyParts);
+  if((f0.at(0)=="S0L")&&(f0.size()==5)) {  // Audio crosspoint changed
     for(int i=1;i<=MATRIX_BT41MLR_SOURCE_QUAN;i++) {
-      if(f0.at(i).trimmed()=="1") {
+      if(f0.at(i)=="1") {
 	QHostAddress s_addr(QString::asprintf("%s.%d",
 				      MATRIX_BT41MLR_STREAM_ADDR_PREFIX,i));
 	if(d_destinations[0]->streamAddress()!=s_addr) {
@@ -270,6 +277,20 @@ void MatrixBt41Mlr::readyReadData()
 				0,d_node,*(d_destinations[0]));
       }
     }
+  }
+
+  if((f0.at(0)=="S0P")&&(f0.size()==7)) {  // GPI state changed
+    QString code;
+    for(int i=0;i<5;i++) {
+      if(f0.at(2+i)=="1") {
+	code+="l";
+      }
+      else {
+	code+="h";
+      }
+    }
+    d_gpio_bundles[0]->setCode(code);
+    emit gpiChanged(id(),0,d_node,*(d_gpio_bundles[0]));
   }
 }
 

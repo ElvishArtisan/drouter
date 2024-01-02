@@ -956,3 +956,5 @@
 	* Added a 'NODES.MATRIX_TYPE' field to the database.
 	* Added code to the ProtocolD implementation to allow only
 	Livewire devices to be visible.
+2024-01-02 Fred Gleason <fredg@paravelsystems.com>
+	* Added GPI support to the BT-41MLR matrix driver.

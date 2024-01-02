@@ -33,7 +33,10 @@
 
 #define MATRIX_BT41MLR_SOURCE_QUAN 4
 #define MATRIX_BT41MLR_DEST_QUAN 1
+#define MATRIX_BT41MLR_GPI_QUAN 1
+#define MATRIX_BT41MLR_GPO_QUAN 0
 #define MATRIX_BT41MLR_STREAM_ADDR_PREFIX "0.0.0"
+
 class MatrixBt41Mlr :public Matrix
 {
   Q_OBJECT;
@@ -60,7 +63,6 @@ class MatrixBt41Mlr :public Matrix
   unsigned dstChannels(int slot) const;
   unsigned gpis() const;
   SyGpioBundle *gpiBundle(int slot) const;
-  void setGpiCode(int slot,const QString &code);
   void connectToHost(const QHostAddress &addr,uint16_t port,const QString &pwd,
 		     bool persistent=false);
   void sendRawLwrp(const QString &cmd);
@@ -77,6 +79,7 @@ class MatrixBt41Mlr :public Matrix
   uint16_t d_host_port;
   SySource *d_sources[MATRIX_BT41MLR_SOURCE_QUAN];
   SyDestination *d_destinations[MATRIX_BT41MLR_DEST_QUAN];
+  SyGpioBundle *d_gpio_bundles[MATRIX_BT41MLR_GPI_QUAN];
   SyNode d_node;
   QTimer *d_reconnect_timer;
 };
