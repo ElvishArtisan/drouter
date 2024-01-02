@@ -952,3 +952,7 @@
 2024-01-02 Fred Gleason <fredg@paravelsystems.com>
 	* Changed startup behavior so as to require an entry for LWRP in the
 	'[Matrix<num>]' section for Livewire support to be activated.
+2024-01-02 Fred Gleason <fredg@paravelsystems.com>
+	* Added a 'NODES.MATRIX_TYPE' field to the database.
+	* Added code to the ProtocolD implementation to allow only
+	Livewire devices to be visible.

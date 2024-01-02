@@ -60,7 +60,8 @@ class ProtocolD : public Protocol
 
  private:
   void ProcessCommand(const QString &cmd);
-  QString AlarmSqlFields(const QString &type,int chan) const;
+  QString AlarmSqlFields(const QString &tbl_name,const QString &type,
+			 int chan) const;
   QString AlarmRecord(const QString &keyword,SyLwrpClient::MeterType port,
 		      int chan,SqlQuery *q);
   QString DestinationSqlFields() const;
@@ -73,6 +74,8 @@ class ProtocolD : public Protocol
   QString NodeRecord(const QString &keyword,SqlQuery *q) const;
   QString SourceSqlFields() const;
   QString SourceRecord(const QString &keyword,SqlQuery *q);
+  bool IsLivewire(const QHostAddress &host_addr1,
+		  const QHostAddress &host_addr2=QHostAddress());
   QTcpSocket *proto_socket;
   QTcpServer *proto_server;
   QString proto_accum;

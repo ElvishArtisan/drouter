@@ -263,7 +263,6 @@ void DRouter::setWriteable(bool state)
 
 void DRouter::nodeConnectedData(unsigned id,bool state)
 {
-  printf("nodeConnectedData(%u,%u)\n",id,state);
   QString sql;
   SqlQuery *q;
   int endpt;
@@ -317,6 +316,7 @@ void DRouter::nodeConnectedData(unsigned id,bool state)
       "`HOST_ADDRESS`='"+QHostAddress(id).toString()+"',"+
       "`HOST_NAME`='"+SqlQuery::escape(mtx->hostName())+"',"+
       "`DEVICE_NAME`='"+SqlQuery::escape(mtx->deviceName())+"',"+
+      QString::asprintf("`MATRIX_TYPE`=%u,",mtx->matrixType())+
       QString::asprintf("`SOURCE_SLOTS`=%u,",mtx->srcSlots())+
       QString::asprintf("`DESTINATION_SLOTS`=%u,",mtx->dstSlots())+
       QString::asprintf("`GPI_SLOTS`=%u,",mtx->gpis())+
@@ -480,7 +480,6 @@ void DRouter::nodeConnectedData(unsigned id,bool state)
     NotifyProtocols("NODEADD",QHostAddress(id).toString());
   }
   else {
-    printf("HostAddress: %s\n",QHostAddress(id).toString().toUtf8().constData());
     Matrix *mtx=node(QHostAddress(id));
     if(mtx==NULL) {
       syslog(LOG_ERR,"DRouter::nodeConnectedData() - received disconnect signal from unknown node, aborting");
@@ -1226,10 +1225,12 @@ bool DRouter::StartDb(QString *err_msg)
     "`HOST_ADDRESS` char(15) not null primary key,"+
     "`HOST_NAME` char(191),"+
     "`DEVICE_NAME` char(20),"+
+    "`MATRIX_TYPE` int,"+
     "`SOURCE_SLOTS` int,"+
     "`DESTINATION_SLOTS` int,"+
     "`GPI_SLOTS` int,"+
-    "`GPO_SLOTS` int) "+
+    "`GPO_SLOTS` int,"+
+    "index NODES_MATRIX_TYPE_IDX(`MATRIX_TYPE`)) "+
     "engine MEMORY character set utf8 collate utf8_general_ci";
   SqlQuery::run(sql);
 
