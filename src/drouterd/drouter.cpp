@@ -2,7 +2,7 @@
 //
 // Dynamic router database component for Drouter
 //
-//   (C) Copyright 2018-2022 Fred Gleason <fredg@paravelsystems.com>
+//   (C) Copyright 2018-2024 Fred Gleason <fredg@paravelsystems.com>
 //
 //   This program is free software; you can redistribute it and/or modify
 //   it under the terms of the GNU General Public License version 2 as
@@ -37,7 +37,7 @@
 #include <sy5/syconfig.h>
 #include <sy5/syinterfaces.h>
 
-#include "client_factory.h"
+#include "matrix_factory.h"
 #include "drouter.h"
 #include "protoipc.h"
 #include "sqlquery.h"
@@ -78,7 +78,7 @@ QList<QHostAddress> DRouter::nodeHostAddresses() const
 {
   QList<QHostAddress> addrs;
 
-  for(QMap<unsigned,Client *>::const_iterator it=drouter_nodes.constBegin();
+  for(QMap<unsigned,Matrix *>::const_iterator it=drouter_nodes.constBegin();
       it!=drouter_nodes.constEnd();it++) {
     if(it.value()->isConnected()) {
       addrs.push_back(it.value()->hostAddress());
@@ -88,7 +88,7 @@ QList<QHostAddress> DRouter::nodeHostAddresses() const
 }
 
 
-Client *DRouter::node(const QHostAddress &hostaddr)
+Matrix *DRouter::node(const QHostAddress &hostaddr)
 {
   try {
     return drouter_nodes.value(hostaddr.toIPv4Address());
@@ -99,13 +99,13 @@ Client *DRouter::node(const QHostAddress &hostaddr)
 }
 
 
-Client *DRouter::nodeBySrcStream(const QHostAddress &strmaddress,
+Matrix *DRouter::nodeBySrcStream(const QHostAddress &strmaddress,
 				       int *slot)
 {
   if((0xFFFF&strmaddress.toIPv4Address())==0) {
     return NULL;
   }
-  for(QMap<unsigned,Client *>::const_iterator it=drouter_nodes.begin();
+  for(QMap<unsigned,Matrix *>::const_iterator it=drouter_nodes.begin();
       it!=drouter_nodes.end();it++) {
     for(unsigned i=0;i<it.value()->srcSlots();i++) {
       if(it.value()->srcAddress(i)==strmaddress) {
@@ -120,7 +120,7 @@ Client *DRouter::nodeBySrcStream(const QHostAddress &strmaddress,
 
 SySource *DRouter::src(int srcnum) const
 {
-  for(QMap<unsigned,Client *>::const_iterator it=drouter_nodes.constBegin();
+  for(QMap<unsigned,Matrix *>::const_iterator it=drouter_nodes.constBegin();
       it!=drouter_nodes.constEnd();it++) {
     for(unsigned i=0;i<it.value()->srcSlots();i++) {
       if(it.value()->srcNumber(i)==srcnum) {
@@ -134,7 +134,7 @@ SySource *DRouter::src(int srcnum) const
 
 SySource *DRouter::src(const QHostAddress &hostaddr,int slot) const
 {
-  Client *lwrp=drouter_nodes.value(hostaddr.toIPv4Address());
+  Matrix *lwrp=drouter_nodes.value(hostaddr.toIPv4Address());
   if(lwrp!=NULL) {
     if(slot<(int)lwrp->srcSlots()) {
       return lwrp->src(slot);
@@ -146,7 +146,7 @@ SySource *DRouter::src(const QHostAddress &hostaddr,int slot) const
 
 SyDestination *DRouter::dst(const QHostAddress &hostaddr,int slot) const
 {
-  Client *lwrp=drouter_nodes.value(hostaddr.toIPv4Address());
+  Matrix *lwrp=drouter_nodes.value(hostaddr.toIPv4Address());
   if(lwrp!=NULL) {
     if(slot<(int)lwrp->dstSlots()) {
       return lwrp->dst(slot);
@@ -159,7 +159,7 @@ SyDestination *DRouter::dst(const QHostAddress &hostaddr,int slot) const
 bool DRouter::clipAlarmActive(const QHostAddress &hostaddr,int slot,
 			      SyLwrpClient::MeterType type,int chan) const
 {
-  Client *lwrp=drouter_nodes.value(hostaddr.toIPv4Address());
+  Matrix *lwrp=drouter_nodes.value(hostaddr.toIPv4Address());
   if(lwrp!=NULL) {
     return lwrp->clipAlarmActive(slot,type,chan);
   }
@@ -170,7 +170,7 @@ bool DRouter::clipAlarmActive(const QHostAddress &hostaddr,int slot,
 bool DRouter::silenceAlarmActive(const QHostAddress &hostaddr,int slot,
 				 SyLwrpClient::MeterType type,int chan) const
 {
-  Client *lwrp=drouter_nodes.value(hostaddr.toIPv4Address());
+  Matrix *lwrp=drouter_nodes.value(hostaddr.toIPv4Address());
   if(lwrp!=NULL) {
     return lwrp->silenceAlarmActive(slot,type,chan);
   }
@@ -180,7 +180,7 @@ bool DRouter::silenceAlarmActive(const QHostAddress &hostaddr,int slot,
 
 SyGpioBundle *DRouter::gpi(const QHostAddress &hostaddr,int slot) const
 {
-  Client *lwrp=drouter_nodes.value(hostaddr.toIPv4Address());
+  Matrix *lwrp=drouter_nodes.value(hostaddr.toIPv4Address());
   if(lwrp!=NULL) {
     if(slot<(int)lwrp->gpis()) {
       return lwrp->gpiBundle(slot);
@@ -192,7 +192,7 @@ SyGpioBundle *DRouter::gpi(const QHostAddress &hostaddr,int slot) const
 
 SyGpo *DRouter::gpo(const QHostAddress &hostaddr,int slot) const
 {
-  Client *lwrp=drouter_nodes.value(hostaddr.toIPv4Address());
+  Matrix *lwrp=drouter_nodes.value(hostaddr.toIPv4Address());
   if(lwrp!=NULL) {
     if(slot<(int)lwrp->gpos()) {
       return lwrp->gpo(slot);
@@ -209,6 +209,9 @@ bool DRouter::start(QString *err_msg)
     return false;
   }
   if(!StartProtocolIpc(err_msg)) {
+    return false;
+  }
+  if(!StartStaticMatrices(err_msg)) {
     return false;
   }
   if(!StartLivewire(err_msg)) {
@@ -260,6 +263,7 @@ void DRouter::setWriteable(bool state)
 
 void DRouter::nodeConnectedData(unsigned id,bool state)
 {
+  printf("nodeConnectedData(%u,%u)\n",id,state);
   QString sql;
   SqlQuery *q;
   int endpt;
@@ -270,38 +274,38 @@ void DRouter::nodeConnectedData(unsigned id,bool state)
       syslog(LOG_ERR,"DRouter::nodeConnectedData() - received connect signal from unknown node, aborting");
       exit(256);
     }
-    Client *lwrp=node(QHostAddress(id));
+    Matrix *mtx=node(QHostAddress(id));
     Log(drouter_config->nodeLogPriority(),
 	"node connected from "+QHostAddress(id).toString()+
-	" ["+lwrp->hostName()+" / "+lwrp->deviceName()+"]");
-    if(drouter_config->configureAudioAlarms(lwrp->deviceName())) {
-      for(unsigned i=0;i<lwrp->srcSlots();i++) {
-	if(lwrp->src(i)->exists()) {
+	" ["+mtx->hostName()+" / "+mtx->deviceName()+"]");
+    if(drouter_config->configureAudioAlarms(mtx->deviceName())) {
+      for(unsigned i=0;i<mtx->srcSlots();i++) {
+	if(mtx->src(i)->exists()) {
 	  if((drouter_config->clipAlarmThreshold()<0)&&
 	     (drouter_config->clipAlarmTimeout()>0)) {
-	    lwrp->setClipMonitor(i,SyLwrpClient::InputMeter,
+	    mtx->setClipMonitor(i,SyLwrpClient::InputMeter,
 				 drouter_config->clipAlarmThreshold(),
 				 drouter_config->clipAlarmTimeout());
 	  }
 	  if((drouter_config->silenceAlarmThreshold()<0)&&
 	     (drouter_config->silenceAlarmTimeout()>0)) {
-	    lwrp->setSilenceMonitor(i,SyLwrpClient::InputMeter,
+	    mtx->setSilenceMonitor(i,SyLwrpClient::InputMeter,
 				    drouter_config->silenceAlarmThreshold(),
 				    drouter_config->silenceAlarmTimeout());
 	  }
 	}
       }
-      for(unsigned i=0;i<lwrp->dstSlots();i++) {
-	if(lwrp->dst(i)->exists()) {
+      for(unsigned i=0;i<mtx->dstSlots();i++) {
+	if(mtx->dst(i)->exists()) {
 	  if((drouter_config->clipAlarmThreshold()<0)&&
 	     (drouter_config->clipAlarmTimeout()>0)) {
-	    lwrp->setClipMonitor(i,SyLwrpClient::OutputMeter,
+	    mtx->setClipMonitor(i,SyLwrpClient::OutputMeter,
 				 drouter_config->clipAlarmThreshold(),
 				 drouter_config->clipAlarmTimeout());
 	  }
 	  if((drouter_config->silenceAlarmThreshold()<0)&&
 	     (drouter_config->silenceAlarmTimeout()>0)) {
-	    lwrp->setSilenceMonitor(i,SyLwrpClient::OutputMeter,
+	    mtx->setSilenceMonitor(i,SyLwrpClient::OutputMeter,
 				    drouter_config->silenceAlarmThreshold(),
 				    drouter_config->silenceAlarmTimeout());
 	  }
@@ -311,24 +315,24 @@ void DRouter::nodeConnectedData(unsigned id,bool state)
     LockTables();
     sql=QString("insert into `NODES` set ")+
       "`HOST_ADDRESS`='"+QHostAddress(id).toString()+"',"+
-      "`HOST_NAME`='"+SqlQuery::escape(lwrp->hostName())+"',"+
-      "`DEVICE_NAME`='"+SqlQuery::escape(lwrp->deviceName())+"',"+
-      QString::asprintf("`SOURCE_SLOTS`=%u,",lwrp->srcSlots())+
-      QString::asprintf("`DESTINATION_SLOTS`=%u,",lwrp->dstSlots())+
-      QString::asprintf("`GPI_SLOTS`=%u,",lwrp->gpis())+
-      QString::asprintf("`GPO_SLOTS`=%u",lwrp->gpos());
+      "`HOST_NAME`='"+SqlQuery::escape(mtx->hostName())+"',"+
+      "`DEVICE_NAME`='"+SqlQuery::escape(mtx->deviceName())+"',"+
+      QString::asprintf("`SOURCE_SLOTS`=%u,",mtx->srcSlots())+
+      QString::asprintf("`DESTINATION_SLOTS`=%u,",mtx->dstSlots())+
+      QString::asprintf("`GPI_SLOTS`=%u,",mtx->gpis())+
+      QString::asprintf("`GPO_SLOTS`=%u",mtx->gpos());
     SqlQuery::apply(sql);
-    for(unsigned i=0;i<lwrp->srcSlots();i++) {
+    for(unsigned i=0;i<mtx->srcSlots();i++) {
       sql=QString("insert into `SOURCES` set ")+
 	"`HOST_ADDRESS`='"+QHostAddress(id).toString()+"',"+
 	QString::asprintf("`SLOT`=%u,",i)+
-	"`HOST_NAME`='"+SqlQuery::escape(lwrp->hostName())+"',"+
+	"`HOST_NAME`='"+SqlQuery::escape(mtx->hostName())+"',"+
 	"`STREAM_ADDRESS`='"+
-	Config::normalizedStreamAddress(lwrp->srcAddress(i)).toString()+"',"+
-	"`NAME`='"+SqlQuery::escape(lwrp->srcName(i))+"',"+
-	QString::asprintf("`STREAM_ENABLED`=%u,",lwrp->srcEnabled(i))+
-	QString::asprintf("`CHANNELS`=%u,",lwrp->srcChannels(i))+
-	QString::asprintf("`BLOCK_SIZE`=%u",lwrp->srcPacketSize(i));
+	Config::normalizedStreamAddress(mtx->srcAddress(i)).toString()+"',"+
+	"`NAME`='"+SqlQuery::escape(mtx->srcName(i))+"',"+
+	QString::asprintf("`STREAM_ENABLED`=%u,",mtx->srcEnabled(i))+
+	QString::asprintf("`CHANNELS`=%u,",mtx->srcChannels(i))+
+	QString::asprintf("`BLOCK_SIZE`=%u",mtx->srcPacketSize(i));
       last_id=SqlQuery::run(sql).toInt();
       for(QMap<int,EndPointMap *>::const_iterator it=drouter_maps.begin();it!=drouter_maps.end();it++) {
 	if(it.value()->routerType()==EndPointMap::AudioRouter) {
@@ -338,12 +342,12 @@ void DRouter::nodeConnectedData(unsigned id,bool state)
 	      QString::asprintf("`SOURCE_NUMBER`=%d,",endpt)+
 	      QString::asprintf("`SOURCE_ID`=%d,",last_id)+
 	      "`STREAM_ADDRESS`='"+
-	      Config::normalizedStreamAddress(lwrp->srcAddress(i)).toString()+"',"+
+	      Config::normalizedStreamAddress(mtx->srcAddress(i)).toString()+"',"+
 	      "`HOST_ADDRESS`='"+QHostAddress(id).toString()+"',"+
 	      QString::asprintf("SLOT=%d",i);
 	    // *************************
 	    if(!it.value()->nameIsCustom(EndPointMap::Input,endpt)) {
-	      it.value()->setName(EndPointMap::Input,endpt,lwrp->srcName(i));
+	      it.value()->setName(EndPointMap::Input,endpt,mtx->srcName(i));
 	    }
 	    // *************************
 	    sql+=",`NAME`='"+
@@ -353,15 +357,15 @@ void DRouter::nodeConnectedData(unsigned id,bool state)
 	}
       }
     }
-    for(unsigned i=0;i<lwrp->dstSlots();i++) {
+    for(unsigned i=0;i<mtx->dstSlots();i++) {
       sql=QString("insert into `DESTINATIONS` set ")+
 	"`HOST_ADDRESS`='"+QHostAddress(id).toString()+"',"+
 	QString::asprintf("`SLOT`=%u,",i)+
-	"`HOST_NAME`='"+SqlQuery::escape(lwrp->hostName())+"',"+
+	"`HOST_NAME`='"+SqlQuery::escape(mtx->hostName())+"',"+
 	"`STREAM_ADDRESS`='"+
-	Config::normalizedStreamAddress(lwrp->dstAddress(i)).toString()+"',"+
-	"`NAME`='"+SqlQuery::escape(lwrp->dstName(i))+"',"+
-	QString::asprintf("`CHANNELS`=%u",lwrp->dstChannels(i));
+	Config::normalizedStreamAddress(mtx->dstAddress(i)).toString()+"',"+
+	"`NAME`='"+SqlQuery::escape(mtx->dstName(i))+"',"+
+	QString::asprintf("`CHANNELS`=%u",mtx->dstChannels(i));
       last_id=SqlQuery::run(sql).toInt();
       for(QMap<int,EndPointMap *>::const_iterator it=drouter_maps.begin();it!=drouter_maps.end();it++) {
 	if(it.value()->routerType()==EndPointMap::AudioRouter) {
@@ -371,11 +375,11 @@ void DRouter::nodeConnectedData(unsigned id,bool state)
 	      QString::asprintf("`SOURCE_NUMBER`=%d,",endpt)+
 	      QString::asprintf("`DESTINATION_ID`=%d,",last_id)+
 	      "`STREAM_ADDRESS`='"+
-	      Config::normalizedStreamAddress(lwrp->dstAddress(i)).toString()+"',"+
+	      Config::normalizedStreamAddress(mtx->dstAddress(i)).toString()+"',"+
 	      "`HOST_ADDRESS`='"+QHostAddress(id).toString()+"',"+
 	      QString::asprintf("`SLOT`=%d",i);
 	    if(!it.value()->nameIsCustom(EndPointMap::Output,endpt)) {
-	      it.value()->setName(EndPointMap::Output,endpt,lwrp->dstName(i));
+	      it.value()->setName(EndPointMap::Output,endpt,mtx->dstName(i));
 	    }
 	    sql+=",`NAME`='"+
 	      SqlQuery::escape(it.value()->name(EndPointMap::Output,endpt))+"'";
@@ -384,12 +388,12 @@ void DRouter::nodeConnectedData(unsigned id,bool state)
 	}
       }
     }
-    for(unsigned i=0;i<lwrp->gpis();i++) {
+    for(unsigned i=0;i<mtx->gpis();i++) {
       sql=QString("insert into `GPIS` set ")+
 	"`HOST_ADDRESS`='"+QHostAddress(id).toString()+"',"+
 	QString::asprintf("`SLOT`=%u,",i)+
-	"`HOST_NAME`='"+SqlQuery::escape(lwrp->hostName())+"',"+
-	"`CODE`='"+lwrp->gpiBundle(i)->code()+"'";
+	"`HOST_NAME`='"+SqlQuery::escape(mtx->hostName())+"',"+
+	"`CODE`='"+mtx->gpiBundle(i)->code()+"'";
       last_id=SqlQuery::run(sql).toInt();
       for(QMap<int,EndPointMap *>::const_iterator it=drouter_maps.begin();it!=drouter_maps.end();it++) {
 	if(it.value()->routerType()==EndPointMap::GpioRouter) {
@@ -410,19 +414,19 @@ void DRouter::nodeConnectedData(unsigned id,bool state)
 	}
       }
     }
-    for(unsigned i=0;i<lwrp->gpos();i++) {
-      QString name=lwrp->gpo(i)->name();
+    for(unsigned i=0;i<mtx->gpos();i++) {
+      QString name=mtx->gpo(i)->name();
       if(name.isEmpty()) {
 	name=QString::asprintf("GPO %d",i+1);
       }
       sql=QString("insert into `GPOS` set ")+
 	"`HOST_ADDRESS`='"+QHostAddress(id).toString()+"',"+
 	QString::asprintf("`SLOT`=%u,",i)+
-	"`HOST_NAME`='"+SqlQuery::escape(lwrp->hostName())+"',"+
-	"`CODE`='"+lwrp->gpiBundle(i)->code()+"',"+
+	"`HOST_NAME`='"+SqlQuery::escape(mtx->hostName())+"',"+
+	"`CODE`='"+mtx->gpiBundle(i)->code()+"',"+
 	"`NAME`='"+SqlQuery::escape(name)+"',"+
-	"`SOURCE_ADDRESS`='"+lwrp->gpo(i)->sourceAddress().toString()+"',"+
-	QString::asprintf("`SOURCE_SLOT`=%d",lwrp->gpo(i)->sourceSlot());
+	"`SOURCE_ADDRESS`='"+mtx->gpo(i)->sourceAddress().toString()+"',"+
+	QString::asprintf("`SOURCE_SLOT`=%d",mtx->gpo(i)->sourceSlot());
       last_id=SqlQuery::run(sql).toInt();
       for(QMap<int,EndPointMap *>::const_iterator it=drouter_maps.begin();it!=drouter_maps.end();it++) {
 	if(it.value()->routerType()==EndPointMap::GpioRouter) {
@@ -431,13 +435,13 @@ void DRouter::nodeConnectedData(unsigned id,bool state)
 	      QString::asprintf("`ROUTER_NUMBER`=%d,",it.value()->routerNumber())+
 	      QString::asprintf("`SOURCE_NUMBER`=%d,",endpt)+
 	      QString::asprintf("`GPO_ID`=%d,",last_id)+
-	      "`SOURCE_ADDRESS`='"+lwrp->gpo(i)->sourceAddress().toString()+"',"+
-	      QString::asprintf("`SOURCE_SLOT`=%d,",lwrp->gpo(i)->sourceSlot())+
+	      "`SOURCE_ADDRESS`='"+mtx->gpo(i)->sourceAddress().toString()+"',"+
+	      QString::asprintf("`SOURCE_SLOT`=%d,",mtx->gpo(i)->sourceSlot())+
 	      "`HOST_ADDRESS`='"+QHostAddress(id).toString()+"',"+
 	      QString::asprintf("`SLOT`=%d",i);
 	    if(!it.value()->nameIsCustom(EndPointMap::Output,endpt)) {
 	      it.value()->
-		setName(EndPointMap::Output,endpt,lwrp->gpo(i)->name());
+		setName(EndPointMap::Output,endpt,mtx->gpo(i)->name());
 	    }
 	    sql+=",`NAME`='"+
 	      SqlQuery::escape(it.value()->name(EndPointMap::Output,endpt))+"'";
@@ -449,10 +453,10 @@ void DRouter::nodeConnectedData(unsigned id,bool state)
 
     for(int i=0;i<2;i++) {
       Config::TetherRole role=(Config::TetherRole)i;
-      if(lwrp->hostAddress()==drouter_config->tetherGpioIpAddress(role)) {
+      if(mtx->hostAddress()==drouter_config->tetherGpioIpAddress(role)) {
 	/*  FIXME!
 	drouter_flasher->
-	  addGpio(role,lwrp,drouter_config->tetherGpioType(role),
+	  addGpio(role,mtx,drouter_config->tetherGpioType(role),
 		  drouter_config->tetherGpioSlot(role),
 		  drouter_config->tetherGpioCode(role));
 	*/
@@ -465,25 +469,26 @@ void DRouter::nodeConnectedData(unsigned id,bool state)
     // Send Startup LWRP
     //
     QStringList lwrp_lines=
-      drouter_config->nodesStartupLwrp(lwrp->hostAddress());
+      drouter_config->nodesStartupLwrp(mtx->hostAddress());
     for(int i=0;i<lwrp_lines.size();i++) {
-      lwrp->sendRawLwrp(lwrp_lines.at(i));
+      mtx->sendRawLwrp(lwrp_lines.at(i));
       syslog(LOG_DEBUG,"sending \"%s\" to node at %s",
 	     lwrp_lines.at(i).toUtf8().constData(),
-	     lwrp->hostAddress().toString().toUtf8().constData());
+	     mtx->hostAddress().toString().toUtf8().constData());
     }
 
     NotifyProtocols("NODEADD",QHostAddress(id).toString());
   }
   else {
-    Client *lwrp=node(QHostAddress(id));
-    if(lwrp==NULL) {
+    printf("HostAddress: %s\n",QHostAddress(id).toString().toUtf8().constData());
+    Matrix *mtx=node(QHostAddress(id));
+    if(mtx==NULL) {
       syslog(LOG_ERR,"DRouter::nodeConnectedData() - received disconnect signal from unknown node, aborting");
       exit(256);
     }
     Log(drouter_config->nodeLogPriority(),
 	"node disconnected from "+QHostAddress(id).toString()+
-	" ["+lwrp->hostName()+" / "+lwrp->deviceName()+"]");
+	" ["+mtx->hostName()+" / "+mtx->deviceName()+"]");
     LockTables();
     sql=QString("select ")+
       "`SOURCE_SLOTS`,"+       // 00
@@ -526,7 +531,6 @@ void DRouter::nodeConnectedData(unsigned id,bool state)
     sql=QString("delete from `NODES` where ")+
       "`HOST_ADDRESS`='"+QHostAddress(id).toString()+"'";
     SqlQuery::apply(sql);
-    drouter_nodes.erase(drouter_nodes.find(id));
     UnlockTables();
   }
 }
@@ -686,7 +690,7 @@ void DRouter::audioClipAlarmData(unsigned id,SyLwrpClient::MeterType type,
 				 unsigned slotnum,int chan,bool state)
 {
   QString sql;
-  Client *lwrp=NULL;
+  Matrix *lwrp=NULL;
   QString table="SOURCES";
   QString chan_name="LEFT";
 
@@ -712,7 +716,7 @@ void DRouter::audioSilenceAlarmData(unsigned id,SyLwrpClient::MeterType type,
 				    unsigned slotnum,int chan,bool state)
 {
   QString sql;
-  Client *lwrp=NULL;
+  Matrix *lwrp=NULL;
   QString table="SOURCES";
   QString chan_name="LEFT";
 
@@ -742,36 +746,16 @@ void DRouter::advtReadyReadData(int ifnum)
 
   while((n=drouter_advt_sockets.at(ifnum)->readDatagram(data,1500,&addr))>0) {
     if(node(addr)==NULL) {
-      Client *node=ClientFactory(Client::LwrpClient,addr.toIPv4Address(),this);
-      connect(node,SIGNAL(connected(unsigned,bool)),
-	      this,SLOT(nodeConnectedData(unsigned,bool)));
-      connect(node,
-	      SIGNAL(sourceChanged(unsigned,int,const SyNode,const SySource &)),
-	      this,SLOT(sourceChangedData(unsigned,int,const SyNode,
-					  const SySource &)));
-      connect(node,SIGNAL(destinationChanged(unsigned,int,const SyNode &,
-					     const SyDestination &)),
-	      this,SLOT(destinationChangedData(unsigned,int,const SyNode &,
-					       const SyDestination &)));
-      connect(node,SIGNAL(gpiChanged(unsigned,int,const SyNode &,
-				     const SyGpioBundle &)),
-	      this,SLOT(gpiChangedData(unsigned,int,const SyNode &,
-				       const SyGpioBundle &)));
-      connect(node,
-	      SIGNAL(gpoChanged(unsigned,int,const SyNode &,const SyGpo &)),
-	      this,
-	      SLOT(gpoChangedData(unsigned,int,const SyNode &,const SyGpo &)));
-      connect(node,SIGNAL(audioClipAlarm(unsigned,SyLwrpClient::MeterType,
-					 unsigned,int,bool)),
-	      this,SLOT(audioClipAlarmData(unsigned,SyLwrpClient::MeterType,
-					   unsigned,int,bool)));
-      connect(node,SIGNAL(audioSilenceAlarm(unsigned,SyLwrpClient::MeterType,
-					    unsigned,int,bool)),
-	      this,SLOT(audioSilenceAlarmData(unsigned,SyLwrpClient::MeterType,
-					      unsigned,int,bool)));
-      drouter_nodes[addr.toIPv4Address()]=node;
-      node->connectToHost(addr,SWITCHYARD_LWRP_PORT,
-			  drouter_config->lwrpPassword(),false);
+      Matrix *mtx=StartMatrix(Config::LwrpMatrix,addr.toIPv4Address());
+      if(mtx==NULL) {
+	syslog(LOG_WARNING,
+	       "failed to initialize matrix client for LWRP node at %s",
+	       addr.toString().toUtf8().constData());
+      }
+      else {
+	mtx->connectToHost(addr,SWITCHYARD_LWRP_PORT,
+			   drouter_config->lwrpPassword(),false);
+      }
     }
   }
 }
@@ -981,7 +965,7 @@ bool DRouter::ProcessIpcCommand(int sock,const QString &cmd)
   QStringList cmds=cmd.split(" ");
 
   if((cmds.at(0)=="ClearCrosspoint")&&(cmds.size()==3)) {
-    Client *lwrp=drouter_nodes[QHostAddress(cmds.at(1)).toIPv4Address()];
+    Matrix *lwrp=drouter_nodes[QHostAddress(cmds.at(1)).toIPv4Address()];
     unsigned slotnum=cmds.at(2).toUInt(&ok);
     if((lwrp!=NULL)&&ok&&(slotnum<lwrp->dstSlots())) {
       lwrp->setDstAddress(slotnum,QHostAddress(DROUTER_NULL_STREAM_ADDRESS));
@@ -989,7 +973,7 @@ bool DRouter::ProcessIpcCommand(int sock,const QString &cmd)
   }
 
   if((cmds.at(0)=="ClearGpioCrosspoint")&&(cmds.size()==3)) {
-    Client *lwrp=drouter_nodes[QHostAddress(cmds.at(1)).toIPv4Address()];
+    Matrix *lwrp=drouter_nodes[QHostAddress(cmds.at(1)).toIPv4Address()];
     unsigned slotnum=cmds.at(2).toUInt(&ok);
     if((lwrp!=NULL)&&ok&&(slotnum<lwrp->gpos())) {
       lwrp->setGpoSourceAddress(slotnum,QHostAddress(),-1);
@@ -997,11 +981,11 @@ bool DRouter::ProcessIpcCommand(int sock,const QString &cmd)
   }
 
   if((cmds.at(0)=="SetCrosspoint")&&(cmds.size()==5)) {
-    Client *dst_lwrp=
+    Matrix *dst_lwrp=
       drouter_nodes[QHostAddress(cmds.at(1)).toIPv4Address()];
     unsigned dst_slotnum=cmds.at(2).toUInt(&ok);
     if((dst_lwrp!=NULL)&&ok&&(dst_slotnum<dst_lwrp->dstSlots())) {
-      Client *src_lwrp=
+      Matrix *src_lwrp=
 	drouter_nodes[QHostAddress(cmds.at(3)).toIPv4Address()];
       unsigned src_slotnum=cmds.at(4).toUInt(&ok);
       if((src_lwrp!=NULL)&&ok&&(src_slotnum<src_lwrp->srcSlots())) {
@@ -1011,11 +995,11 @@ bool DRouter::ProcessIpcCommand(int sock,const QString &cmd)
   }
 
   if((cmds.at(0)=="SetGpioCrosspoint")&&(cmds.size()==5)) {
-    Client *gpo_lwrp=
+    Matrix *gpo_lwrp=
       drouter_nodes[QHostAddress(cmds.at(1)).toIPv4Address()];
     unsigned gpo_slotnum=cmds.at(2).toUInt(&ok);
     if((gpo_lwrp!=NULL)&&ok&&(gpo_slotnum<gpo_lwrp->gpos())) {
-      Client *gpi_lwrp=
+      Matrix *gpi_lwrp=
 	drouter_nodes[QHostAddress(cmds.at(3)).toIPv4Address()];
       unsigned gpi_slotnum=cmds.at(4).toUInt(&ok);
       if((gpi_lwrp!=NULL)&&ok&&(gpi_slotnum<gpi_lwrp->gpis())) {
@@ -1027,7 +1011,7 @@ bool DRouter::ProcessIpcCommand(int sock,const QString &cmd)
   }
 
   if((cmds.at(0)=="SetGpiState")&&(cmds.size()==4)) {
-    Client *gpi_lwrp=
+    Matrix *gpi_lwrp=
       drouter_nodes[QHostAddress(cmds.at(1)).toIPv4Address()];
     unsigned gpi_slotnum=cmds.at(2).toUInt(&ok);
     if((gpi_lwrp!=NULL)&&ok&&(gpi_slotnum<gpi_lwrp->gpis())) {
@@ -1036,7 +1020,7 @@ bool DRouter::ProcessIpcCommand(int sock,const QString &cmd)
   }
 
   if((cmds.at(0)=="SetGpoState")&&(cmds.size()==4)) {
-    Client *gpo_lwrp=
+    Matrix *gpo_lwrp=
       drouter_nodes[QHostAddress(cmds.at(1)).toIPv4Address()];
     unsigned gpo_slotnum=cmds.at(2).toUInt(&ok);
     if((gpo_lwrp!=NULL)&&ok&&(gpo_slotnum<gpo_lwrp->gpos())) {
@@ -1377,6 +1361,32 @@ bool DRouter::StartDb(QString *err_msg)
 }
 
 
+bool DRouter::StartStaticMatrices(QString *err_msg)
+{
+  for(int i=0;i<drouter_config->matrixQuantity();i++) {
+    Matrix *mtx=
+      StartMatrix(drouter_config->matrixType(i),
+		  drouter_config->matrixHostAddress(i).toIPv4Address());
+    if(mtx==NULL) {
+      syslog(LOG_WARNING,
+	     "static matrix [Matrix%d]: unrecognized device type",i+1);
+    }
+    else {
+      mtx->connectToHost(drouter_config->matrixHostAddress(i),
+			 drouter_config->matrixPort(i),"",false);
+      drouter_nodes[drouter_config->matrixHostAddress(i).toIPv4Address()]=mtx;
+      syslog(LOG_INFO,"Initialized %s device at %s:%u",
+	     mtx->deviceName().toUtf8().constData(),
+	     drouter_config->matrixHostAddress(i).
+	     toString().toUtf8().constData(),
+	     0xffff&drouter_config->matrixPort(i));
+    }
+  }
+
+  return true;
+}
+
+
 bool DRouter::StartLivewire(QString *err_msg)
 {
   //
@@ -1407,6 +1417,41 @@ bool DRouter::StartLivewire(QString *err_msg)
   }
 
   return true;
+}
+
+
+Matrix *DRouter::StartMatrix(Config::MatrixType type,unsigned id)
+{
+  Matrix *mtx=MatrixFactory(type,id,drouter_config,this);
+  connect(mtx,SIGNAL(connected(unsigned,bool)),
+	  this,SLOT(nodeConnectedData(unsigned,bool)));
+  connect(mtx,
+	  SIGNAL(sourceChanged(unsigned,int,const SyNode,const SySource &)),
+	  this,SLOT(sourceChangedData(unsigned,int,const SyNode,
+				      const SySource &)));
+  connect(mtx,SIGNAL(destinationChanged(unsigned,int,const SyNode &,
+					 const SyDestination &)),
+	  this,SLOT(destinationChangedData(unsigned,int,const SyNode &,
+					   const SyDestination &)));
+  connect(mtx,SIGNAL(gpiChanged(unsigned,int,const SyNode &,
+				 const SyGpioBundle &)),
+	  this,SLOT(gpiChangedData(unsigned,int,const SyNode &,
+				   const SyGpioBundle &)));
+  connect(mtx,
+	  SIGNAL(gpoChanged(unsigned,int,const SyNode &,const SyGpo &)),
+	  this,
+	  SLOT(gpoChangedData(unsigned,int,const SyNode &,const SyGpo &)));
+  connect(mtx,SIGNAL(audioClipAlarm(unsigned,SyLwrpClient::MeterType,
+				     unsigned,int,bool)),
+	  this,SLOT(audioClipAlarmData(unsigned,SyLwrpClient::MeterType,
+				       unsigned,int,bool)));
+  connect(mtx,SIGNAL(audioSilenceAlarm(unsigned,SyLwrpClient::MeterType,
+					unsigned,int,bool)),
+	  this,SLOT(audioSilenceAlarmData(unsigned,SyLwrpClient::MeterType,
+					  unsigned,int,bool)));
+  drouter_nodes[id]=mtx;
+
+  return mtx;
 }
 
 

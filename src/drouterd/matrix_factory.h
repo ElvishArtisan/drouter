@@ -1,6 +1,6 @@
-// client_factory.cpp
+// matrix_factory.h
 //
-// Instantiate a client instance
+// Instantiate a matrix instance
 //
 // (C) 2023 Fred Gleason <fredg@paravelsystems.com>
 //
@@ -19,21 +19,13 @@
 //    Boston, MA  02111-1307  USA
 //
 
-#include "client_lwrp.h"
+#ifndef MATRIX_FACTORY_H
+#define MATRIX_FACTORY_H
 
-#include "client_factory.h"
+#include "matrix.h"
 
-Client *ClientFactory(Client::Type type,unsigned id,QObject *parent)
-{
-  Client *client=NULL;
+Matrix *MatrixFactory(Config::MatrixType type,unsigned id,Config *conf,
+		      QObject *parent);
 
-  switch(type) {
-  case Client::LwrpClient:
-    client=new ClientLwrp(id,parent);
-    break;
 
-  case Client::LastClient:
-    break;
-  }
-  return client;
-}
+#endif  // MATRIX_FACTORY_H

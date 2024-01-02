@@ -297,6 +297,67 @@
       </variablelist>
     </refsect2>
 
+    <refsect2 id='matrix_sections'>
+      <title>The [Matrix<replaceable>num</replaceable>] Sections</title>
+      <para>
+	Zero or more [Matrix<replaceable>num</replaceable>] sections can be
+	added, with <replaceable>num</replaceable> starting with
+	<userinput>1</userinput> and incremented for each additional section.
+	Each such section corresponds to a statically-defined switcher
+	device --i.e <emphasis>not</emphasis> an LWRP device. It can contain
+	the following parameters:
+      </para>
+      <variablelist>
+	<varlistentry>
+	  <term>
+	    Type=<replaceable>type-code</replaceable>
+	  </term>
+	  <listitem>
+	    <para>
+	      Where <replaceable>type-code</replaceable> is one of the following
+	      strings:
+	    </para>
+	    <para>
+	      <variablelist>
+		<varlistentry>
+		  <term>
+		    <userinput>BT-41MLR</userinput>
+		  </term>
+		  <listitem>
+		    <para>
+		      Broadcast Tools Universal 4.1 MLR>>Web Switcher
+		    </para>
+		  </listitem>
+		</varlistentry>
+	      </variablelist>
+	    </para>
+	  </listitem>
+	</varlistentry>
+	<varlistentry>
+	  <term>
+	    HostAddress=<replaceable>ipv4-addr</replaceable>
+	  </term>
+	  <listitem>
+	    <para>
+	      The IPv4 address of the switcher, in dotted-quad notation.
+	    </para>
+	  </listitem>
+	</varlistentry>
+	<varlistentry>
+	  <term>
+	    HostPort=<replaceable>port-num</replaceable>
+	  </term>
+	  <listitem>
+	    <para>
+	      The port number to connect to on the switcher, in the range
+	      <userinput>1</userinput> through <userinput>65535</userinput>
+	      inclusive.
+	    </para>
+	  </listitem>
+	</varlistentry>
+      </variablelist>
+    </refsect2>
+
     <refsect2 id='tether_section'>
       <title>The [Tether] Section</title>
       <para>

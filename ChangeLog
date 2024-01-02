@@ -943,3 +943,9 @@
 	* Modified the LWRP matrix driver to use the 'Client' API.
 2023-12-31 Fred Gleason <fredg@paravelsystems.com>
 	* Removed dead method stubs from the 'Client' API classes.
+2024-01-02 Fred Gleason <fredg@paravelsystems.com>
+	* Renamed the 'Client' class hierarchy to 'Matrix'.
+	* Added 'Matrix::matrixType()' and 'Matrix::config()' methods.
+	* Added a '[Matrix<n>]' section to drouter.conf(5).
+	* Added audio matrix support for the
+	Broadcast Tools Universal 4.1 MLR>>Web switcher.

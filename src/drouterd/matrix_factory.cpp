@@ -1,6 +1,6 @@
-// client.cpp
+// matrix_factory.cpp
 //
-// Abstract router client implementation
+// Instantiate a matrix instance
 //
 // (C) 2023 Fred Gleason <fredg@paravelsystems.com>
 //
@@ -19,31 +19,27 @@
 //    Boston, MA  02111-1307  USA
 //
 
-#include "client.h"
+#include "matrix_bt-41mlr.h"
+#include "matrix_lwrp.h"
 
-Client::Client(QObject *parent)
-  : QObject(parent)
+#include "matrix_factory.h"
+
+Matrix *MatrixFactory(Config::MatrixType type,unsigned id,Config *conf,
+		      QObject *parent)
 {
-}
-
-
-Client::~Client()
-{
-}
-
-
-QString Client::typeString(Client::Type type)
-{
-  QString ret="unknown";
+  Matrix *matrix=NULL;
 
   switch(type) {
-  case Client::LwrpClient:
-    ret="lwrp";
+  case Config::LwrpMatrix:
+    matrix=new MatrixLwrp(id,conf,parent);
     break;
 
-  case Client::LastClient:
+  case Config::Bt41MlrMatrix:
+    matrix=new MatrixBt41Mlr(id,conf,parent);
+    break;
+
+  case Config::LastMatrix:
     break;
   }
-
-  return ret;
+  return matrix;
 }

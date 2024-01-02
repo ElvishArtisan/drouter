@@ -2,7 +2,7 @@
 ##
 ## Makefile for the drouterd(8) routing service
 ##
-## (C) Copyright 2017-2023 Fred Gleason <fredg@paravelsystems.com>
+## (C) Copyright 2017-2024 Fred Gleason <fredg@paravelsystems.com>
 ##
 ##   This program is free software; you can redistribute it and/or modify
 ##   it under the terms of the GNU General Public License version 2 as
@@ -39,12 +39,13 @@ sbin_PROGRAMS = dprotod\
 
 noinst_PROGRAMS = tethertest
 
-dist_drouterd_SOURCES = client.cpp client.h\
-                        client_lwrp.cpp client_lwrp.h\
-                        client_factory.cpp client_factory.h\
-                        drouter.cpp drouter.h\
+dist_drouterd_SOURCES = drouter.cpp drouter.h\
                         drouterd.cpp drouterd.h\
                         gpioflasher.cpp gpioflasher.h\
+                        matrix.cpp matrix.h\
+                        matrix_bt-41mlr.cpp matrix_bt-41mlr.h\
+                        matrix_lwrp.cpp matrix_lwrp.h\
+                        matrix_factory.cpp matrix_factory.h\
                         protoipc.h\
                         scriptengine.cpp scriptengine.h\
                         tether.cpp tether.h\
@@ -52,11 +53,12 @@ dist_drouterd_SOURCES = client.cpp client.h\
 
 nodist_drouterd_SOURCES = config.cpp config.h\
                           endpointmap.cpp endpointmap.h\
-                          moc_client.cpp\
-                          moc_client_lwrp.cpp\
                           moc_drouter.cpp\
                           moc_drouterd.cpp\
                           moc_gpioflasher.cpp\
+                          moc_matrix.cpp\
+                          moc_matrix_bt-41mlr.cpp\
+                          moc_matrix_lwrp.cpp\
                           moc_scriptengine.cpp\
                           moc_tether.cpp\
                           moc_ttydevice.cpp\

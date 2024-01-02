@@ -1,6 +1,6 @@
-// client_lwrp.cpp
+// matrix_lwrp.cpp
 //
-// LWRP client implementation
+// LWRP matrix implementation
 //
 // (C) 2023 Fred Gleason <fredg@paravelsystems.com>
 //
@@ -19,10 +19,10 @@
 //    Boston, MA  02111-1307  USA
 //
 
-#include "client_lwrp.h"
+#include "matrix_lwrp.h"
 
-ClientLwrp::ClientLwrp(unsigned id,QObject *parent)
-  : Client(parent)
+MatrixLwrp::MatrixLwrp(unsigned id,Config *conf,QObject *parent)
+  : Matrix(Config::LwrpMatrix,id,conf,parent)
 {
   d_lwrp_client=new SyLwrpClient(id,this);
   connect(d_lwrp_client,SIGNAL(connected(unsigned,bool)),
@@ -55,224 +55,224 @@ ClientLwrp::ClientLwrp(unsigned id,QObject *parent)
 }
 
 
-ClientLwrp::~ClientLwrp()
+MatrixLwrp::~MatrixLwrp()
 {
   delete d_lwrp_client;
 }
 
 
-bool ClientLwrp::isConnected() const
+bool MatrixLwrp::isConnected() const
 {
   return d_lwrp_client->isConnected();
 }
 
 
-QHostAddress ClientLwrp::hostAddress() const
+QHostAddress MatrixLwrp::hostAddress() const
 {
   return d_lwrp_client->hostAddress();
 }
 
 
-QString ClientLwrp::deviceName() const
-{
-  return d_lwrp_client->deviceName();
-}
-
-
-unsigned ClientLwrp::dstSlots() const
-{
-  return d_lwrp_client->dstSlots();
-}
-
-
-unsigned ClientLwrp::srcSlots() const
-{
-  return d_lwrp_client->srcSlots();
-}
-
-
-SySource *ClientLwrp::src(int slot) const
-{
-  return d_lwrp_client->src(slot);
-}
-
-
-SyDestination *ClientLwrp::dst(int slot) const
-{
-  return d_lwrp_client->dst(slot);
-}
-
-
-unsigned ClientLwrp::gpis() const
-{
-  return d_lwrp_client->gpis();
-}
-
-
-unsigned ClientLwrp::gpos() const
-{
-  return d_lwrp_client->gpos();
-}
-
-
-QString ClientLwrp::hostName() const
+QString MatrixLwrp::hostName() const
 {
   return d_lwrp_client->hostName();
 }
 
 
-int ClientLwrp::srcNumber(int slot) const
+QString MatrixLwrp::deviceName() const
+{
+  return d_lwrp_client->deviceName();
+}
+
+
+unsigned MatrixLwrp::dstSlots() const
+{
+  return d_lwrp_client->dstSlots();
+}
+
+
+unsigned MatrixLwrp::srcSlots() const
+{
+  return d_lwrp_client->srcSlots();
+}
+
+
+SySource *MatrixLwrp::src(int slot) const
+{
+  return d_lwrp_client->src(slot);
+}
+
+
+SyDestination *MatrixLwrp::dst(int slot) const
+{
+  return d_lwrp_client->dst(slot);
+}
+
+
+unsigned MatrixLwrp::gpis() const
+{
+  return d_lwrp_client->gpis();
+}
+
+
+unsigned MatrixLwrp::gpos() const
+{
+  return d_lwrp_client->gpos();
+}
+
+
+int MatrixLwrp::srcNumber(int slot) const
 {
   return d_lwrp_client->srcNumber(slot);
 }
 
 
-QHostAddress ClientLwrp::srcAddress(int slot) const
+QHostAddress MatrixLwrp::srcAddress(int slot) const
 {
   return d_lwrp_client->srcAddress(slot);
 }
 
 
-QString ClientLwrp::srcName(int slot) const
+QString MatrixLwrp::srcName(int slot) const
 {
   return d_lwrp_client->srcName(slot);
 }
 
 
-bool ClientLwrp::srcEnabled(int slot) const
+bool MatrixLwrp::srcEnabled(int slot) const
 {
   return d_lwrp_client->srcEnabled(slot);
 }
 
 
-unsigned ClientLwrp::srcChannels(int slot) const
+unsigned MatrixLwrp::srcChannels(int slot) const
 {
   return d_lwrp_client->srcChannels(slot);
 }
 
 
-unsigned ClientLwrp::srcPacketSize(int slot)
+unsigned MatrixLwrp::srcPacketSize(int slot)
 {
   return d_lwrp_client->srcPacketSize(slot);
 }
 
 
-QHostAddress ClientLwrp::dstAddress(int slot) const
+QHostAddress MatrixLwrp::dstAddress(int slot) const
 {
   return d_lwrp_client->dstAddress(slot);
 }
 
 
-void ClientLwrp::setDstAddress(int slot,const QHostAddress &addr)
+void MatrixLwrp::setDstAddress(int slot,const QHostAddress &addr)
 {
   d_lwrp_client->setDstAddress(slot,addr);
 }
 
 
-void ClientLwrp::setDstAddress(int slot,const QString &addr)
+void MatrixLwrp::setDstAddress(int slot,const QString &addr)
 {
   d_lwrp_client->setDstAddress(slot,addr);
 }
 
 
-QString ClientLwrp::dstName(int slot) const
+QString MatrixLwrp::dstName(int slot) const
 {
   return d_lwrp_client->dstName(slot);
 }
 
 
-unsigned ClientLwrp::dstChannels(int slot) const
+unsigned MatrixLwrp::dstChannels(int slot) const
 {
   return d_lwrp_client->dstChannels(slot);
 }
 
 
-SyGpioBundle *ClientLwrp::gpiBundle(int slot) const
+SyGpioBundle *MatrixLwrp::gpiBundle(int slot) const
 {
   return d_lwrp_client->gpiBundle(slot);
 }
 
 
-void ClientLwrp::setGpiCode(int slot,const QString &code)
+void MatrixLwrp::setGpiCode(int slot,const QString &code)
 {
   d_lwrp_client->setGpiCode(slot,code);
 }
 
 
-SyGpo *ClientLwrp::gpo(int slot) const
+SyGpo *MatrixLwrp::gpo(int slot) const
 {
   return d_lwrp_client->gpo(slot);
 }
 
 
-void ClientLwrp::setGpoCode(int slot,const QString &code)
+void MatrixLwrp::setGpoCode(int slot,const QString &code)
 {
   d_lwrp_client->setGpoCode(slot,code);
 }
 
 
-void ClientLwrp::setGpoSourceAddress(int slot,const QHostAddress &s_addr,
+void MatrixLwrp::setGpoSourceAddress(int slot,const QHostAddress &s_addr,
 				     int s_slot)
 {
   d_lwrp_client->setGpoSourceAddress(slot,s_addr,s_slot);
 }
 
 
-bool ClientLwrp::clipAlarmActive(int slot,SyLwrpClient::MeterType type,
+bool MatrixLwrp::clipAlarmActive(int slot,SyLwrpClient::MeterType type,
 				 int chan) const
 {
   return d_lwrp_client->clipAlarmActive(slot,type,chan);
 }
 
 
-bool ClientLwrp::silenceAlarmActive(int slot,SyLwrpClient::MeterType type,
+bool MatrixLwrp::silenceAlarmActive(int slot,SyLwrpClient::MeterType type,
 				    int chan) const
 {
   return d_lwrp_client->silenceAlarmActive(slot,type,chan);
 }
 
 
-void ClientLwrp::setClipMonitor(int slot,SyLwrpClient::MeterType type,int lvl,
+void MatrixLwrp::setClipMonitor(int slot,SyLwrpClient::MeterType type,int lvl,
 				int msec)
 {
   d_lwrp_client->setClipMonitor(slot,type,lvl,msec);
 }
 
 
-void ClientLwrp::setSilenceMonitor(int slot,SyLwrpClient::MeterType type,
+void MatrixLwrp::setSilenceMonitor(int slot,SyLwrpClient::MeterType type,
 				   int lvl,int msec)
 {
   d_lwrp_client->setSilenceMonitor(slot,type,lvl,msec);
 }
 
 
-void ClientLwrp::connectToHost(const QHostAddress &addr,uint16_t port,
+void MatrixLwrp::connectToHost(const QHostAddress &addr,uint16_t port,
 			       const QString &pwd,bool persistent)
 {
   d_lwrp_client->connectToHost(addr,port,pwd,persistent);
 }
 
 
-void ClientLwrp::sendRawLwrp(const QString &cmd)
+void MatrixLwrp::sendRawLwrp(const QString &cmd)
 {
   return d_lwrp_client->sendRawLwrp(cmd);
 }
 
 
-void ClientLwrp::nodeConnectedData(unsigned id,bool state)
+void MatrixLwrp::nodeConnectedData(unsigned id,bool state)
 {
   emit connected(id,state);
 }
 
 
-void ClientLwrp::sourceChangedData(unsigned id,int slotnum,const SyNode &node,
+void MatrixLwrp::sourceChangedData(unsigned id,int slotnum,const SyNode &node,
 				   const SySource &src)
 {
   emit sourceChanged(id,slotnum,node,src);
 }
 
 
-void ClientLwrp::destinationChangedData(unsigned id,int slotnum,
+void MatrixLwrp::destinationChangedData(unsigned id,int slotnum,
 					const SyNode &node,
 					const SyDestination &dst)
 {
@@ -280,28 +280,28 @@ void ClientLwrp::destinationChangedData(unsigned id,int slotnum,
 }
 
 
-void ClientLwrp::gpiChangedData(unsigned id,int slotnum,const SyNode &node,
+void MatrixLwrp::gpiChangedData(unsigned id,int slotnum,const SyNode &node,
 				const SyGpioBundle &gpi)
 {
   emit gpiChanged(id,slotnum,node,gpi);
 }
 
 
-void ClientLwrp::gpoChangedData(unsigned id,int slotnum,const SyNode &node,
+void MatrixLwrp::gpoChangedData(unsigned id,int slotnum,const SyNode &node,
 				const SyGpo &gpo)
 {
   emit gpoChanged(id,slotnum,node,gpo);
 }
 
 
-void ClientLwrp::audioClipAlarmData(unsigned id,SyLwrpClient::MeterType type,
+void MatrixLwrp::audioClipAlarmData(unsigned id,SyLwrpClient::MeterType type,
 				    unsigned slotnum,int chan,bool state)
 {
   emit audioClipAlarm(id,type,slotnum,chan,state);
 }
 
 
-void ClientLwrp::audioSilenceAlarmData(unsigned id,SyLwrpClient::MeterType type,
+void MatrixLwrp::audioSilenceAlarmData(unsigned id,SyLwrpClient::MeterType type,
 				       unsigned slotnum,int chan,bool state)
 {
   emit audioSilenceAlarm(id,type,slotnum,chan,state);

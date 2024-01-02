@@ -1,6 +1,6 @@
-// client.h
+// matrix.h
 //
-// Abstract router client implementation
+// Abstract router matrix implementation
 //
 // (C) 2023 Fred Gleason <fredg@paravelsystems.com>
 //
@@ -19,8 +19,8 @@
 //    Boston, MA  02111-1307  USA
 //
 
-#ifndef CLIENT_H
-#define CLIENT_H
+#ifndef MATRIX_H
+#define MATRIX_H
 
 #include <stdint.h>
 
@@ -34,52 +34,54 @@
 
 #include <sy5/sylwrp_client.h>
 
-class Client :public QObject
+#include "config.h"
+
+class Matrix :public QObject
 {
   Q_OBJECT;
  public:
-  enum Type {LwrpClient=0,LastClient=1};
-  Client(QObject *parent=0);
-  ~Client();
+  Matrix(Config::MatrixType type,unsigned id,Config *conf,QObject *parent=0);
+  ~Matrix();
+  Config::MatrixType matrixType() const;
+  unsigned id() const;
   virtual bool isConnected() const=0;
   virtual QHostAddress hostAddress() const=0;
-  virtual QString deviceName() const=0;
-  virtual unsigned dstSlots() const=0;
-  virtual unsigned srcSlots() const=0;
-  virtual SySource *src(int slot) const=0;
-  virtual SyDestination *dst(int slot) const=0;
-  virtual unsigned gpis() const=0;
-  virtual unsigned gpos() const=0;
   virtual QString hostName() const=0;
-  virtual int srcNumber(int slot) const=0;
-  virtual QHostAddress srcAddress(int slot) const=0;
-  virtual QString srcName(int slot) const=0;
-  virtual bool srcEnabled(int slot) const=0;
-  virtual unsigned srcChannels(int slot) const=0;
-  virtual unsigned srcPacketSize(int slot)=0;
-  virtual QHostAddress dstAddress(int slot) const=0;
-  virtual void setDstAddress(int slot,const QHostAddress &addr)=0;
-  virtual void setDstAddress(int slot,const QString &addr)=0;
-  virtual QString dstName(int slot) const=0;
-  virtual unsigned dstChannels(int slot) const=0;
-  virtual SyGpioBundle *gpiBundle(int slot) const=0;
-  virtual void setGpiCode(int slot,const QString &code)=0;
-  virtual SyGpo *gpo(int slot) const=0;
-  virtual void setGpoCode(int slot,const QString &code)=0;
+  virtual QString deviceName() const=0;
+  virtual unsigned dstSlots() const;
+  virtual unsigned srcSlots() const;
+  virtual SySource *src(int slot) const;
+  virtual SyDestination *dst(int slot) const;
+  virtual int srcNumber(int slot) const;
+  virtual QHostAddress srcAddress(int slot) const;
+  virtual QString srcName(int slot) const;
+  virtual bool srcEnabled(int slot) const;
+  virtual unsigned srcChannels(int slot) const;
+  virtual unsigned srcPacketSize(int slot);
+  virtual QHostAddress dstAddress(int slot) const;
+  virtual void setDstAddress(int slot,const QHostAddress &addr);
+  virtual void setDstAddress(int slot,const QString &addr);
+  virtual QString dstName(int slot) const;
+  virtual unsigned dstChannels(int slot) const;
+  virtual unsigned gpis() const;
+  virtual unsigned gpos() const;
+  virtual SyGpioBundle *gpiBundle(int slot) const;
+  virtual void setGpiCode(int slot,const QString &code);
+  virtual SyGpo *gpo(int slot) const;
+  virtual void setGpoCode(int slot,const QString &code);
   virtual void setGpoSourceAddress(int slot,const QHostAddress &s_addr,
-				   int s_slot)=0;
+				   int s_slot);
   virtual bool clipAlarmActive(int slot,SyLwrpClient::MeterType type,
-			       int chan) const=0;
+			       int chan) const;
   virtual bool silenceAlarmActive(int slot,SyLwrpClient::MeterType type,
-				  int chan) const=0;
+				  int chan) const;
   virtual void setClipMonitor(int slot,SyLwrpClient::MeterType type,int lvl,
-			      int msec)=0;
+			      int msec);
   virtual void setSilenceMonitor(int slot,SyLwrpClient::MeterType type,int lvl,
-				 int msec)=0;
+				 int msec);
   virtual void connectToHost(const QHostAddress &addr,uint16_t port,
   			     const QString &pwd,bool persistent=false)=0;
   virtual void sendRawLwrp(const QString &cmd)=0;
-  static QString typeString(Type type);
 
  signals:
   void connected(unsigned id,bool state);
@@ -91,14 +93,19 @@ class Client :public QObject
   void gpiChanged(unsigned id,int slotnum,const SyNode &node,
 		  const SyGpioBundle &bundle);
   void gpoChanged(unsigned id,int slotnum,const SyNode &node,const SyGpo &gpo);
-  void nicAddressChanged(unsigned id,const QHostAddress &nicaddr);
-  void meterUpdate(unsigned id,SyLwrpClient::MeterType type,unsigned slotnum,
-		   int16_t *peak_lvls,int16_t *rms_lvls);
   void audioClipAlarm(unsigned id,SyLwrpClient::MeterType type,
 		      unsigned slotnum,int chan,bool state);
   void audioSilenceAlarm(unsigned id,SyLwrpClient::MeterType type,
 			 unsigned slotnum,int chan,bool state);
+
+ protected:
+  Config *config() const;
+
+ private:
+  Config::MatrixType d_matrix_type;
+  unsigned d_id;
+  Config *d_config;
 };
 
 
-#endif  // SYLWRP_CLIENT_H
+#endif  // MATRIX_H

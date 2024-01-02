@@ -2,7 +2,7 @@
 //
 // Dynamic router database component for Drouter
 //
-//   (C) Copyright 2018-2021 Fred Gleason <fredg@paravelsystems.com>
+//   (C) Copyright 2018-2024 Fred Gleason <fredg@paravelsystems.com>
 //
 //   This program is free software; you can redistribute it and/or modify
 //   it under the terms of the GNU General Public License version 2 as
@@ -31,7 +31,7 @@
 //#include <sy5/sylwrp_client.h>
 #include <sy5/symcastsocket.h>
 
-#include "client.h"
+#include "matrix.h"
 #include "config.h"
 #include "endpointmap.h"
 #include "gpioflasher.h"
@@ -43,8 +43,8 @@ class DRouter : public QObject
   DRouter(int *proto_socks,QObject *parent=0);
   ~DRouter();
   QList<QHostAddress> nodeHostAddresses() const;
-  Client *node(const QHostAddress &hostaddr);
-  Client *nodeBySrcStream(const QHostAddress &strmaddress,int *slot);
+  Matrix *node(const QHostAddress &hostaddr);
+  Matrix *nodeBySrcStream(const QHostAddress &strmaddress,int *slot);
   SySource *src(int srcnum) const;
   SySource *src(const QHostAddress &hostaddr,int slot) const;
   SyDestination *dst(const QHostAddress &hostaddr,int slot) const;
@@ -86,7 +86,9 @@ class DRouter : public QObject
   bool StartProtocolIpc(QString *err_msg);
   bool ProcessIpcCommand(int sock,const QString &cmd);
   bool StartDb(QString *err_msg);
+  bool StartStaticMatrices(QString *err_msg);
   bool StartLivewire(QString *err_msg);
+  Matrix *StartMatrix(Config::MatrixType type,unsigned id);
   void LockTables() const;
   void UnlockTables() const;
   void LoadMaps();
@@ -96,8 +98,7 @@ class DRouter : public QObject
   void FinalizeSAGpioRoute(int event_id,int router,int output,int input);
   void FinalizeSARouteEvent(int event_id,bool status) const;
   void WriteCommentEvent(const QString &str) const;
-  //  QMap<unsigned,SyLwrpClient *> drouter_nodes;
-  QMap<unsigned,Client *> drouter_nodes;
+  QMap<unsigned,Matrix *> drouter_nodes;
   QList<SyMcastSocket *> drouter_advt_sockets;
   QMap<int,QTcpSocket *> drouter_ipc_sockets;
   QMap<int,QString> drouter_ipc_accums;

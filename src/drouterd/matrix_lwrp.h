@@ -1,6 +1,6 @@
-// client_lwrp.h
+// matrix_lwrp.h
 //
-// LWRP client implementation
+// LWRP matrix implementation
 //
 // (C) 2023 Fred Gleason <fredg@paravelsystems.com>
 //
@@ -19,21 +19,22 @@
 //    Boston, MA  02111-1307  USA
 //
 
-#ifndef CLIENT_LWRP_H
-#define CLIENT_LWRP_H
+#ifndef MATRIX_LWRP_H
+#define MATRIX_LWRP_H
 
 #include <sy5/sylwrp_client.h>
 
-#include "client.h"
+#include "matrix.h"
 
-class ClientLwrp :public Client
+class MatrixLwrp :public Matrix
 {
   Q_OBJECT;
  public:
-  ClientLwrp(unsigned id,QObject *parent=0);
-  ~ClientLwrp();
+  MatrixLwrp(unsigned id,Config *conf,QObject *parent=0);
+  ~MatrixLwrp();
   bool isConnected() const;
   QHostAddress hostAddress() const;
+  QString hostName() const;
   QString deviceName() const;
   unsigned dstSlots() const;
   unsigned srcSlots() const;
@@ -41,7 +42,6 @@ class ClientLwrp :public Client
   SyDestination *dst(int slot) const;
   unsigned gpis() const;
   unsigned gpos() const;
-  QString hostName() const;
   int srcNumber(int slot) const;
   QHostAddress srcAddress(int slot) const;
   QString srcName(int slot) const;
@@ -88,4 +88,4 @@ class ClientLwrp :public Client
 };
 
 
-#endif  // CLIENT_LWRP_H
+#endif  // MATRIX_LWRP_H

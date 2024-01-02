@@ -51,6 +51,7 @@ class Config
 {
  public:
   enum TetherRole {This=0,That=1};
+  enum MatrixType {LwrpMatrix=0,Bt41MlrMatrix=1,LastMatrix=2};
   Config();
   int clipAlarmThreshold() const;
   int clipAlarmTimeout() const;
@@ -66,6 +67,12 @@ class Config
   int maxHeapTableSize() const;
   int fileDescriptorLimit() const;
   QStringList nodesStartupLwrp(const QHostAddress &addr) const;
+
+  int matrixQuantity() const;
+  MatrixType matrixType(int n) const;
+  QHostAddress matrixHostAddress(int n) const;
+  uint16_t matrixPort(int n) const;
+
   bool tetherIsActivated() const;
   QHostAddress tetherSharedIpAddress() const;
   QString tetherHostId(TetherRole role) const;
@@ -81,6 +88,8 @@ class Config
   static QHostAddress normalizedStreamAddress(const QHostAddress &addr);
   static QHostAddress normalizedStreamAddress(const QString &addr);
   static bool emailIsValid(const QString &addr);
+  static QString matrixTypeString(MatrixType type);
+  static MatrixType matrixType(const QString &str);
 
  private:
   QString conf_lwrp_password;
@@ -97,6 +106,9 @@ class Config
   int conf_max_heap_table_size;
   int conf_file_descriptor_limit;
   QMap<uint32_t,QStringList> conf_nodes_startup_lwrps;
+  QList<Config::MatrixType> conf_matrix_types;
+  QList<QHostAddress> conf_matrix_host_addresses;
+  QList<uint16_t> conf_matrix_ports;
   bool conf_tether_is_activated;
   QHostAddress conf_tether_shared_ip_address;
   QString conf_tether_host_ids[2];

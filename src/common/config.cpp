@@ -123,6 +123,30 @@ QStringList Config::nodesStartupLwrp(const QHostAddress &addr) const
 }
 
 
+int Config::matrixQuantity() const
+{
+  return conf_matrix_types.size();
+}
+
+
+Config::MatrixType Config::matrixType(int n) const
+{
+  return conf_matrix_types.at(n);
+}
+
+
+QHostAddress Config::matrixHostAddress(int n) const
+{
+  return conf_matrix_host_addresses.at(n);
+}
+
+
+uint16_t Config::matrixPort(int n) const
+{
+  return conf_matrix_ports.at(n);
+}
+
+
 bool Config::tetherIsActivated() const
 {
   return conf_tether_is_activated;
@@ -249,7 +273,24 @@ void Config::load()
     }
     n++;
     host_addr=
-    p->addressValue("Nodes",QString::asprintf("HostAddress%d",n+1),"",&ok);
+      p->addressValue("Nodes",QString::asprintf("HostAddress%d",n+1),"",&ok);
+  }
+
+  //
+  // [Matrix<n>] Sections
+  //
+  n=0;
+  QString section=QString::asprintf("Matrix%d",n+1);
+  Config::MatrixType mtype=
+    Config::matrixType(p->stringValue(section,"Type","",&ok));
+  while(ok) {
+    conf_matrix_types.push_back(mtype);
+    conf_matrix_host_addresses.
+      push_back(p->addressValue(section,"HostAddress",""));
+    conf_matrix_ports.push_back(p->intValue(section,"HostPort"));
+    n++;
+    section=QString::asprintf("Matrix%d",n+1);
+    mtype=Config::matrixType(p->stringValue(section,"Type","",&ok));
   }
 
   //
@@ -358,4 +399,49 @@ bool Config::emailIsValid(const QString &addr)
     return false;
   }
   return true;
+}
+
+/*
+Config::MatrixType Config::cType(const QString &str)
+{
+  for(int i=0;i<Config::LastMatrix;i++) {
+    if(str.toUpper()==Config::matrixTypeString((Config::MatrixType)i)) {
+      return (Config::MatrixType)i;
+    }
+  }
+
+  return Config::LastMatrix;
+}
+*/
+
+QString Config::matrixTypeString(MatrixType type)
+{
+  QString ret="unknown";
+
+  switch(type) {
+  case Config::LwrpMatrix:
+    ret="LWRP";
+    break;
+
+  case Config::Bt41MlrMatrix:
+    ret="BT-41MLR";
+    break;
+
+  case Config::LastMatrix:
+    break;
+  }
+
+  return ret;
+}
+
+
+Config::MatrixType Config::matrixType(const QString &str)
+{
+  for(int i=0;i<Config::LastMatrix;i++) {
+    if(str.toUpper()==Config::matrixTypeString((Config::MatrixType)i)) {
+      return (Config::MatrixType)i;
+    }
+  }
+
+  return Config::LastMatrix;
 }
