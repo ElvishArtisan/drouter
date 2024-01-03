@@ -27,6 +27,7 @@ MatrixBt41Mlr::MatrixBt41Mlr(unsigned id,Config *conf,QObject *parent)
   : Matrix(Config::Bt41MlrMatrix,id,conf,parent)
 {
   d_host_port=0;
+  d_connected=false;
 
   //
   // Sources
@@ -90,7 +91,8 @@ MatrixBt41Mlr::~MatrixBt41Mlr()
 
 bool MatrixBt41Mlr::isConnected() const
 {
-  return d_socket->state()==QAbstractSocket::ConnectedState;
+  return d_connected;
+  //  return d_socket->state()==QAbstractSocket::ConnectedState;
 }
 
 
@@ -239,7 +241,7 @@ void MatrixBt41Mlr::connectedData()
   d_node.setSrcSlotQuantity(MATRIX_BT41MLR_SOURCE_QUAN);
   d_node.setDstSlotQuantity(MATRIX_BT41MLR_DEST_QUAN);
 
-  emit connected(id(),true);
+  d_socket->write("*0SL");   // Request audio crosspoint state
 }
 
 
@@ -247,6 +249,7 @@ void MatrixBt41Mlr::disconnectedData()
 {
   emit connected(id(),false);
 
+  d_connected=false;
   d_socket->deleteLater();
   d_socket=new QTcpSocket(this);
   connect(d_socket,SIGNAL(connected()),this,SLOT(connectedData()));
@@ -283,6 +286,9 @@ void MatrixBt41Mlr::readyReadData()
 				0,d_node,*(d_destinations[0]));
       }
     }
+    if(!d_connected) {
+      d_socket->write("*0SPA");  // Request GPI states
+    }
   }
 
   if((f0.at(0)=="S0P")&&(f0.size()==7)) {  // GPI state changed
@@ -296,6 +302,10 @@ void MatrixBt41Mlr::readyReadData()
       }
     }
     d_gpio_bundles[0]->setCode(code);
+    if(!d_connected) {
+      d_connected=true;
+      emit connected(id(),true);
+    }
     emit gpiChanged(id(),0,d_node,*(d_gpio_bundles[0]));
   }
 

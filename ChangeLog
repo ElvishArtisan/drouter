@@ -960,3 +960,7 @@
 	* Added GPI support to the BT-41MLR matrix driver.
 2024-01-03 Fred Gleason <fredg@paravelsystems.com>
 	* Added silence alarm support to the BT-41MLR matrix driver.
+2024-01-03 Fred Gleason <fredg@paravelsystems.com>
+	* Fixed bugs in the BT-41MLR matrix driver that failed to
+	initialize the crosspoint and GPI states correctly.
+

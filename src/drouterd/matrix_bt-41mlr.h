@@ -83,6 +83,7 @@ class MatrixBt41Mlr :public Matrix
   SyGpioBundle *d_gpio_bundles[MATRIX_BT41MLR_GPI_QUAN];
   SyNode d_node;
   QTimer *d_reconnect_timer;
+  bool d_connected;
 };
 
 
