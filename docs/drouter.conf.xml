@@ -303,9 +303,9 @@
 	Zero or more [Matrix<replaceable>num</replaceable>] sections can be
 	added, with <replaceable>num</replaceable> starting with
 	<userinput>1</userinput> and incremented for each additional section.
-	Each such section corresponds to a statically-defined switcher
-	device --i.e <emphasis>not</emphasis> an LWRP device. It can contain
-	the following parameters:
+	Each such section corresponds to a set of one or more switcher
+	device(s), to be controlled as constellation of devices constituting
+	a single router matrix.
       </para>
       <variablelist>
 	<varlistentry>
@@ -326,6 +326,16 @@
 		  <listitem>
 		    <para>
 		      Broadcast Tools Universal 4.1 MLR>>Web Switcher
+		    </para>
+		  </listitem>
+		</varlistentry>
+		<varlistentry>
+		  <term>
+		    <userinput>LWRP</userinput>
+		  </term>
+		  <listitem>
+		    <para>
+		      Livewire AoIP, via Livewire Routing Protocol
 		    </para>
 		  </listitem>
 		</varlistentry>

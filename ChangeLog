@@ -965,3 +965,5 @@
 	initialize the crosspoint and GPI states correctly.
 2024-01-03 Fred Gleason <fredg@paravelsystems.com>
 	* Added a 'Watchdog' class to drouterd(8).
+2024-01-03 Fred Gleason <fredg@paravelsystems.com>
+	* Documented the LWRP matrix driver in drouter.conf(5).

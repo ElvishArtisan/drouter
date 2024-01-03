@@ -2,7 +2,7 @@
 //
 // Instantiate a matrix instance
 //
-// (C) 2023 Fred Gleason <fredg@paravelsystems.com>
+// (C) 2023-2024 Fred Gleason <fredg@paravelsystems.com>
 //
 //    This program is free software; you can redistribute it and/or modify
 //    it under the terms of version 2.1 of the GNU Lesser General Public
@@ -20,6 +20,7 @@
 //
 
 #include "matrix_bt-41mlr.h"
+#include "matrix_gvc7000.h"
 #include "matrix_lwrp.h"
 
 #include "matrix_factory.h"
@@ -36,6 +37,10 @@ Matrix *MatrixFactory(Config::MatrixType type,unsigned id,Config *conf,
 
   case Config::Bt41MlrMatrix:
     matrix=new MatrixBt41Mlr(id,conf,parent);
+    break;
+
+  case Config::Gvc7000Matrix:
+    matrix=new MatrixGvc7000(id,conf,parent);
     break;
 
   case Config::LastMatrix:

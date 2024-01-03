@@ -44,6 +44,7 @@ dist_drouterd_SOURCES = drouter.cpp drouter.h\
                         gpioflasher.cpp gpioflasher.h\
                         matrix.cpp matrix.h\
                         matrix_bt-41mlr.cpp matrix_bt-41mlr.h\
+                        matrix_gvc7000.cpp matrix_gvc7000.h\
                         matrix_lwrp.cpp matrix_lwrp.h\
                         matrix_factory.cpp matrix_factory.h\
                         protoipc.h\
@@ -59,6 +60,7 @@ nodist_drouterd_SOURCES = config.cpp config.h\
                           moc_gpioflasher.cpp\
                           moc_matrix.cpp\
                           moc_matrix_bt-41mlr.cpp\
+                          moc_matrix_gvc7000.cpp\
                           moc_matrix_lwrp.cpp\
                           moc_scriptengine.cpp\
                           moc_tether.cpp\

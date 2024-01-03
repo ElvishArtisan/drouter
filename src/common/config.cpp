@@ -407,18 +407,6 @@ bool Config::emailIsValid(const QString &addr)
   return true;
 }
 
-/*
-Config::MatrixType Config::cType(const QString &str)
-{
-  for(int i=0;i<Config::LastMatrix;i++) {
-    if(str.toUpper()==Config::matrixTypeString((Config::MatrixType)i)) {
-      return (Config::MatrixType)i;
-    }
-  }
-
-  return Config::LastMatrix;
-}
-*/
 
 QString Config::matrixTypeString(MatrixType type)
 {
@@ -431,6 +419,10 @@ QString Config::matrixTypeString(MatrixType type)
 
   case Config::Bt41MlrMatrix:
     ret="BT-41MLR";
+    break;
+
+  case Config::Gvc7000Matrix:
+    ret="GVC7000";
     break;
 
   case Config::LastMatrix:
