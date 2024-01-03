@@ -963,4 +963,5 @@
 2024-01-03 Fred Gleason <fredg@paravelsystems.com>
 	* Fixed bugs in the BT-41MLR matrix driver that failed to
 	initialize the crosspoint and GPI states correctly.
-
+2024-01-03 Fred Gleason <fredg@paravelsystems.com>
+	* Added a 'Watchdog' class to drouterd(8).

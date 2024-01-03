@@ -30,6 +30,7 @@
 #include <sy5/sysource.h>
 
 #include "matrix.h"
+#include "watchdog.h"
 
 #define MATRIX_BT41MLR_SOURCE_QUAN 4
 #define MATRIX_BT41MLR_DEST_QUAN 1
@@ -72,6 +73,8 @@ class MatrixBt41Mlr :public Matrix
   void disconnectedData();
   void readyReadData();
   void reconnectData();
+  void watchdogPollData();
+  void watchdogTimeoutData();
 
  private:
   QTcpSocket *d_socket;
@@ -84,6 +87,7 @@ class MatrixBt41Mlr :public Matrix
   SyNode d_node;
   QTimer *d_reconnect_timer;
   bool d_connected;
+  Watchdog *d_watchdog;
 };
 
 

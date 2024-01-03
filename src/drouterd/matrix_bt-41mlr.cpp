@@ -70,6 +70,10 @@ MatrixBt41Mlr::MatrixBt41Mlr(unsigned id,Config *conf,QObject *parent)
   d_reconnect_timer=new QTimer(this);
   d_reconnect_timer->setSingleShot(true);
   connect(d_reconnect_timer,SIGNAL(timeout()),this,SLOT(reconnectData()));
+
+  d_watchdog=new Watchdog(this);
+  connect(d_watchdog,SIGNAL(poll()),this,SLOT(watchdogPollData()));
+  connect(d_watchdog,SIGNAL(timeout()),this,SLOT(watchdogTimeoutData()));
 }
 
 
@@ -230,6 +234,7 @@ void MatrixBt41Mlr::connectToHost(const QHostAddress &addr,uint16_t port,
   d_host_port=port;
 
   d_socket->connectToHost(d_host_address,d_host_port);
+  d_watchdog->start();
 }
 
 
@@ -317,6 +322,7 @@ void MatrixBt41Mlr::readyReadData()
       emit audioSilenceAlarm(id(),SyLwrpClient::OutputMeter,0,1,
 			     d_silence_alarms[0]);
     }
+    d_watchdog->touch();
   }
 }
 
@@ -324,4 +330,16 @@ void MatrixBt41Mlr::readyReadData()
 void MatrixBt41Mlr::reconnectData()
 {
   connectToHost(d_host_address,d_host_port,"",false);
+}
+
+
+void MatrixBt41Mlr::watchdogPollData()
+{
+  d_socket->write("*0SS");
+}
+
+
+void MatrixBt41Mlr::watchdogTimeoutData()
+{
+  d_socket->close();
 }

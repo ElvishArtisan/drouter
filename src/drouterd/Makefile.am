@@ -49,7 +49,8 @@ dist_drouterd_SOURCES = drouter.cpp drouter.h\
                         protoipc.h\
                         scriptengine.cpp scriptengine.h\
                         tether.cpp tether.h\
-                        ttydevice.cpp ttydevice.h
+                        ttydevice.cpp ttydevice.h\
+                        watchdog.cpp watchdog.h
 
 nodist_drouterd_SOURCES = config.cpp config.h\
                           endpointmap.cpp endpointmap.h\
@@ -62,6 +63,7 @@ nodist_drouterd_SOURCES = config.cpp config.h\
                           moc_scriptengine.cpp\
                           moc_tether.cpp\
                           moc_ttydevice.cpp\
+                          moc_watchdog.cpp\
                           protoipc.h\
                           sendmail.cpp sendmail.h\
                           sqlquery.cpp sqlquery.h
