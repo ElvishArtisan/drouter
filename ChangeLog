@@ -958,3 +958,5 @@
 	Livewire devices to be visible.
 2024-01-02 Fred Gleason <fredg@paravelsystems.com>
 	* Added GPI support to the BT-41MLR matrix driver.
+2024-01-03 Fred Gleason <fredg@paravelsystems.com>
+	* Added silence alarm support to the BT-41MLR matrix driver.

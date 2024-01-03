@@ -63,9 +63,9 @@ class MatrixBt41Mlr :public Matrix
   unsigned dstChannels(int slot) const;
   unsigned gpis() const;
   SyGpioBundle *gpiBundle(int slot) const;
+  bool silenceAlarmActive(int slot,SyLwrpClient::MeterType type,int chan) const;
   void connectToHost(const QHostAddress &addr,uint16_t port,const QString &pwd,
 		     bool persistent=false);
-  void sendRawLwrp(const QString &cmd);
 
  private slots:
   void connectedData();
@@ -79,6 +79,7 @@ class MatrixBt41Mlr :public Matrix
   uint16_t d_host_port;
   SySource *d_sources[MATRIX_BT41MLR_SOURCE_QUAN];
   SyDestination *d_destinations[MATRIX_BT41MLR_DEST_QUAN];
+  bool d_silence_alarms[MATRIX_BT41MLR_DEST_QUAN];
   SyGpioBundle *d_gpio_bundles[MATRIX_BT41MLR_GPI_QUAN];
   SyNode d_node;
   QTimer *d_reconnect_timer;

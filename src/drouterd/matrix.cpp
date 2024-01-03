@@ -206,3 +206,8 @@ Config *Matrix::config() const
 {
   return d_config;
 }
+
+
+void Matrix::sendRawLwrp(const QString &cmd)
+{
+}

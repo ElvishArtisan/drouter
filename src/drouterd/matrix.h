@@ -81,7 +81,7 @@ class Matrix :public QObject
 				 int msec);
   virtual void connectToHost(const QHostAddress &addr,uint16_t port,
   			     const QString &pwd,bool persistent=false)=0;
-  virtual void sendRawLwrp(const QString &cmd)=0;
+  virtual void sendRawLwrp(const QString &cmd);
 
  signals:
   void connected(unsigned id,bool state);

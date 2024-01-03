@@ -44,6 +44,7 @@ MatrixBt41Mlr::MatrixBt41Mlr(unsigned id,Config *conf,QObject *parent)
     d_destinations[i]=new SyDestination();
     d_destinations[i]->setName(QString::asprintf("DST %d",i+1));
     d_destinations[i]->setChannels(2);
+    d_silence_alarms[i]=false;;
   }
 
   //
@@ -210,6 +211,16 @@ SyGpioBundle *MatrixBt41Mlr::gpiBundle(int slot) const
 }
 
 
+bool MatrixBt41Mlr::silenceAlarmActive(int slot,SyLwrpClient::MeterType type,
+				       int chan) const
+{
+  if(type==SyLwrpClient::OutputMeter) {
+    return d_silence_alarms[slot];
+  }
+  return false;
+}
+
+
 void MatrixBt41Mlr::connectToHost(const QHostAddress &addr,uint16_t port,
 				  const QString &pwd,bool persistent)
 {
@@ -217,11 +228,6 @@ void MatrixBt41Mlr::connectToHost(const QHostAddress &addr,uint16_t port,
   d_host_port=port;
 
   d_socket->connectToHost(d_host_address,d_host_port);
-}
-
-
-void MatrixBt41Mlr::sendRawLwrp(const QString &cmd)
-{
 }
 
 
@@ -291,6 +297,16 @@ void MatrixBt41Mlr::readyReadData()
     }
     d_gpio_bundles[0]->setCode(code);
     emit gpiChanged(id(),0,d_node,*(d_gpio_bundles[0]));
+  }
+
+  if((f0.at(0)=="S0S")&&(f0.size()==2)) {  // Silence alarm state changed
+    if(d_silence_alarms[0]!=f0.at(1)) {
+      d_silence_alarms[0]=f0.at(1)=="1";
+      emit audioSilenceAlarm(id(),SyLwrpClient::OutputMeter,0,0,
+			     d_silence_alarms[0]);
+      emit audioSilenceAlarm(id(),SyLwrpClient::OutputMeter,0,1,
+			     d_silence_alarms[0]);
+    }
   }
 }
 
