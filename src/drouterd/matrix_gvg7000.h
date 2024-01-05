@@ -85,7 +85,7 @@ class MatrixGvg7000 :public Matrix
   SyNode d_node;
   QTimer *d_reconnect_timer;
   bool d_connected;
-  //  Watchdog *d_watchdog;
+  Watchdog *d_watchdog;
   QByteArray d_raw_accum;
   QByteArray d_layer4_accum;
   QTimer *d_poll_timer;

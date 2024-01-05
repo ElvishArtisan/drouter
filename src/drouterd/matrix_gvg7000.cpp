@@ -47,11 +47,9 @@ MatrixGvg7000::MatrixGvg7000(unsigned id,Config *conf,QObject *parent)
   d_reconnect_timer=new QTimer(this);
   d_reconnect_timer->setSingleShot(true);
   connect(d_reconnect_timer,SIGNAL(timeout()),this,SLOT(reconnectData()));
-  /*
   d_watchdog=new Watchdog(this);
   connect(d_watchdog,SIGNAL(poll()),this,SLOT(watchdogPollData()));
   connect(d_watchdog,SIGNAL(timeout()),this,SLOT(watchdogTimeoutData()));
-  */
 }
 
 
@@ -264,7 +262,7 @@ void MatrixGvg7000::pollData()
 
 void MatrixGvg7000::watchdogPollData()
 {
-  //  d_socket->write("*0SS");
+  SendGvgCommand("QT");
 }
 
 
