@@ -2,7 +2,7 @@
 //
 // Global configuration for DRouter
 //
-//   (C) Copyright 2018-2022 Fred Gleason <fredg@paravelsystems.com>
+//   (C) Copyright 2018-2024 Fred Gleason <fredg@paravelsystems.com>
 //
 //   This program is free software; you can redistribute it and/or modify
 //   it under the terms of the GNU General Public License version 2 as
@@ -51,7 +51,7 @@ class Config
 {
  public:
   enum TetherRole {This=0,That=1};
-  enum MatrixType {LwrpMatrix=0,Bt41MlrMatrix=1,Gvc7000Matrix=2,LastMatrix=3};
+  enum MatrixType {LwrpMatrix=0,Bt41MlrMatrix=1,Gvg7000Matrix=2,LastMatrix=3};
   Config();
   int clipAlarmThreshold() const;
   int clipAlarmTimeout() const;

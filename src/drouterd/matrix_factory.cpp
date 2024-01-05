@@ -20,7 +20,7 @@
 //
 
 #include "matrix_bt-41mlr.h"
-#include "matrix_gvc7000.h"
+#include "matrix_gvg7000.h"
 #include "matrix_lwrp.h"
 
 #include "matrix_factory.h"
@@ -39,8 +39,8 @@ Matrix *MatrixFactory(Config::MatrixType type,unsigned id,Config *conf,
     matrix=new MatrixBt41Mlr(id,conf,parent);
     break;
 
-  case Config::Gvc7000Matrix:
-    matrix=new MatrixGvc7000(id,conf,parent);
+  case Config::Gvg7000Matrix:
+    matrix=new MatrixGvg7000(id,conf,parent);
     break;
 
   case Config::LastMatrix:

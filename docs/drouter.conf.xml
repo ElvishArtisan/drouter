@@ -331,6 +331,16 @@
 		</varlistentry>
 		<varlistentry>
 		  <term>
+		    <userinput>GVG7000</userinput>
+		  </term>
+		  <listitem>
+		    <para>
+		      Grass Valley Series 7000 Control Protocol
+		    </para>
+		  </listitem>
+		</varlistentry>
+		<varlistentry>
+		  <term>
 		    <userinput>LWRP</userinput>
 		  </term>
 		  <listitem>
@@ -523,11 +533,28 @@
     </refsect2>
   </refsect1>
 
+  <refsect1 id='notes'><title>Notes</title>
+  <para>
+    Use of the <userinput>GVG7000</userinput> matrix type requires that the
+    target device implement the following GVG7000 protocol commands:
+  </para>
+  <simplelist>
+    <member>Clear Destination Status Flags [BK,D]</member>
+    <member>Query Destination Status By Index [QJ]</member>
+    <member>Query Destinations With Indexes [QN,ID]</member>
+    <member>Query Sources With Indexes [QN,IS]</member>
+    <member>Query Date &amp; Time [QT]</member>
+  </simplelist>
+  </refsect1>
+
   <refsect1 id='see_also'><title>See Also</title>
   <para>
   <citerefentry>
     <refentrytitle>drouterd</refentrytitle><manvolnum>8</manvolnum>
-  </citerefentry>
+  </citerefentry>,
+  <citetitle pubwork="book">
+    Grass Valley Routing Products Protocols Manual
+  </citetitle>
   </para>
   </refsect1>
 </refentry>

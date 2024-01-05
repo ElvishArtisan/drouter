@@ -1,8 +1,8 @@
-// matrix_gvc7000.h
+// matrix_gvg7000.h
 //
 // Router matrix implementation for Broadcast Tools Universal 4.1 MLR>>Web
 //
-// (C) 2023 Fred Gleason <fredg@paravelsystems.com>
+// (C) 2024 Fred Gleason <fredg@paravelsystems.com>
 //
 //    This program is free software; you can redistribute it and/or modify
 //    it under the terms of version 2.1 of the GNU Lesser General Public
@@ -19,9 +19,10 @@
 //    Boston, MA  02111-1307  USA
 //
 
-#ifndef MATRIX_GVC7000_H
-#define MATRIX_GVC7000_H
+#ifndef MATRIX_GVG7000_H
+#define MATRIX_GVG7000_H
 
+#include <QMap>
 #include <QTcpSocket>
 #include <QTimer>
 
@@ -32,18 +33,12 @@
 #include "matrix.h"
 #include "watchdog.h"
 
-#define MATRIX_BT41MLR_SOURCE_QUAN 4
-#define MATRIX_BT41MLR_DEST_QUAN 1
-#define MATRIX_BT41MLR_GPI_QUAN 1
-#define MATRIX_BT41MLR_GPO_QUAN 0
-#define MATRIX_BT41MLR_STREAM_ADDR_PREFIX "0.0.0"
-
-class MatrixGvc7000 :public Matrix
+class MatrixGvg7000 :public Matrix
 {
   Q_OBJECT;
  public:
-  MatrixGvc7000(unsigned id,Config *conf,QObject *parent=0);
-  ~MatrixGvc7000();
+  MatrixGvg7000(unsigned id,Config *conf,QObject *parent=0);
+  ~MatrixGvg7000();
   bool isConnected() const;
   QHostAddress hostAddress() const;
   QString hostName() const;
@@ -62,9 +57,6 @@ class MatrixGvc7000 :public Matrix
   void setDstAddress(int slot,const QString &s_addr);
   QString dstName(int slot) const;
   unsigned dstChannels(int slot) const;
-  unsigned gpis() const;
-  SyGpioBundle *gpiBundle(int slot) const;
-  bool silenceAlarmActive(int slot,SyLwrpClient::MeterType type,int chan) const;
   void connectToHost(const QHostAddress &addr,uint16_t port,const QString &pwd,
 		     bool persistent=false);
 
@@ -73,22 +65,31 @@ class MatrixGvc7000 :public Matrix
   void disconnectedData();
   void readyReadData();
   void reconnectData();
+  void pollData();
   void watchdogPollData();
   void watchdogTimeoutData();
 
  private:
+  void DispatchGvgCommand(const QByteArray &msg);
+  void ProcessGvgCommand(const QByteArray &msg);
+  void SendGvgCommand(const QString &str);
+  QByteArray ToGvgNative(QString str) const;
+  bool GvgVerifyChecksum(const QByteArray &msg) const;
+  uint8_t GvgChecksum(const QByteArray &msg) const;
+  QString GvgPrettify(const QByteArray &msg) const;
   QTcpSocket *d_socket;
   QHostAddress d_host_address;
   uint16_t d_host_port;
-  SySource *d_sources[MATRIX_BT41MLR_SOURCE_QUAN];
-  SyDestination *d_destinations[MATRIX_BT41MLR_DEST_QUAN];
-  bool d_silence_alarms[MATRIX_BT41MLR_DEST_QUAN];
-  SyGpioBundle *d_gpio_bundles[MATRIX_BT41MLR_GPI_QUAN];
+  QMap<int,SySource *> d_sources;
+  QMap<int,SyDestination *> d_destinations;
   SyNode d_node;
   QTimer *d_reconnect_timer;
   bool d_connected;
-  Watchdog *d_watchdog;
+  //  Watchdog *d_watchdog;
+  QByteArray d_raw_accum;
+  QByteArray d_layer4_accum;
+  QTimer *d_poll_timer;
 };
 
 
-#endif  // MATRIX_GVC7000_H
+#endif  // MATRIX_GVG7000_H

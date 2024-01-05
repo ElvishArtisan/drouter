@@ -2,7 +2,7 @@
 //
 // Global configuration for DRouter
 //
-//   (C) Copyright 2018-2021 Fred Gleason <fredg@paravelsystems.com>
+//   (C) Copyright 2018-2024 Fred Gleason <fredg@paravelsystems.com>
 //
 //   This program is free software; you can redistribute it and/or modify
 //   it under the terms of the GNU General Public License version 2 as
@@ -421,8 +421,8 @@ QString Config::matrixTypeString(MatrixType type)
     ret="BT-41MLR";
     break;
 
-  case Config::Gvc7000Matrix:
-    ret="GVC7000";
+  case Config::Gvg7000Matrix:
+    ret="GVG7000";
     break;
 
   case Config::LastMatrix:

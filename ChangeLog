@@ -967,3 +967,6 @@
 	* Added a 'Watchdog' class to drouterd(8).
 2024-01-03 Fred Gleason <fredg@paravelsystems.com>
 	* Documented the LWRP matrix driver in drouter.conf(5).
+2024-01-05 Fred Gleason <fredg@paravelsystems.com>
+	* Added audio matrix support for devices using Grass Valley Series
+	7000 control protocol.
