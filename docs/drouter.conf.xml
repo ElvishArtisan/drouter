@@ -297,10 +297,78 @@
       </variablelist>
     </refsect2>
 
+    <refsect2 id='nodes_section'>
+      <title>The [Nodes] Section</title>
+      <para>
+	The <userinput>[Nodes]</userinput> section allows for LWRP statements
+	to be sent directly to one or more specific Livewire nodes
+	during startup initialization by
+	<command>drouterd</command><manvolnum>8</manvolnum>.
+	It contains the following parameters:
+      </para>
+      <variablelist>
+	<varlistentry>
+	  <term>
+	    HostAddress<replaceable>num</replaceable>=<replaceable>ipv4-addr</replaceable>
+	  </term>
+	  <listitem>
+	    <para>
+	      Where <replaceable>ipv4-addr</replaceable> is the IPv4 address
+	      of a node in dotted-quad notation and
+	      <replaceable>num</replaceable> is an integer, starting
+	      with <userinput>1</userinput> and incremented for each node
+	      referenced in the <userinput>[Nodes]</userinput> section.
+	    </para>
+	  </listitem>
+	</varlistentry>
+	<varlistentry>
+	  <term>
+	    StartupLwrp<replaceable>num</replaceable>=<replaceable>lwrp</replaceable>
+	  </term>
+	  <listitem>
+	    <para>
+	      Where <replaceable>lwrp</replaceable> is a comma-separated
+	      list of LWRP statements to be sent to the node specified by the
+	      corresponding HostAddress<replaceable>num</replaceable>
+	      directive.
+	    </para>
+	  </listitem>
+	</varlistentry>
+      </variablelist>
+      <refsect3 id='nodes_section.example'>
+	<title>Example</title>
+	<programlisting>
+	  [Nodes]
+	  HostAddress1=10.1.1.20
+	  StartupLwrp1=CFG GPO 1 SRCA:"2000" FUNC:"FOLLOW"
+
+	  HostAddress2=10.1.1.40
+	  StartupLwrp2=CFG GPO 1 SRCA:"4000" FUNC:"FOLLOW",GPO 1 lhhhh
+	</programlisting>
+	<para>
+	  The above example would cause the following LWRP statement to be
+	  sent to the node at <userinput>10.1.1.20</userinput>:
+	</para>
+	<programlisting>
+	  CFG GPO 1 SRCA:"2000" FUNC:"FOLLOW"
+	</programlisting>
+	<para>
+	  and the following statements to the node at
+	  <userinput>10.1.1.40</userinput>:
+	</para>
+	<programlisting>
+	  CFG GPO 1 SRCA:"4000" FUNC:"FOLLOW"
+	  GPO 1 lhhhh
+	</programlisting>
+      </refsect3>
+    </refsect2>
+
     <refsect2 id='matrix_sections'>
       <title>The [Matrix<replaceable>num</replaceable>] Sections</title>
       <para>
-	Zero or more [Matrix<replaceable>num</replaceable>] sections can be
+	Zero or more
+	<userinput>[Matrix<replaceable>num</replaceable>]</userinput>
+	sections can be
 	added, with <replaceable>num</replaceable> starting with
 	<userinput>1</userinput> and incremented for each additional section.
 	Each such section corresponds to a set of one or more switcher

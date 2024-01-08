@@ -975,3 +975,5 @@
 2024-01-08 Fred Gleason <fredg@paravelsystems.com>
 	* Added the list of required parameters for each router type to
 	the '[Matrix]' section of the drouter.conf(5) man page.
+2024-01-08 Fred Gleason <fredg@paravelsystems.com>
+	* Documented the '[Nodes]' section in the drouter(8) man page.
