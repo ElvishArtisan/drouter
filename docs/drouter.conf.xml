@@ -304,7 +304,7 @@
 	added, with <replaceable>num</replaceable> starting with
 	<userinput>1</userinput> and incremented for each additional section.
 	Each such section corresponds to a set of one or more switcher
-	device(s), to be controlled as constellation of devices constituting
+	device(s), to be controlled as a constellation of devices constituting
 	a single router matrix.
       </para>
       <variablelist>
@@ -327,6 +327,17 @@
 		    <para>
 		      Broadcast Tools Universal 4.1 MLR>>Web Switcher
 		    </para>
+		    <para>
+		      Required parameters:
+		      <simplelist type="inline">
+			<member>
+			  HostAddress=<replaceable>ipv4-addr</replaceable>
+			</member>
+			<member>
+			  HostPort=<replaceable>port-num</replaceable>
+			</member>
+		      </simplelist>
+		    </para>
 		  </listitem>
 		</varlistentry>
 		<varlistentry>
@@ -337,6 +348,17 @@
 		    <para>
 		      Grass Valley Series 7000 Control Protocol
 		    </para>
+		    <para>
+		      Required parameters:
+		      <simplelist type="inline">
+			<member>
+			  HostAddress=<replaceable>ipv4-addr</replaceable>
+			</member>
+			<member>
+			  HostPort=<replaceable>port-num</replaceable>
+			</member>
+		      </simplelist>
+		    </para>
 		  </listitem>
 		</varlistentry>
 		<varlistentry>
@@ -346,6 +368,9 @@
 		  <listitem>
 		    <para>
 		      Livewire AoIP, via Livewire Routing Protocol
+		    </para>
+		    <para>
+		      Required parameters: none.
 		    </para>
 		  </listitem>
 		</varlistentry>
