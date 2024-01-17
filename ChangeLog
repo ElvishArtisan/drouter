@@ -977,3 +977,5 @@
 	the '[Matrix]' section of the drouter.conf(5) man page.
 2024-01-08 Fred Gleason <fredg@paravelsystems.com>
 	* Documented the '[Nodes]' section in the drouter(8) man page.
+2024-01-17 Fred Gleason <fredg@paravelsystems.com>
+	* Tweaked layout of the description fields in xpointpanel(1).

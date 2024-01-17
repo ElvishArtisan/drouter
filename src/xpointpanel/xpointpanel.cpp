@@ -577,12 +577,12 @@ void MainWidget::resizeEvent(QResizeEvent *e)
 
 
   panel_description_name_label->
-    setGeometry(0,64,
-		info_width,20);
+    setGeometry(10,64,
+		info_width-ENDPOINTLIST_ITEM_HEIGHT,20);
   panel_description_text_label->
-    setGeometry(10,90,
-		info_width,
-		panel_output_list->sizeHint().width()-90);
+    setGeometry(15,90,
+		info_width-ENDPOINTLIST_ITEM_HEIGHT-5,
+		panel_output_list->sizeHint().width()-106);
 
   panel_inputs_label->
     setGeometry(10,

@@ -96,7 +96,7 @@ QSize EndpointList::sizeHint() const
   if(list_show_gpio) {
     width+=ENDPOINTLIST_GPIO_WIDTH;
   }
-  if((list_orientation==Qt::Horizontal)&&(width<ENDPOINTLIST_MIN_INPUT_WIDTH)) {
+  if(width<ENDPOINTLIST_MIN_INPUT_WIDTH) {
     width=ENDPOINTLIST_MIN_INPUT_WIDTH;
   }
 
