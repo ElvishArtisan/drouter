@@ -45,6 +45,7 @@ MainObject::MainObject(QObject *parent)
   main_no_tether=false;
   main_protocol_socks[0]=-1;
   main_protocol_socks[1]=-1;
+  main_protocol_socks[3]=-1;
   int n;
   bool no_protocols=false;
   QString err_msg;
@@ -113,6 +114,7 @@ MainObject::MainObject(QObject *parent)
     if(n==2) {
       main_protocol_socks[0]=SD_LISTEN_FDS_START+0;
       main_protocol_socks[1]=SD_LISTEN_FDS_START+1;
+      main_protocol_socks[2]=SD_LISTEN_FDS_START+2;
     }
     else {
       syslog(LOG_ERR,"error receiving sockets from Systemd, aborting");
@@ -179,6 +181,9 @@ void MainObject::protocolData()
   QString err_msg;
   pid_t pid=0;
 
+  //
+  // Start Protocol D
+  //
   if((pid=fork())==0) {
     if(main_protocol_socks[0]<0) {
       execl((QString(PATH_SBIN)+"/dprotod").toUtf8(),"dprotod","--protocol-d",
@@ -192,6 +197,9 @@ void MainObject::protocolData()
   main_protocol_pids.push_back(pid);
   syslog(LOG_INFO,"started Protocol D protocol");
 
+  //
+  // Start Protocol SA
+  //
   if((pid=fork())==0) {
     if(main_protocol_socks[1]<0) {
       execl((QString(PATH_SBIN)+"/dprotod").toUtf8(),"dprotod","--protocol-sa",
@@ -204,6 +212,23 @@ void MainObject::protocolData()
   }
   main_protocol_pids.push_back(pid);
   syslog(LOG_INFO,"started Software Authority protocol");
+
+  //
+  // Start Protocol J
+  //
+  if((pid=fork())==0) {
+    if(main_protocol_socks[2]<0) {
+      execl((QString(PATH_SBIN)+"/dprotod").toUtf8(),"dprotod","--protocol-j",
+	    (char *)NULL);
+    }
+    else {
+      execl((QString(PATH_SBIN)+"/dprotod").toUtf8(),"dprotod","--protocol-j",
+	    "--systemd",(char *)NULL);
+    }
+  }
+  main_protocol_pids.push_back(pid);
+  syslog(LOG_INFO,"started Protocol J protocol");
+
   if(!main_no_scripts) {
     main_scripts_timer->start(5000);
   }

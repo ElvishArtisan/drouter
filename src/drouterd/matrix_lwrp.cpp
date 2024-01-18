@@ -85,6 +85,12 @@ QString MatrixLwrp::deviceName() const
 }
 
 
+QString MatrixLwrp::description() const
+{
+  return d_description;
+}
+
+
 unsigned MatrixLwrp::dstSlots() const
 {
   return d_lwrp_client->dstSlots();
@@ -261,6 +267,8 @@ void MatrixLwrp::sendRawLwrp(const QString &cmd)
 
 void MatrixLwrp::nodeConnectedData(unsigned id,bool state)
 {
+  d_description=SyNode::productName(deviceName(),gpis(),gpos());
+
   emit connected(id,state);
 }
 

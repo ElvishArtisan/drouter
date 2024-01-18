@@ -51,7 +51,7 @@ class MainObject : public QObject
   DRouter *main_drouter;
   QTimer *main_protocol_timer;
   QList<pid_t> main_protocol_pids;
-  int main_protocol_socks[2];
+  int main_protocol_socks[3];
   bool main_no_scripts;
   bool main_no_tether;
   QTimer *main_scripts_timer;

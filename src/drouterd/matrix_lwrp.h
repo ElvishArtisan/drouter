@@ -36,6 +36,7 @@ class MatrixLwrp :public Matrix
   QHostAddress hostAddress() const;
   QString hostName() const;
   QString deviceName() const;
+  QString description() const;
   unsigned dstSlots() const;
   unsigned srcSlots() const;
   SySource *src(int slot) const;
@@ -85,6 +86,7 @@ class MatrixLwrp :public Matrix
 
  private:
   SyLwrpClient *d_lwrp_client;
+  QString d_description;
 };
 
 

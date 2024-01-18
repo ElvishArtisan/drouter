@@ -43,6 +43,7 @@ class MatrixGvg7000 :public Matrix
   QHostAddress hostAddress() const;
   QString hostName() const;
   QString deviceName() const;
+  QString description() const;
   unsigned dstSlots() const;
   unsigned srcSlots() const;
   SySource *src(int slot) const;

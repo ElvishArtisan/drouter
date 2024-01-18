@@ -32,6 +32,7 @@
 
 #include "dprotod.h"
 #include "protocol_d.h"
+#include "protocol_j.h"
 #include "protocol_sa.h"
 #include "protoipc.h"
 
@@ -51,6 +52,11 @@ MainObject::MainObject(QObject *parent)
   for(int i=0;i<cmd->keys();i++) {
     if(cmd->key(i)=="--protocol-d") {
       main_protocol_d=true;
+      protocols_defined++;
+      cmd->setProcessed(i,true);
+    }
+    if(cmd->key(i)=="--protocol-j") {
+      main_protocol_j=true;
       protocols_defined++;
       cmd->setProcessed(i,true);
     }
@@ -87,6 +93,9 @@ MainObject::MainObject(QObject *parent)
   else {
     if(main_protocol_d) {
       main_protocol=new ProtocolD(-1,this);
+    }
+    if(main_protocol_j) {
+      main_protocol=new ProtocolJ(-1,this);
     }
     if(main_protocol_sa) {
       main_protocol=new ProtocolSa(-1,this);

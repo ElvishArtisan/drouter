@@ -92,6 +92,12 @@ QString MatrixGvg7000::deviceName() const
 }
 
 
+QString MatrixGvg7000::description() const
+{
+  return QString("Grass Valley 7000 Compatible Device");
+}
+
+
 unsigned MatrixGvg7000::dstSlots() const
 {
   return d_destinations.size();

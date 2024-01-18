@@ -48,6 +48,7 @@ class Matrix :public QObject
   virtual QHostAddress hostAddress() const=0;
   virtual QString hostName() const=0;
   virtual QString deviceName() const=0;
+  virtual QString description() const=0;
   virtual unsigned dstSlots() const;
   virtual unsigned srcSlots() const;
   virtual SySource *src(int slot) const;

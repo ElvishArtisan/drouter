@@ -1,6 +1,7 @@
 [Socket]
 ListenStream=0.0.0.0:23883
 ListenStream=0.0.0.0:9500
+ListenStream=0.0.0.0:9600
 
 [Install]
 WantedBy=sockets.target

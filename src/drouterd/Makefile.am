@@ -75,6 +75,7 @@ drouterd_LDADD = @QT5CLI_LIBS@ @SWITCHYARD5_LIBS@ @LIBSYSTEMD_LIBS@
 dist_dprotod_SOURCES = dprotod.cpp dprotod.h\
                        protocol.cpp protocol.h\
                        protocol_d.cpp protocol_d.h\
+                       protocol_j.cpp protocol_j.h\
                        protocol_sa.cpp protocol_sa.h\
                        protoipc.h
 
@@ -83,6 +84,7 @@ nodist_dprotod_SOURCES = config.cpp config.h\
                          moc_dprotod.cpp\
                          moc_protocol.cpp\
                          moc_protocol_d.cpp\
+                         moc_protocol_j.cpp\
                          moc_protocol_sa.cpp\
                          sqlquery.cpp sqlquery.h
 

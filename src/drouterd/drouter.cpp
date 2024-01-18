@@ -316,6 +316,7 @@ void DRouter::nodeConnectedData(unsigned id,bool state)
       "`HOST_ADDRESS`='"+QHostAddress(id).toString()+"',"+
       "`HOST_NAME`='"+SqlQuery::escape(mtx->hostName())+"',"+
       "`DEVICE_NAME`='"+SqlQuery::escape(mtx->deviceName())+"',"+
+      "`HOST_DESCRIPTION`='"+SqlQuery::escape(mtx->description())+"',"+
       QString::asprintf("`MATRIX_TYPE`=%u,",mtx->matrixType())+
       QString::asprintf("`SOURCE_SLOTS`=%u,",mtx->srcSlots())+
       QString::asprintf("`DESTINATION_SLOTS`=%u,",mtx->dstSlots())+
@@ -1230,6 +1231,7 @@ bool DRouter::StartDb(QString *err_msg)
     "`DESTINATION_SLOTS` int,"+
     "`GPI_SLOTS` int,"+
     "`GPO_SLOTS` int,"+
+    "`HOST_DESCRIPTION` char(191),"+
     "index NODES_MATRIX_TYPE_IDX(`MATRIX_TYPE`)) "+
     "engine MEMORY character set utf8 collate utf8_general_ci";
   SqlQuery::run(sql);

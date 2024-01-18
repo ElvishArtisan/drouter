@@ -1,0 +1,40 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<article xmlns="http://docbook.org/ns/docbook" version="5.0">
+<info>
+  <title>Protocol J</title>
+  <subtitle>TCP/IP Protocol for controlling endpoint routers</subtitle>
+  <edition>0.0.0</edition>
+  <author>
+    <personname>
+      <firstname>Fred</firstname>
+      <surname>Gleason</surname>
+      <email>fredg@paravelsystems.com</email>
+    </personname>
+  </author>
+</info>
+
+<sect1 id="sect.overview">
+  <title>Overview</title>
+  <para>
+    Messages to the Protocol J routing service are by means of a
+    TCP SOCK_STREAM connection to TCP port 9600 on the host server.
+  </para>
+  <sect2 id="sect.overview.commands">
+    <title>Protocol Command Syntax</title>
+    <para>
+      Every protocol message in ProtocolJ is a valid JSON document.
+      A minimally valid message has the form:
+    </para>
+    <literallayout class="monospaced">
+{
+    &quot;<replaceable>operation</replaceable>&quot;: {
+        &quot;<replaceable>param1</replaceable>&quot;: <replaceable>value1</replaceable>[,]
+        [...]
+        &quot;<replaceable>paramN</replaceable>&quot;: <replaceable>valueN</replaceable>
+    }
+}
+    </literallayout>
+  </sect2>
+</sect1>
+
+</article>

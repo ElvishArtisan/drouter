@@ -2,7 +2,7 @@
 ##
 ## docs/Makefile.am
 ##
-## (C) Copyright 2017-2022 Fred Gleason <fredg@paravelsystems.com>
+## (C) Copyright 2017-2024 Fred Gleason <fredg@paravelsystems.com>
 ##
 ##   This program is free software; you can redistribute it and/or modify
 ##   it under the terms of the GNU General Public License version 2 as
@@ -59,6 +59,8 @@ all-local:	buttonpanel.1\
                 xypanel.xml\
                 protocol_d.html\
                 protocol_d.pdf\
+                protocol_j.html\
+                protocol_j.pdf\
                 protocol_sa.html\
                 protocol_sa.pdf
 
@@ -89,6 +91,9 @@ EXTRA_DIST = buttonpanel.1\
              protocol_d.html\
              protocol_d.pdf\
              protocol_d.xml\
+             protocol_j.html\
+             protocol_j.pdf\
+             protocol_j.xml\
              protocol_sa.html\
              protocol_sa.pdf\
              protocol_sa.xml

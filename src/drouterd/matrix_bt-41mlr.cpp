@@ -118,6 +118,12 @@ QString MatrixBt41Mlr::deviceName() const
 }
 
 
+QString MatrixBt41Mlr::description() const
+{
+  return QString("Broadcast Tools Universal 4.1 MLR>>Web");
+}
+
+
 unsigned MatrixBt41Mlr::dstSlots() const
 {
   return MATRIX_BT41MLR_DEST_QUAN;
