@@ -45,6 +45,8 @@ src/buttonpanel/dparser.cpp
 src/buttonpanel/dparser.h
 src/buttonpanel/endpointmap.cpp
 src/buttonpanel/endpointmap.h
+src/buttonpanel/jparser.cpp
+src/buttonpanel/jparser.h
 src/buttonpanel/logindialog.cpp
 src/buttonpanel/logindialog.h
 src/buttonpanel/multistatewidget.cpp
@@ -64,6 +66,8 @@ src/dmap/dparser.cpp
 src/dmap/dparser.h
 src/dmap/endpointmap.cpp
 src/dmap/endpointmap.h
+src/dmap/jparser.cpp
+src/dmap/jparser.h
 src/dmap/logindialog.cpp
 src/dmap/logindialog.h
 src/dmap/multistatewidget.cpp
@@ -88,6 +92,8 @@ src/drouterd/logindialog.cpp
 src/drouterd/logindialog.h
 src/drouterd/multistatewidget.cpp
 src/drouterd/multistatewidget.h
+src/drouterd/jparser.cpp
+src/drouterd/jparser.h
 src/drouterd/tethertest
 src/drouterd/saparser.cpp
 src/drouterd/saparser.h
@@ -104,6 +110,8 @@ src/eventlogpanel/dparser.h
 src/eventlogpanel/endpointmap.cpp
 src/eventlogpanel/endpointmap.h
 src/eventlogpanel/eventlogpanel
+src/eventlogpanel/jparser.cpp
+src/eventlogpanel/jparser.h
 src/eventlogpanel/logindialog.cpp
 src/eventlogpanel/logindialog.h
 src/eventlogpanel/multistatewidget.cpp
@@ -122,6 +130,8 @@ src/outputpanel/dparser.cpp
 src/outputpanel/dparser.h
 src/outputpanel/endpointmap.cpp
 src/outputpanel/endpointmap.h
+src/outputpanel/jparser.cpp
+src/outputpanel/jparser.h
 src/outputpanel/logindialog.cpp
 src/outputpanel/logindialog.h
 src/outputpanel/multistatewidget.cpp
@@ -141,6 +151,8 @@ src/shotpanel/dparser.cpp
 src/shotpanel/dparser.h
 src/shotpanel/endpointmap.cpp
 src/shotpanel/endpointmap.h
+src/shotpanel/jparser.cpp
+src/shotpanel/jparser.h
 src/shotpanel/logindialog.cpp
 src/shotpanel/logindialog.h
 src/shotpanel/multistatewidget.cpp
@@ -161,6 +173,8 @@ src/tests/dparser.h
 src/tests/dparsertest
 src/tests/endpointmap.cpp
 src/tests/endpointmap.h
+src/tests/jparser.cpp
+src/tests/jparser.h
 src/tests/logindialog.cpp
 src/tests/logindialog.h
 src/tests/multistatewidget.cpp
@@ -180,6 +194,8 @@ src/xpointpanel/dparser.cpp
 src/xpointpanel/dparser.h
 src/xpointpanel/endpointmap.cpp
 src/xpointpanel/endpointmap.h
+src/xpointpanel/jparser.cpp
+src/xpointpanel/jparser.h
 src/xpointpanel/logindialog.cpp
 src/xpointpanel/logindialog.h
 src/xpointpanel/multistatewidget.cpp
@@ -199,6 +215,8 @@ src/xypanel/dparser.cpp
 src/xypanel/dparser.h
 src/xypanel/endpointmap.cpp
 src/xypanel/endpointmap.h
+src/xypanel/jparser.cpp
+src/xypanel/jparser.h
 src/xypanel/logindialog.cpp
 src/xypanel/logindialog.h
 src/xypanel/multistatewidget.cpp
