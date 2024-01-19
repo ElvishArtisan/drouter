@@ -54,6 +54,7 @@ DISTCLEANFILES = combobox.cpp combobox.h\
                  config.cpp config.h\
                  dparser.cpp dparser.h\
                  endpointmap.cpp endpointmap.h\
+                 jparser.cpp jparser.h\
                  logindialog.cpp logindialog.h\
                  multistatewidget.cpp multistatewidget.h\
                  paths.h\

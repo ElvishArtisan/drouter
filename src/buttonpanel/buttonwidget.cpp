@@ -2,7 +2,7 @@
 //
 // Button container for a single output.
 //
-//   (C) Copyright 2002-2022 Fred Gleason <fredg@paravelsystems.com>
+//   (C) Copyright 2002-2024 Fred Gleason <fredg@paravelsystems.com>
 //
 //   This program is free software; you can redistribute it and/or modify
 //   it under the terms of the GNU General Public License as
@@ -23,7 +23,7 @@
 
 #include "buttonwidget.h"
 
-ButtonWidget::ButtonWidget(int router,int output,int columns,SaParser *parser,
+ButtonWidget::ButtonWidget(int router,int output,int columns,JParser *parser,
 			   bool arm_button,QWidget *parent)
   : QWidget(parent)
 {
@@ -63,8 +63,8 @@ ButtonWidget::ButtonWidget(int router,int output,int columns,SaParser *parser,
   //
   // The SA Connection
   //
-  connect(panel_parser,SIGNAL(connected(bool,SaParser::ConnectionState)),
-	  this,SLOT(changeConnectionState(bool,SaParser::ConnectionState)));
+  connect(panel_parser,SIGNAL(connected(bool,JParser::ConnectionState)),
+	  this,SLOT(changeConnectionState(bool,JParser::ConnectionState)));
   connect(panel_parser,
 	  SIGNAL(outputCrosspointChanged(int,int,int)),
 	  this,SLOT(changeOutputCrosspoint(int,int,int)));
@@ -122,7 +122,7 @@ void ButtonWidget::armButtonClickedData()
 
 
 void ButtonWidget::changeConnectionState(bool state,
-				       SaParser::ConnectionState cstate)
+					 JParser::ConnectionState cstate)
 {
   if(state) {
     for(QMap<int,AutoPushButton *>::const_iterator it=panel_buttons.begin();

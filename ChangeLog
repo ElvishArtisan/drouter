@@ -981,3 +981,5 @@
 	* Tweaked layout of the description fields in xpointpanel(1).
 2024-01-18 Fred Gleason <fredg@paravelsystems.com>
 	* Stubbed out a 'Protocol J' protocol.
+2024-01-18 Fred Gleason <fredg@paravelsystems.com>
+	* Modified buttonpanel(1) to work with Protocol J.

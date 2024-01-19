@@ -153,9 +153,9 @@ MainWidget::MainWidget(QWidget *parent)
   }
 
   //
-  // The SA Connection
+  // The Protocol J Connection
   //
-  panel_parser=new SaParser(this);
+  panel_parser=new JParser(this);
   int audionum=0;
   int gpionum=0;
   for(int i=0;i<panel_arg_types.size();i++) {
@@ -174,8 +174,8 @@ MainWidget::MainWidget(QWidget *parent)
       gpionum++;
     }
   }
-  connect(panel_parser,SIGNAL(connected(bool,SaParser::ConnectionState)),
-	  this,SLOT(changeConnectionState(bool,SaParser::ConnectionState)));
+  connect(panel_parser,SIGNAL(connected(bool,JParser::ConnectionState)),
+	  this,SLOT(changeConnectionState(bool,JParser::ConnectionState)));
   panel_resize_timer=new QTimer(this);
   panel_resize_timer->setSingleShot(true);
   connect(panel_resize_timer,SIGNAL(timeout()),this,SLOT(resizeData()));
@@ -194,7 +194,7 @@ MainWidget::MainWidget(QWidget *parent)
     setFont(QFont(font().family(),font().pixelSize(),QFont::Bold));
 
   //
-  // Fire up the SAP connection
+  // Fire up the Protocol J connection
   //
   if(prompt) {
     if(!panel_login_dialog->exec(&panel_username,&panel_password)) {
@@ -202,7 +202,7 @@ MainWidget::MainWidget(QWidget *parent)
     }
   }
   panel_parser->
-    connectToHost(panel_hostname,9500,panel_username,panel_password);
+    connectToHost(panel_hostname,9600,panel_username,panel_password);
 }
 
 
@@ -241,7 +241,7 @@ void MainWidget::processError(const QString err_msg)
 
 
 void MainWidget::changeConnectionState(bool state,
-				       SaParser::ConnectionState cstate)
+				       JParser::ConnectionState cstate)
 {
   if(state) {
     panel_resize_timer->start(0);  // So the widgets can create buttons first

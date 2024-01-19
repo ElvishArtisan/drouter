@@ -45,7 +45,7 @@ MainObject::MainObject(QObject *parent)
   main_no_tether=false;
   main_protocol_socks[0]=-1;
   main_protocol_socks[1]=-1;
-  main_protocol_socks[3]=-1;
+  main_protocol_socks[2]=-1;
   int n;
   bool no_protocols=false;
   QString err_msg;

@@ -34,9 +34,11 @@ dist_outputpanel_SOURCES = outputpanel.cpp outputpanel.h\
                            panelwidget.cpp panelwidget.h
 
 nodist_outputpanel_SOURCES = combobox.cpp combobox.h\
+                             jparser.cpp jparser.h\
                              logindialog.cpp logindialog.h\
                              saparser.cpp saparser.h\
                              moc_combobox.cpp\
+                             moc_jparser.cpp\
                              moc_logindialog.cpp\
                              moc_saparser.cpp\
                              moc_outputpanel.cpp\
@@ -55,6 +57,7 @@ DISTCLEANFILES = combobox.cpp combobox.h\
                  config.cpp config.h\
                  dparser.cpp dparser.h\
                  endpointmap.cpp endpointmap.h\
+                 jparser.cpp jparser.h\
                  logindialog.cpp logindialog.h\
                  multistatewidget.cpp multistatewidget.h\
                  paths.h\

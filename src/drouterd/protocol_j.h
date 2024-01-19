@@ -29,6 +29,7 @@
 #include <sy5/sylwrp_client.h>
 
 #include "endpointmap.h"
+#include "jparser.h"
 #include "protocol.h"
 #include "sqlquery.h"
 
@@ -36,9 +37,6 @@ class ProtocolJ : public Protocol
 {
  Q_OBJECT;
  public:
- enum ErrorType {OkError=0,JsonError=1,NoRouterError=2,NoSnapshotError=3,
-		 NoSourceError=4,NoDestinationError=5,NotGpioRouterError=6,
-		 LastError=7};
   ProtocolJ(int sock,QObject *parent=0);
 
  private slots:
@@ -84,13 +82,14 @@ class ProtocolJ : public Protocol
   void DrouterMaskGpoStat(bool state);
   void DrouterMaskRouteStat(bool state);
   void DrouterMaskStat(bool state);
+  void SendPingResponse();
   void ProcessCommand(const QString &cmd);
   void LoadMaps();
   void LoadHelp();
   void AddRouteEvent(int router,int output,int input);
   void AddSnapEvent(int router,const QString &name);
 
-  void SendError(ErrorType etype,const QString &remarks=QString());
+  void SendError(JParser::ErrorType etype,const QString &remarks=QString());
 
   QString JsonPadding(int padding);
   QString JsonEscape(const QString &str);
@@ -131,7 +130,8 @@ class ProtocolJ : public Protocol
   QMap<QString,QString> proto_help_strings;
   QTcpSocket *proto_socket;
   QTcpServer *proto_server;
-  QString proto_accum;
+  QByteArray proto_accum;
+  int proto_accum_level;
   QMap<int,EndPointMap *> proto_maps;
   QMap <int,int> proto_event_lookups;
   QString proto_username;

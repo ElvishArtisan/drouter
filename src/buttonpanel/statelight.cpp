@@ -24,7 +24,7 @@
 #include "statelight.h"
 
 StateLight::StateLight(int router,int endpt,const QString &legend,
-		       const QString &mask,const QChar &dir,SaParser *parser,
+		       const QString &mask,const QChar &dir,JParser *parser,
 		       QWidget *parent)
   : AutoLabel(parent)
 {
@@ -55,8 +55,8 @@ StateLight::StateLight(int router,int endpt,const QString &legend,
   //
   // The SA Connection
   //
-  connect(c_parser,SIGNAL(connected(bool,SaParser::ConnectionState)),
-	  this,SLOT(changeConnectionState(bool,SaParser::ConnectionState)));
+  connect(c_parser,SIGNAL(connected(bool,JParser::ConnectionState)),
+	  this,SLOT(changeConnectionState(bool,JParser::ConnectionState)));
   if(c_dir==QChar('i')) {
     connect(c_parser,SIGNAL(gpiStateChanged(int,int,const QString &)),
 	    this,SLOT(setState(int,int,const QString &)));
@@ -116,7 +116,7 @@ void StateLight::setBackgroundColor(const QColor &color)
 
 
 void StateLight::changeConnectionState(bool state,
-				       SaParser::ConnectionState cstate)
+				       JParser::ConnectionState cstate)
 {
   setEnabled(state);
   updateGeometry();

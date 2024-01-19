@@ -27,7 +27,7 @@
 #include <QStringList>
 
 #include "gpioparser.h"
-#include "saparser.h"
+#include "jparser.h"
 
 #define GPIOWIDGET_CELL_WIDTH 90
 #define GPIOWIDGET_CELL_HEIGHT 60
@@ -36,7 +36,7 @@ class GpioWidget : public QWidget
 {
   Q_OBJECT
  public:
-  GpioWidget(GpioParser *gpio_parser,SaParser *sa_parser,QWidget *parent=0);
+  GpioWidget(GpioParser *gpio_parser,JParser *sa_parser,QWidget *parent=0);
   ~GpioWidget();
   QSize sizeHint() const;
   QString title() const;
@@ -47,11 +47,11 @@ class GpioWidget : public QWidget
   void resizeEvent(QResizeEvent *e);
 
  private slots:
-  void changeConnectionState(bool state,SaParser::ConnectionState cstate);
+  void changeConnectionState(bool state,JParser::ConnectionState cstate);
 
  private:
   int c_router;
-  SaParser *c_parser;
+  JParser *c_parser;
   QLabel *c_title_label;
   QList<QWidget *> c_widgets;
   int c_hint_width;

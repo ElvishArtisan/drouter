@@ -2,7 +2,7 @@
 ##
 ## Makefile for the buttonpanel(1) applet
 ##
-## (C) Copyright 2016-2022 Fred Gleason <fredg@paravelsystems.com>
+## (C) Copyright 2016-2024 Fred Gleason <fredg@paravelsystems.com>
 ##
 ##   This program is free software; you can redistribute it and/or modify
 ##   it under the terms of the GNU General Public License as
@@ -41,7 +41,8 @@ dist_buttonpanel_SOURCES = autolabel.cpp autolabel.h\
                            statebutton.cpp statebutton.h\
                            statelight.cpp statelight.h
 
-nodist_buttonpanel_SOURCES = logindialog.cpp logindialog.h\
+nodist_buttonpanel_SOURCES = jparser.cpp jparser.h\
+                             logindialog.cpp logindialog.h\
                              multistatewidget.cpp multistatewidget.h\
                              saparser.cpp saparser.h\
                              moc_autolabel.cpp\
@@ -49,6 +50,7 @@ nodist_buttonpanel_SOURCES = logindialog.cpp logindialog.h\
                              moc_buttonpanel.cpp\
                              moc_buttonwidget.cpp\
                              moc_gpiowidget.cpp\
+                             moc_jparser.cpp\
                              moc_logindialog.cpp\
                              moc_multistatelabel.cpp\
                              moc_multistatewidget.cpp\
@@ -70,6 +72,7 @@ DISTCLEANFILES = combobox.cpp combobox.h\
                  config.cpp config.h\
                  dparser.cpp dparser.h\
                  endpointmap.cpp endpointmap.h\
+                 jparser.cpp jparser.h\
                  logindialog.cpp logindialog.h\
                  multistatewidget.cpp multistatewidget.h\
                  paths.h\

@@ -23,21 +23,21 @@
 #define STATEBUTTON_H
 
 #include "autopushbutton.h"
-#include "saparser.h"
+#include "jparser.h"
 
 class StateButton : public AutoPushButton
 {
   Q_OBJECT
  public:
   StateButton(int router,int endpt,const QString &legend,const QString &mask,
-	     const QChar &dir,SaParser *parser,QWidget *parent=0);
+	     const QChar &dir,JParser *parser,QWidget *parent=0);
   QSize sizeHint() const;
   QSizePolicy sizePolicy() const;
   QColor textColor() const;
   void setTextColor(const QColor &color);
 
  private slots:
-  void changeConnectionState(bool state,SaParser::ConnectionState cstate);
+  void changeConnectionState(bool state,JParser::ConnectionState cstate);
   void pressedData();
   void releasedData();
 
@@ -51,7 +51,7 @@ class StateButton : public AutoPushButton
   QString c_inverted_mask;
   int c_mask_bit;
   QChar c_dir;
-  SaParser *c_parser;
+  JParser *c_parser;
   QColor c_text_color;
 };
 

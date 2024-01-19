@@ -23,6 +23,7 @@
 #include <syslog.h>
 #include <unistd.h>
 
+#include <QJsonDocument>
 #include <QSqlError>
 #include <QStringList>
 
@@ -254,6 +255,8 @@ void ProtocolJ::quitting()
 
 void ProtocolJ::ActivateRoute(unsigned router,unsigned output,unsigned input)
 {
+  printf("ActivateRoute(%u,%u,%u)\n",router,output,input);
+
   EndPointMap *map;
 
   AddRouteEvent(router,output,input-1);
@@ -350,7 +353,7 @@ void ProtocolJ::SendSnapshotNames(unsigned router)
   EndPointMap *map=NULL;
 
   if((map=proto_maps.value(router))==NULL) {
-    SendError(ProtocolJ::NoRouterError);
+    SendError(JParser::NoRouterError);
     return;
   }
 
@@ -358,7 +361,7 @@ void ProtocolJ::SendSnapshotNames(unsigned router)
   json+="    \"snapshots\": {\r\n";
   json+=JsonField("router",1+router,8);
   for(int i=0;i<map->snapshotQuantity();i++) {
-    json+="        \"snapshot\": {\r\n";
+    json+=QString::asprintf("        \"snapshot%d\": {\r\n",i);
     json+=JsonField("name",map->snapshot(i)->name(),12,true);
     json+="        "+JsonCloseBlock(i==(map->snapshotQuantity()-1));
   }
@@ -375,11 +378,11 @@ void ProtocolJ::SendSnapshotRoutes(unsigned router,const QString &snap_name)
   Snapshot *ss=NULL;
 
   if((map=proto_maps.value(router))==NULL) {
-    SendError(ProtocolJ::NoRouterError);
+    SendError(JParser::NoRouterError);
     return;
   }
   if((ss=map->snapshot(snap_name))==NULL) {
-    SendError(ProtocolJ::NoSnapshotError);
+    SendError(JParser::NoSnapshotError);
     return;
   }
   proto_socket->write((QString("Begin SnapshotRoutes - ")+
@@ -405,7 +408,7 @@ void ProtocolJ::ActivateSnapshot(unsigned router,const QString &snapshot_name)
   Snapshot *ss=NULL;
 
   if((map=proto_maps.value(router))==NULL) {
-    SendError(ProtocolJ::NoRouterError);
+    SendError(JParser::NoRouterError);
     return;
   }
   proto_socket->write(QString("Snapshot Initiated\r\n").toUtf8());
@@ -428,7 +431,7 @@ void ProtocolJ::SendSourceInfo(unsigned router)
   SqlQuery *q;
 
   if((map=proto_maps.value(router))==NULL) {
-    SendError(ProtocolJ::NoRouterError);
+    SendError(JParser::NoRouterError);
     return;
   }
   if(map->routerType()==EndPointMap::AudioRouter) {
@@ -445,6 +448,7 @@ void ProtocolJ::SendSourceInfo(unsigned router)
   int quan=0;
   QString json="{\r\n";
   json+="    \"sourcenames\": {\r\n";
+  json+=JsonField("router",1+router,8);
   while(q->next()) {
     quan++;
     json+=SourceNamesMessage(map->routerType(),q,8,quan==q->size());
@@ -497,7 +501,8 @@ QString ProtocolJ::SourceNamesMessage(EndPointMap::RouterType type,SqlQuery *q,
     if(!q->value(6).toString().isEmpty()) {
       name=q->value(6).toString();
     }
-    QString json=JsonPadding(padding)+"\"source\": {\r\n";
+    QString json=JsonPadding(padding)+
+      QString::asprintf("\"source%d\": {\r\n",q->at());
     json+=JsonField("number",1+q->value(0).toInt(),4+padding);
     json+=JsonField("name",name,4+padding);
     json+=JsonField("hostDescription",q->value(8).toString(),4+padding);
@@ -550,7 +555,7 @@ void ProtocolJ::SendDestInfo(unsigned router)
   SqlQuery *q;
 
   if((map=proto_maps.value(router))==NULL) {
-    SendError(ProtocolJ::NoRouterError);
+    SendError(JParser::NoRouterError);
     return;
   }
   if(map->routerType()==EndPointMap::AudioRouter) {
@@ -567,6 +572,7 @@ void ProtocolJ::SendDestInfo(unsigned router)
   int quan=0;
   QString json="{\r\n";
   json+="    \"destnames\": {\r\n";
+  json+=JsonField("router",1+router,8);
   while(q->next()) {
     quan++;
     json+=DestNamesMessage(map->routerType(),q,8,quan==q->size());
@@ -615,7 +621,8 @@ QString ProtocolJ::DestNamesMessage(EndPointMap::RouterType type,SqlQuery *q,
     name=q->value(5).toString();
   }
 
-  QString json=JsonPadding(padding)+"\"destination\": {\r\n";
+  QString json=JsonPadding(padding)+
+    QString::asprintf("\"destination%d\": {\r\n",q->at());
   json+=JsonField("number",1+q->value(0).toInt(),4+padding);
   json+=JsonField("name",name,4+padding);
   json+=JsonField("hostDescription",q->value(7).toString(),4+padding);
@@ -641,11 +648,11 @@ void ProtocolJ::SendGpiInfo(unsigned router,int input)
   SqlQuery *q;
 
   if((map=proto_maps.value(router))==NULL) {
-    SendError(ProtocolJ::NoRouterError);
+    SendError(JParser::NoRouterError);
     return;
   }
   if(map->routerType()!=EndPointMap::GpioRouter) {
-    SendError(ProtocolJ::NotGpioRouterError);
+    SendError(JParser::NotGpioRouterError);
     return;
   }
   if(input<0) {
@@ -698,11 +705,11 @@ void ProtocolJ::SendGpoInfo(unsigned router,int output)
   SqlQuery *q;
 
   if((map=proto_maps.value(router))==NULL) {
-    SendError(ProtocolJ::NoRouterError);
+    SendError(JParser::NoRouterError);
     return;
   }
   if(map->routerType()!=EndPointMap::GpioRouter) {
-    SendError(ProtocolJ::NotGpioRouterError);
+    SendError(JParser::NotGpioRouterError);
     return;
   }
   if(output<0) {
@@ -755,7 +762,7 @@ void ProtocolJ::SendRouteInfo(unsigned router,int output)
   SqlQuery *q;
 
   if((map=proto_maps.value(router))==NULL) {
-    SendError(ProtocolJ::NoRouterError);
+    SendError(JParser::NoRouterError);
     return;
   }
   sql=RouteStatSqlFields(map->routerType());
@@ -836,7 +843,7 @@ QString ProtocolJ::RouteStatMessage(int router,int output,int input)
   json+="    \"routestat\": {\r\n";
   json+=JsonField("router",1+router,8);
   json+=JsonField("destination",1+output,8);
-  json+=JsonField("source",1+input,8,true);
+  json+=JsonField("source",input,8,true);
   json+="    }\r\n";
   json+="}\r\n";
 
@@ -880,6 +887,18 @@ void ProtocolJ::DrouterMaskStat(bool state)
 }
 
 
+void ProtocolJ::SendPingResponse()
+{
+  QString json="{\r\n";
+  json+="    \"pong\": {\r\n";
+  json+=JsonField("datetime",QDateTime::currentDateTime(),8,true);
+  json+="    }\r\n";
+  json+="}\r\n";
+
+  proto_socket->write(json.toUtf8());
+}
+
+
 void ProtocolJ::ProcessCommand(const QString &cmd)
 {
   unsigned cardnum=0;
@@ -917,11 +936,12 @@ void ProtocolJ::ProcessCommand(const QString &cmd)
   }
 
   if(cmds[0].toLower()=="routernames") {
+    int count=0;
     QString json="{\r\n";
     json+="    \"routernames\": {\r\n";
     for(QMap<int,EndPointMap *>::const_iterator it=proto_maps.begin();
 	it!=proto_maps.end();it++) {
-      json+="        \"router\": {\r\n";
+      json+=QString::asprintf("        \"router%d\": {\r\n",count++);
       json+=JsonField("number",1+it.value()->routerNumber(),12);
       json+=JsonField("name",it.value()->routerName(),12);
       json+=JsonField("type",
@@ -931,6 +951,10 @@ void ProtocolJ::ProcessCommand(const QString &cmd)
     json+="    }\r\n";
     json+="}\r\n";
     proto_socket->write(json.toUtf8());
+  }
+
+  if(cmds[0].toLower()=="ping") {
+    SendPingResponse();
   }
 
   if((cmds[0].toLower()=="gpistat")&&(cmds.size()>=2)) {
@@ -947,7 +971,7 @@ void ProtocolJ::ProcessCommand(const QString &cmd)
       }
     }
     else {
-      SendError(ProtocolJ::NoRouterError);
+      SendError(JParser::NoRouterError);
     }
   }
 
@@ -965,7 +989,7 @@ void ProtocolJ::ProcessCommand(const QString &cmd)
       }
     }
     else {
-      SendError(ProtocolJ::NoRouterError);
+      SendError(JParser::NoRouterError);
     }
   }
 
@@ -975,7 +999,7 @@ void ProtocolJ::ProcessCommand(const QString &cmd)
       SendSourceInfo(cardnum-1);
     }
     else {
-      SendError(ProtocolJ::NoRouterError);
+      SendError(JParser::NoRouterError);
     }
   }
 
@@ -985,7 +1009,7 @@ void ProtocolJ::ProcessCommand(const QString &cmd)
       SendDestInfo(cardnum-1);
     }
     else {
-      SendError(ProtocolJ::NoRouterError);
+      SendError(JParser::NoRouterError);
     }
   }
 
@@ -1035,7 +1059,7 @@ void ProtocolJ::ProcessCommand(const QString &cmd)
 	}
       }
       else {
-	SendError(ProtocolJ::NoRouterError);
+	SendError(JParser::NoRouterError);
       }
     }
     else {
@@ -1079,7 +1103,7 @@ void ProtocolJ::ProcessCommand(const QString &cmd)
       SendSnapshotNames(cardnum-1);
     }
     else {
-      SendError(ProtocolJ::NoRouterError);
+      SendError(JParser::NoRouterError);
     }
   }
 
@@ -1089,7 +1113,7 @@ void ProtocolJ::ProcessCommand(const QString &cmd)
       SendSnapshotRoutes(cardnum-1,cmds[2]);
     }
     else {
-      SendError(ProtocolJ::NoRouterError);
+      SendError(JParser::NoRouterError);
     }
   }
 
@@ -1104,7 +1128,7 @@ void ProtocolJ::ProcessCommand(const QString &cmd)
       ActivateSnapshot(cardnum-1,snapshot.trimmed());
     }
     else {
-      SendError(ProtocolJ::NoRouterError);
+      SendError(JParser::NoRouterError);
     }
   }
 
@@ -1260,47 +1284,13 @@ void ProtocolJ::AddSnapEvent(int router,const QString &name)
 }
 
 
-void ProtocolJ::SendError(ProtocolJ::ErrorType etype,const QString &remarks)
+void ProtocolJ::SendError(JParser::ErrorType etype,const QString &remarks)
 {
-  QString desc="unknown error";
-
-  switch(etype) {
-  case ProtocolJ::OkError:
-    desc="ok";
-    break;
-
-  case ProtocolJ::JsonError:
-    desc="JSON syntax error";
-    break;
-
-  case ProtocolJ::NoRouterError:
-    desc="no such router";
-    break;
-
-  case ProtocolJ::NoSnapshotError:
-    desc="no such snapshot";
-    break;
-
-  case ProtocolJ::NoSourceError:
-    desc="no such source";
-    break;
-
-  case ProtocolJ::NoDestinationError:
-    desc="no such destination";
-    break;
-
-  case ProtocolJ::NotGpioRouterError:
-    desc="not a GPIO router";
-    break;
-
-  case ProtocolJ::LastError:
-    break;
-  }
-
   QString json="{\r\n";
   json+="    \"error\": {\r\n";
   json+=JsonField("type",(int)etype,8);
-  json+=JsonField("description",desc,8,remarks.isEmpty());
+  json+=JsonField("description",JParser::errorString(etype),8,
+		  remarks.isEmpty());
   if(!remarks.isEmpty()) {
     JsonField("remarks",remarks,8,true);
   }

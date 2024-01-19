@@ -73,6 +73,7 @@ nodist_drouterd_SOURCES = config.cpp config.h\
 drouterd_LDADD = @QT5CLI_LIBS@ @SWITCHYARD5_LIBS@ @LIBSYSTEMD_LIBS@
 
 dist_dprotod_SOURCES = dprotod.cpp dprotod.h\
+                       jparser.cpp jparser.h\
                        protocol.cpp protocol.h\
                        protocol_d.cpp protocol_d.h\
                        protocol_j.cpp protocol_j.h\
@@ -82,6 +83,7 @@ dist_dprotod_SOURCES = dprotod.cpp dprotod.h\
 nodist_dprotod_SOURCES = config.cpp config.h\
                          endpointmap.cpp endpointmap.h\
                          moc_dprotod.cpp\
+                         moc_jparser.cpp\
                          moc_protocol.cpp\
                          moc_protocol_d.cpp\
                          moc_protocol_j.cpp\
@@ -112,6 +114,7 @@ DISTCLEANFILES = combobox.cpp combobox.h\
                  config.cpp config.h\
                  dparser.cpp dparser.h\
                  endpointmap.cpp endpointmap.h\
+                 jparser.cpp jparser.h\
                  logindialog.cpp logindialog.h\
                  multistatewidget.cpp multistatewidget.h\
                  paths.h\

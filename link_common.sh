@@ -42,6 +42,11 @@ ln -s ../../src/common/endpointmap.cpp src/$DESTDIR/endpointmap.cpp
 rm -f src/$DESTDIR/endpointmap.h
 ln -s ../../src/common/endpointmap.h src/$DESTDIR/endpointmap.h
 
+rm -f src/$DESTDIR/jparser.cpp
+ln -s ../../src/common/jparser.cpp src/$DESTDIR/jparser.cpp
+rm -f src/$DESTDIR/jparser.h
+ln -s ../../src/common/jparser.h src/$DESTDIR/jparser.h
+
 rm -f src/$DESTDIR/logindialog.cpp
 ln -s ../../src/common/logindialog.cpp src/$DESTDIR/logindialog.cpp
 rm -f src/$DESTDIR/logindialog.h

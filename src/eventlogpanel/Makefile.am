@@ -2,7 +2,7 @@
 ##
 ## Makefile for the eventlogpanel(1) applet
 ##
-## (C) Copyright 2016-2022 Fred Gleason <fredg@paravelsystems.com>
+## (C) Copyright 2016-2024 Fred Gleason <fredg@paravelsystems.com>
 ##
 ##   This program is free software; you can redistribute it and/or modify
 ##   it under the terms of the GNU General Public License as
@@ -55,6 +55,7 @@ DISTCLEANFILES = combobox.cpp combobox.h\
                  config.cpp config.h\
                  dparser.cpp dparser.h\
                  endpointmap.cpp endpointmap.h\
+                 jparser.cpp jparser.h\
                  logindialog.cpp logindialog.h\
                  multistatewidget.cpp multistatewidget.h\
                  paths.h\
