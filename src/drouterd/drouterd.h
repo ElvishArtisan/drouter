@@ -2,7 +2,7 @@
 //
 // Dynamic router service for Livewire networks
 //
-//   (C) Copyright 2018-2022 Fred Gleason <fredg@paravelsystems.com>
+//   (C) Copyright 2018-2024 Fred Gleason <fredg@paravelsystems.com>
 //
 //   This program is free software; you can redistribute it and/or modify
 //   it under the terms of the GNU General Public License version 2 as
@@ -52,6 +52,7 @@ class MainObject : public QObject
   QTimer *main_protocol_timer;
   QList<pid_t> main_protocol_pids;
   int main_protocol_socks[3];
+  bool main_no_protocols;
   bool main_no_scripts;
   bool main_no_tether;
   QTimer *main_scripts_timer;

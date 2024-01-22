@@ -2,7 +2,7 @@
 //
 // Dynamic router service for Livewire networks
 //
-//   (C) Copyright 2017-2022 Fred Gleason <fredg@paravelsystems.com>
+//   (C) Copyright 2017-2024 Fred Gleason <fredg@paravelsystems.com>
 //
 //   This program is free software; you can redistribute it and/or modify
 //   it under the terms of the GNU General Public License version 2 as
@@ -47,7 +47,7 @@ MainObject::MainObject(QObject *parent)
   main_protocol_socks[1]=-1;
   main_protocol_socks[2]=-1;
   int n;
-  bool no_protocols=false;
+  main_no_protocols=false;
   QString err_msg;
   int log_options=0;
   struct rlimit rlim;
@@ -67,7 +67,7 @@ MainObject::MainObject(QObject *parent)
       cmd->setProcessed(i,true);
     }
     if(cmd->key(i)=="--no-protocols") {
-      no_protocols=true;
+      main_no_protocols=true;
       cmd->setProcessed(i,true);
     }
     if(!cmd->processed(i)) {
@@ -165,13 +165,11 @@ MainObject::MainObject(QObject *parent)
   main_protocol_timer=new QTimer(this);
   main_protocol_timer->setSingleShot(true);
   connect(main_protocol_timer,SIGNAL(timeout()),this,SLOT(protocolData()));
-  if(!no_protocols) {
-    if(main_config->livewireIsEnabled()) {
-      main_protocol_timer->start(DROUTERD_PROTOCOL_START_INTERVAL);
-    }
-    else {
-      main_protocol_timer->start(1000);
-    }
+  if(main_config->livewireIsEnabled()) {
+    main_protocol_timer->start(DROUTERD_PROTOCOL_START_INTERVAL);
+  }
+  else {
+    main_protocol_timer->start(1000);
   }
 }
 
@@ -181,53 +179,55 @@ void MainObject::protocolData()
   QString err_msg;
   pid_t pid=0;
 
-  //
-  // Start Protocol D
-  //
-  if((pid=fork())==0) {
-    if(main_protocol_socks[0]<0) {
-      execl((QString(PATH_SBIN)+"/dprotod").toUtf8(),"dprotod","--protocol-d",
-	    (char *)NULL);
+  if(!main_no_protocols) {
+    //
+    // Start Protocol D
+    //
+    if((pid=fork())==0) {
+      if(main_protocol_socks[0]<0) {
+	execl((QString(PATH_SBIN)+"/dprotod").toUtf8(),"dprotod","--protocol-d",
+	      (char *)NULL);
+      }
+      else {
+	execl((QString(PATH_SBIN)+"/dprotod").toUtf8(),"dprotod","--protocol-d",
+	      "--systemd",(char *)NULL);
+      }
     }
-    else {
-      execl((QString(PATH_SBIN)+"/dprotod").toUtf8(),"dprotod","--protocol-d",
-	    "--systemd",(char *)NULL);
-    }
-  }
-  main_protocol_pids.push_back(pid);
-  syslog(LOG_INFO,"started Protocol D protocol");
+    main_protocol_pids.push_back(pid);
+    syslog(LOG_INFO,"started Protocol D protocol");
 
-  //
-  // Start Protocol SA
-  //
-  if((pid=fork())==0) {
-    if(main_protocol_socks[1]<0) {
-      execl((QString(PATH_SBIN)+"/dprotod").toUtf8(),"dprotod","--protocol-sa",
-	    (char *)NULL);
+    //
+    // Start Protocol SA
+    //
+    if((pid=fork())==0) {
+      if(main_protocol_socks[1]<0) {
+	execl((QString(PATH_SBIN)+"/dprotod").toUtf8(),"dprotod","--protocol-sa",
+	      (char *)NULL);
+      }
+      else {
+	execl((QString(PATH_SBIN)+"/dprotod").toUtf8(),"dprotod","--protocol-sa",
+	      "--systemd",(char *)NULL);
+      }
     }
-    else {
-      execl((QString(PATH_SBIN)+"/dprotod").toUtf8(),"dprotod","--protocol-sa",
-	    "--systemd",(char *)NULL);
-    }
-  }
-  main_protocol_pids.push_back(pid);
-  syslog(LOG_INFO,"started Software Authority protocol");
+    main_protocol_pids.push_back(pid);
+    syslog(LOG_INFO,"started Software Authority protocol");
 
-  //
-  // Start Protocol J
-  //
-  if((pid=fork())==0) {
-    if(main_protocol_socks[2]<0) {
-      execl((QString(PATH_SBIN)+"/dprotod").toUtf8(),"dprotod","--protocol-j",
-	    (char *)NULL);
+    //
+    // Start Protocol J
+    //
+    if((pid=fork())==0) {
+      if(main_protocol_socks[2]<0) {
+	execl((QString(PATH_SBIN)+"/dprotod").toUtf8(),"dprotod","--protocol-j",
+	      (char *)NULL);
+      }
+      else {
+	execl((QString(PATH_SBIN)+"/dprotod").toUtf8(),"dprotod","--protocol-j",
+	      "--systemd",(char *)NULL);
+      }
     }
-    else {
-      execl((QString(PATH_SBIN)+"/dprotod").toUtf8(),"dprotod","--protocol-j",
-	    "--systemd",(char *)NULL);
-    }
+    main_protocol_pids.push_back(pid);
+    syslog(LOG_INFO,"started Protocol J protocol");
   }
-  main_protocol_pids.push_back(pid);
-  syslog(LOG_INFO,"started Protocol J protocol");
 
   if(!main_no_scripts) {
     main_scripts_timer->start(5000);
