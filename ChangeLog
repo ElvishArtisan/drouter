@@ -986,3 +986,6 @@
 2024-01-22 Fred Gleason <fredg@paravelsystems.com>
 	* Fixed a bug in drouterd(8) that caused the event system to fail
 	to be activated on startup if the '--no-protocols' switch was given.
+2024-01-22 Fred Gleason <fredg@paravelsystems.com>
+	* Fixed a bug in drouterd(8) that caused the event system to fail
+	to be activated on startup if the '--no-scripts' switch was given.

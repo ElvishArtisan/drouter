@@ -255,8 +255,6 @@ void ProtocolJ::quitting()
 
 void ProtocolJ::ActivateRoute(unsigned router,unsigned output,unsigned input)
 {
-  printf("ActivateRoute(%u,%u,%u)\n",router,output,input);
-
   EndPointMap *map;
 
   AddRouteEvent(router,output,input-1);

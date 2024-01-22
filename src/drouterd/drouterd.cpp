@@ -111,7 +111,7 @@ MainObject::MainObject(QObject *parent)
   //
   n=sd_listen_fds(0);
   if(n>0) {
-    if(n==2) {
+    if(n==3) {
       main_protocol_socks[0]=SD_LISTEN_FDS_START+0;
       main_protocol_socks[1]=SD_LISTEN_FDS_START+1;
       main_protocol_socks[2]=SD_LISTEN_FDS_START+2;
@@ -232,7 +232,11 @@ void MainObject::protocolData()
   if(!main_no_scripts) {
     main_scripts_timer->start(5000);
   }
-  if(!main_no_tether) {
+  if(main_no_tether) {
+    main_drouter->setWriteable(true);
+    instanceStateChangedData(true);
+  }
+  else {
     if(!main_tether->start(main_config,&err_msg)) {
       fprintf(stderr,
 	      "drouterd: tethering system failed to start [%s], exiting...\n",
