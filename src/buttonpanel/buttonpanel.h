@@ -50,6 +50,7 @@ class MainWidget : public QWidget
 
  private slots:
   void processError(const QString err_msg);
+  void parserErrorData(JParser::ErrorType err,const QString &remarks);
   void changeConnectionState(bool state,JParser::ConnectionState cstate);
   void resizeData();
 

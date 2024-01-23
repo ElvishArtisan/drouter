@@ -298,6 +298,10 @@ QString JParser::errorString(ErrorType err)
     ret="JSON syntax error";
     break;
 
+  case JParser::ParameterError:
+    ret="command parameter error";
+    break;
+
   case JParser::NoRouterError:
     ret="no such router";
     break;
@@ -921,7 +925,6 @@ void JParser::BubbleSort(std::map<unsigned,QString> *names,
 
 void JParser::SendCommand(const QString &cmd)
 {
-  //  printf("SendCommand(%s)\n",(const char *)cmd.toUtf8());
   j_socket->write((cmd+"\r\n").toUtf8(),cmd.length()+2);
 }
 

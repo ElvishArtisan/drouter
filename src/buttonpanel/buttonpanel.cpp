@@ -2,7 +2,7 @@
 //
 // Button applet for controlling an lwpath output.
 //
-//   (C) Copyright 2002-2022 Fred Gleason <fredg@paravelsystems.com>
+//   (C) Copyright 2002-2024 Fred Gleason <fredg@paravelsystems.com>
 //
 //   This program is free software; you can redistribute it and/or modify
 //   it under the terms of the GNU General Public License as
@@ -176,6 +176,9 @@ MainWidget::MainWidget(QWidget *parent)
   }
   connect(panel_parser,SIGNAL(connected(bool,JParser::ConnectionState)),
 	  this,SLOT(changeConnectionState(bool,JParser::ConnectionState)));
+  connect(panel_parser,SIGNAL(parserError(JParser::ErrorType,const QString &)),
+	  this,SLOT(parserErrorData(JParser::ErrorType,const QString &)));
+
   panel_resize_timer=new QTimer(this);
   panel_resize_timer->setSingleShot(true);
   connect(panel_resize_timer,SIGNAL(timeout()),this,SLOT(resizeData()));
@@ -235,8 +238,18 @@ QSize MainWidget::sizeHint() const
 
 void MainWidget::processError(const QString err_msg)
 {
-  QMessageBox::warning(this,"ButtonPanel - "+tr("Error"),err_msg);;
+  QMessageBox::warning(this,"ButtonPanel - "+tr("Error"),err_msg);
   exit(1);
+}
+
+
+void MainWidget::parserErrorData(JParser::ErrorType err,const QString &remarks)
+{
+  QString str=JParser::errorString(err);
+  if(!remarks.isEmpty()) {
+    str+="\n\n"+remarks;
+  }
+  QMessageBox::warning(this,"Buttonpanel - "+tr("JSON Parser Error"),str);
 }
 
 

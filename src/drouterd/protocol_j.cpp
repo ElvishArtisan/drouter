@@ -52,7 +52,7 @@ ProtocolJ::ProtocolJ(int sock,QObject *parent)
   */
   proto_gpistat_masked=true;
   proto_gpostat_masked=true;
-  proto_routestat_masked=true;
+  proto_routestat_masked=false;
 
   openlog("dprotod(J)",LOG_PID,LOG_DAEMON);
 
@@ -357,7 +357,7 @@ void ProtocolJ::SendSnapshotNames(unsigned router)
 
   QString json="{\r\n";
   json+="    \"snapshots\": {\r\n";
-  json+=JsonField("router",1+router,8);
+  json+=JsonField("router",1+router,8,map->snapshotQuantity()==0);
   for(int i=0;i<map->snapshotQuantity();i++) {
     json+=QString::asprintf("        \"snapshot%d\": {\r\n",i);
     json+=JsonField("name",map->snapshot(i)->name(),12,true);
@@ -446,7 +446,7 @@ void ProtocolJ::SendSourceInfo(unsigned router)
   int quan=0;
   QString json="{\r\n";
   json+="    \"sourcenames\": {\r\n";
-  json+=JsonField("router",1+router,8);
+  json+=JsonField("router",1+router,8,q->size()<=0);
   while(q->next()) {
     quan++;
     json+=SourceNamesMessage(map->routerType(),q,8,quan==q->size());
@@ -503,7 +503,8 @@ QString ProtocolJ::SourceNamesMessage(EndPointMap::RouterType type,SqlQuery *q,
       QString::asprintf("\"source%d\": {\r\n",q->at());
     json+=JsonField("number",1+q->value(0).toInt(),4+padding);
     json+=JsonField("name",name,4+padding);
-    json+=JsonField("hostDescription",q->value(8).toString(),4+padding);
+    json+=JsonField("hostDescription",q->value(8).toString(),4+padding,
+		    q->value(7).toUInt()!=Config::LwrpMatrix);
     if(q->value(7).toUInt()==Config::LwrpMatrix) {
       json+=JsonField("hostAddress",q->value(2).toString(),4+padding);
       json+=JsonField("hostName",q->value(3).toString(),4+padding);
@@ -528,13 +529,15 @@ QString ProtocolJ::SourceNamesMessage(EndPointMap::RouterType type,SqlQuery *q,
   QString json=JsonPadding(padding)+"\"source\": {\r\n";
   json+=JsonField("number",1+q->value(0).toInt(),4+padding);
   json+=JsonField("name",name,4+padding);
-  json+=JsonField("hostDescription",q->value(6).toString(),4+padding);
+  json+=JsonField("hostDescription",q->value(6).toString(),4+padding,
+		  q->value(5).toUInt()!=Config::LwrpMatrix);
   if(q->value(5).toUInt()==Config::LwrpMatrix) {
     json+=JsonField("hostAddress",q->value(1).toString(),4+padding);
     json+=JsonField("hostName",q->value(2).toString(),4+padding);
     json+=JsonField("slot",1+q->value(3).toInt(),4+padding);
     json+=JsonField("gpioAddress",q->value(1).toString()+
-		    QString::asprintf("/%d",q->value(3).toInt()+1),4+padding);
+		    QString::asprintf("/%d",q->value(3).toInt()+1),4+padding,
+		    true);
   }
   json+=JsonPadding(padding)+"}";
   if(!final) {
@@ -570,7 +573,7 @@ void ProtocolJ::SendDestInfo(unsigned router)
   int quan=0;
   QString json="{\r\n";
   json+="    \"destnames\": {\r\n";
-  json+=JsonField("router",1+router,8);
+  json+=JsonField("router",1+router,8,q->size()<=0);
   while(q->next()) {
     quan++;
     json+=DestNamesMessage(map->routerType(),q,8,quan==q->size());
@@ -623,7 +626,8 @@ QString ProtocolJ::DestNamesMessage(EndPointMap::RouterType type,SqlQuery *q,
     QString::asprintf("\"destination%d\": {\r\n",q->at());
   json+=JsonField("number",1+q->value(0).toInt(),4+padding);
   json+=JsonField("name",name,4+padding);
-  json+=JsonField("hostDescription",q->value(7).toString(),4+padding);
+  json+=JsonField("hostDescription",q->value(7).toString(),4+padding,
+		  q->value(6).toUInt()!=Config::LwrpMatrix);
   if(q->value(6).toUInt()==Config::LwrpMatrix) {
     json+=JsonField("hostAddress",q->value(2).toString(),4+padding);
     json+=JsonField("hostName",q->value(3).toString(),4+padding);
@@ -906,34 +910,27 @@ void ProtocolJ::ProcessCommand(const QString &cmd)
   bool ok=false;
   QStringList cmds=cmd.split(" ");
 
-  if((cmds[0].toLower()=="login")&&(cmds.size()>=2)) {
-    proto_username=cmds.at(1);
-    proto_socket->write(QString("Login Successful\r\n").toUtf8());
-    proto_socket->write(">>",2);
-  }
-
-  if((cmds[0].toLower()=="exit")||(cmds[0].toLower()=="quit")) {
+  if((cmds.at(0).toLower()=="exit")||(cmds.at(0).toLower()=="quit")) {
     syslog(LOG_DEBUG,"exiting normally");
     quit();
   }
 
-  if((cmds[0].toLower()=="help")||(cmds[0]=="?")) {
+  if((cmds.at(0).toLower()=="help")||(cmds.at(0)=="?")) {
     if(cmds.size()==1) {
       proto_socket->write((proto_help_strings[""]+"\r\n\r\n").toUtf8());
     }
     else {
-      if(proto_help_strings[cmds[1].toLower()]==NULL) {
+      if(proto_help_strings[cmds.at(1).toLower()]==NULL) {
 	proto_socket->write(QString("\r\n\r\n").toUtf8());
       }
       else {
-	proto_socket->write((proto_help_strings[cmds[1].toLower()]+"\r\n\r\n").
+	proto_socket->write((proto_help_strings[cmds.at(1).toLower()]+"\r\n\r\n").
 			    toUtf8());
       }
     }
-    proto_socket->write(">>",2);
   }
 
-  if(cmds[0].toLower()=="routernames") {
+  if(cmds.at(0).toLower()=="routernames") {
     int count=0;
     QString json="{\r\n";
     json+="    \"routernames\": {\r\n";
@@ -951,18 +948,18 @@ void ProtocolJ::ProcessCommand(const QString &cmd)
     proto_socket->write(json.toUtf8());
   }
 
-  if(cmds[0].toLower()=="ping") {
+  if(cmds.at(0).toLower()=="ping") {
     SendPingResponse();
   }
 
-  if((cmds[0].toLower()=="gpistat")&&(cmds.size()>=2)) {
-    cardnum=cmds[1].toUInt(&ok);
+  if((cmds.at(0).toLower()=="gpistat")&&(cmds.size()>=2)) {
+    cardnum=cmds.at(1).toUInt(&ok);
     if(ok) {
       if(cmds.size()==2) {
 	SendGpiInfo(cardnum-1,-1);
       }
       else {
-	input=cmds[2].toUInt(&ok);
+	input=cmds.at(2).toUInt(&ok);
 	if(ok) {
 	  SendGpiInfo(cardnum-1,input-1);
 	}
@@ -973,14 +970,14 @@ void ProtocolJ::ProcessCommand(const QString &cmd)
     }
   }
 
-  if((cmds[0].toLower()=="gpostat")&&(cmds.size()>=2)) {
-    cardnum=cmds[1].toUInt(&ok);
+  if((cmds.at(0).toLower()=="gpostat")&&(cmds.size()>=2)) {
+    cardnum=cmds.at(1).toUInt(&ok);
     if(ok) {
       if(cmds.size()==2) {
 	SendGpoInfo(cardnum-1,-1);
       }
       else {
-	input=cmds[2].toUInt(&ok);
+	input=cmds.at(2).toUInt(&ok);
 	if(ok) {
 	  SendGpoInfo(cardnum-1,input-1);
 	}
@@ -991,8 +988,8 @@ void ProtocolJ::ProcessCommand(const QString &cmd)
     }
   }
 
-  if((cmds[0].toLower()=="sourcenames")&&(cmds.size()==2)) {
-    cardnum=cmds[1].toUInt(&ok);
+  if((cmds.at(0).toLower()=="sourcenames")&&(cmds.size()==2)) {
+    cardnum=cmds.at(1).toUInt(&ok);
     if(ok) {
       SendSourceInfo(cardnum-1);
     }
@@ -1001,8 +998,8 @@ void ProtocolJ::ProcessCommand(const QString &cmd)
     }
   }
 
-  if((cmds[0].toLower()=="destnames")&&(cmds.size()==2)) {
-    cardnum=cmds[1].toUInt(&ok);
+  if((cmds.at(0).toLower()=="destnames")&&(cmds.size()==2)) {
+    cardnum=cmds.at(1).toUInt(&ok);
     if(ok) {
       SendDestInfo(cardnum-1);
     }
@@ -1011,43 +1008,46 @@ void ProtocolJ::ProcessCommand(const QString &cmd)
     }
   }
 
-  if(cmds[0].toLower()=="activateroute") {
+  if(cmds.at(0).toLower()=="activateroute") {
     if(cmds.size()==4) {
-      cardnum=cmds[1].toUInt(&ok);
+      cardnum=cmds.at(1).toUInt(&ok);
       if(ok) {
-	output=cmds[2].toUInt(&ok);
+	output=cmds.at(2).toUInt(&ok);
 	if(ok) {
-	  input=cmds[3].toUInt(&ok);
+	  input=cmds.at(3).toUInt(&ok);
 	  if(ok) {
 	    ActivateRoute(cardnum-1,output-1,input);
 	  }
 	  else {
-	    proto_socket->write(QString("Error\r\n").toUtf8());
+	    SendError(JParser::ParameterError,
+		      tr("\"activateroute\" <router> <output> <input>"));
 	  }
 	}
 	else {
-	  proto_socket->write(QString("Error\r\n").toUtf8());
+	  SendError(JParser::ParameterError,
+		    tr("\"activateroute\" <router> <output> <input>"));
 	}
       }
       else {
-	proto_socket->write(QString("Error\r\n").toUtf8());
+	SendError(JParser::ParameterError,
+		  tr("\"activateroute\" <router> <output> <input>"));
       }
     }
     else {
-      proto_socket->write(QString("Error\r\n").toUtf8());
+      SendError(JParser::ParameterError,
+		tr("\"activateroute\" <router> <output> <input>"));
     }
-    proto_socket->write(">>",2);
   }
 
-  if(cmds[0].toLower()=="routestat") {
+  if(cmds.at(0).toLower()=="routestat") {
     if((cmds.size()==2)||(cmds.size()==3)) {
-      cardnum=cmds[1].toUInt(&ok);
+      cardnum=cmds.at(1).toUInt(&ok);
       if(ok) {
 	if(cmds.size()==2) {
 	  SendRouteInfo(cardnum-1,-1);
 	}
 	if(cmds.size()==3) {
-	  input=cmds[2].toUInt(&ok);
+	  input=cmds.at(2).toUInt(&ok);
 	  if(ok) {
 	    SendRouteInfo(cardnum-1,input-1);
 	  }
@@ -1065,38 +1065,38 @@ void ProtocolJ::ProcessCommand(const QString &cmd)
     }
   }
 
-  if(cmds[0].toLower()=="triggergpi") {
+  if(cmds.at(0).toLower()=="triggergpi") {
     if((cmds.size()==4)||(cmds.size()==5)) {
       if(cmds.size()==5) {
-	msecs=cmds[4].toUInt();
+	msecs=cmds.at(4).toUInt();
       }
-      cardnum=cmds[1].toUInt(&ok);
+      cardnum=cmds.at(1).toUInt(&ok);
       if(ok) {
-	input=cmds[2].toUInt(&ok);
-	if(cmds[3].length()==5) {
-	  TriggerGpi(cardnum-1,input-1,msecs,cmds[3]);
+	input=cmds.at(2).toUInt(&ok);
+	if(cmds.at(3).length()==5) {
+	  TriggerGpi(cardnum-1,input-1,msecs,cmds.at(3));
 	}
       }
     }
   }
 
-  if(cmds[0].toLower()=="triggergpo") {
+  if(cmds.at(0).toLower()=="triggergpo") {
     if((cmds.size()==4)||(cmds.size()==5)) {
       if(cmds.size()==5) {
-	msecs=cmds[4].toUInt();
+	msecs=cmds.at(4).toUInt();
       }
-      cardnum=cmds[1].toUInt(&ok);
+      cardnum=cmds.at(1).toUInt(&ok);
       if(ok) {
-	input=cmds[2].toUInt(&ok);
-	if(cmds[3].length()==5) {
-	  TriggerGpo(cardnum-1,input-1,msecs,cmds[3]);
+	input=cmds.at(2).toUInt(&ok);
+	if(cmds.at(3).length()==5) {
+	  TriggerGpo(cardnum-1,input-1,msecs,cmds.at(3));
 	}
       }
     }
   }
 
-  if((cmds[0].toLower()=="snapshots")&&(cmds.size()==2)) {
-    cardnum=cmds[1].toUInt(&ok);
+  if((cmds.at(0).toLower()=="snapshots")&&(cmds.size()==2)) {
+    cardnum=cmds.at(1).toUInt(&ok);
     if(ok) {
       SendSnapshotNames(cardnum-1);
     }
@@ -1105,19 +1105,19 @@ void ProtocolJ::ProcessCommand(const QString &cmd)
     }
   }
 
-  if((cmds[0].toLower()=="snapshotnames")&&(cmds.size()==3)) {
-    cardnum=cmds[1].toUInt(&ok);
+  if((cmds.at(0).toLower()=="snapshotnames")&&(cmds.size()==3)) {
+    cardnum=cmds.at(1).toUInt(&ok);
     if(ok) {
-      SendSnapshotRoutes(cardnum-1,cmds[2]);
+      SendSnapshotRoutes(cardnum-1,cmds.at(2));
     }
     else {
       SendError(JParser::NoRouterError);
     }
   }
 
-  if(((cmds[0].toLower()=="activatescene")||
-      (cmds[0].toLower()=="activatesnap"))&&(cmds.size()>=3)) {
-    cardnum=cmds[1].toUInt(&ok);
+  if(((cmds.at(0).toLower()=="activatescene")||
+      (cmds.at(0).toLower()=="activatesnap"))&&(cmds.size()>=3)) {
+    cardnum=cmds.at(1).toUInt(&ok);
     if(ok) {
       QString snapshot="";
       for(int i=2;i<cmds.size();i++) {
@@ -1130,48 +1130,40 @@ void ProtocolJ::ProcessCommand(const QString &cmd)
     }
   }
 
-  if((cmds[0].toLower()=="droutermaskgpistat")&&(cmds.size()==2)) {
+  if((cmds.at(0).toLower()=="droutermaskgpistat")&&(cmds.size()==2)) {
     if((cmds.at(1).toLower()=="true")||(cmds.at(1).toLower()=="false")) {
       DrouterMaskGpiStat(cmds.at(1).toLower()=="true");
     }
     else {
-      proto_socket->
-	write(QString("Error - Invalid boolean value.\r\n").toUtf8());
+      SendError(JParser::ParameterError,"droutermaskgpistat true|false");
     }
-    proto_socket->write(">>",2);
   }
 
-  if((cmds[0].toLower()=="droutermaskgpostat")&&(cmds.size()==2)) {
+  if((cmds.at(0).toLower()=="droutermaskgpostat")&&(cmds.size()==2)) {
     if((cmds.at(1).toLower()=="true")||(cmds.at(1).toLower()=="false")) {
       DrouterMaskGpoStat(cmds.at(1).toLower()=="true");
     }
     else {
-      proto_socket->
-	write(QString("Error - Invalid boolean value.\r\n").toUtf8());
+      SendError(JParser::ParameterError,"droutermaskgpostate true|false");
     }
-    proto_socket->write(">>",2);
   }
 
-  if((cmds[0].toLower()=="droutermaskroutestat")&&(cmds.size()==2)) {
+  if((cmds.at(0).toLower()=="droutermaskroutestat")&&(cmds.size()==2)) {
     if((cmds.at(1).toLower()=="true")||(cmds.at(1).toLower()=="false")) {
       DrouterMaskRouteStat(cmds.at(1).toLower()=="true");
     }
     else {
-      proto_socket->
-	write(QString("Error - Invalid boolean value.\r\n").toUtf8());
+      SendError(JParser::ParameterError,"droutermaskroutestat true|false");
     }
-    proto_socket->write(">>",2);
   }
 
-  if((cmds[0].toLower()=="droutermaskstat")&&(cmds.size()==2)) {
+  if((cmds.at(0).toLower()=="droutermaskstat")&&(cmds.size()==2)) {
     if((cmds.at(1).toLower()=="true")||(cmds.at(1).toLower()=="false")) {
       DrouterMaskStat(cmds.at(1).toLower()=="true");
     }
     else {
-      proto_socket->
-	write(QString("Error - Invalid boolean value.\r\n").toUtf8());
+      SendError(JParser::ParameterError,"droutermaskstat true|false");
     }
-    proto_socket->write(">>",2);
   }
 }
 
@@ -1407,32 +1399,6 @@ QString ProtocolJ::JsonField(const QString &name,const QString &value,int paddin
   }
 
   ret=JsonEscape(value);
-  /*
-  for(int i=0;i<value.length();i++) {
-    QChar c=value.at(i);
-    switch(c.category()) {
-    case QChar::Other_Control:
-      ret+=QString::asprintf("\\u%04X",c.unicode());
-      break;
-
-    default:
-      switch(c.unicode()) {
-      case 0x22:   // Quote
-	ret+="\\\"";
-	break;
-
-      case 0x5C:   // Backslash
-	ret+="\\\\";
-	break;
-
-      default:
-	ret+=c;
-	break;
-      }
-      break;
-    }
-  }
-  */
 
   return JsonPadding(padding)+"\""+name+"\": \""+ret+"\""+comma+"\r\n";
 }
