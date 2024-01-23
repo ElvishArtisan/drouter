@@ -991,3 +991,11 @@
 	to be activated on startup if the '--no-scripts' switch was given.
 2024-01-23 Fred Gleason <fredg@paravelsystems.com>
 	* Fixed JSON syntax errors in Protocol J.
+2024-01-23 Fred Gleason <fredg@paravelsystems.com>
+	* Changed the 'droutermaskgpistat' command to 'maskgpistat' in
+	ProtocolJ.
+	* Changed the 'droutermaskgpostat' command to 'maskgpostat' in
+	ProtocolJ.
+	* Changed the 'droutermaskroutestat' command to 'maskroutestat' in
+	ProtocolJ.
+	* Changed the 'droutermaskstat' command to 'maskstat' in ProtocolJ.

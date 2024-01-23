@@ -863,29 +863,53 @@ QString ProtocolJ::RouteStatMessage(SqlQuery *q)
 }
 
 
-void ProtocolJ::DrouterMaskGpiStat(bool state)
+void ProtocolJ::MaskGpiStat(bool state)
 {
   proto_gpistat_masked=state;
+
+  QString json="{\r\n";
+  json+="    \"maskgpistat\": {\r\n";
+  json+=JsonField("state",state,8,true);
+  json+="    }\r\n";
+  json+="}\r\n";
+
+  proto_socket->write(json.toUtf8());
 }
 
 
-void ProtocolJ::DrouterMaskGpoStat(bool state)
+void ProtocolJ::MaskGpoStat(bool state)
 {
   proto_gpostat_masked=state;
+
+  QString json="{\r\n";
+  json+="    \"maskgpostat\": {\r\n";
+  json+=JsonField("state",state,8,true);
+  json+="    }\r\n";
+  json+="}\r\n";
+
+  proto_socket->write(json.toUtf8());
 }
 
 
-void ProtocolJ::DrouterMaskRouteStat(bool state)
+void ProtocolJ::MaskRouteStat(bool state)
 {
   proto_routestat_masked=state;
+
+  QString json="{\r\n";
+  json+="    \"maskroutestat\": {\r\n";
+  json+=JsonField("state",state,8,true);
+  json+="    }\r\n";
+  json+="}\r\n";
+
+  proto_socket->write(json.toUtf8());
 }
 
 
-void ProtocolJ::DrouterMaskStat(bool state)
+void ProtocolJ::MaskStat(bool state)
 {
-  proto_gpistat_masked=state;
-  proto_gpostat_masked=state;
-  proto_routestat_masked=state;
+  MaskGpiStat(state);
+  MaskGpoStat(state);
+  MaskRouteStat(state);
 }
 
 
@@ -1130,39 +1154,39 @@ void ProtocolJ::ProcessCommand(const QString &cmd)
     }
   }
 
-  if((cmds.at(0).toLower()=="droutermaskgpistat")&&(cmds.size()==2)) {
+  if((cmds.at(0).toLower()=="maskgpistat")&&(cmds.size()==2)) {
     if((cmds.at(1).toLower()=="true")||(cmds.at(1).toLower()=="false")) {
-      DrouterMaskGpiStat(cmds.at(1).toLower()=="true");
+      MaskGpiStat(cmds.at(1).toLower()=="true");
     }
     else {
-      SendError(JParser::ParameterError,"droutermaskgpistat true|false");
+      SendError(JParser::ParameterError,"maskgpistat true|false");
     }
   }
 
-  if((cmds.at(0).toLower()=="droutermaskgpostat")&&(cmds.size()==2)) {
+  if((cmds.at(0).toLower()=="maskgpostat")&&(cmds.size()==2)) {
     if((cmds.at(1).toLower()=="true")||(cmds.at(1).toLower()=="false")) {
-      DrouterMaskGpoStat(cmds.at(1).toLower()=="true");
+      MaskGpoStat(cmds.at(1).toLower()=="true");
     }
     else {
-      SendError(JParser::ParameterError,"droutermaskgpostate true|false");
+      SendError(JParser::ParameterError,"maskgpostate true|false");
     }
   }
 
-  if((cmds.at(0).toLower()=="droutermaskroutestat")&&(cmds.size()==2)) {
+  if((cmds.at(0).toLower()=="maskroutestat")&&(cmds.size()==2)) {
     if((cmds.at(1).toLower()=="true")||(cmds.at(1).toLower()=="false")) {
-      DrouterMaskRouteStat(cmds.at(1).toLower()=="true");
+      MaskRouteStat(cmds.at(1).toLower()=="true");
     }
     else {
-      SendError(JParser::ParameterError,"droutermaskroutestat true|false");
+      SendError(JParser::ParameterError,"maskroutestat true|false");
     }
   }
 
-  if((cmds.at(0).toLower()=="droutermaskstat")&&(cmds.size()==2)) {
+  if((cmds.at(0).toLower()=="maskstat")&&(cmds.size()==2)) {
     if((cmds.at(1).toLower()=="true")||(cmds.at(1).toLower()=="false")) {
-      DrouterMaskStat(cmds.at(1).toLower()=="true");
+      MaskStat(cmds.at(1).toLower()=="true");
     }
     else {
-      SendError(JParser::ParameterError,"droutermaskstat true|false");
+      SendError(JParser::ParameterError,"maskstat true|false");
     }
   }
 }
@@ -1188,10 +1212,10 @@ void ProtocolJ::LoadHelp()
     ", ActivateScene"+
     ", ActivateSnap"+
     ", DestNames"+
-    ", DrouterMaskGPIStat"+
-    ", DrouterMaskGPOStat"+
-    ", DrouterMaskRouteStat"+
-    ", DrouterMaskStat"+
+    ", MaskGPIStat"+
+    ", MaskGPOStat"+
+    ", MaskRouteStat"+
+    ", MaskStat"+
     ", Exit"+
     ", GPIStat"+
     ", GPOStat"+
@@ -1209,11 +1233,11 @@ void ProtocolJ::LoadHelp()
   proto_help_strings["activatescene"]="ActivateScene <router> <snapshot>\r\n\r\nActivate the specified snapshot.";
   proto_help_strings["activatesnap"]="ActivateSnap <router> <snapshot>\r\n\r\nActivate the specified snapshot.";
   proto_help_strings["destnames"]="DestNames <router>\r\n\r\nReturn names of all outputs on the specified router.";
-  proto_help_strings["droutermaskgpistat"]="DrouterMaskGPIStat True | False\r\n\r\nSuppress generation of GPIStat update messages on this connection.";
-  proto_help_strings["droutermaskgpostat"]="DrouterMaskGPOStat True | False\r\n\r\nSuppress generation of GPOStat update messages on this connection.";
-  proto_help_strings["droutermaskroutestat"]="DrouterMaskRouteStat True | False\r\n\r\nSuppress generation of RouteStat update messages on this connection.";
-  proto_help_strings["droutermaskstat"]="DrouterMaskStat True | False\r\n\r\nSuppress generation of all state update messages on this connection.";
-  proto_help_strings["droutermaskroutestat"]="DrouterMaskRouteStat True | False\r\n\r\nSuppress generation of RouteStat update messages on this connection.";
+  proto_help_strings["maskgpistat"]="MaskGPIStat True | False\r\n\r\nSuppress generation of GPIStat update messages on this connection.";
+  proto_help_strings["maskgpostat"]="MaskGPOStat True | False\r\n\r\nSuppress generation of GPOStat update messages on this connection.";
+  proto_help_strings["maskroutestat"]="MaskRouteStat True | False\r\n\r\nSuppress generation of RouteStat update messages on this connection.";
+  proto_help_strings["maskstat"]="MaskStat True | False\r\n\r\nSuppress generation of all state update messages on this connection.";
+  proto_help_strings["maskroutestat"]="MaskRouteStat True | False\r\n\r\nSuppress generation of RouteStat update messages on this connection.";
   proto_help_strings["exit"]="Exit\r\n\r\nClose TCP/IP connection.";
   proto_help_strings["gpistat"]="GPIStat <router> [<gpi-num>]\r\n\r\nQuery the state of one or more GPIs.\r\nIf <gpi-num> is not given, the entire set of GPIs for the specified\r\n<router> will be returned.";
   proto_help_strings["gpostat"]="GPOStat <router> [<gpo-num>]\r\n\r\nQuery the state of one or more GPOs.\r\nIf <gpo-num> is not given, the entire set of GPOs for the specified\r\n<router> will be returned.";

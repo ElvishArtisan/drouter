@@ -78,10 +78,10 @@ class ProtocolJ : public Protocol
   QString RouteStatSqlFields(EndPointMap::RouterType type);
   QString RouteStatMessage(int router,int output,int input);
   QString RouteStatMessage(SqlQuery *q);
-  void DrouterMaskGpiStat(bool state);
-  void DrouterMaskGpoStat(bool state);
-  void DrouterMaskRouteStat(bool state);
-  void DrouterMaskStat(bool state);
+  void MaskGpiStat(bool state);
+  void MaskGpoStat(bool state);
+  void MaskRouteStat(bool state);
+  void MaskStat(bool state);
   void SendPingResponse();
   void ProcessCommand(const QString &cmd);
   void LoadMaps();
