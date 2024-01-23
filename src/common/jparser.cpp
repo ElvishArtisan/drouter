@@ -322,6 +322,10 @@ QString JParser::errorString(ErrorType err)
     ret="not a GPIO router";
     break;
 
+  case JParser::NoCommandError:
+    ret="no such command";
+    break;
+
   case JParser::LastError:
     break;
   }

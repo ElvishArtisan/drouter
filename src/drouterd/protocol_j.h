@@ -82,6 +82,7 @@ class ProtocolJ : public Protocol
   void MaskGpoStat(bool state);
   void MaskRouteStat(bool state);
   void MaskStat(bool state);
+  void HelpMessage(const QString &keyword);
   void SendPingResponse();
   void ProcessCommand(const QString &cmd);
   void LoadMaps();
@@ -127,7 +128,8 @@ class ProtocolJ : public Protocol
 
   int TimeZoneOffset();
 
-  QMap<QString,QString> proto_help_strings;
+  QMap<QString,QString> proto_help_patterns;
+  QMap<QString,QString> proto_help_comments;
   QTcpSocket *proto_socket;
   QTcpServer *proto_server;
   QByteArray proto_accum;

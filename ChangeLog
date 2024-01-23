@@ -999,3 +999,6 @@
 	* Changed the 'droutermaskroutestat' command to 'maskroutestat' in
 	ProtocolJ.
 	* Changed the 'droutermaskstat' command to 'maskstat' in ProtocolJ.
+2024-01-23 Fred Gleason <fredg@paravelsystems.com>
+	* Reworked the help system in ProtocolJ to use JSON messaging
+	formats.

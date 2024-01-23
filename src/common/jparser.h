@@ -45,7 +45,7 @@ class JParser : public QObject
   enum ConnectionState {Ok=0,InvalidLogin=1,WatchdogActive=2};
   enum ErrorType {OkError=0,JsonError=1,ParameterError=2,NoRouterError=3,
 		  NoSnapshotError=4,NoSourceError=5,NoDestinationError=6,
-		  NotGpioRouterError=7,LastError=8};
+		  NotGpioRouterError=7,NoCommandError=8,LastError=9};
   JParser(QObject *parent=0);
   ~JParser();
   QMap<int,QString> routers() const;
