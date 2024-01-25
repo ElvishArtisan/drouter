@@ -1,8 +1,8 @@
 // outputpanel.h
 //
-// Applet for controlling an lwpath output.
+// Applet for controling a ProtocolJ output
 //
-//   (C) Copyright 2002-2016 Fred Gleason <fredg@paravelsystems.com>
+//   (C) Copyright 2002-2024 Fred Gleason <fredg@paravelsystems.com>
 //
 //   This program is free software; you can redistribute it and/or modify
 //   it under the terms of the GNU General Public License as
@@ -28,7 +28,7 @@
 
 #include "logindialog.h"
 #include "panelwidget.h"
-#include "saparser.h"
+#include "jparser.h"
 
 #define OUTPUTPANEL_USAGE "[options]\n"
 
@@ -59,7 +59,7 @@ class MainWidget : public QWidget
   unsigned panel_rows;
   bool clock_state;
   QPixmap *panel_saspanels_map;
-  SaParser *panel_parser;
+  JParser *panel_parser;
   LoginDialog *panel_login_dialog;
   QList<PanelWidget *> panel_widgets;
 };

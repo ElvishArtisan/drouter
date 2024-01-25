@@ -2,7 +2,7 @@
 //
 // Output panel widget for OutputPanel
 //
-//   (C) Copyright 2016-2017 Fred Gleason <fredg@paravelsystems.com>
+//   (C) Copyright 2016-2024 Fred Gleason <fredg@paravelsystems.com>
 //
 //   This program is free software; you can redistribute it and/or modify
 //   it under the terms of the GNU General Public License as
@@ -29,7 +29,7 @@
 #include <QWidget>
 
 #include "combobox.h"
-#include "saparser.h"
+#include "jparser.h"
 
 #define PANELWIDGET_FLASH_INTERVAL 300
 #define PANELWIDGET_WIDTH 140
@@ -53,13 +53,13 @@ class PanelWidget : public QWidget
 {
   Q_OBJECT
  public:
-  PanelWidget(SaParser *parser,int router,int output,QWidget *parent=0);
+  PanelWidget(JParser *parser,int router,int output,QWidget *parent=0);
   ~PanelWidget();
   QSize sizeHint() const;
   QSizePolicy sizePolicy() const;
 
  public slots:
-  void changeConnectionState(bool state,SaParser::ConnectionState cstate);
+  void changeConnectionState(bool state,JParser::ConnectionState cstate);
   void updateInputNames();
   void updateOutputNames();
   void changeOutputCrosspoint(int router,int output,int input);
@@ -79,7 +79,7 @@ class PanelWidget : public QWidget
   ComboBox *widget_input_box;
   QPushButton *widget_take_button;
   QPushButton *widget_cancel_button;
-  SaParser *widget_parser;
+  JParser *widget_parser;
   int widget_router;
   int widget_output;
   int widget_input;

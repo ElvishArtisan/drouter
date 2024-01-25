@@ -1002,3 +1002,8 @@
 2024-01-23 Fred Gleason <fredg@paravelsystems.com>
 	* Reworked the help system in ProtocolJ to use JSON messaging
 	formats.
+2024-01-25 Fred Gleason <fredg@paravelsystems.com>
+	* Modified outputpanel(1) to work with Protocol J.
+	* Modified 'JParser' to emit the 'gpiStateChanged()',
+	'gpoStateChanged()' and 'outputCrosspointChanged()' signals only
+	when in the connected state.

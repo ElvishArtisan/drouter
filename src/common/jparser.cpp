@@ -448,6 +448,7 @@ void JParser::DispatchMessage(const QJsonDocument &jdoc)
     for(QJsonObject::const_iterator it=jo0.begin();it!=jo0.end();it++) {
       QJsonObject jo1=it.value().toObject();
       int router=jo1.value("number").toInt();
+      j_router_names[router]=jo1.value("name").toString();
 
       j_input_quantities[router]=0;
       j_input_is_reals[router]=QMap<int,bool>();
@@ -547,7 +548,9 @@ void JParser::DispatchMessage(const QJsonDocument &jdoc)
     QString code=jo0.value("code").toString();
 
     j_gpi_states[router][input]=code;
-    emit gpiStateChanged(router,input,code);
+    if(j_connected) {
+      emit gpiStateChanged(router,input,code);
+    }
   }
 
   if(jdoc.object().contains("gpostat")) {
@@ -557,7 +560,9 @@ void JParser::DispatchMessage(const QJsonDocument &jdoc)
     QString code=jo0.value("code").toString();
 
     j_gpo_states[router][output]=code;
-    emit gpoStateChanged(router,output,code);
+    if(j_connected) {
+      emit gpoStateChanged(router,output,code);
+    }
   }
 
   if(jdoc.object().contains("routestat")) {
@@ -567,7 +572,9 @@ void JParser::DispatchMessage(const QJsonDocument &jdoc)
     int input=jo0.value("source").toInt();
 
     j_output_xpoints[router][output]=input;
-    emit outputCrosspointChanged(router,output,input);
+    if(j_connected) {
+      emit outputCrosspointChanged(router,output,input);
+    }
   }
 
   if(jdoc.object().contains("pong")) {

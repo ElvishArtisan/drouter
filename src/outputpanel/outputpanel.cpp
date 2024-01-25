@@ -1,8 +1,8 @@
 // outputpanel.cpp
 //
-// An applet for controling an SA output
+// Applet for controling a ProtocolJ output
 //
-//   (C) Copyright 2002-2022 Fred Gleason <fredg@paravelsystems.com>
+//   (C) Copyright 2002-2024 Fred Gleason <fredg@paravelsystems.com>
 //
 //   This program is free software; you can redistribute it and/or modify
 //   it under the terms of the GNU General Public License as
@@ -114,9 +114,9 @@ MainWidget::MainWidget(QWidget *parent)
   setWindowIcon(QPixmap(drouter_16x16_xpm));
 
   //
-  // The SA Connection
+  // The Protocol J Connection
   //
-  panel_parser=new SaParser(this);
+  panel_parser=new JParser(this);
 
   //
   // Dialogs
@@ -160,9 +160,9 @@ MainWidget::MainWidget(QWidget *parent)
       }      
       PanelWidget *widget=
 	new PanelWidget(panel_parser,router,output,this);
-      connect(panel_parser,SIGNAL(connected(bool,SaParser::ConnectionState)),
+      connect(panel_parser,SIGNAL(connected(bool,JParser::ConnectionState)),
 	      widget,
-	      SLOT(changeConnectionState(bool,SaParser::ConnectionState)));
+	      SLOT(changeConnectionState(bool,JParser::ConnectionState)));
       connect(panel_parser,SIGNAL(inputListChanged()),
 	      widget,SLOT(updateInputNames()));
       connect(panel_parser,SIGNAL(outputListChanged()),
@@ -213,7 +213,7 @@ MainWidget::MainWidget(QWidget *parent)
   setMaximumHeight(sizeHint().height());
 
   //
-  // Fire up the SAP connection
+  // Fire up the connection
   //
   if(prompt) {
     if(!panel_login_dialog->exec(&panel_username,&panel_password)) {
@@ -221,7 +221,7 @@ MainWidget::MainWidget(QWidget *parent)
     }
   }
   panel_parser->
-    connectToHost(panel_hostname,9500,panel_username,panel_password);
+    connectToHost(panel_hostname,9600,panel_username,panel_password);
 }
 
 

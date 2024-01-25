@@ -2,7 +2,7 @@
 //
 // Output panel widget for OutputPanel
 //
-//   (C) Copyright 2016-2022 Fred Gleason <fredg@paravelsystems.com>
+//   (C) Copyright 2016-2024 Fred Gleason <fredg@paravelsystems.com>
 //
 //   This program is free software; you can redistribute it and/or modify
 //   it under the terms of the GNU General Public License as
@@ -51,7 +51,7 @@ bool PanelInput::operator<(const PanelInput &other) const
 
 
 
-PanelWidget::PanelWidget(SaParser *parser,int router,int output,QWidget *parent)
+PanelWidget::PanelWidget(JParser *parser,int router,int output,QWidget *parent)
   : QWidget(parent)
 {
   QFont label_font("helvetica",16,QFont::Bold);
@@ -123,7 +123,7 @@ QSizePolicy PanelWidget::sizePolicy() const
 
 
 void PanelWidget::changeConnectionState(bool state,
-					SaParser::ConnectionState cstate)
+					JParser::ConnectionState cstate)
 {
   if(state) {
     if(!widget_parser->routers().contains(widget_router)) {
@@ -138,13 +138,18 @@ void PanelWidget::changeConnectionState(bool state,
 	  tr("does not exist!"));
       exit(256);
     }
+    widget_output_label->setEnabled(widget_xpoint_synced);
+    widget_input_box->setEnabled(widget_xpoint_synced);
+
+    updateInputNames();
+    updateOutputNames();
+    changeOutputCrosspoint(widget_router,1+widget_output,
+	   widget_parser->outputCrosspoint(widget_router,1+widget_output));
   }
   else {
     widget_input_names.clear();
     widget_input_box->clear();
   }
-  widget_output_label->setEnabled(widget_xpoint_synced);
-  widget_input_box->setEnabled(widget_xpoint_synced);
 }
 
 
@@ -154,7 +159,8 @@ void PanelWidget::updateInputNames()
 
   for(int i=0;i<widget_parser->inputQuantity(widget_router);i++) {
     if(widget_parser->inputIsReal(widget_router,i+1)) {
-      inputs.push_back(PanelInput(i,widget_parser->inputName(widget_router,i+1)));
+      inputs.push_back(PanelInput(i,widget_parser->inputName(widget_router,
+							     i+1)));
     }
   }
   qSort(inputs);
@@ -206,8 +212,6 @@ void PanelWidget::tickClock(bool state)
 
 void PanelWidget::changeOutputCrosspoint(int router,int output,int input)
 {
-  //  printf("changeOutputCrosspoint(%d,%d,%d)\n",router,output,input);
-
   if(router==widget_router) {
     if((output-1)==widget_output) {
       if(!widget_input_box->setCurrentItemData(input-1)) {
