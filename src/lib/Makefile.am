@@ -35,7 +35,6 @@ dist_libdrouter_la_SOURCES = drcombobox.cpp drcombobox.h\
                              drjparser.cpp drjparser.h\
                              drlogindialog.cpp drlogindialog.h\
                              drmultistatewidget.cpp drmultistatewidget.h\
-                             paths.h.in\
                              drsaparser.cpp drsaparser.h\
                              drsendmail.cpp drsendmail.h\
                              drsqlquery.cpp drsqlquery.h
@@ -45,9 +44,12 @@ nodist_libdrouter_la_SOURCES = moc_drcombobox.cpp\
                                moc_drjparser.cpp\
                                moc_drlogindialog.cpp\
                                moc_drmultistatewidget.cpp\
-                               moc_drsaparser.cpp
+                               moc_drsaparser.cpp\
+                               paths.h
 
 libdrouter_la_LDFLAGS = -release $(VERSION)
+
+EXTRA_DISTS = paths.h.in
 
 CLEANFILES = *~\
              moc_*\
