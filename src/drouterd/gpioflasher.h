@@ -28,7 +28,7 @@
 #include <sy5/sygpio_server.h>
 #include <sy5/sylwrp_client.h>
 
-#include "config.h"
+#include <drconfig.h>
 
 class GpioFlasher : public QObject
 {
@@ -36,7 +36,7 @@ class GpioFlasher : public QObject
  public:
   GpioFlasher(QObject *parent=0);
   ~GpioFlasher();
-  void addGpio(Config::TetherRole role,SyLwrpClient *lwrp,
+  void addGpio(DRConfig::TetherRole role,SyLwrpClient *lwrp,
 	       SyGpioBundleEvent::Type type,int slot,const QString &code);
   bool isActive() const;
   void setActive(bool state);

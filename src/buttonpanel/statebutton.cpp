@@ -24,7 +24,7 @@
 #include "statebutton.h"
 
 StateButton::StateButton(int router,int endpt,const QString &legend,
-			 const QString &mask,const QChar &dir,JParser *parser,
+			 const QString &mask,const QChar &dir,DRJParser *parser,
 			 QWidget *parent)
   : AutoPushButton(parent)
 {
@@ -64,8 +64,8 @@ StateButton::StateButton(int router,int endpt,const QString &legend,
   //
   // The SA Connection
   //
-  connect(c_parser,SIGNAL(connected(bool,JParser::ConnectionState)),
-	  this,SLOT(changeConnectionState(bool,JParser::ConnectionState)));
+  connect(c_parser,SIGNAL(connected(bool,DRJParser::ConnectionState)),
+	  this,SLOT(changeConnectionState(bool,DRJParser::ConnectionState)));
 }
 
 
@@ -97,7 +97,7 @@ void StateButton::setTextColor(const QColor &color)
 
 
 void StateButton::changeConnectionState(bool state,
-					JParser::ConnectionState cstate)
+					DRJParser::ConnectionState cstate)
 {
   setEnabled(state);
 }

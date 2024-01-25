@@ -135,7 +135,7 @@ MainWidget::MainWidget(QWidget *parent)
   //
   // Dialogs
   //
-  panel_login_dialog=new LoginDialog("XPointPanel",this);
+  panel_login_dialog=new DRLoginDialog("XPointPanel",this);
 
   //
   // Router Control
@@ -144,7 +144,7 @@ MainWidget::MainWidget(QWidget *parent)
   panel_router_label->setAlignment(Qt::AlignLeft|Qt::AlignVCenter);
   panel_router_label->setFont(button_font);
   panel_router_label->setDisabled(true);
-  panel_router_box=new ComboBox(this);
+  panel_router_box=new DRComboBox(this);
 
   panel_router_box->setDisabled(true);
   connect(panel_router_box,SIGNAL(activated(int)),
@@ -201,9 +201,9 @@ MainWidget::MainWidget(QWidget *parent)
   //
   // The SA Connection
   //
-  panel_parser=new SaParser(this);
-  connect(panel_parser,SIGNAL(connected(bool,SaParser::ConnectionState)),
-	  this,SLOT(connectedData(bool,SaParser::ConnectionState)));
+  panel_parser=new DRSaParser(this);
+  connect(panel_parser,SIGNAL(connected(bool,DRSaParser::ConnectionState)),
+	  this,SLOT(connectedData(bool,DRSaParser::ConnectionState)));
   connect(panel_parser,SIGNAL(error(QAbstractSocket::SocketError)),
 	  this,SLOT(errorData(QAbstractSocket::SocketError)));
   connect(panel_parser,SIGNAL(outputCrosspointChanged(int,int,int)),
@@ -216,7 +216,7 @@ MainWidget::MainWidget(QWidget *parent)
   //
   // The ProtocolD Connection
   //
-  panel_dparser=new DParser(this);
+  panel_dparser=new DRDParser(this);
   connect(panel_dparser,SIGNAL(connected(bool)),
 	  this,SLOT(protocolDConnected(bool)));
 
@@ -366,7 +366,7 @@ void MainWidget::routerBoxActivatedData(int n)
 }
 
 
-void MainWidget::connectedData(bool state,SaParser::ConnectionState cstate)
+void MainWidget::connectedData(bool state,DRSaParser::ConnectionState cstate)
 {
   if(state) {
     QMap<int,QString> routers=panel_parser->routers();
@@ -388,10 +388,10 @@ void MainWidget::connectedData(bool state,SaParser::ConnectionState cstate)
     panel_initial_connected=true;
   }
   else {
-    if(cstate!=SaParser::WatchdogActive) {
+    if(cstate!=DRSaParser::WatchdogActive) {
       QMessageBox::warning(this,"XPointPanel - "+tr("Error"),
 			   tr("Login error")+": "+
-			   SaParser::connectionStateString(cstate));
+			   DRSaParser::connectionStateString(cstate));
       exit(1);
     }
     panel_router_label->setDisabled(true);

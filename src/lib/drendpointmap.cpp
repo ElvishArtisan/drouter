@@ -1,4 +1,4 @@
-// endpointmap.cpp
+// drendpointmap.cpp
 //
 // Map integers to DRouter endpoints.
 //
@@ -25,45 +25,45 @@
 
 #include <sy5/syprofile.h>
 
-#include "endpointmap.h"
+#include "drendpointmap.h"
 
-Snapshot::Snapshot(const QString &name)
+DRSnapshot::DRSnapshot(const QString &name)
 {
   snap_name=name;
 }
 
 
-QString Snapshot::name() const
+QString DRSnapshot::name() const
 {
   return snap_name;
 }
 
 
-void Snapshot::setName(const QString &str)
+void DRSnapshot::setName(const QString &str)
 {
   snap_name=str;
 }
 
 
-int Snapshot::routeQuantity() const
+int DRSnapshot::routeQuantity() const
 {
   return snap_inputs.size();
 }
 
 
-int Snapshot::routeInput(int n) const
+int DRSnapshot::routeInput(int n) const
 {
   return snap_inputs.at(n);
 }
 
 
-int Snapshot::routeOutput(int n) const
+int DRSnapshot::routeOutput(int n) const
 {
   return snap_outputs.at(n);
 }
 
 
-void Snapshot::addRoute(int output,int input)
+void DRSnapshot::addRoute(int output,int input)
 {
   snap_outputs.push_back(output);
   snap_inputs.push_back(input);
@@ -72,57 +72,57 @@ void Snapshot::addRoute(int output,int input)
 
 
 
-EndPointMap::EndPointMap()
+DREndPointMap::DREndPointMap()
 {
-  map_router_type=EndPointMap::AudioRouter;
+  map_router_type=DREndPointMap::AudioRouter;
   map_router_name="Livewire";
   map_router_number=0;
 }
 
 
-EndPointMap::RouterType EndPointMap::routerType() const
+DREndPointMap::RouterType DREndPointMap::routerType() const
 {
   return map_router_type;
 }
 
 
-void EndPointMap::setRouterType(EndPointMap::RouterType type)
+void DREndPointMap::setRouterType(DREndPointMap::RouterType type)
 {
   map_router_type=type;
 }
 
 
-QString EndPointMap::routerName() const
+QString DREndPointMap::routerName() const
 {
   return map_router_name;
 }
 
 
-void EndPointMap::setRouterName(const QString &str)
+void DREndPointMap::setRouterName(const QString &str)
 {
   map_router_name=str;
 }
 
 
-int EndPointMap::routerNumber() const
+int DREndPointMap::routerNumber() const
 {
   return map_router_number;
 }
 
 
-void EndPointMap::setRouterNumber(int num)
+void DREndPointMap::setRouterNumber(int num)
 {
   map_router_number=num;
 }
 
 
-int EndPointMap::quantity(EndPointMap::Type type) const
+int DREndPointMap::quantity(DREndPointMap::Type type) const
 {
   return map_host_addresses[type].size();
 }
 
 
-QHostAddress EndPointMap::hostAddress(EndPointMap::Type type,int n) const
+QHostAddress DREndPointMap::hostAddress(DREndPointMap::Type type,int n) const
 {
   if(n<map_host_addresses[type].size()) {
     return map_host_addresses[type].at(n);
@@ -131,19 +131,19 @@ QHostAddress EndPointMap::hostAddress(EndPointMap::Type type,int n) const
 }
 
 
-void EndPointMap::setHostAddress(EndPointMap::Type type,int n,const QHostAddress &addr)
+void DREndPointMap::setHostAddress(DREndPointMap::Type type,int n,const QHostAddress &addr)
 {
   map_host_addresses[type][n]=addr;
 }
 
 
-void EndPointMap::setHostAddress(EndPointMap::Type type,int n,const QString &addr)
+void DREndPointMap::setHostAddress(DREndPointMap::Type type,int n,const QString &addr)
 {
   map_host_addresses[type][n].setAddress(addr);
 }
 
 
-int EndPointMap::slot(EndPointMap::Type type,int n) const
+int DREndPointMap::slot(DREndPointMap::Type type,int n) const
 {
   if(n<map_slots[type].size()) {
     return map_slots[type].at(n);
@@ -152,13 +152,13 @@ int EndPointMap::slot(EndPointMap::Type type,int n) const
 }
 
 
-void EndPointMap::setSlot(EndPointMap::Type type,int n,int slot)
+void DREndPointMap::setSlot(DREndPointMap::Type type,int n,int slot)
 {
   map_slots[type][n]=slot;
 }
 
 
-QString EndPointMap::name(EndPointMap::Type type,int n,const QString &orig_name) const
+QString DREndPointMap::name(DREndPointMap::Type type,int n,const QString &orig_name) const
 {
   QString ret;
 
@@ -178,7 +178,7 @@ QString EndPointMap::name(EndPointMap::Type type,int n,const QString &orig_name)
 }
 
 
-bool EndPointMap::nameIsCustom(Type type,int n) const
+bool DREndPointMap::nameIsCustom(Type type,int n) const
 {
   if(n<0) {
     return true;
@@ -190,13 +190,13 @@ bool EndPointMap::nameIsCustom(Type type,int n) const
 }
 
 
-void EndPointMap::setName(EndPointMap::Type type,int n,const QString &str)
+void DREndPointMap::setName(DREndPointMap::Type type,int n,const QString &str)
 {
   map_names[type][n]=str;
 }
 
 
-int EndPointMap::endPoint(Type type,const QHostAddress &hostaddr,int slot) const
+int DREndPointMap::endPoint(Type type,const QHostAddress &hostaddr,int slot) const
 {
   for(int i=0;i<map_host_addresses[type].size();i++) {
     if((map_host_addresses[type].at(i)==hostaddr)&&
@@ -208,13 +208,13 @@ int EndPointMap::endPoint(Type type,const QHostAddress &hostaddr,int slot) const
 }
 
 
-int EndPointMap::endPoint(Type type,const QString &hostaddr,int slot) const
+int DREndPointMap::endPoint(Type type,const QString &hostaddr,int slot) const
 {
   return endPoint(type,QHostAddress(hostaddr),slot);
 }
 
 
-void EndPointMap::insert(EndPointMap::Type type,int n,const QHostAddress &host_addr,int slot,
+void DREndPointMap::insert(DREndPointMap::Type type,int n,const QHostAddress &host_addr,int slot,
 			 const QString &name)
 {
   map_host_addresses[type].insert(n,host_addr);
@@ -224,7 +224,7 @@ void EndPointMap::insert(EndPointMap::Type type,int n,const QHostAddress &host_a
 }
 
 
-void EndPointMap::insert(EndPointMap::Type type,int n,const QString &host_addr,int slot,
+void DREndPointMap::insert(DREndPointMap::Type type,int n,const QString &host_addr,int slot,
 			 const QString &name)
 {
   map_host_addresses[type].insert(n,QHostAddress(host_addr));
@@ -234,26 +234,26 @@ void EndPointMap::insert(EndPointMap::Type type,int n,const QString &host_addr,i
 }
 
 
-void EndPointMap::erase(EndPointMap::Type type,int n)
+void DREndPointMap::erase(DREndPointMap::Type type,int n)
 {
   map_host_addresses[type].erase(map_host_addresses[type].begin()+n);
   map_slots[type].erase(map_slots[type].begin()+n);
 }
 
 
-int EndPointMap::snapshotQuantity() const
+int DREndPointMap::snapshotQuantity() const
 {
   return map_snapshots.size();
 }
 
 
-Snapshot *EndPointMap::snapshot(int n) const
+DRSnapshot *DREndPointMap::snapshot(int n) const
 {
   return map_snapshots.at(n);
 }
 
 
-Snapshot *EndPointMap::snapshot(const QString &name)
+DRSnapshot *DREndPointMap::snapshot(const QString &name)
 {
   for(int i=0;i<map_snapshots.size();i++) {
     if(map_snapshots.at(i)->name()==name) {
@@ -264,7 +264,7 @@ Snapshot *EndPointMap::snapshot(const QString &name)
 }
 
 
-bool EndPointMap::load(const QString &filename,QStringList *unused_lines)
+bool DREndPointMap::load(const QString &filename,QStringList *unused_lines)
 {
   bool ok=false;
 
@@ -274,8 +274,8 @@ bool EndPointMap::load(const QString &filename,QStringList *unused_lines)
     return false;
   }
   
-  for(int i=0;i<EndPointMap::LastType;i++) {
-    EndPointMap::Type type=(EndPointMap::Type)i;
+  for(int i=0;i<DREndPointMap::LastType;i++) {
+    DREndPointMap::Type type=(DREndPointMap::Type)i;
     int count=0;
     QHostAddress addr;
     bool ok=false;
@@ -283,27 +283,27 @@ bool EndPointMap::load(const QString &filename,QStringList *unused_lines)
     map_slots[type].clear();
 
     QString name=p->stringValue("Global","RouterType").toLower();
-    map_router_type=EndPointMap::AudioRouter;
-    for(int i=0;i<EndPointMap::LastRouter;i++) {
-      EndPointMap::RouterType rtype=(EndPointMap::RouterType)i;
-      if(EndPointMap::routerTypeString(rtype).toLower()==name) {
+    map_router_type=DREndPointMap::AudioRouter;
+    for(int i=0;i<DREndPointMap::LastRouter;i++) {
+      DREndPointMap::RouterType rtype=(DREndPointMap::RouterType)i;
+      if(DREndPointMap::routerTypeString(rtype).toLower()==name) {
 	map_router_type=rtype;
       }
     }
     map_router_name=p->stringValue("Global","RouterName","Livewire");
     map_router_number=p->intValue("Global","RouterNumber",1)-1;
 
-    addr=p->addressValue(EndPointMap::typeString(type)+
+    addr=p->addressValue(DREndPointMap::typeString(type)+
 	     QString::asprintf("%d",count+1),"HostAddress",QHostAddress(),&ok);
     while(ok) {
       map_host_addresses[type].push_back(addr);
-      map_slots[type].push_back(p->intValue(EndPointMap::typeString(type)+
+      map_slots[type].push_back(p->intValue(DREndPointMap::typeString(type)+
 	       QString::asprintf("%d",count+1),"Slot")-1);
-      map_names[type].push_back(p->stringValue(EndPointMap::typeString(type)+
+      map_names[type].push_back(p->stringValue(DREndPointMap::typeString(type)+
 	       QString::asprintf("%d",count+1),"Name","",&ok));
       map_name_is_customs[type].push_back(ok);
       count++;
-      addr=p->addressValue(EndPointMap::typeString(type)+
+      addr=p->addressValue(DREndPointMap::typeString(type)+
 	       QString::asprintf("%d",count+1),"HostAddress",QHostAddress(),&ok);
     }
   }
@@ -322,7 +322,7 @@ bool EndPointMap::load(const QString &filename,QStringList *unused_lines)
 
   name=p->stringValue(section,"Name","",&ok);
   while(ok) {
-    map_snapshots.push_back(new Snapshot(name));
+    map_snapshots.push_back(new DRSnapshot(name));
     int route=0;
     int output=
       p->intValue(section,QString::asprintf("Route%dOutput",route+1),0,&ok);
@@ -346,7 +346,7 @@ bool EndPointMap::load(const QString &filename,QStringList *unused_lines)
 }
 
 
-bool EndPointMap::save(const QString &filename,bool incl_names) const
+bool DREndPointMap::save(const QString &filename,bool incl_names) const
 {
   QString tempname=filename+"-temp";
   FILE *f=NULL;
@@ -365,19 +365,19 @@ bool EndPointMap::save(const QString &filename,bool incl_names) const
 }
 
 
-void EndPointMap::save(FILE *f,bool incl_names) const
+void DREndPointMap::save(FILE *f,bool incl_names) const
 {
   fprintf(f,"[Global]\n");
   fprintf(f,"RouterType=%s\n",
-	 (const char *)EndPointMap::routerTypeString(map_router_type).toUtf8());
+	 (const char *)DREndPointMap::routerTypeString(map_router_type).toUtf8());
   fprintf(f,"RouterName=%s\n",(const char *)map_router_name.toUtf8());
   fprintf(f,"RouterNumber=%d\n",map_router_number+1);
   fprintf(f,"\n");
-  for(int i=0;i<EndPointMap::LastType;i++) {
-    EndPointMap::Type type=(EndPointMap::Type)i;
+  for(int i=0;i<DREndPointMap::LastType;i++) {
+    DREndPointMap::Type type=(DREndPointMap::Type)i;
     for(int j=0;j<map_host_addresses[type].size();j++) {
       fprintf(f,"[%s%d]\n",
-	      (const char *)EndPointMap::typeString(type).toUtf8(),j+1);
+	      (const char *)DREndPointMap::typeString(type).toUtf8(),j+1);
       if(map_host_addresses[type].at(j).isNull()) {
 	fprintf(f,"HostAddress=0.0.0.0\n");
       }
@@ -412,18 +412,18 @@ void EndPointMap::save(FILE *f,bool incl_names) const
 }
 
 
-bool EndPointMap::loadSet(QMap<int,EndPointMap *> *maps,QStringList *msgs)
+bool DREndPointMap::loadSet(QMap<int,DREndPointMap *> *maps,QStringList *msgs)
 {
-  QDir dir(ENDPOINTMAP_MAP_DIRECTORY);
+  QDir dir(DRENDPOINTMAP_MAP_DIRECTORY);
   msgs->clear();
 
   QStringList unused_lines;
   QStringList filter;
-  filter.push_back(ENDPOINTMAP_MAP_FILTER);
+  filter.push_back(DRENDPOINTMAP_MAP_FILTER);
   QStringList mapfiles=
     dir.entryList(filter,QDir::Files|QDir::Readable,QDir::Name);
   for(int i=0;i<mapfiles.size();i++) {
-    EndPointMap *map=new EndPointMap();
+    DREndPointMap *map=new DREndPointMap();
     QString pathname=dir.path()+"/"+mapfiles.at(i);
     if(map->load(pathname,&unused_lines)) {
       if(unused_lines.size()>0) {
@@ -446,14 +446,14 @@ bool EndPointMap::loadSet(QMap<int,EndPointMap *> *maps,QStringList *msgs)
 	}
 	for(int k=0;k<map->snapshot(j)->routeQuantity();k++) {
 	  if(map->snapshot(j)->routeOutput(k)>=
-	     map->quantity(EndPointMap::Output)) {
+	     map->quantity(DREndPointMap::Output)) {
 	    msgs->clear();
 	    msgs->push_back(QString::asprintf("invalid output \"%d\"",map->snapshot(j)->routeOutput(k))+" in snapshot \""+map->snapshot(j)->name()+"\" in \""+
 			    pathname+"\"");
 	    return false;
 	  }
 	  if(map->snapshot(j)->routeInput(k)>=
-	     map->quantity(EndPointMap::Input)) {
+	     map->quantity(DREndPointMap::Input)) {
 	    msgs->clear();
 	    msgs->push_back(QString::asprintf("invalid input \"%d\"",map->snapshot(j)->routeInput(k))+" in snapshot \""+map->snapshot(j)->name()+"\" in \""+
 			    pathname+"\"");
@@ -461,7 +461,7 @@ bool EndPointMap::loadSet(QMap<int,EndPointMap *> *maps,QStringList *msgs)
 	  }
 	}
       }
-      for(QMap<int,EndPointMap *>::const_iterator it=maps->begin();
+      for(QMap<int,DREndPointMap *>::const_iterator it=maps->begin();
 	  it!=maps->end();it++) {
 	if(it.key()==map->routerNumber()) {
 	  msgs->clear();
@@ -487,20 +487,20 @@ bool EndPointMap::loadSet(QMap<int,EndPointMap *> *maps,QStringList *msgs)
 }
 
 
-QString EndPointMap::routerTypeString(EndPointMap::RouterType type)
+QString DREndPointMap::routerTypeString(DREndPointMap::RouterType type)
 {
   QString ret="Unknown";
 
   switch(type) {
-  case EndPointMap::AudioRouter:
+  case DREndPointMap::AudioRouter:
     ret="Audio";
     break;
 
-  case EndPointMap::GpioRouter:
+  case DREndPointMap::GpioRouter:
     ret="GPIO";
     break;
 
-  case EndPointMap::LastRouter:
+  case DREndPointMap::LastRouter:
     break;
   }
 
@@ -508,20 +508,20 @@ QString EndPointMap::routerTypeString(EndPointMap::RouterType type)
 }
 
 
-QString EndPointMap::typeString(Type type)
+QString DREndPointMap::typeString(Type type)
 {
   QString ret="Unknown";
 
   switch(type) {
-  case EndPointMap::Input:
+  case DREndPointMap::Input:
     ret="Input";
     break;
 
-  case EndPointMap::Output:
+  case DREndPointMap::Output:
     ret="Output";
     break;
 
-  case EndPointMap::LastType:
+  case DREndPointMap::LastType:
     break;
   }
 

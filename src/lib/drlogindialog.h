@@ -1,4 +1,4 @@
-// logindialog.h
+// drlogindialog.h
 //
 // Dialog for login information
 //
@@ -19,19 +19,19 @@
 //   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
 //
 
-#ifndef LOGINDIALOG_H
-#define LOGINDIALOG_H
+#ifndef DRLOGINDIALOG_H
+#define DRLOGINDIALOG_H
 
 #include <QDialog>
 #include <QLabel>
 #include <QLineEdit>
 #include <QPushButton>
 
-class LoginDialog : public QDialog
+class DRLoginDialog : public QDialog
 {
  Q_OBJECT
  public:
-  LoginDialog(const QString &title,QWidget *parent=0);
+  DRLoginDialog(const QString &title,QWidget *parent=0);
   QSize sizeHint() const;
 
  public slots:
@@ -57,4 +57,4 @@ class LoginDialog : public QDialog
 };
 
 
-#endif  // LOGINDIALOG_H
+#endif  // DRLOGINDIALOG_H

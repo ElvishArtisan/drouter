@@ -126,7 +126,7 @@ MainWidget::MainWidget(QWidget *parent)
   //
   // Dialogs
   //
-  panel_login_dialog=new LoginDialog("ShotPanel",this);
+  panel_login_dialog=new DRLoginDialog("ShotPanel",this);
 
   //
   // Router Control
@@ -134,7 +134,7 @@ MainWidget::MainWidget(QWidget *parent)
   panel_router_label=new QLabel(tr("Router")+":",this);
   panel_router_label->setAlignment(Qt::AlignRight|Qt::AlignVCenter);
   panel_router_label->setFont(button_font);
-  panel_router_box=new ComboBox(this);
+  panel_router_box=new DRComboBox(this);
   connect(panel_router_box,SIGNAL(activated(int)),
 	  this,SLOT(routerBoxActivatedData(int)));
 
@@ -144,7 +144,7 @@ MainWidget::MainWidget(QWidget *parent)
   panel_snapshot_label=new QLabel(tr("Snapshot"),this);
   panel_snapshot_label->setFont(button_font);
   panel_snapshot_label->setDisabled(true);
-  panel_snapshot_box=new ComboBox(this);
+  panel_snapshot_box=new DRComboBox(this);
   panel_snapshot_box->setDisabled(true);
 
   //
@@ -165,9 +165,9 @@ MainWidget::MainWidget(QWidget *parent)
   //
   // The SA Connection
   //
-  panel_parser=new SaParser(this);
-  connect(panel_parser,SIGNAL(connected(bool,SaParser::ConnectionState)),
-	  this,SLOT(connectedData(bool,SaParser::ConnectionState)));
+  panel_parser=new DRSaParser(this);
+  connect(panel_parser,SIGNAL(connected(bool,DRSaParser::ConnectionState)),
+	  this,SLOT(connectedData(bool,DRSaParser::ConnectionState)));
   connect(panel_parser,SIGNAL(error(QAbstractSocket::SocketError)),
 	  this,SLOT(errorData(QAbstractSocket::SocketError)));
 
@@ -219,7 +219,7 @@ void MainWidget::activateData()
   panel_parser->activateSnapshot(router,panel_snapshot_box->currentText());
 }
 
-void MainWidget::connectedData(bool state,SaParser::ConnectionState cstate)
+void MainWidget::connectedData(bool state,DRSaParser::ConnectionState cstate)
 {
   if(state) {
     QMap<int,QString> routers=panel_parser->routers();
@@ -237,10 +237,10 @@ void MainWidget::connectedData(bool state,SaParser::ConnectionState cstate)
     panel_initial_connected=true;
   }
   else {
-    if(cstate!=SaParser::WatchdogActive) {
+    if(cstate!=DRSaParser::WatchdogActive) {
       QMessageBox::warning(this,"ShotPanel - "+tr("Error"),
 			   tr("Login error")+": "+
-			   SaParser::connectionStateString(cstate));
+			   DRSaParser::connectionStateString(cstate));
       exit(1);
     }
     panel_router_label->setDisabled(true);

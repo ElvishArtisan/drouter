@@ -1,4 +1,4 @@
-// sqlquery.cpp
+// drsqlquery.cpp
 //
 //   Database driver with error reporting
 //
@@ -34,9 +34,9 @@
 #include <QStringList>
 #include <QVariant>
 
-#include "sqlquery.h"
+#include "drsqlquery.h"
 
-SqlQuery::SqlQuery (const QString &query):
+DRSqlQuery::DRSqlQuery (const QString &query):
   QSqlQuery(query)
 {
   QSqlDatabase db;
@@ -88,13 +88,13 @@ SqlQuery::SqlQuery (const QString &query):
 }
 
 
-int SqlQuery::columns() const
+int DRSqlQuery::columns() const
 {
   return sql_columns;
 }
 
 
-QVariant SqlQuery::value(int index) const
+QVariant DRSqlQuery::value(int index) const
 {
   QVariant ret=QSqlQuery::value(index);
 
@@ -106,11 +106,11 @@ QVariant SqlQuery::value(int index) const
 }
 
 
-QVariant SqlQuery::run(const QString &sql,bool *ok)
+QVariant DRSqlQuery::run(const QString &sql,bool *ok)
 {
   QVariant ret;
 
-  SqlQuery *q=new SqlQuery(sql);
+  DRSqlQuery *q=new DRSqlQuery(sql);
   if(ok!=NULL) {
     *ok=q->isActive();
   }
@@ -121,11 +121,11 @@ QVariant SqlQuery::run(const QString &sql,bool *ok)
 }
 
 
-bool SqlQuery::apply(const QString &sql,QString *err_msg)
+bool DRSqlQuery::apply(const QString &sql,QString *err_msg)
 {
   bool ret=false;
 
-  SqlQuery *q=new SqlQuery(sql);
+  DRSqlQuery *q=new DRSqlQuery(sql);
   ret=q->isActive();
   if((err_msg!=NULL)&&(!ret)) {
     *err_msg="sql error: "+q->lastError().text()+" query: "+sql;
@@ -136,11 +136,11 @@ bool SqlQuery::apply(const QString &sql,QString *err_msg)
 }
 
 
-int SqlQuery::rows(const QString &sql)
+int DRSqlQuery::rows(const QString &sql)
 {
   int ret=0;
 
-  SqlQuery *q=new SqlQuery(sql);
+  DRSqlQuery *q=new DRSqlQuery(sql);
   ret=q->size();
   delete q;
 
@@ -148,7 +148,7 @@ int SqlQuery::rows(const QString &sql)
 }
 
 
-QString SqlQuery::escape(const QString &str)
+QString DRSqlQuery::escape(const QString &str)
 {
   QString res;
 

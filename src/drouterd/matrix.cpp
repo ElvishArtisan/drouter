@@ -21,7 +21,7 @@
 
 #include "matrix.h"
 
-Matrix::Matrix(Config::MatrixType matrix_type,unsigned id,Config *conf,
+Matrix::Matrix(DRConfig::MatrixType matrix_type,unsigned id,DRConfig *conf,
 	       QObject *parent)
   : QObject(parent)
 {
@@ -42,7 +42,7 @@ Matrix::~Matrix()
 }
 
 
-Config::MatrixType Matrix::matrixType() const
+DRConfig::MatrixType Matrix::matrixType() const
 {
   return d_matrix_type;
 }
@@ -202,7 +202,7 @@ void Matrix::setSilenceMonitor(int slot,SyLwrpClient::MeterType type,int lvl,
 }
 
 
-Config *Matrix::config() const
+DRConfig *Matrix::config() const
 {
   return d_config;
 }

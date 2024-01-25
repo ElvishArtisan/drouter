@@ -116,12 +116,12 @@ MainWidget::MainWidget(QWidget *parent)
   //
   // The Protocol J Connection
   //
-  panel_parser=new JParser(this);
+  panel_parser=new DRJParser(this);
 
   //
   // Dialogs
   //
-  panel_login_dialog=new LoginDialog("OutputPanel",this);
+  panel_login_dialog=new DRLoginDialog("OutputPanel",this);
 
   //
   // The Button Clock
@@ -160,9 +160,9 @@ MainWidget::MainWidget(QWidget *parent)
       }      
       PanelWidget *widget=
 	new PanelWidget(panel_parser,router,output,this);
-      connect(panel_parser,SIGNAL(connected(bool,JParser::ConnectionState)),
+      connect(panel_parser,SIGNAL(connected(bool,DRJParser::ConnectionState)),
 	      widget,
-	      SLOT(changeConnectionState(bool,JParser::ConnectionState)));
+	      SLOT(changeConnectionState(bool,DRJParser::ConnectionState)));
       connect(panel_parser,SIGNAL(inputListChanged()),
 	      widget,SLOT(updateInputNames()));
       connect(panel_parser,SIGNAL(outputListChanged()),

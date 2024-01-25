@@ -20,7 +20,8 @@
 ##
 ## Use automake to process this into a Makefile.in
 
-AM_CPPFLAGS = -Wall -DPREFIX=\"$(prefix)\" -Wno-strict-aliasing -std=c++11 -fPIC @QT5CLI_CFLAGS@ @SWITCHYARD5_CFLAGS@ @LIBSYSTEMD_CFLAGS@
+AM_CPPFLAGS = -Wall -DPREFIX=\"$(prefix)\" -I$(top_srcdir)/src/lib -Wno-strict-aliasing -std=c++11 -fPIC @QT5CLI_CFLAGS@ @SWITCHYARD5_CFLAGS@ @LIBSYSTEMD_CFLAGS@
+LIBS = -L$(top_srcdir)/src/lib
 MOC = @QT_MOC@
 
 # The dependency for qt's Meta Object Compiler (moc)
@@ -53,9 +54,7 @@ dist_drouterd_SOURCES = drouter.cpp drouter.h\
                         ttydevice.cpp ttydevice.h\
                         watchdog.cpp watchdog.h
 
-nodist_drouterd_SOURCES = config.cpp config.h\
-                          endpointmap.cpp endpointmap.h\
-                          moc_drouter.cpp\
+nodist_drouterd_SOURCES = moc_drouter.cpp\
                           moc_drouterd.cpp\
                           moc_gpioflasher.cpp\
                           moc_matrix.cpp\
@@ -65,43 +64,37 @@ nodist_drouterd_SOURCES = config.cpp config.h\
                           moc_scriptengine.cpp\
                           moc_tether.cpp\
                           moc_ttydevice.cpp\
-                          moc_watchdog.cpp\
-                          protoipc.h\
-                          sendmail.cpp sendmail.h\
-                          sqlquery.cpp sqlquery.h
+                          moc_watchdog.cpp
 
-drouterd_LDADD = @QT5CLI_LIBS@ @SWITCHYARD5_LIBS@ @LIBSYSTEMD_LIBS@
+drouterd_LDADD = -ldrouter @QT5CLI_LIBS@ @SWITCHYARD5_LIBS@ @LIBSYSTEMD_LIBS@
+drouterd_LDFLAGS = -rdynamic
 
 dist_dprotod_SOURCES = dprotod.cpp dprotod.h\
-                       jparser.cpp jparser.h\
                        protocol.cpp protocol.h\
                        protocol_d.cpp protocol_d.h\
                        protocol_j.cpp protocol_j.h\
                        protocol_sa.cpp protocol_sa.h\
                        protoipc.h
 
-nodist_dprotod_SOURCES = config.cpp config.h\
-                         endpointmap.cpp endpointmap.h\
-                         moc_dprotod.cpp\
-                         moc_jparser.cpp\
+nodist_dprotod_SOURCES = moc_dprotod.cpp\
                          moc_protocol.cpp\
                          moc_protocol_d.cpp\
                          moc_protocol_j.cpp\
-                         moc_protocol_sa.cpp\
-                         sqlquery.cpp sqlquery.h
+                         moc_protocol_sa.cpp
 
-dprotod_LDADD = @QT5CLI_LIBS@ @SWITCHYARD5_LIBS@ @LIBSYSTEMD_LIBS@
+dprotod_LDADD = -ldrouter @QT5CLI_LIBS@ @SWITCHYARD5_LIBS@ @LIBSYSTEMD_LIBS@
+dprotod_LDFLAGS = -rdynamic
 
 dist_tethertest_SOURCES = tether.cpp tether.h\
                           tethertest.cpp tethertest.h\
                           ttydevice.cpp ttydevice.h
 
-nodist_tethertest_SOURCES = config.cpp config.h\
-                            moc_tether.cpp\
+nodist_tethertest_SOURCES = moc_tether.cpp\
                             moc_tethertest.cpp\
                             moc_ttydevice.cpp
 
-tethertest_LDADD = @QT5CLI_LIBS@ @SWITCHYARD5_LIBS@ @LIBSYSTEMD_LIBS@
+tethertest_LDADD = -ldrouter @QT5CLI_LIBS@ @SWITCHYARD5_LIBS@ @LIBSYSTEMD_LIBS@
+tethertest_LDFLAGS = -rdynamic
 
 CLEANFILES = *~\
              moc_*\
@@ -110,17 +103,7 @@ CLEANFILES = *~\
              *.pdb\
              *ilk
 
-DISTCLEANFILES = combobox.cpp combobox.h\
-                 config.cpp config.h\
-                 dparser.cpp dparser.h\
-                 endpointmap.cpp endpointmap.h\
-                 jparser.cpp jparser.h\
-                 logindialog.cpp logindialog.h\
-                 multistatewidget.cpp multistatewidget.h\
-                 paths.h\
-                 saparser.cpp saparser.h\
-                 sendmail.cpp sendmail.h\
-                 sqlquery.cpp sqlquery.h
+DISTCLEANFILES = 
 
 MAINTAINERCLEANFILES = *~\
                        Makefile.in

@@ -28,8 +28,8 @@
 #include <QStringList>
 #include <QWidget>
 
-#include "combobox.h"
-#include "jparser.h"
+#include <drcombobox.h>
+#include <drjparser.h>
 
 #define PANELWIDGET_FLASH_INTERVAL 300
 #define PANELWIDGET_WIDTH 140
@@ -53,13 +53,13 @@ class PanelWidget : public QWidget
 {
   Q_OBJECT
  public:
-  PanelWidget(JParser *parser,int router,int output,QWidget *parent=0);
+  PanelWidget(DRJParser *parser,int router,int output,QWidget *parent=0);
   ~PanelWidget();
   QSize sizeHint() const;
   QSizePolicy sizePolicy() const;
 
  public slots:
-  void changeConnectionState(bool state,JParser::ConnectionState cstate);
+  void changeConnectionState(bool state,DRJParser::ConnectionState cstate);
   void updateInputNames();
   void updateOutputNames();
   void changeOutputCrosspoint(int router,int output,int input);
@@ -76,10 +76,10 @@ class PanelWidget : public QWidget
  private:
   void SetArmedState(bool state);
   QLabel *widget_output_label;
-  ComboBox *widget_input_box;
+  DRComboBox *widget_input_box;
   QPushButton *widget_take_button;
   QPushButton *widget_cancel_button;
-  JParser *widget_parser;
+  DRJParser *widget_parser;
   int widget_router;
   int widget_output;
   int widget_input;

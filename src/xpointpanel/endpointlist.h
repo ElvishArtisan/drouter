@@ -2,7 +2,7 @@
 //
 // Input/Output labels for xpointpanel(1)
 //
-//   (C) Copyright 2017-2020 Fred Gleason <fredg@paravelsystems.com>
+//   (C) Copyright 2017-2024 Fred Gleason <fredg@paravelsystems.com>
 //
 //   This program is free software; you can redistribute it and/or modify
 //   it under the terms of the GNU General Public License as
@@ -27,8 +27,9 @@
 #include <QMenu>
 #include <QWidget>
 
-#include "multistatewidget.h"
-#include "saparser.h"
+#include <drmultistatewidget.h>
+#include <drsaparser.h>
+
 #include "statedialog.h"
 
 #define ENDPOINTLIST_ITEM_HEIGHT 26
@@ -45,7 +46,7 @@ class EndpointList : public QWidget
   QSizePolicy sizePolicy() const;
   int router() const;
   void setRouter(int router);
-  void setParser(SaParser *psr);
+  void setParser(DRSaParser *psr);
   bool showGpio() const;
   void setShowGpio(bool state);
   int endpoint(int slot) const;
@@ -83,11 +84,11 @@ class EndpointList : public QWidget
  private:
   int LocalEndpoint(QMouseEvent *e) const;
   QMap<int,QString> list_labels;
-  QMap<int,MultiStateWidget *> list_gpio_widgets;
-  EndPointMap::Type list_gpio_type;
+  QMap<int,DRMultiStateWidget *> list_gpio_widgets;
+  DREndPointMap::Type list_gpio_type;
   int list_router;
   int list_position;
-  SaParser *list_parser;
+  DRSaParser *list_parser;
   Qt::Orientation list_orientation;
   bool list_show_gpio;
   int list_width;

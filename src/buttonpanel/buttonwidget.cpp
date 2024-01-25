@@ -23,7 +23,7 @@
 
 #include "buttonwidget.h"
 
-ButtonWidget::ButtonWidget(int router,int output,int columns,JParser *parser,
+ButtonWidget::ButtonWidget(int router,int output,int columns,DRJParser *parser,
 			   bool arm_button,QWidget *parent)
   : QWidget(parent)
 {
@@ -63,8 +63,8 @@ ButtonWidget::ButtonWidget(int router,int output,int columns,JParser *parser,
   //
   // The SA Connection
   //
-  connect(panel_parser,SIGNAL(connected(bool,JParser::ConnectionState)),
-	  this,SLOT(changeConnectionState(bool,JParser::ConnectionState)));
+  connect(panel_parser,SIGNAL(connected(bool,DRJParser::ConnectionState)),
+	  this,SLOT(changeConnectionState(bool,DRJParser::ConnectionState)));
   connect(panel_parser,
 	  SIGNAL(outputCrosspointChanged(int,int,int)),
 	  this,SLOT(changeOutputCrosspoint(int,int,int)));
@@ -122,7 +122,7 @@ void ButtonWidget::armButtonClickedData()
 
 
 void ButtonWidget::changeConnectionState(bool state,
-					 JParser::ConnectionState cstate)
+					 DRJParser::ConnectionState cstate)
 {
   if(state) {
     for(QMap<int,AutoPushButton *>::const_iterator it=panel_buttons.begin();

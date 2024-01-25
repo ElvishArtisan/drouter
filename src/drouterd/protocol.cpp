@@ -63,7 +63,7 @@ Protocol::Protocol(QObject *parent)
   connect(proto_shutdown_timer,SIGNAL(timeout()),
 	  this,SLOT(shutdownTimerData()));
 
-  proto_config=new Config();
+  proto_config=new DRConfig();
   proto_config->load();
 
   ::signal(SIGCHLD,SigHandler);
@@ -280,7 +280,7 @@ void Protocol::silenceChanged(const QHostAddress &host_addr,int slotnum,
 }
 
 
-Config *Protocol::config()
+DRConfig *Protocol::config()
 {
   return proto_config;
 }

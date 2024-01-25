@@ -1,4 +1,4 @@
-// multistatewidget.h
+// drmultistatewidget.h
 //
 // Widget to display GPIO code state
 //
@@ -19,21 +19,21 @@
 //   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
 //
 
-#ifndef MULTISTATEWIDGET_H
-#define MULTISTATEWIDGET_H
+#ifndef DRMULTISTATEWIDGET_H
+#define DRMULTISTATEWIDGET_H
 
 #include <qwidget.h>
 
 #include <sy5/syconfig.h>
 
-#define MULTISTATEWIDGET_SHORT_EDGE 10
-#define MULTISTATEWIDGET_LONG_EDGE 50
+#define DRMULTISTATEWIDGET_SHORT_EDGE 10
+#define DRMULTISTATEWIDGET_LONG_EDGE 50
 
-class MultiStateWidget : public QWidget
+class DRMultiStateWidget : public QWidget
 {
   Q_OBJECT
  public:
-  MultiStateWidget(int router,int linenum,Qt::Orientation orient,
+  DRMultiStateWidget(int router,int linenum,Qt::Orientation orient,
 		   QWidget *parent=0);
   QSize sizeHint() const;
   QString state() const;
@@ -52,4 +52,4 @@ class MultiStateWidget : public QWidget
 };
 
 
-#endif  // MULTISTATEWIDGET_H
+#endif  // DRMULTISTATEWIDGET_H

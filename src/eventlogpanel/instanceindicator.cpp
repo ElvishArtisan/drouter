@@ -19,7 +19,7 @@
 //
 
 #include "instanceindicator.h"
-#include "sqlquery.h"
+#include <drsqlquery.h>
 
 InstanceIndicator::InstanceIndicator(QWidget *parent)
   : QLabel(parent)
@@ -45,12 +45,12 @@ QSize InstanceIndicator::sizeHint() const
 void InstanceIndicator::timeoutData()
 {
   QString sql;
-  SqlQuery *q=NULL;
+  DRSqlQuery *q=NULL;
 
   sql=QString("select ")+
     "`IS_ACTIVE` "+  // 00
     "from `TETHER`";
-  q=new SqlQuery(sql);
+  q=new DRSqlQuery(sql);
   if(q->first()) {
     if(q->value(0).toString()=="Y") {
       setText(tr("Active"));

@@ -2,7 +2,7 @@
 //
 // Test utility for DParser
 //
-//   (C) Copyright 2017-2021 Fred Gleason <fredg@paravelsystems.com>
+//   (C) Copyright 2017-2024 Fred Gleason <fredg@paravelsystems.com>
 //
 //   This program is free software; you can redistribute it and/or modify
 //   it under the terms of the GNU General Public License version 2 as
@@ -30,8 +30,8 @@
 #include <sy5/symcastsocket.h>
 #include <sy5/sylwrp_client.h>
 
-#include "dparser.h"
-#include "endpointmap.h"
+#include <drdparser.h>
+#include <drendpointmap.h>
 
 #define DPARSERTEST_USAGE "--hostname=<host-name>\n"
 
@@ -58,7 +58,7 @@ class MainObject : public QObject
   void crosspointClearedData(const QHostAddress &daddr,int dslot);
  
  private:
-  DParser *test_parser;
+  DRDParser *test_parser;
   QString test_hostname;
 };
 

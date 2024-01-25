@@ -1,8 +1,8 @@
-// jparser.h
+// drsaparser.h
 //
-// Parser for Protocol J Protocol
+// Parser for SoftwareAuthority Protocol
 //
-//   (C) Copyright 2016-2024 Fred Gleason <fredg@paravelsystems.com>
+//   (C) Copyright 2016-2017 Fred Gleason <fredg@paravelsystems.com>
 //
 //   This program is free software; you can redistribute it and/or modify
 //   it under the terms of the GNU General Public License as
@@ -19,8 +19,8 @@
 //   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
 //
 
-#ifndef JPARSER_H
-#define JPARSER_H
+#ifndef DRSAPARSER_H
+#define DRSAPARSER_H
 
 #include <stdint.h>
 
@@ -35,19 +35,16 @@
 #include <QTcpSocket>
 #include <QTimer>
 
-#define JPARSER_STARTUP_INTERVAL 1000
-#define JPARSER_HOLDOFF_INTERVAL 5000
+#define DRSAPARSER_STARTUP_INTERVAL 1000
+#define DRSAPARSER_HOLDOFF_INTERVAL 5000
 
-class JParser : public QObject
+class DRSaParser : public QObject
 {
  Q_OBJECT
  public:
   enum ConnectionState {Ok=0,InvalidLogin=1,WatchdogActive=2};
-  enum ErrorType {OkError=0,JsonError=1,ParameterError=2,NoRouterError=3,
-		  NoSnapshotError=4,NoSourceError=5,NoDestinationError=6,
-		  NotGpioRouterError=7,NoCommandError=8,LastError=9};
-  JParser(QObject *parent=0);
-  ~JParser();
+  DRSaParser(QObject *parent=0);
+  ~DRSaParser();
   QMap<int,QString> routers() const;
   bool isConnected() const;
   bool gpioSupported(int router) const;
@@ -79,12 +76,10 @@ class JParser : public QObject
   void connectToHost(const QString &hostname,uint16_t port,
 		     const QString &username,const QString &passwd);
   static QString connectionStateString(ConnectionState cstate);
-  static QString errorString(ErrorType err);
 
  signals:
-  void connected(bool state,JParser::ConnectionState code);
+  void connected(bool state,DRSaParser::ConnectionState code);
   void error(QAbstractSocket::SocketError err);
-  void parserError(JParser::ErrorType err,const QString &remarks);
   void routerListChanged();
   void inputListChanged();
   void outputListChanged();
@@ -102,8 +97,7 @@ class JParser : public QObject
 
  private:
   void Clear();
-  void DispatchMessage(const QJsonDocument &jdoc);
-  //  void DispatchCommand(QString cmd);
+  void DispatchCommand(QString cmd);
   void ReadRouterName(const QString &cmd);
   void ReadSourceName(const QString &cmd);
   void ReadDestName(const QString &cmd);
@@ -112,51 +106,47 @@ class JParser : public QObject
 		  std::vector<unsigned> *ptrs);
   void SendCommand(const QString &cmd);
   void MakeSocket();
-  QTcpSocket *j_socket;
-  QString j_hostname;
-  uint16_t j_port;
-  QString j_username;
-  QString j_password;
-  bool j_connected;
-  QByteArray j_accum;
-  bool j_accum_quoted;
-  int j_accum_level;
-  bool j_reading_routers;
-  bool j_reading_sources;
-  bool j_reading_dests;
-  bool j_reading_xpoints;
-  bool j_reading_snapshots;
-  int j_last_xpoint_router;
-  int j_last_xpoint_output;
-  QMap<int,QString> j_router_names;
-  int j_current_router;
-  int j_last_router;
-  int j_prev_input;
-  int j_prev_output;
-  QMap<int,int> j_input_quantities;
-  QMap<int,QMap<int,QString> > j_input_node_names;
-  QMap<int,QMap<int,QHostAddress> > j_input_node_addresses;
-  QMap<int,QMap<int,int> > j_input_node_slot_numbers;
-  QMap<int,QMap<int,bool> > j_input_is_reals;
-  QMap<int,QMap<int,QString> > j_input_names;
-  QMap<int,QMap<int,QString> > j_input_long_names;
-  QMap<int,QMap<int,int> > j_input_source_numbers;
-  QMap<int,QMap<int,QHostAddress> > j_input_stream_addresses;
-  QMap<int,QMap<int,QString> > j_output_node_names;
-  QMap<int,QMap<int,QHostAddress> > j_output_node_addresses;
-  QMap<int,QMap<int,int> > j_output_node_slot_numbers;
-  QMap<int,int> j_output_quantities;
-  QMap<int,QMap<int,bool> > j_output_is_reals;
-  QMap<int,QMap<int,QString> > j_output_names;
-  QMap<int,QMap<int,QString> > j_output_long_names;
-  QMap<int,QMap<int,int> > j_output_xpoints;
-  QMap<int,QMap<int,QString> > j_gpi_states;
-  QMap<int,QMap<int,QString> > j_gpo_states;
-  QMap<int,bool> j_gpio_supporteds;
-  QMap<int,QStringList> j_snapshot_names;
-  QTimer *j_startup_timer;
-  QTimer *j_holdoff_timer;
+  QTcpSocket *sa_socket;
+  QString sa_hostname;
+  uint16_t sa_port;
+  QString sa_username;
+  QString sa_password;
+  bool sa_connected;
+  QString sa_accum;
+  bool sa_reading_routers;
+  bool sa_reading_sources;
+  bool sa_reading_dests;
+  bool sa_reading_xpoints;
+  bool sa_reading_snapshots;
+  int sa_last_xpoint_router;
+  int sa_last_xpoint_output;
+  QMap<int,QString> sa_router_names;
+  int sa_current_router;
+  int sa_last_router;
+  int sa_prev_input;
+  int sa_prev_output;
+  QMap<int,QMap<int,QString> > sa_input_node_names;
+  QMap<int,QMap<int,QHostAddress> > sa_input_node_addresses;
+  QMap<int,QMap<int,int> > sa_input_node_slot_numbers;
+  QMap<int,QMap<int,bool> > sa_input_is_reals;
+  QMap<int,QMap<int,QString> > sa_input_names;
+  QMap<int,QMap<int,QString> > sa_input_long_names;
+  QMap<int,QMap<int,int> > sa_input_source_numbers;
+  QMap<int,QMap<int,QHostAddress> > sa_input_stream_addresses;
+  QMap<int,QMap<int,QString> > sa_output_node_names;
+  QMap<int,QMap<int,QHostAddress> > sa_output_node_addresses;
+  QMap<int,QMap<int,int> > sa_output_node_slot_numbers;
+  QMap<int,QMap<int,bool> > sa_output_is_reals;
+  QMap<int,QMap<int,QString> > sa_output_names;
+  QMap<int,QMap<int,QString> > sa_output_long_names;
+  QMap<int,QMap<int,int> > sa_output_xpoints;
+  QMap<int,QMap<int,QString> > sa_gpi_states;
+  QMap<int,QMap<int,QString> > sa_gpo_states;
+  QMap<int,bool> sa_gpio_supporteds;
+  QMap<int,QStringList> sa_snapshot_names;
+  QTimer *sa_startup_timer;
+  QTimer *sa_holdoff_timer;
 };
 
 
-#endif  // JPARSER_H
+#endif  // DRSAPARSER_H

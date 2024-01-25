@@ -2,7 +2,7 @@
 ##
 ## Makefile for test utilities
 ##
-## (C) Copyright 2017-2022 Fred Gleason <fredg@paravelsystems.com>
+## (C) Copyright 2017-2024 Fred Gleason <fredg@paravelsystems.com>
 ##
 ##   This program is free software; you can redistribute it and/or modify
 ##   it under the terms of the GNU General Public License version 2 as
@@ -20,7 +20,8 @@
 ##
 ## Use automake to process this into a Makefile.in
 
-AM_CPPFLAGS = -Wall -DPREFIX=\"$(prefix)\" -Wno-strict-aliasing -std=c++11 -fPIC @QT5CLI_CFLAGS@ @SWITCHYARD5_CFLAGS@
+AM_CPPFLAGS = -Wall -DPREFIX=\"$(prefix)\" -I$(top_srcdir)/src/lib -Wno-strict-aliasing -std=c++11 -fPIC @QT5CLI_CFLAGS@ @SWITCHYARD5_CFLAGS@
+LIBS = -L$(top_srcdir)/src/lib
 MOC = @QT_MOC@
 
 # The dependency for qt's Meta Object Compiler (moc)
@@ -32,16 +33,14 @@ noinst_PROGRAMS = dparsertest\
                   sendmailtest
 
 dist_dparsertest_SOURCES = dparsertest.cpp dparsertest.h
-nodist_dparsertest_SOURCES = dparser.cpp dparser.h\
-                             moc_dparsertest.cpp\
-                             moc_dparser.cpp
-dparsertest_LDADD = @QT5CLI_LIBS@ @SWITCHYARD5_LIBS@
+nodist_dparsertest_SOURCES = moc_dparsertest.cpp
+dparsertest_LDADD = -ldrouter @QT5CLI_LIBS@ @SWITCHYARD5_LIBS@
+dparsertest_LDFLAGS = -rdynamic
 
 dist_sendmailtest_SOURCES = sendmailtest.cpp sendmailtest.h
-nodist_sendmailtest_SOURCES = config.cpp config.h\
-                              moc_sendmailtest.cpp\
-                              sendmail.cpp sendmail.h
-sendmailtest_LDADD = @QT5CLI_LIBS@ @SWITCHYARD5_LIBS@
+nodist_sendmailtest_SOURCES = moc_sendmailtest.cpp
+sendmailtest_LDADD = -ldrouter @QT5CLI_LIBS@ @SWITCHYARD5_LIBS@
+sendmailtest_LDFLAGS = -rdynamic
 
 CLEANFILES = *~\
              moc_*\
@@ -50,17 +49,7 @@ CLEANFILES = *~\
              *.pdb\
              *ilk
 
-DISTCLEANFILES = combobox.cpp combobox.h\
-                 config.cpp config.h\
-                 dparser.cpp dparser.h\
-                 endpointmap.cpp endpointmap.h\
-                 jparser.cpp jparser.h\
-                 logindialog.cpp logindialog.h\
-                 multistatewidget.cpp multistatewidget.h\
-                 paths.h\
-                 saparser.cpp saparser.h\
-                 sendmail.cpp sendmail.h\
-                 sqlquery.cpp sqlquery.h
+DISTCLEANFILES = 
 
 MAINTAINERCLEANFILES = *~\
                        Makefile.in

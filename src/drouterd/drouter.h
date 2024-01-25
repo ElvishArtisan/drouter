@@ -28,13 +28,13 @@
 #include <QTcpServer>
 #include <QTimer>
 
-//#include <sy5/sylwrp_client.h>
 #include <sy5/symcastsocket.h>
 
-#include "matrix.h"
-#include "config.h"
-#include "endpointmap.h"
+#include <drconfig.h>
+#include <drendpointmap.h>
+
 #include "gpioflasher.h"
+#include "matrix.h"
 
 class DRouter : public QObject
 {
@@ -88,7 +88,7 @@ class DRouter : public QObject
   bool StartDb(QString *err_msg);
   bool StartStaticMatrices(QString *err_msg);
   bool StartLivewire(QString *err_msg);
-  Matrix *StartMatrix(Config::MatrixType type,unsigned id);
+  Matrix *StartMatrix(DRConfig::MatrixType type,unsigned id);
   void LockTables() const;
   void UnlockTables() const;
   void LoadMaps();
@@ -102,7 +102,7 @@ class DRouter : public QObject
   QList<SyMcastSocket *> drouter_advt_sockets;
   QMap<int,QTcpSocket *> drouter_ipc_sockets;
   QMap<int,QString> drouter_ipc_accums;
-  QMap<int,EndPointMap *> drouter_maps;
+  QMap<int,DREndPointMap *> drouter_maps;
   QSignalMapper *drouter_ipc_ready_mapper;
   QTcpServer *drouter_ipc_server;
   int *drouter_proto_socks;
@@ -110,7 +110,7 @@ class DRouter : public QObject
   GpioFlasher *drouter_flasher;
   QTimer *drouter_finalize_timer;
   QTimer *drouter_purge_events_timer;
-  Config *drouter_config;
+  DRConfig *drouter_config;
 };
 
 

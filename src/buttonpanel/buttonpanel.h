@@ -32,10 +32,10 @@
 
 #include "autopushbutton.h"
 #include "buttonwidget.h"
-#include "endpointmap.h"
+#include "drendpointmap.h"
 #include "gpioparser.h"
-#include "jparser.h"
-#include "logindialog.h"
+#include "drjparser.h"
+#include "drlogindialog.h"
 
 #define BUTTONPANEL_USAGE "[options]\n"
 #define LWPANELBUTTON_ACTIVE_STYLESHEET "color: #FFFFFF; background-color: #0000FF;"
@@ -50,8 +50,8 @@ class MainWidget : public QWidget
 
  private slots:
   void processError(const QString err_msg);
-  void parserErrorData(JParser::ErrorType err,const QString &remarks);
-  void changeConnectionState(bool state,JParser::ConnectionState cstate);
+  void parserErrorData(DRJParser::ErrorType err,const QString &remarks);
+  void changeConnectionState(bool state,DRJParser::ConnectionState cstate);
   void resizeData();
 
  protected:
@@ -66,13 +66,13 @@ class MainWidget : public QWidget
   bool panel_arm_button;
   bool panel_no_max_size;
   QPixmap *panel_saspanels_map;
-  JParser *panel_parser;
+  DRJParser *panel_parser;
   QSignalMapper *panel_button_mapper;
   QLabel *panel_connecting_label;
-  LoginDialog *panel_login_dialog;
+  DRLoginDialog *panel_login_dialog;
   QTimer *panel_resize_timer;
   QList<QWidget *> panel_widgets;
-  QList<EndPointMap::RouterType> panel_arg_types;
+  QList<DREndPointMap::RouterType> panel_arg_types;
   QList<int> panel_arg_audio_routers;
   QList<int> panel_arg_audio_outputs;
   QList<GpioParser *> panel_gpio_parsers;

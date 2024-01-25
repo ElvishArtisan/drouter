@@ -1,4 +1,4 @@
-// saparser.cpp
+// drsaparser.cpp
 //
 // Parser for SoftwareAuthority Protocol
 //
@@ -21,9 +21,9 @@
 
 #include <QStringList>
 
-#include "saparser.h"
+#include "drsaparser.h"
 
-SaParser::SaParser(QObject *parent)
+DRSaParser::DRSaParser(QObject *parent)
   : QObject(parent)
 {
   sa_connected=false;
@@ -60,144 +60,144 @@ SaParser::SaParser(QObject *parent)
 }
 
 
-SaParser::~SaParser()
+DRSaParser::~DRSaParser()
 {
 }
 
 
-QMap<int,QString> SaParser::routers() const
+QMap<int,QString> DRSaParser::routers() const
 {
   return sa_router_names;
 }
 
 
-bool SaParser::isConnected() const
+bool DRSaParser::isConnected() const
 {
   return sa_connected;
 }
 
 
-bool SaParser::gpioSupported(int router) const
+bool DRSaParser::gpioSupported(int router) const
 {
   return sa_gpio_supporteds.value(router);
 }
 
 
-int SaParser::inputQuantity(int router) const
+int DRSaParser::inputQuantity(int router) const
 {
   return sa_input_is_reals[router].size();
 }
 
 
-bool SaParser::inputIsReal(int router,int input) const
+bool DRSaParser::inputIsReal(int router,int input) const
 {
   return sa_input_is_reals[router][input];
 }
 
 
-QString SaParser::inputNodeName(int router,int input) const
+QString DRSaParser::inputNodeName(int router,int input) const
 {
   return sa_input_node_names[router][input];
 }
 
 
-QHostAddress SaParser::inputNodeAddress(int router,int input) const
+QHostAddress DRSaParser::inputNodeAddress(int router,int input) const
 {
   return sa_input_node_addresses[router][input];
 }
 
 
-int SaParser::inputNodeSlotNumber(int router,int input) const
+int DRSaParser::inputNodeSlotNumber(int router,int input) const
 {
   return sa_input_node_slot_numbers[router][input];
 }
 
 
-QString SaParser::inputName(int router,int input) const
+QString DRSaParser::inputName(int router,int input) const
 {
   return sa_input_names[router][input];
 }
 
 
-QString SaParser::inputLongName(int router,int input) const
+QString DRSaParser::inputLongName(int router,int input) const
 {
   return sa_input_long_names[router][input];
 }
 
 
-int SaParser::inputSourceNumber(int router,int input) const
+int DRSaParser::inputSourceNumber(int router,int input) const
 {
   return sa_input_source_numbers[router][input];
 }
 
 
-QHostAddress SaParser::inputStreamAddress(int router,int input) const
+QHostAddress DRSaParser::inputStreamAddress(int router,int input) const
 {
   return sa_input_stream_addresses[router][input];
 }
 
 
-int SaParser::outputQuantity(int router) const
+int DRSaParser::outputQuantity(int router) const
 {
   return sa_output_names[router].size();
 }
 
 
-bool SaParser::outputIsReal(int router,int output) const
+bool DRSaParser::outputIsReal(int router,int output) const
 {
   return sa_output_is_reals[router][output];
 }
 
 
-QString SaParser::outputNodeName(int router,int output) const
+QString DRSaParser::outputNodeName(int router,int output) const
 {
   return sa_output_node_names[router][output];
 }
 
 
-QHostAddress SaParser::outputNodeAddress(int router,int output) const
+QHostAddress DRSaParser::outputNodeAddress(int router,int output) const
 {
   return sa_output_node_addresses[router][output];
 }
 
 
-int SaParser::outputNodeSlotNumber(int router,int output) const
+int DRSaParser::outputNodeSlotNumber(int router,int output) const
 {
   return sa_output_node_slot_numbers[router][output];
 }
 
 
-QString SaParser::outputName(int router,int output) const
+QString DRSaParser::outputName(int router,int output) const
 {
   return sa_output_names[router][output];
 }
 
 
-QString SaParser::outputLongName(int router,int output) const
+QString DRSaParser::outputLongName(int router,int output) const
 {
   return sa_output_long_names[router][output];
 }
 
 
-int SaParser::outputCrosspoint(int router,int output) const
+int DRSaParser::outputCrosspoint(int router,int output) const
 {
   return sa_output_xpoints[router][output];
 }
 
 
-void SaParser::setOutputCrosspoint(int router,int output,int input)
+void DRSaParser::setOutputCrosspoint(int router,int output,int input)
 {
   SendCommand(QString::asprintf("ActivateRoute %d %d %d",router,output,input));
 }
 
 
-QString SaParser::gpiState(int router,int input) const
+QString DRSaParser::gpiState(int router,int input) const
 {
   return sa_gpi_states[router][input];
 }
 
 
-void SaParser::setGpiState(int router,int input,const QString &code,int msec)
+void DRSaParser::setGpiState(int router,int input,const QString &code,int msec)
 {
   if(msec<0) {
     SendCommand(QString::asprintf("TriggerGPI %d %d %s",router,input,
@@ -210,13 +210,13 @@ void SaParser::setGpiState(int router,int input,const QString &code,int msec)
 }
 
 
-QString SaParser::gpoState(int router,int output) const
+QString DRSaParser::gpoState(int router,int output) const
 {
   return sa_gpo_states[router][output];
 }
 
 
-void SaParser::setGpoState(int router,int output,const QString &code,int msec)
+void DRSaParser::setGpoState(int router,int output,const QString &code,int msec)
 {
   if(msec<0) {
     SendCommand(QString::asprintf("TriggerGPO %d %d %s",router,output,
@@ -229,25 +229,25 @@ void SaParser::setGpoState(int router,int output,const QString &code,int msec)
 }
 
 
-int SaParser::snapshotQuantity(int router) const
+int DRSaParser::snapshotQuantity(int router) const
 {
   return sa_snapshot_names[router].size();
 }
 
 
-QString SaParser::snapshotName(int router,int n) const
+QString DRSaParser::snapshotName(int router,int n) const
 {
   return sa_snapshot_names[router].at(n);
 }
 
 
-void SaParser::activateSnapshot(int router,const QString &snapshot)
+void DRSaParser::activateSnapshot(int router,const QString &snapshot)
 {
   SendCommand(QString::asprintf("ActivateSnap %d ",router)+snapshot);
 }
 
 
-void SaParser::connectToHost(const QString &hostname,uint16_t port,
+void DRSaParser::connectToHost(const QString &hostname,uint16_t port,
 			     const QString &username,const QString &passwd)
 {
   MakeSocket();
@@ -259,20 +259,20 @@ void SaParser::connectToHost(const QString &hostname,uint16_t port,
 }
 
 
-QString SaParser::connectionStateString(ConnectionState cstate)
+QString DRSaParser::connectionStateString(ConnectionState cstate)
 {
   QString ret=tr("Unknown")+QString::asprintf(" [%d]",cstate);
 
   switch(cstate) {
-  case SaParser::Ok:
+  case DRSaParser::Ok:
     ret=tr("OK");
     break;
 
-  case SaParser::InvalidLogin:
+  case DRSaParser::InvalidLogin:
     ret=tr("Invalid login");
     break;
 
-  case SaParser::WatchdogActive:
+  case DRSaParser::WatchdogActive:
     ret=tr("Watchdog active");
     break;
   }
@@ -281,36 +281,36 @@ QString SaParser::connectionStateString(ConnectionState cstate)
 }
 
 
-void SaParser::connectedData()
+void DRSaParser::connectedData()
 {
   SendCommand("Login "+sa_username+" "+sa_password);
 }
 
 
-void SaParser::connectionClosedData()
+void DRSaParser::connectionClosedData()
 {
   sa_connected=false;
   Clear();
-  emit connected(false,SaParser::WatchdogActive);
-  sa_holdoff_timer->start(SAPARSER_HOLDOFF_INTERVAL);
+  emit connected(false,DRSaParser::WatchdogActive);
+  sa_holdoff_timer->start(DRSAPARSER_HOLDOFF_INTERVAL);
 }
 
 
-void SaParser::startupData()
+void DRSaParser::startupData()
 {
   sa_connected=true;
-  emit connected(true,SaParser::Ok);
+  emit connected(true,DRSaParser::Ok);
 }
 
 
-void SaParser::holdoffReconnectData()
+void DRSaParser::holdoffReconnectData()
 {
   MakeSocket();
   sa_socket->connectToHost(sa_hostname,sa_port);
 }
 
 
-void SaParser::readyReadData()
+void DRSaParser::readyReadData()
 {
   QByteArray data;
 
@@ -338,14 +338,14 @@ void SaParser::readyReadData()
 }
 
 
-void SaParser::errorData(QAbstractSocket::SocketError err)
+void DRSaParser::errorData(QAbstractSocket::SocketError err)
 {
   emit error(err);
-  sa_holdoff_timer->start(SAPARSER_HOLDOFF_INTERVAL);
+  sa_holdoff_timer->start(DRSAPARSER_HOLDOFF_INTERVAL);
 }
 
 
-void SaParser::Clear()
+void DRSaParser::Clear()
 {
   sa_router_names.clear();
   sa_input_node_names.clear();
@@ -368,7 +368,7 @@ void SaParser::Clear()
 }
 
 
-void SaParser::DispatchCommand(QString cmd)
+void DRSaParser::DispatchCommand(QString cmd)
 {
   //printf("RECV: %s\n",(const char *)cmd.toUtf8());
 
@@ -388,7 +388,7 @@ void SaParser::DispatchCommand(QString cmd)
       sa_socket=NULL;
       sa_connected=false;
       Clear();
-      emit connected(false,SaParser::InvalidLogin);
+      emit connected(false,DRSaParser::InvalidLogin);
     }
     return;
   }
@@ -520,7 +520,7 @@ void SaParser::DispatchCommand(QString cmd)
 	      SendCommand(QString::asprintf("GPIStat %d",it.key()));
 	      SendCommand(QString::asprintf("GPOStat %d",it.key()));
 	    }
-	    sa_startup_timer->start(SAPARSER_STARTUP_INTERVAL);
+	    sa_startup_timer->start(DRSAPARSER_STARTUP_INTERVAL);
 	  }
 	}
       }
@@ -560,7 +560,7 @@ void SaParser::DispatchCommand(QString cmd)
 }
 
 
-void SaParser::ReadRouterName(const QString &cmd)
+void DRSaParser::ReadRouterName(const QString &cmd)
 {
   bool ok=false;
   QStringList f0=cmd.split(" ",QString::SkipEmptyParts);
@@ -576,7 +576,7 @@ void SaParser::ReadRouterName(const QString &cmd)
 }
 
 
-void SaParser::ReadSourceName(const QString &cmd)
+void DRSaParser::ReadSourceName(const QString &cmd)
 {
   QStringList f0=cmd.split("\t");
   bool ok=false;
@@ -649,7 +649,7 @@ void SaParser::ReadSourceName(const QString &cmd)
 }
 
 
-void SaParser::ReadDestName(const QString &cmd)
+void DRSaParser::ReadDestName(const QString &cmd)
 {
   QStringList f0=cmd.split("\t");
   bool ok=false;
@@ -683,13 +683,13 @@ void SaParser::ReadDestName(const QString &cmd)
 }
 
 
-void SaParser::ReadSnapshotName(const QString &cmd)
+void DRSaParser::ReadSnapshotName(const QString &cmd)
 {
   sa_snapshot_names[sa_current_router].push_back(cmd.trimmed());
 }
 
 
-void SaParser::BubbleSort(std::map<unsigned,QString> *names,
+void DRSaParser::BubbleSort(std::map<unsigned,QString> *names,
 			    std::vector<unsigned> *ptrs)
 {
   //
@@ -718,14 +718,14 @@ void SaParser::BubbleSort(std::map<unsigned,QString> *names,
 }
 
 
-void SaParser::SendCommand(const QString &cmd)
+void DRSaParser::SendCommand(const QString &cmd)
 {
   //  printf("SendCommand(%s)\n",(const char *)cmd.toUtf8());
   sa_socket->write((cmd+"\r\n").toUtf8(),cmd.length()+2);
 }
 
 
-void SaParser::MakeSocket()
+void DRSaParser::MakeSocket()
 {
   if(sa_socket!=NULL) {
     delete sa_socket;

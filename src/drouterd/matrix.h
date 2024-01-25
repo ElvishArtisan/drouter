@@ -2,7 +2,7 @@
 //
 // Abstract router matrix implementation
 //
-// (C) 2023 Fred Gleason <fredg@paravelsystems.com>
+// (C) 2023-2024 Fred Gleason <fredg@paravelsystems.com>
 //
 //    This program is free software; you can redistribute it and/or modify
 //    it under the terms of version 2.1 of the GNU Lesser General Public
@@ -34,15 +34,15 @@
 
 #include <sy5/sylwrp_client.h>
 
-#include "config.h"
+#include "drconfig.h"
 
 class Matrix :public QObject
 {
   Q_OBJECT;
  public:
-  Matrix(Config::MatrixType type,unsigned id,Config *conf,QObject *parent=0);
+  Matrix(DRConfig::MatrixType type,unsigned id,DRConfig *conf,QObject *parent=0);
   ~Matrix();
-  Config::MatrixType matrixType() const;
+  DRConfig::MatrixType matrixType() const;
   unsigned id() const;
   virtual bool isConnected() const=0;
   virtual QHostAddress hostAddress() const=0;
@@ -100,12 +100,12 @@ class Matrix :public QObject
 			 unsigned slotnum,int chan,bool state);
 
  protected:
-  Config *config() const;
+  DRConfig *config() const;
 
  private:
-  Config::MatrixType d_matrix_type;
+  DRConfig::MatrixType d_matrix_type;
   unsigned d_id;
-  Config *d_config;
+  DRConfig *d_config;
 };
 
 

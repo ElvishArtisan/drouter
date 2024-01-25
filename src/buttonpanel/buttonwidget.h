@@ -31,8 +31,8 @@
 
 #include "autopushbutton.h"
 #include "gpioparser.h"
-#include "logindialog.h"
-#include "jparser.h"
+#include "drlogindialog.h"
+#include "drjparser.h"
 
 #define BUTTONWIDGET_ACTIVE_STYLESHEET "color: #FFFFFF; background-color: #0000FF;"
 #define BUTTONWIDGET_CELL_WIDTH 90
@@ -42,7 +42,7 @@ class ButtonWidget : public QWidget
 {
   Q_OBJECT
  public:
-  ButtonWidget(int router,int output,int columns,JParser *parser,
+  ButtonWidget(int router,int output,int columns,DRJParser *parser,
 	       bool arm_button,QWidget *parent=0);
   ~ButtonWidget();
   QSize sizeHint() const;
@@ -50,7 +50,7 @@ class ButtonWidget : public QWidget
  private slots:
   void buttonClickedData(int n);
   void armButtonClickedData();
-  void changeConnectionState(bool state,JParser::ConnectionState cstate);
+  void changeConnectionState(bool state,DRJParser::ConnectionState cstate);
   void changeOutputCrosspoint(int router,int output,int input);
 
  protected:
@@ -61,7 +61,7 @@ class ButtonWidget : public QWidget
   int panel_rows;
   int panel_router;
   int panel_output;
-  JParser *panel_parser;
+  DRJParser *panel_parser;
   QSignalMapper *panel_button_mapper;
   QMap<int,AutoPushButton *> panel_buttons;
   AutoPushButton *panel_arm_button;

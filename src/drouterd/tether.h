@@ -27,7 +27,7 @@
 #include <QTimer>
 #include <QUdpSocket>
 
-#include "config.h"
+#include "drconfig.h"
 #include "ttydevice.h"
 
 class Tether : public QObject
@@ -36,7 +36,7 @@ class Tether : public QObject
  public:
   Tether(QObject *parent=0);
   bool instanceIsActive() const;
-  bool start(Config *config,QString *err_msg);
+  bool start(DRConfig *config,QString *err_msg);
 
  public slots:
   void cleanup();
@@ -63,7 +63,7 @@ class Tether : public QObject
   QTimer *tether_interval_timer;
   QTimer *tether_window_timer;
   bool tether_active_state;
-  Config *tether_config;
+  DRConfig *tether_config;
   QStringList tether_exit_args;
 };
 

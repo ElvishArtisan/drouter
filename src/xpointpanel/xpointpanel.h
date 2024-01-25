@@ -30,11 +30,12 @@
 #include <QTimer>
 #include <QWidget>
 
-#include "combobox.h"
-#include "dparser.h"
+#include <drcombobox.h>
+#include <drdparser.h>
+#include <drlogindialog.h>
+#include <drsaparser.h>
+
 #include "endpointlist.h"
-#include "logindialog.h"
-#include "saparser.h"
 #include "sidelabel.h"
 #include "xpointview.h"
 
@@ -51,7 +52,7 @@ class MainWidget : public QWidget
 
  private slots:
   void routerBoxActivatedData(int n);
-  void connectedData(bool state,SaParser::ConnectionState cstate);
+  void connectedData(bool state,DRSaParser::ConnectionState cstate);
   void protocolDConnected(bool state);
   void errorData(QAbstractSocket::SocketError err);
   void outputCrosspointChangedData(int router,int output,int input);
@@ -67,7 +68,7 @@ class MainWidget : public QWidget
  private:
   QString InputDescriptionTitle(int router,int input) const;
   QString OutputDescriptionTitle(int router,int output) const;
-  LoginDialog *panel_login_dialog;
+  DRLoginDialog *panel_login_dialog;
   QString panel_hostname;
   QString panel_username;
   QString panel_password;
@@ -75,11 +76,11 @@ class MainWidget : public QWidget
   QLabel *panel_router_label;
   QLabel *panel_inputs_label;
   SideLabel *panel_outputs_label;
-  ComboBox *panel_router_box;
+  DRComboBox *panel_router_box;
   QLabel *panel_description_name_label;
   QLabel *panel_description_text_label;
-  DParser *panel_dparser;
-  SaParser *panel_parser;
+  DRDParser *panel_dparser;
+  DRSaParser *panel_parser;
   bool panel_initial_connected;
   QGraphicsScene *panel_scene;
   XPointView *panel_view;

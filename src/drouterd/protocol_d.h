@@ -27,8 +27,9 @@
 
 #include <sy5/sylwrp_client.h>
 
+#include <drsqlquery.h>
+
 #include "protocol.h"
-#include "sqlquery.h"
 
 class ProtocolD : public Protocol
 {
@@ -63,17 +64,17 @@ class ProtocolD : public Protocol
   QString AlarmSqlFields(const QString &tbl_name,const QString &type,
 			 int chan) const;
   QString AlarmRecord(const QString &keyword,SyLwrpClient::MeterType port,
-		      int chan,SqlQuery *q);
+		      int chan,DRSqlQuery *q);
   QString DestinationSqlFields() const;
-  QString DestinationRecord(const QString &keyword,SqlQuery *q) const;
+  QString DestinationRecord(const QString &keyword,DRSqlQuery *q) const;
   QString GpiSqlFields() const;
-  QString GpiRecord(const QString &keyword,SqlQuery *q);
+  QString GpiRecord(const QString &keyword,DRSqlQuery *q);
   QString GpoSqlFields() const;
-  QString GpoRecord(const QString &keyword,SqlQuery *q);
+  QString GpoRecord(const QString &keyword,DRSqlQuery *q);
   QString NodeSqlFields() const;
-  QString NodeRecord(const QString &keyword,SqlQuery *q) const;
+  QString NodeRecord(const QString &keyword,DRSqlQuery *q) const;
   QString SourceSqlFields() const;
-  QString SourceRecord(const QString &keyword,SqlQuery *q);
+  QString SourceRecord(const QString &keyword,DRSqlQuery *q);
   bool IsLivewire(const QHostAddress &host_addr1,
 		  const QHostAddress &host_addr2=QHostAddress());
   QTcpSocket *proto_socket;

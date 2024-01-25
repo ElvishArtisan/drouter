@@ -50,7 +50,7 @@ MainObject::MainObject(QObject *parent)
     }
   }
 
-  test_parser=new DParser(this);
+  test_parser=new DRDParser(this);
   connect(test_parser,SIGNAL(connected(bool)),this,SLOT(connectedData(bool)));
   connect(test_parser,
 	  SIGNAL(error(QAbstractSocket::SocketError,const QString &)),

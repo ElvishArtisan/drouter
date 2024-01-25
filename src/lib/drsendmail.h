@@ -1,4 +1,4 @@
-// sendmail.h
+// drsendmail.h
 //
 // Send an e-mail message using sendmail(1)
 //
@@ -18,20 +18,20 @@
 //   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
 //
 
-#ifndef SENDMAIL_H
-#define SENDMAIL_H
+#ifndef DRSENDMAIL_H
+#define DRSENDMAIL_H
 
 #include <QString>
 #include <QStringList>
 
-bool SendMail(QString *err_msg,const QString &subject,const QString &body,
+bool DRSendMail(QString *err_msg,const QString &subject,const QString &body,
 	      const QString &from_addr,const QStringList &to_addrs,
 	      const QStringList &cc_addrs=QStringList(),
 	      const QStringList &bcc_addrs=QStringList(),bool dry_run=false);
-bool SendMail(QString *err_msg,const QString &subject,const QString &body,
+bool DRSendMail(QString *err_msg,const QString &subject,const QString &body,
 	      const QString &from_addr,const QString &to_addrs,
 	      const QString &cc_addrs=QString(),
 	      const QString &bcc_addrs=QString(),bool dry_run=false);
 
 
-#endif  // SENDMAIL
+#endif  // DRSENDMAIL

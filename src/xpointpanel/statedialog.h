@@ -2,7 +2,7 @@
 //
 // Set state on a GPIO endpoint
 //
-//   (C) Copyright 2020 Fred Gleason <fredg@paravelsystems.com>
+//   (C) Copyright 2020-2024 Fred Gleason <fredg@paravelsystems.com>
 //
 //   This program is free software; you can redistribute it and/or modify
 //   it under the terms of the GNU General Public License as
@@ -27,14 +27,14 @@
 #include <QLineEdit>
 #include <QPushButton>
 
-#include "endpointmap.h"
-#include "saparser.h"
+#include <drendpointmap.h>
+#include <drsaparser.h>
 
 class StateDialog : public QDialog
 {
  Q_OBJECT
  public:
- StateDialog(int router,int endpoint,EndPointMap::Type type,SaParser *parser,
+ StateDialog(int router,int endpoint,DREndPointMap::Type type,DRSaParser *parser,
 	     QWidget *parent=0);
   QSize sizeHint() const;
 
@@ -56,8 +56,8 @@ class StateDialog : public QDialog
   QPushButton *d_reset_button;
   int d_router;
   int d_endpoint;
-  EndPointMap::Type d_type;
-  SaParser *d_parser;
+  DREndPointMap::Type d_type;
+  DRSaParser *d_parser;
   int d_width;
 };
 

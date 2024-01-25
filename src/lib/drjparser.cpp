@@ -1,4 +1,4 @@
-// jparser.cpp
+// drjparser.cpp
 //
 // Parser for Protocol J Protocol
 //
@@ -23,9 +23,9 @@
 #include <QJsonObject>
 #include <QStringList>
 
-#include "jparser.h"
+#include "drjparser.h"
 
-JParser::JParser(QObject *parent)
+DRJParser::DRJParser(QObject *parent)
   : QObject(parent)
 {
   j_connected=false;
@@ -64,144 +64,144 @@ JParser::JParser(QObject *parent)
 }
 
 
-JParser::~JParser()
+DRJParser::~DRJParser()
 {
 }
 
 
-QMap<int,QString> JParser::routers() const
+QMap<int,QString> DRJParser::routers() const
 {
   return j_router_names;
 }
 
 
-bool JParser::isConnected() const
+bool DRJParser::isConnected() const
 {
   return j_connected;
 }
 
 
-bool JParser::gpioSupported(int router) const
+bool DRJParser::gpioSupported(int router) const
 {
   return j_gpio_supporteds.value(router);
 }
 
 
-int JParser::inputQuantity(int router) const
+int DRJParser::inputQuantity(int router) const
 {
   return j_input_quantities.value(router);
 }
 
 
-bool JParser::inputIsReal(int router,int input) const
+bool DRJParser::inputIsReal(int router,int input) const
 {
   return j_input_is_reals.value(router).value(input,false);
 }
 
 
-QString JParser::inputNodeName(int router,int input) const
+QString DRJParser::inputNodeName(int router,int input) const
 {
   return j_input_node_names[router][input];
 }
 
 
-QHostAddress JParser::inputNodeAddress(int router,int input) const
+QHostAddress DRJParser::inputNodeAddress(int router,int input) const
 {
   return j_input_node_addresses[router][input];
 }
 
 
-int JParser::inputNodeSlotNumber(int router,int input) const
+int DRJParser::inputNodeSlotNumber(int router,int input) const
 {
   return j_input_node_slot_numbers[router][input];
 }
 
 
-QString JParser::inputName(int router,int input) const
+QString DRJParser::inputName(int router,int input) const
 {
   return j_input_names[router][input];
 }
 
 
-QString JParser::inputLongName(int router,int input) const
+QString DRJParser::inputLongName(int router,int input) const
 {
   return j_input_long_names[router][input];
 }
 
 
-int JParser::inputSourceNumber(int router,int input) const
+int DRJParser::inputSourceNumber(int router,int input) const
 {
   return j_input_source_numbers[router][input];
 }
 
 
-QHostAddress JParser::inputStreamAddress(int router,int input) const
+QHostAddress DRJParser::inputStreamAddress(int router,int input) const
 {
   return j_input_stream_addresses[router][input];
 }
 
 
-int JParser::outputQuantity(int router) const
+int DRJParser::outputQuantity(int router) const
 {
   return j_output_quantities.value(router);
 }
 
 
-bool JParser::outputIsReal(int router,int output) const
+bool DRJParser::outputIsReal(int router,int output) const
 {
   return j_output_is_reals[router][output];
 }
 
 
-QString JParser::outputNodeName(int router,int output) const
+QString DRJParser::outputNodeName(int router,int output) const
 {
   return j_output_node_names[router][output];
 }
 
 
-QHostAddress JParser::outputNodeAddress(int router,int output) const
+QHostAddress DRJParser::outputNodeAddress(int router,int output) const
 {
   return j_output_node_addresses[router][output];
 }
 
 
-int JParser::outputNodeSlotNumber(int router,int output) const
+int DRJParser::outputNodeSlotNumber(int router,int output) const
 {
   return j_output_node_slot_numbers[router][output];
 }
 
 
-QString JParser::outputName(int router,int output) const
+QString DRJParser::outputName(int router,int output) const
 {
   return j_output_names[router][output];
 }
 
 
-QString JParser::outputLongName(int router,int output) const
+QString DRJParser::outputLongName(int router,int output) const
 {
   return j_output_long_names[router][output];
 }
 
 
-int JParser::outputCrosspoint(int router,int output) const
+int DRJParser::outputCrosspoint(int router,int output) const
 {
   return j_output_xpoints[router][output];
 }
 
 
-void JParser::setOutputCrosspoint(int router,int output,int input)
+void DRJParser::setOutputCrosspoint(int router,int output,int input)
 {
   SendCommand(QString::asprintf("ActivateRoute %d %d %d",router,output,input));
 }
 
 
-QString JParser::gpiState(int router,int input) const
+QString DRJParser::gpiState(int router,int input) const
 {
   return j_gpi_states[router][input];
 }
 
 
-void JParser::setGpiState(int router,int input,const QString &code,int msec)
+void DRJParser::setGpiState(int router,int input,const QString &code,int msec)
 {
   if(msec<0) {
     SendCommand(QString::asprintf("TriggerGPI %d %d %s",router,input,
@@ -214,13 +214,13 @@ void JParser::setGpiState(int router,int input,const QString &code,int msec)
 }
 
 
-QString JParser::gpoState(int router,int output) const
+QString DRJParser::gpoState(int router,int output) const
 {
   return j_gpo_states[router][output];
 }
 
 
-void JParser::setGpoState(int router,int output,const QString &code,int msec)
+void DRJParser::setGpoState(int router,int output,const QString &code,int msec)
 {
   if(msec<0) {
     SendCommand(QString::asprintf("TriggerGPO %d %d %s",router,output,
@@ -233,25 +233,25 @@ void JParser::setGpoState(int router,int output,const QString &code,int msec)
 }
 
 
-int JParser::snapshotQuantity(int router) const
+int DRJParser::snapshotQuantity(int router) const
 {
   return j_snapshot_names[router].size();
 }
 
 
-QString JParser::snapshotName(int router,int n) const
+QString DRJParser::snapshotName(int router,int n) const
 {
   return j_snapshot_names[router].at(n);
 }
 
 
-void JParser::activateSnapshot(int router,const QString &snapshot)
+void DRJParser::activateSnapshot(int router,const QString &snapshot)
 {
   SendCommand(QString::asprintf("ActivateSnap %d ",router)+snapshot);
 }
 
 
-void JParser::connectToHost(const QString &hostname,uint16_t port,
+void DRJParser::connectToHost(const QString &hostname,uint16_t port,
 			     const QString &username,const QString &passwd)
 {
   MakeSocket();
@@ -263,20 +263,20 @@ void JParser::connectToHost(const QString &hostname,uint16_t port,
 }
 
 
-QString JParser::connectionStateString(ConnectionState cstate)
+QString DRJParser::connectionStateString(ConnectionState cstate)
 {
   QString ret=tr("Unknown")+QString::asprintf(" [%d]",cstate);
 
   switch(cstate) {
-  case JParser::Ok:
+  case DRJParser::Ok:
     ret=tr("OK");
     break;
 
-  case JParser::InvalidLogin:
+  case DRJParser::InvalidLogin:
     ret=tr("Invalid login");
     break;
 
-  case JParser::WatchdogActive:
+  case DRJParser::WatchdogActive:
     ret=tr("Watchdog active");
     break;
   }
@@ -285,48 +285,48 @@ QString JParser::connectionStateString(ConnectionState cstate)
 }
 
 
-QString JParser::errorString(ErrorType err)
+QString DRJParser::errorString(ErrorType err)
 {
   QString ret=QString::asprintf("unknown error %u",err);
 
   switch(err) {
-  case JParser::OkError:
+  case DRJParser::OkError:
     ret="ok";
     break;
 
-  case JParser::JsonError:
+  case DRJParser::JsonError:
     ret="JSON syntax error";
     break;
 
-  case JParser::ParameterError:
+  case DRJParser::ParameterError:
     ret="command parameter error";
     break;
 
-  case JParser::NoRouterError:
+  case DRJParser::NoRouterError:
     ret="no such router";
     break;
 
-  case JParser::NoSnapshotError:
+  case DRJParser::NoSnapshotError:
     ret="no such snapshot";
     break;
 
-  case JParser::NoSourceError:
+  case DRJParser::NoSourceError:
     ret="no such source";
     break;
 
-  case JParser::NoDestinationError:
+  case DRJParser::NoDestinationError:
     ret="no such destination";
     break;
 
-  case JParser::NotGpioRouterError:
+  case DRJParser::NotGpioRouterError:
     ret="not a GPIO router";
     break;
 
-  case JParser::NoCommandError:
+  case DRJParser::NoCommandError:
     ret="no such command";
     break;
 
-  case JParser::LastError:
+  case DRJParser::LastError:
     break;
   }
 
@@ -334,7 +334,7 @@ QString JParser::errorString(ErrorType err)
 }
 
 
-void JParser::connectedData()
+void DRJParser::connectedData()
 {
   //  SendCommand("Login "+j_username+" "+j_password);
   j_accum.clear();
@@ -344,30 +344,30 @@ void JParser::connectedData()
 }
 
 
-void JParser::connectionClosedData()
+void DRJParser::connectionClosedData()
 {
   j_connected=false;
   Clear();
-  emit connected(false,JParser::WatchdogActive);
-  j_holdoff_timer->start(JPARSER_HOLDOFF_INTERVAL);
+  emit connected(false,DRJParser::WatchdogActive);
+  j_holdoff_timer->start(DRJPARSER_HOLDOFF_INTERVAL);
 }
 
 
-void JParser::startupData()
+void DRJParser::startupData()
 {
   j_connected=true;
-  emit connected(true,JParser::Ok);
+  emit connected(true,DRJParser::Ok);
 }
 
 
-void JParser::holdoffReconnectData()
+void DRJParser::holdoffReconnectData()
 {
   MakeSocket();
   j_socket->connectToHost(j_hostname,j_port);
 }
 
 
-void JParser::readyReadData()
+void DRJParser::readyReadData()
 {
   QByteArray data;
 
@@ -392,7 +392,7 @@ void JParser::readyReadData()
 	if(--j_accum_level==0) {
 	  QJsonDocument jdoc=QJsonDocument::fromJson(j_accum);
 	  if(jdoc.isNull()) {
-	    emit parserError(JParser::JsonError,QString::fromUtf8(j_accum));
+	    emit parserError(DRJParser::JsonError,QString::fromUtf8(j_accum));
 	  }
 	  else {
 	    DispatchMessage(jdoc);
@@ -410,14 +410,14 @@ void JParser::readyReadData()
 }
 
 
-void JParser::errorData(QAbstractSocket::SocketError err)
+void DRJParser::errorData(QAbstractSocket::SocketError err)
 {
   emit error(err);
-  j_holdoff_timer->start(JPARSER_HOLDOFF_INTERVAL);
+  j_holdoff_timer->start(DRJPARSER_HOLDOFF_INTERVAL);
 }
 
 
-void JParser::Clear()
+void DRJParser::Clear()
 {
   j_router_names.clear();
   j_input_node_names.clear();
@@ -440,7 +440,7 @@ void JParser::Clear()
 }
 
 
-void JParser::DispatchMessage(const QJsonDocument &jdoc)
+void DRJParser::DispatchMessage(const QJsonDocument &jdoc)
 {
   if(jdoc.object().contains("routernames")) {
     QJsonObject jo0=jdoc.object().value("routernames").toObject();
@@ -579,12 +579,12 @@ void JParser::DispatchMessage(const QJsonDocument &jdoc)
 
   if(jdoc.object().contains("pong")) {
     j_connected=true;
-    emit connected(true,JParser::Ok);
+    emit connected(true,DRJParser::Ok);
   }
 }
 
 /*
-void JParser::DispatchCommand(QString cmd)
+void DRJParser::DispatchCommand(QString cmd)
 {
   //printf("RECV: %s\n",(const char *)cmd.toUtf8());
 
@@ -604,7 +604,7 @@ void JParser::DispatchCommand(QString cmd)
       j_socket=NULL;
       j_connected=false;
       Clear();
-      emit connected(false,JParser::InvalidLogin);
+      emit connected(false,DRJParser::InvalidLogin);
     }
     return;
   }
@@ -736,7 +736,7 @@ void JParser::DispatchCommand(QString cmd)
 	      SendCommand(QString::asprintf("GPIStat %d",it.key()));
 	      SendCommand(QString::asprintf("GPOStat %d",it.key()));
 	    }
-	    j_startup_timer->start(JPARSER_STARTUP_INTERVAL);
+	    j_startup_timer->start(DRJPARSER_STARTUP_INTERVAL);
 	  }
 	}
       }
@@ -776,7 +776,7 @@ void JParser::DispatchCommand(QString cmd)
 }
 */
 
-void JParser::ReadRouterName(const QString &cmd)
+void DRJParser::ReadRouterName(const QString &cmd)
 {
   bool ok=false;
   QStringList f0=cmd.split(" ",QString::SkipEmptyParts);
@@ -792,7 +792,7 @@ void JParser::ReadRouterName(const QString &cmd)
 }
 
 
-void JParser::ReadSourceName(const QString &cmd)
+void DRJParser::ReadSourceName(const QString &cmd)
 {
   QStringList f0=cmd.split("\t");
   bool ok=false;
@@ -865,7 +865,7 @@ void JParser::ReadSourceName(const QString &cmd)
 }
 
 
-void JParser::ReadDestName(const QString &cmd)
+void DRJParser::ReadDestName(const QString &cmd)
 {
   QStringList f0=cmd.split("\t");
   bool ok=false;
@@ -899,13 +899,13 @@ void JParser::ReadDestName(const QString &cmd)
 }
 
 
-void JParser::ReadSnapshotName(const QString &cmd)
+void DRJParser::ReadSnapshotName(const QString &cmd)
 {
   j_snapshot_names[j_current_router].push_back(cmd.trimmed());
 }
 
 
-void JParser::BubbleSort(std::map<unsigned,QString> *names,
+void DRJParser::BubbleSort(std::map<unsigned,QString> *names,
 			    std::vector<unsigned> *ptrs)
 {
   //
@@ -934,13 +934,13 @@ void JParser::BubbleSort(std::map<unsigned,QString> *names,
 }
 
 
-void JParser::SendCommand(const QString &cmd)
+void DRJParser::SendCommand(const QString &cmd)
 {
   j_socket->write((cmd+"\r\n").toUtf8(),cmd.length()+2);
 }
 
 
-void JParser::MakeSocket()
+void DRJParser::MakeSocket()
 {
   if(j_socket!=NULL) {
     delete j_socket;

@@ -2,7 +2,7 @@
 //
 // Set state on a GPIO endpoint
 //
-//   (C) Copyright 2020-2022 Fred Gleason <fredg@paravelsystems.com>
+//   (C) Copyright 2020-2024 Fred Gleason <fredg@paravelsystems.com>
 //
 //   This program is free software; you can redistribute it and/or modify
 //   it under the terms of the GNU General Public License as
@@ -23,13 +23,14 @@
 
 #include <sy5/syconfig.h>
 
-#include "endpointmap.h"
+#include <drendpointmap.h>
+
 #include "statedialog.h"
 
 #define STATEDIALOG_CONTROL_WIDTH 185
 
-StateDialog::StateDialog(int router,int endpt,EndPointMap::Type gpio_type,
-			 SaParser *parser,QWidget *parent)
+StateDialog::StateDialog(int router,int endpt,DREndPointMap::Type gpio_type,
+			 DRSaParser *parser,QWidget *parent)
   : QDialog(parent,Qt::Tool)
 {
   d_router=router;
@@ -59,7 +60,7 @@ StateDialog::StateDialog(int router,int endpt,EndPointMap::Type gpio_type,
   connect(d_reset_button,SIGNAL(clicked()),this,SLOT(resetData()));
 
   switch(d_type) {
-  case EndPointMap::Input:
+  case DREndPointMap::Input:
     connect(d_parser,SIGNAL(gpiStateChanged(int,int,const QString &)),
 	    this,SLOT(gpioStateChangedData(int,int,const QString &)));
     d_name_label->setText(QString::asprintf("%d - ",endpt+1)+
@@ -67,7 +68,7 @@ StateDialog::StateDialog(int router,int endpt,EndPointMap::Type gpio_type,
     setWindowTitle(tr("GPI State"));
     break;
 
-  case EndPointMap::Output:
+  case DREndPointMap::Output:
     connect(d_parser,SIGNAL(gpoStateChanged(int,int,const QString &)),
 	    this,SLOT(gpioStateChangedData(int,int,const QString &)));
     d_name_label->setText(QString::asprintf("%d - ",endpt+1)+
@@ -75,7 +76,7 @@ StateDialog::StateDialog(int router,int endpt,EndPointMap::Type gpio_type,
     setWindowTitle(tr("GPO State"));
     break;
 
-  case EndPointMap::LastType:
+  case DREndPointMap::LastType:
     break;
   }
   resetData();
@@ -139,17 +140,17 @@ void StateDialog::stateTextChangedData(const QString &str)
     }
   }
   switch(d_type) {
-  case EndPointMap::Input:
+  case DREndPointMap::Input:
     d_set_button->setDisabled(str==d_parser->gpiState(d_router,d_endpoint));
     d_reset_button->setDisabled(str==d_parser->gpiState(d_router,d_endpoint));
     break;
 
-  case EndPointMap::Output:
+  case DREndPointMap::Output:
     d_set_button->setDisabled(str==d_parser->gpoState(d_router,d_endpoint));
     d_reset_button->setDisabled(str==d_parser->gpoState(d_router,d_endpoint));
     break;
 
-  case EndPointMap::LastType:
+  case DREndPointMap::LastType:
     break;
   }
 }
@@ -175,15 +176,15 @@ void StateDialog::gpioStateChangedData(int router,int endpt,const QString &code)
 void StateDialog::setData()
 {
   switch(d_type) {
-  case EndPointMap::Input:
+  case DREndPointMap::Input:
     d_parser->setGpiState(d_router,d_endpoint,d_state_edit->text());
     break;
 
-  case EndPointMap::Output:
+  case DREndPointMap::Output:
     d_parser->setGpoState(d_router,d_endpoint,d_state_edit->text());
     break;
 
-  case EndPointMap::LastType:
+  case DREndPointMap::LastType:
     break;
   }
 }
@@ -192,15 +193,15 @@ void StateDialog::setData()
 void StateDialog::resetData()
 {
   switch(d_type) {
-  case EndPointMap::Input:
+  case DREndPointMap::Input:
     d_state_edit->setText(d_parser->gpiState(d_router,d_endpoint));
     break;
 
-  case EndPointMap::Output:
+  case DREndPointMap::Output:
     d_state_edit->setText(d_parser->gpoState(d_router,d_endpoint));
     break;
 
-  case EndPointMap::LastType:
+  case DREndPointMap::LastType:
     break;
   }
   d_set_button->setDisabled(true);

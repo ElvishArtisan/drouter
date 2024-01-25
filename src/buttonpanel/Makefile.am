@@ -20,7 +20,8 @@
 ##
 ## Use automake to process this into a Makefile.in
 
-AM_CPPFLAGS = -Wall -DPREFIX=\"$(prefix)\" -Wno-strict-aliasing -std=c++11 -fPIC @QT5GUI_CFLAGS@ @SWITCHYARD5_CFLAGS@
+AM_CPPFLAGS = -Wall -DPREFIX=\"$(prefix)\" -I$(top_srcdir)/src/lib -Wno-strict-aliasing -std=c++11 -fPIC @QT5GUI_CFLAGS@ @SWITCHYARD5_CFLAGS@
+LIBS = -L$(top_srcdir)/src/lib
 MOC = @QT_MOC@
 
 # The dependency for qt's Meta Object Compiler (moc)
@@ -41,25 +42,19 @@ dist_buttonpanel_SOURCES = autolabel.cpp autolabel.h\
                            statebutton.cpp statebutton.h\
                            statelight.cpp statelight.h
 
-nodist_buttonpanel_SOURCES = jparser.cpp jparser.h\
-                             logindialog.cpp logindialog.h\
-                             multistatewidget.cpp multistatewidget.h\
-                             saparser.cpp saparser.h\
-                             moc_autolabel.cpp\
+nodist_buttonpanel_SOURCES = moc_autolabel.cpp\
                              moc_autopushbutton.cpp\
                              moc_buttonpanel.cpp\
                              moc_buttonwidget.cpp\
+                             moc_gpioparser.cpp\
                              moc_gpiowidget.cpp\
-                             moc_jparser.cpp\
-                             moc_logindialog.cpp\
                              moc_multistatelabel.cpp\
-                             moc_multistatewidget.cpp\
-                             moc_saparser.cpp\
                              moc_separator.cpp\
                              moc_statebutton.cpp\
                              moc_statelight.cpp
 
-buttonpanel_LDADD = @QT5GUI_LIBS@ @SWITCHYARD5_LIBS@
+buttonpanel_LDADD = -ldrouter @QT5GUI_LIBS@ @SWITCHYARD5_LIBS@
+buttonpanel_LDFLAGS = -rdynamic
 
 CLEANFILES = *~\
              moc_*\
@@ -68,17 +63,7 @@ CLEANFILES = *~\
              *.pdb\
              *ilk
 
-DISTCLEANFILES = combobox.cpp combobox.h\
-                 config.cpp config.h\
-                 dparser.cpp dparser.h\
-                 endpointmap.cpp endpointmap.h\
-                 jparser.cpp jparser.h\
-                 logindialog.cpp logindialog.h\
-                 multistatewidget.cpp multistatewidget.h\
-                 paths.h\
-                 saparser.cpp saparser.h\
-                 sendmail.cpp sendmail.h\
-                 sqlquery.cpp sqlquery.h
+DISTCLEANFILES = 
 
 MAINTAINERCLEANFILES = *~\
                        Makefile.in

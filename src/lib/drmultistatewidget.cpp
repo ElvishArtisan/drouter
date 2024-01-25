@@ -1,4 +1,4 @@
-// multistatewidget.cpp
+// drmultistatewidget.cpp
 //
 // Widget to display GPIO code state
 //
@@ -21,9 +21,9 @@
 
 #include <qpainter.h>
 
-#include "multistatewidget.h"
+#include "drmultistatewidget.h"
 
-MultiStateWidget::MultiStateWidget(int router,int linenum,
+DRMultiStateWidget::DRMultiStateWidget(int router,int linenum,
 				   Qt::Orientation orient,QWidget *parent)
   : QWidget(parent)
 {
@@ -33,24 +33,24 @@ MultiStateWidget::MultiStateWidget(int router,int linenum,
 }
 
 
-QSize MultiStateWidget::sizeHint() const
+QSize DRMultiStateWidget::sizeHint() const
 {
   if(state_orientation==Qt::Horizontal) {
-    return QSize(MULTISTATEWIDGET_LONG_EDGE+10,
-		 MULTISTATEWIDGET_SHORT_EDGE+8);
+    return QSize(DRMULTISTATEWIDGET_LONG_EDGE+10,
+		 DRMULTISTATEWIDGET_SHORT_EDGE+8);
   }
-  return QSize(MULTISTATEWIDGET_SHORT_EDGE+10,
-	       MULTISTATEWIDGET_LONG_EDGE+8);
+  return QSize(DRMULTISTATEWIDGET_SHORT_EDGE+10,
+	       DRMULTISTATEWIDGET_LONG_EDGE+8);
 }
 
 
-QString MultiStateWidget::state() const
+QString DRMultiStateWidget::state() const
 {
   return state_state;
 }
 
 
-void MultiStateWidget::setState(int router,int linenum,const QString &code)
+void DRMultiStateWidget::setState(int router,int linenum,const QString &code)
 {
   if((router==state_router)&&(linenum==state_linenum)&&
      (code.toLower()!=state_state)) {
@@ -60,7 +60,7 @@ void MultiStateWidget::setState(int router,int linenum,const QString &code)
 }
 
 
-void MultiStateWidget::paintEvent(QPaintEvent *e)
+void DRMultiStateWidget::paintEvent(QPaintEvent *e)
 {
   int h=size().height();
   int w=size().width();
@@ -79,9 +79,9 @@ void MultiStateWidget::paintEvent(QPaintEvent *e)
     p->setBrush(background_color);
     p->drawRoundedRect(0,0,size().width(),size().height(),2.5,2.5);
     p->fillRect((w-50)/2,
-		(h-MULTISTATEWIDGET_SHORT_EDGE)/2,
+		(h-DRMULTISTATEWIDGET_SHORT_EDGE)/2,
 		50,
-		MULTISTATEWIDGET_SHORT_EDGE,
+		DRMULTISTATEWIDGET_SHORT_EDGE,
 		background_color);
 
     //
@@ -90,9 +90,9 @@ void MultiStateWidget::paintEvent(QPaintEvent *e)
     p->setPen(frame_color);
     p->setBrush(frame_color);
     p->drawRect((w-50)/2,
-		(h-MULTISTATEWIDGET_SHORT_EDGE)/2,
+		(h-DRMULTISTATEWIDGET_SHORT_EDGE)/2,
 		50,
-		MULTISTATEWIDGET_SHORT_EDGE);
+		DRMULTISTATEWIDGET_SHORT_EDGE);
 
     for(int i=0;i<SWITCHYARD_GPIO_BUNDLE_SIZE;i++) {
       if(state().mid(i,1).toLower()=="l") {
@@ -103,10 +103,10 @@ void MultiStateWidget::paintEvent(QPaintEvent *e)
 	p->setPen(off_color);
 	p->setBrush(off_color);
       }
-      p->drawRect((w-50)/2+i*MULTISTATEWIDGET_SHORT_EDGE+2,
-		  (h-MULTISTATEWIDGET_SHORT_EDGE)/2+2,
-		  MULTISTATEWIDGET_SHORT_EDGE-4,
-		  MULTISTATEWIDGET_SHORT_EDGE-4);
+      p->drawRect((w-50)/2+i*DRMULTISTATEWIDGET_SHORT_EDGE+2,
+		  (h-DRMULTISTATEWIDGET_SHORT_EDGE)/2+2,
+		  DRMULTISTATEWIDGET_SHORT_EDGE-4,
+		  DRMULTISTATEWIDGET_SHORT_EDGE-4);
     }
   }
 
@@ -117,9 +117,9 @@ void MultiStateWidget::paintEvent(QPaintEvent *e)
     p->setPen(background_color);
     p->setBrush(background_color);
     p->drawRoundedRect(0,0,size().width(),size().height(),2.5,2.5);
-    p->fillRect((h-MULTISTATEWIDGET_SHORT_EDGE)/2,
+    p->fillRect((h-DRMULTISTATEWIDGET_SHORT_EDGE)/2,
 		(w-50)/2,
-		MULTISTATEWIDGET_SHORT_EDGE,
+		DRMULTISTATEWIDGET_SHORT_EDGE,
 		50,
 		background_color);
 
@@ -128,9 +128,9 @@ void MultiStateWidget::paintEvent(QPaintEvent *e)
     //
     p->setPen(frame_color);
     p->setBrush(frame_color);
-    p->drawRect((w-MULTISTATEWIDGET_SHORT_EDGE)/2,
+    p->drawRect((w-DRMULTISTATEWIDGET_SHORT_EDGE)/2,
 		(h-50)/2,
-		MULTISTATEWIDGET_SHORT_EDGE,
+		DRMULTISTATEWIDGET_SHORT_EDGE,
 		50);
 
     for(int i=0;i<SWITCHYARD_GPIO_BUNDLE_SIZE;i++) {
@@ -142,10 +142,10 @@ void MultiStateWidget::paintEvent(QPaintEvent *e)
 	p->setPen(off_color);
 	p->setBrush(off_color);
       }
-      p->drawRect((w-MULTISTATEWIDGET_SHORT_EDGE)/2+2,
-		  (h-50)/2+i*MULTISTATEWIDGET_SHORT_EDGE+2,
-		  MULTISTATEWIDGET_SHORT_EDGE-4,
-		  MULTISTATEWIDGET_SHORT_EDGE-4);
+      p->drawRect((w-DRMULTISTATEWIDGET_SHORT_EDGE)/2+2,
+		  (h-50)/2+i*DRMULTISTATEWIDGET_SHORT_EDGE+2,
+		  DRMULTISTATEWIDGET_SHORT_EDGE-4,
+		  DRMULTISTATEWIDGET_SHORT_EDGE-4);
     }
   }
 

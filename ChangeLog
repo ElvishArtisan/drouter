@@ -1007,3 +1007,5 @@
 	* Modified 'JParser' to emit the 'gpiStateChanged()',
 	'gpoStateChanged()' and 'outputCrosspointChanged()' signals only
 	when in the connected state.
+2024-01-25 Fred Gleason <fredg@paravelsystems.com>
+	* Refactored code layout to dynamically link common classes.

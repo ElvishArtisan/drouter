@@ -28,7 +28,7 @@
 
 #include <sy5/sylwrp_client.h>
 
-#include "config.h"
+#include <drconfig.h>
 
 class Protocol : public QObject
 {
@@ -71,7 +71,7 @@ class Protocol : public QObject
   virtual void silenceChanged(const QHostAddress &host_addr,int slotnum,
 			      SyLwrpClient::MeterType meter_type,
 			      const QString &tbl_name,int chan);
-  Config *config();
+  DRConfig *config();
   void logIpc(const QString &msg);
   virtual void quitting();
   void quit();
@@ -81,7 +81,7 @@ class Protocol : public QObject
   QTcpSocket *proto_ipc_socket;
   QString proto_ipc_accum;
   QTimer *proto_shutdown_timer;
-  Config *proto_config;
+  DRConfig *proto_config;
 };
 
 

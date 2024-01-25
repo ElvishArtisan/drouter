@@ -25,25 +25,25 @@
 
 #include "matrix_factory.h"
 
-Matrix *MatrixFactory(Config::MatrixType type,unsigned id,Config *conf,
+Matrix *MatrixFactory(DRConfig::MatrixType type,unsigned id,DRConfig *conf,
 		      QObject *parent)
 {
   Matrix *matrix=NULL;
 
   switch(type) {
-  case Config::LwrpMatrix:
+  case DRConfig::LwrpMatrix:
     matrix=new MatrixLwrp(id,conf,parent);
     break;
 
-  case Config::Bt41MlrMatrix:
+  case DRConfig::Bt41MlrMatrix:
     matrix=new MatrixBt41Mlr(id,conf,parent);
     break;
 
-  case Config::Gvg7000Matrix:
+  case DRConfig::Gvg7000Matrix:
     matrix=new MatrixGvg7000(id,conf,parent);
     break;
 
-  case Config::LastMatrix:
+  case DRConfig::LastMatrix:
     break;
   }
   return matrix;

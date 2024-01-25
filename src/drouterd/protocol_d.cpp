@@ -26,7 +26,7 @@
 #include <QStringList>
 
 #include "protocol_d.h"
-#include "sqlquery.h"
+#include "drsqlquery.h"
 
 ProtocolD::ProtocolD(int sock,QObject *parent)
   : Protocol(parent)
@@ -156,13 +156,13 @@ void ProtocolD::tetherStateUpdated(bool state)
 void ProtocolD::nodeAdded(const QHostAddress &host_addr)
 {
   QString sql;
-  SqlQuery *q;
+  DRSqlQuery *q;
 
   if(proto_nodes_subscribed) {
     sql=NodeSqlFields()+"where "+
       "`NODES`.`HOST_ADDRESS`='"+host_addr.toString()+"' && "+
-      QString::asprintf("`NODES`.`MATRIX_TYPE`=%u",Config::LwrpMatrix);
-    q=new SqlQuery(sql);
+      QString::asprintf("`NODES`.`MATRIX_TYPE`=%u",DRConfig::LwrpMatrix);
+    q=new DRSqlQuery(sql);
     while(q->next()) {
       proto_socket->write(NodeRecord("NODEADD",q).toUtf8());
     }
@@ -171,9 +171,9 @@ void ProtocolD::nodeAdded(const QHostAddress &host_addr)
   if(proto_sources_subscribed) {
     sql=SourceSqlFields()+"where "+
       "`SOURCES`.`HOST_ADDRESS`='"+host_addr.toString()+"' && "+
-      QString::asprintf("`NODES`.`MATRIX_TYPE`=%u ",Config::LwrpMatrix)+
+      QString::asprintf("`NODES`.`MATRIX_TYPE`=%u ",DRConfig::LwrpMatrix)+
       "order by `SOURCES`.`HOST_ADDRESS`,`SOURCES`.`SLOT`";
-    q=new SqlQuery(sql);
+    q=new DRSqlQuery(sql);
     while(q->next()) {
       proto_socket->write(SourceRecord("SRCADD",q).toUtf8());
     }
@@ -182,9 +182,9 @@ void ProtocolD::nodeAdded(const QHostAddress &host_addr)
   if(proto_destinations_subscribed) {
     sql=DestinationSqlFields()+"where "+
       "`DESTINATIONS`.`HOST_ADDRESS`='"+host_addr.toString()+"' && "+
-      QString::asprintf("`NODES`.`MATRIX_TYPE`=%u ",Config::LwrpMatrix)+
+      QString::asprintf("`NODES`.`MATRIX_TYPE`=%u ",DRConfig::LwrpMatrix)+
       "order by `DESTINATIONS`.`HOST_ADDRESS`,`DESTINATIONS`.`SLOT`";
-    q=new SqlQuery(sql);
+    q=new DRSqlQuery(sql);
     while(q->next()) {
       proto_socket->write(DestinationRecord("DSTADD",q).toUtf8());
     }
@@ -193,9 +193,9 @@ void ProtocolD::nodeAdded(const QHostAddress &host_addr)
   if(proto_gpis_subscribed) {
     sql=GpiSqlFields()+"where "+
       "`GPIS`.`HOST_ADDRESS`='"+host_addr.toString()+"' && "+
-      QString::asprintf("`NODES`.`MATRIX_TYPE`=%u ",Config::LwrpMatrix)+
+      QString::asprintf("`NODES`.`MATRIX_TYPE`=%u ",DRConfig::LwrpMatrix)+
       "order by `GPIS`.`HOST_ADDRESS`,`GPIS`.`SLOT`";
-    q=new SqlQuery(sql);
+    q=new DRSqlQuery(sql);
     while(q->next()) {
       proto_socket->write(GpiRecord("GPIADD",q).toUtf8());
     }
@@ -204,9 +204,9 @@ void ProtocolD::nodeAdded(const QHostAddress &host_addr)
   if(proto_gpos_subscribed) {
     sql=GpoSqlFields()+"where "+
       "`GPOS`.`HOST_ADDRESS`='"+host_addr.toString()+"' && "+
-      QString::asprintf("`NODES`.`MATRIX_TYPE`=%u ",Config::LwrpMatrix)+
+      QString::asprintf("`NODES`.`MATRIX_TYPE`=%u ",DRConfig::LwrpMatrix)+
       "order by `GPOS`.`HOST_ADDRESS`,`GPOS`.`SLOT`";
-    q=new SqlQuery(sql);
+    q=new DRSqlQuery(sql);
     while(q->next()) {
       proto_socket->write(GpoRecord("GPOADD",q).toUtf8());
     }
@@ -219,12 +219,12 @@ void ProtocolD::nodeRemoved(const QHostAddress &host_addr,
 			    int srcs,int dsts,int gpis,int gpos)
 {
   QString sql;
-  SqlQuery *q;
+  DRSqlQuery *q;
 
   sql=NodeSqlFields()+"where "+
     "`NODES`.`HOST_ADDRESS`='"+host_addr.toString()+"' && "+
-    QString::asprintf("`NODES`.`MATRIX_TYPE`=%u ",Config::LwrpMatrix);
-  q=new SqlQuery(sql);
+    QString::asprintf("`NODES`.`MATRIX_TYPE`=%u ",DRConfig::LwrpMatrix);
+  q=new DRSqlQuery(sql);
   if(q->first()) {
     if(proto_gpos_subscribed) {
       for(int i=0;i<gpos;i++) {
@@ -261,13 +261,13 @@ void ProtocolD::nodeRemoved(const QHostAddress &host_addr,
 void ProtocolD::nodeChanged(const QHostAddress &host_addr)
 {
   QString sql;
-  SqlQuery *q;
+  DRSqlQuery *q;
 
   if(proto_nodes_subscribed) {
     sql=NodeSqlFields()+"where "+
       "`NODES`.`HOST_ADDRESS`='"+host_addr.toString()+"' && "+
-      QString::asprintf("`NODES`.`MATRIX_TYPE`=%u ",Config::LwrpMatrix);
-    q=new SqlQuery(sql);
+      QString::asprintf("`NODES`.`MATRIX_TYPE`=%u ",DRConfig::LwrpMatrix);
+    q=new DRSqlQuery(sql);
     while(q->next()) {
       proto_socket->write(NodeRecord("NODE",q).toUtf8());
     }
@@ -279,14 +279,14 @@ void ProtocolD::nodeChanged(const QHostAddress &host_addr)
 void ProtocolD::sourceChanged(const QHostAddress &host_addr,int slotnum)
 {
   QString sql;
-  SqlQuery *q;
+  DRSqlQuery *q;
 
   if(proto_sources_subscribed) {
     sql=SourceSqlFields()+"where "+
       "`SOURCES`.`HOST_ADDRESS`='"+host_addr.toString()+"' && "+
       "`SOURCES`.`SLOT`="+QString::asprintf("%d && ",slotnum)+
-      QString::asprintf("`NODES`.`MATRIX_TYPE`=%u ",Config::LwrpMatrix);
-    q=new SqlQuery(sql);
+      QString::asprintf("`NODES`.`MATRIX_TYPE`=%u ",DRConfig::LwrpMatrix);
+    q=new DRSqlQuery(sql);
     while(q->next()) {
       proto_socket->write(SourceRecord("SRC",q).toUtf8());
     }
@@ -298,14 +298,14 @@ void ProtocolD::sourceChanged(const QHostAddress &host_addr,int slotnum)
 void ProtocolD::destinationChanged(const QHostAddress &host_addr,int slotnum)
 {
   QString sql;
-  SqlQuery *q;
+  DRSqlQuery *q;
 
   if(proto_destinations_subscribed) {
     sql=DestinationSqlFields()+"where "+
       "`DESTINATIONS`.`HOST_ADDRESS`='"+host_addr.toString()+"' && "+
       "`DESTINATIONS`.`SLOT`="+QString::asprintf("%d && ",slotnum)+
-      QString::asprintf("`NODES`.`MATRIX_TYPE`=%u ",Config::LwrpMatrix);
-    q=new SqlQuery(sql);
+      QString::asprintf("`NODES`.`MATRIX_TYPE`=%u ",DRConfig::LwrpMatrix);
+    q=new DRSqlQuery(sql);
     while(q->next()) {
       proto_socket->write(DestinationRecord("DST",q).toUtf8());
     }
@@ -317,14 +317,14 @@ void ProtocolD::destinationChanged(const QHostAddress &host_addr,int slotnum)
 void ProtocolD::gpiChanged(const QHostAddress &host_addr,int slotnum)
 {
   QString sql;
-  SqlQuery *q;
+  DRSqlQuery *q;
 
   if(proto_gpis_subscribed) {
     sql=GpiSqlFields()+"where "+
       "`GPIS`.`HOST_ADDRESS`='"+host_addr.toString()+"' && "+
       "`GPIS`.`SLOT`="+QString::asprintf("%d && ",slotnum)+
-      QString::asprintf("`NODES`.`MATRIX_TYPE`=%u ",Config::LwrpMatrix);
-    q=new SqlQuery(sql);
+      QString::asprintf("`NODES`.`MATRIX_TYPE`=%u ",DRConfig::LwrpMatrix);
+    q=new DRSqlQuery(sql);
     while(q->next()) {
       proto_socket->write(GpiRecord("GPI",q).toUtf8());
     }
@@ -336,14 +336,14 @@ void ProtocolD::gpiChanged(const QHostAddress &host_addr,int slotnum)
 void ProtocolD::gpoChanged(const QHostAddress &host_addr,int slotnum)
 {
   QString sql;
-  SqlQuery *q;
+  DRSqlQuery *q;
 
   if(proto_gpos_subscribed) {
     sql=GpoSqlFields()+"where "+
       "`GPOS`.`HOST_ADDRESS`='"+host_addr.toString()+"' && "+
       "`GPOS`.`SLOT`="+QString::asprintf("%d && ",slotnum)+
-      QString::asprintf("`NODES`.`MATRIX_TYPE`=%u ",Config::LwrpMatrix);
-    q=new SqlQuery(sql);
+      QString::asprintf("`NODES`.`MATRIX_TYPE`=%u ",DRConfig::LwrpMatrix);
+    q=new DRSqlQuery(sql);
     while(q->next()) {
       proto_socket->write(GpoRecord("GPO",q).toUtf8());
     }
@@ -357,13 +357,13 @@ void ProtocolD::clipChanged(const QHostAddress &host_addr,int slotnum,
 			    const QString &tbl_name,int chan)
 {
   QString sql;
-  SqlQuery *q;
+  DRSqlQuery *q;
 
   if(proto_clips_subscribed) {
     sql=AlarmSqlFields(tbl_name,"CLIP",chan)+"from "+tbl_name+" where ";
     sql+="`HOST_ADDRESS`='"+host_addr.toString()+"' && "+
       QString::asprintf("`SLOT`=%d",slotnum);
-    q=new SqlQuery(sql);
+    q=new DRSqlQuery(sql);
     while(q->next()) {
       proto_socket->write(AlarmRecord("CLIP",meter_type,chan,q).toUtf8());
     }
@@ -377,13 +377,13 @@ void ProtocolD::silenceChanged(const QHostAddress &host_addr,int slotnum,
 			       const QString &tbl_name,int chan)
 {
   QString sql;
-  SqlQuery *q;
+  DRSqlQuery *q;
 
   if(proto_silences_subscribed) {
     sql=AlarmSqlFields(tbl_name,"SILENCE",chan)+"from "+tbl_name+" where ";
     sql+="`HOST_ADDRESS`='"+host_addr.toString()+"' && "+
       QString::asprintf("`SLOT`=%d",slotnum);
-    q=new SqlQuery(sql);
+    q=new DRSqlQuery(sql);
     while(q->next()) {
       proto_socket->write(AlarmRecord("SILENCE",meter_type,chan,q).toUtf8());
     }
@@ -397,7 +397,7 @@ void ProtocolD::ProcessCommand(const QString &cmd)
   QStringList cmds=cmd.split(" ");
   QString keyword=cmds.at(0).toLower();
   QString sql;
-  SqlQuery *q;
+  DRSqlQuery *q;
 
   if(keyword=="exit") {
     syslog(LOG_DEBUG,"exiting normally");
@@ -415,9 +415,9 @@ void ProtocolD::ProcessCommand(const QString &cmd)
 
   if(keyword=="listdestinations") {
     sql=DestinationSqlFields()+"where "+
-      QString::asprintf("`NODES`.`MATRIX_TYPE`=%u ",Config::LwrpMatrix)+
+      QString::asprintf("`NODES`.`MATRIX_TYPE`=%u ",DRConfig::LwrpMatrix)+
       "order by `DESTINATIONS`.`HOST_ADDRESS`,`DESTINATIONS`.`SLOT`";
-    q=new SqlQuery(sql);
+    q=new DRSqlQuery(sql);
     while(q->next()) {
       proto_socket->write(DestinationRecord("DST",q).toUtf8());
     }
@@ -429,9 +429,9 @@ void ProtocolD::ProcessCommand(const QString &cmd)
   if(keyword=="subscribedestinations") {
     proto_destinations_subscribed=true;
     sql=DestinationSqlFields()+"where "+
-      QString::asprintf("`NODES`.`MATRIX_TYPE`=%u ",Config::LwrpMatrix)+
+      QString::asprintf("`NODES`.`MATRIX_TYPE`=%u ",DRConfig::LwrpMatrix)+
       "order by `DESTINATIONS`.`HOST_ADDRESS`,`DESTINATIONS`.`SLOT`";
-    q=new SqlQuery(sql);
+    q=new DRSqlQuery(sql);
     while(q->next()) {
       proto_socket->write(DestinationRecord("DSTADD",q).toUtf8());
     }
@@ -442,9 +442,9 @@ void ProtocolD::ProcessCommand(const QString &cmd)
 
   if(keyword=="listgpis") {
     sql=GpiSqlFields()+"where "+
-      QString::asprintf("`NODES`.`MATRIX_TYPE`=%u ",Config::LwrpMatrix)+
+      QString::asprintf("`NODES`.`MATRIX_TYPE`=%u ",DRConfig::LwrpMatrix)+
       "order by `GPIS`.`HOST_ADDRESS`,`GPIS`.`SLOT`";
-    q=new SqlQuery(sql);
+    q=new DRSqlQuery(sql);
     while(q->next()) {
       proto_socket->write(GpiRecord("GPI",q).toUtf8());
     }
@@ -456,9 +456,9 @@ void ProtocolD::ProcessCommand(const QString &cmd)
   if(keyword=="subscribegpis") {
     proto_gpis_subscribed=true;
     sql=GpiSqlFields()+"where "+
-      QString::asprintf("`NODES`.`MATRIX_TYPE`=%u ",Config::LwrpMatrix)+
+      QString::asprintf("`NODES`.`MATRIX_TYPE`=%u ",DRConfig::LwrpMatrix)+
       "order by `GPIS`.`HOST_ADDRESS`,`GPIS`.`SLOT`";
-    q=new SqlQuery(sql);
+    q=new DRSqlQuery(sql);
     while(q->next()) {
       proto_socket->write(GpiRecord("GPIADD",q).toUtf8());
     }
@@ -469,9 +469,9 @@ void ProtocolD::ProcessCommand(const QString &cmd)
 
   if(keyword=="listgpos") {
     sql=GpoSqlFields()+"where "+
-      QString::asprintf("`NODES`.`MATRIX_TYPE`=%u ",Config::LwrpMatrix)+
+      QString::asprintf("`NODES`.`MATRIX_TYPE`=%u ",DRConfig::LwrpMatrix)+
       "order by `GPOS`.`HOST_ADDRESS`,`GPOS`.`SLOT`";
-    q=new SqlQuery(sql);
+    q=new DRSqlQuery(sql);
     while(q->next()) {
       proto_socket->write(GpoRecord("GPO",q).toUtf8());
     }
@@ -483,9 +483,9 @@ void ProtocolD::ProcessCommand(const QString &cmd)
   if(keyword=="subscribegpos") {
     proto_gpos_subscribed=true;
     sql=GpoSqlFields()+"where "+
-      QString::asprintf("`NODES`.`MATRIX_TYPE`=%u ",Config::LwrpMatrix)+
+      QString::asprintf("`NODES`.`MATRIX_TYPE`=%u ",DRConfig::LwrpMatrix)+
       "order by `GPOS`.`HOST_ADDRESS`,`GPOS`.`SLOT`";
-    q=new SqlQuery(sql);
+    q=new DRSqlQuery(sql);
     while(q->next()) {
       proto_socket->write(GpoRecord("GPOADD",q).toUtf8());
     }
@@ -496,9 +496,9 @@ void ProtocolD::ProcessCommand(const QString &cmd)
 
   if(keyword=="listnodes") {
     sql=NodeSqlFields()+"where "+
-      QString::asprintf("`NODES`.`MATRIX_TYPE`=%u ",Config::LwrpMatrix)+
+      QString::asprintf("`NODES`.`MATRIX_TYPE`=%u ",DRConfig::LwrpMatrix)+
       "order by `HOST_ADDRESS`";
-    q=new SqlQuery(sql);
+    q=new DRSqlQuery(sql);
     while(q->next()) {
       proto_socket->write(NodeRecord("NODE",q).toUtf8());
     }
@@ -510,9 +510,9 @@ void ProtocolD::ProcessCommand(const QString &cmd)
   if(keyword=="subscribenodes") {
     proto_nodes_subscribed=true;
     sql=NodeSqlFields()+"where "+
-      QString::asprintf("`NODES`.`MATRIX_TYPE`=%u ",Config::LwrpMatrix)+
+      QString::asprintf("`NODES`.`MATRIX_TYPE`=%u ",DRConfig::LwrpMatrix)+
       "order by `NODES`.`HOST_ADDRESS`";
-    q=new SqlQuery(sql);
+    q=new DRSqlQuery(sql);
     while(q->next()) {
       proto_socket->write(NodeRecord("NODEADD",q).toUtf8());
     }
@@ -523,9 +523,9 @@ void ProtocolD::ProcessCommand(const QString &cmd)
 
   if(keyword=="listsources") {
     sql=SourceSqlFields()+"where "+
-      QString::asprintf("`NODES`.`MATRIX_TYPE`=%u ",Config::LwrpMatrix)+
+      QString::asprintf("`NODES`.`MATRIX_TYPE`=%u ",DRConfig::LwrpMatrix)+
       "order by `SOURCES`.`HOST_ADDRESS`,`SOURCES`.`SLOT`";
-    q=new SqlQuery(sql);
+    q=new DRSqlQuery(sql);
     while(q->next()) {
       proto_socket->write(SourceRecord("SRC",q).toUtf8());
     }
@@ -537,9 +537,9 @@ void ProtocolD::ProcessCommand(const QString &cmd)
   if(keyword=="subscribesources") {
     proto_sources_subscribed=true;
     sql=SourceSqlFields()+"where "+
-      QString::asprintf("`NODES`.`MATRIX_TYPE`=%u ",Config::LwrpMatrix)+
+      QString::asprintf("`NODES`.`MATRIX_TYPE`=%u ",DRConfig::LwrpMatrix)+
       "order by `SOURCES`.`HOST_ADDRESS`,`SOURCES`.`SLOT`";
-    q=new SqlQuery(sql);
+    q=new DRSqlQuery(sql);
     while(q->next()) {
       proto_socket->write(SourceRecord("SRCADD",q).toUtf8());
     }
@@ -552,9 +552,9 @@ void ProtocolD::ProcessCommand(const QString &cmd)
     for(int j=0;j<2;j++) {
       sql=AlarmSqlFields("SOURCES","CLIP",j)+
 	"from `SOURCES` where "+
-	QString::asprintf("`NODES`.`MATRIX_TYPE`=%u ",Config::LwrpMatrix)+
+	QString::asprintf("`NODES`.`MATRIX_TYPE`=%u ",DRConfig::LwrpMatrix)+
 	"order by `SOURCES`.`HOST_ADDRESS`,`SOURCES`.`SLOT`";
-      q=new SqlQuery(sql);
+      q=new DRSqlQuery(sql);
       while(q->next()) {
 	proto_socket->
 	  write(AlarmRecord("CLIP",SyLwrpClient::InputMeter,j,q).toUtf8());
@@ -564,9 +564,9 @@ void ProtocolD::ProcessCommand(const QString &cmd)
     for(int j=0;j<2;j++) {
       sql=AlarmSqlFields("DESTINATIONS","CLIP",j)+
 	"from `DESTINATIONS` where "+
-	QString::asprintf("`NODES`.`MATRIX_TYPE`=%u ",Config::LwrpMatrix)+
+	QString::asprintf("`NODES`.`MATRIX_TYPE`=%u ",DRConfig::LwrpMatrix)+
 	"order by `DESTINATIONS`.`HOST_ADDRESS`,`DESTINATIONS`.`SLOT`";
-      q=new SqlQuery(sql);
+      q=new DRSqlQuery(sql);
       while(q->next()) {
 	proto_socket->
 	  write(AlarmRecord("CLIP",SyLwrpClient::OutputMeter,j,q).toUtf8());
@@ -582,9 +582,9 @@ void ProtocolD::ProcessCommand(const QString &cmd)
     for(int j=0;j<2;j++) {
       sql=AlarmSqlFields("SOURCES","CLIP",j)+
 	"from `SOURCES` where "+
-	QString::asprintf("`NODES`.`MATRIX_TYPE`=%u ",Config::LwrpMatrix)+
+	QString::asprintf("`NODES`.`MATRIX_TYPE`=%u ",DRConfig::LwrpMatrix)+
 	"order by `SOURCES`.`HOST_ADDRESS`,`SOURCES`.`SLOT`";
-      q=new SqlQuery(sql);
+      q=new DRSqlQuery(sql);
       while(q->next()) {
 	proto_socket->
 	  write(AlarmRecord("CLIPADD",SyLwrpClient::InputMeter,j,q).toUtf8());
@@ -594,9 +594,9 @@ void ProtocolD::ProcessCommand(const QString &cmd)
     for(int j=0;j<2;j++) {
       sql=AlarmSqlFields("DESTINATIONS","CLIP",j)+
 	"from `DESTINATIONS` where "+
-	QString::asprintf("`NODES`.`MATRIX_TYPE`=%u ",Config::LwrpMatrix)+
+	QString::asprintf("`NODES`.`MATRIX_TYPE`=%u ",DRConfig::LwrpMatrix)+
 	"order by `DESTINATIONS`.`HOST_ADDRESS`,`DESTINATIONS`.`SLOT`";
-      q=new SqlQuery(sql);
+      q=new DRSqlQuery(sql);
       while(q->next()) {
 	proto_socket->
 	  write(AlarmRecord("CLIPADD",SyLwrpClient::OutputMeter,j,q).toUtf8());
@@ -611,9 +611,9 @@ void ProtocolD::ProcessCommand(const QString &cmd)
     for(int j=0;j<2;j++) {
       sql=AlarmSqlFields("SOURCES","SILENCE",j)+
 	"from `SOURCES` where "+
-	QString::asprintf("`NODES`.`MATRIX_TYPE`=%u ",Config::LwrpMatrix)+
+	QString::asprintf("`NODES`.`MATRIX_TYPE`=%u ",DRConfig::LwrpMatrix)+
 	"order by `SOURCES`.`HOST_ADDRESS`,`SOURCES`.`SLOT`";
-      q=new SqlQuery(sql);
+      q=new DRSqlQuery(sql);
       while(q->next()) {
 	proto_socket->
 	  write(AlarmRecord("SILENCE",SyLwrpClient::InputMeter,j,q).toUtf8());
@@ -623,9 +623,9 @@ void ProtocolD::ProcessCommand(const QString &cmd)
     for(int j=0;j<2;j++) {
       sql=AlarmSqlFields("DESTINATIONS","SILENCE",j)+
 	"from `DESTINATIONS` where "+
-	QString::asprintf("`NODES`.`MATRIX_TYPE`=%u ",Config::LwrpMatrix)+
+	QString::asprintf("`NODES`.`MATRIX_TYPE`=%u ",DRConfig::LwrpMatrix)+
 	"order by `DESTINATIONS`.`HOST_ADDRESS`,`DESTINATIONS`.`SLOT`";
-      q=new SqlQuery(sql);
+      q=new DRSqlQuery(sql);
       while(q->next()) {
 	proto_socket->
 	  write(AlarmRecord("SILENCE",SyLwrpClient::OutputMeter,j,q).toUtf8());
@@ -641,9 +641,9 @@ void ProtocolD::ProcessCommand(const QString &cmd)
     for(int j=0;j<2;j++) {
       sql=AlarmSqlFields("SOURCES","SILENCE",j)+
 	"from `SOURCES` where "+
-	QString::asprintf("`NODES`.`MATRIX_TYPE`=%u ",Config::LwrpMatrix)+
+	QString::asprintf("`NODES`.`MATRIX_TYPE`=%u ",DRConfig::LwrpMatrix)+
 	"order by `SOURCES`.`HOST_ADDRESS`,`SOURCES`.`SLOT`";
-      q=new SqlQuery(sql);
+      q=new DRSqlQuery(sql);
       while(q->next()) {
 	proto_socket->
 	  write(AlarmRecord("SILENCEADD",SyLwrpClient::InputMeter,j,q).toUtf8());
@@ -653,9 +653,9 @@ void ProtocolD::ProcessCommand(const QString &cmd)
     for(int j=0;j<2;j++) {
       sql=AlarmSqlFields("DESTINATIONS","SILENCE",j)+
 	"from `DESTINATIONS` where "+
-	QString::asprintf("`NODES`.`MATRIX_TYPE`=%u ",Config::LwrpMatrix)+
+	QString::asprintf("`NODES`.`MATRIX_TYPE`=%u ",DRConfig::LwrpMatrix)+
 	"order by `DESTINATIONS`.`HOST_ADDRESS`,`DESTINATIONS`.`SLOT`";
-      q=new SqlQuery(sql);
+      q=new DRSqlQuery(sql);
       while(q->next()) {
 	proto_socket->
 	  write(AlarmRecord("SILENCEADD",SyLwrpClient::OutputMeter,j,q).toUtf8());
@@ -668,7 +668,7 @@ void ProtocolD::ProcessCommand(const QString &cmd)
 
   if(keyword=="listtether") {
     sql=QString("select `TETHER`.`IS_ACTIVE` from `TETHER`");
-    q=new SqlQuery(sql);
+    q=new DRSqlQuery(sql);
     if(q->first()) {
       proto_socket->
 	write((QString("TETHER\t")+q->value(0).toString()+"\r\n").toUtf8());
@@ -681,7 +681,7 @@ void ProtocolD::ProcessCommand(const QString &cmd)
   if(keyword=="subscribetether") {
     proto_tether_subscribed=true;
     sql=QString("select `TETHER`.`IS_ACTIVE` from `TETHER`");
-    q=new SqlQuery(sql);
+    q=new DRSqlQuery(sql);
     if(q->first()) {
       proto_socket->
 	write((QString("TETHER\t")+q->value(0).toString()+"\r\n").toUtf8());
@@ -809,7 +809,7 @@ QString ProtocolD::AlarmSqlFields(const QString &tbl_name,const QString &type,
 
 
 QString ProtocolD::AlarmRecord(const QString &keyword,SyLwrpClient::MeterType port,
-			       int chan,SqlQuery *q)
+			       int chan,DRSqlQuery *q)
 {
   QString ret="";
 
@@ -863,7 +863,7 @@ QString ProtocolD::DestinationSqlFields() const
 }
 
 
-QString ProtocolD::DestinationRecord(const QString &keyword,SqlQuery *q) const
+QString ProtocolD::DestinationRecord(const QString &keyword,DRSqlQuery *q) const
 {
   QString ret="";
 
@@ -892,7 +892,7 @@ QString ProtocolD::GpiSqlFields() const
 }
 
 
-QString ProtocolD::GpiRecord(const QString &keyword,SqlQuery *q)
+QString ProtocolD::GpiRecord(const QString &keyword,DRSqlQuery *q)
 {
   QString ret="";
 
@@ -922,7 +922,7 @@ QString ProtocolD::GpoSqlFields() const
 }
 
 
-QString ProtocolD::GpoRecord(const QString &keyword,SqlQuery *q)
+QString ProtocolD::GpoRecord(const QString &keyword,DRSqlQuery *q)
 {
   QString ret="";
 
@@ -954,7 +954,7 @@ QString ProtocolD::NodeSqlFields() const
 }
 
 
-QString ProtocolD::NodeRecord(const QString &keyword,SqlQuery *q) const
+QString ProtocolD::NodeRecord(const QString &keyword,DRSqlQuery *q) const
 {
   QString ret;
 
@@ -988,7 +988,7 @@ QString ProtocolD::SourceSqlFields() const
 }
 
 
-QString ProtocolD::SourceRecord(const QString &keyword,SqlQuery *q)
+QString ProtocolD::SourceRecord(const QString &keyword,DRSqlQuery *q)
 {
   QString ret="";
 
@@ -1013,7 +1013,7 @@ bool ProtocolD::IsLivewire(const QHostAddress &host_addr1,
   bool ret;
   int size=1;
   QString sql=NodeSqlFields()+" where "+
-    QString::asprintf("`NODES`.`MATRIX_TYPE`=%u && (",Config::LwrpMatrix)+
+    QString::asprintf("`NODES`.`MATRIX_TYPE`=%u && (",DRConfig::LwrpMatrix)+
     "`NODES`.`HOST_ADDRESS`='"+host_addr1.toString()+"' ";
   if(!host_addr2.isNull()) {
     sql+="|| `NODES`.`HOST_ADDRESS`='"+host_addr2.toString()+"'";
@@ -1022,7 +1022,7 @@ bool ProtocolD::IsLivewire(const QHostAddress &host_addr1,
     }
   }
   sql+=")";
-  SqlQuery *q=new SqlQuery(sql);
+  DRSqlQuery *q=new DRSqlQuery(sql);
   ret=q->size()==size;
   delete q;
 

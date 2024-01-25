@@ -2,7 +2,7 @@
 //
 // dmap(8) map utility
 //
-//   (C) Copyright 2017 Fred Gleason <fredg@paravelsystems.com>
+//   (C) Copyright 2017-2024 Fred Gleason <fredg@paravelsystems.com>
 //
 //   This program is free software; you can redistribute it and/or modify
 //   it under the terms of the GNU General Public License version 2 as
@@ -30,8 +30,8 @@
 #include <sy5/symcastsocket.h>
 #include <sy5/sylwrp_client.h>
 
-#include "dparser.h"
-#include "endpointmap.h"
+#include <drdparser.h>
+#include <drendpointmap.h>
 
 #define DMAP_USAGE "[options]\n"
 #define DMAP_DEFAULT_SCAN_DURATION 25000
@@ -52,10 +52,10 @@ class MainObject : public QObject
   void Generate();
   int ProcessUseNodeList(const QString &filename);
   int ProcessSkipNodeList(const QString &filename);
-  DParser *map_parser;
+  DRDParser *map_parser;
   QString map_output_map;
-  EndPointMap::RouterType map_router_type;
-  EndPointMap *map_map;
+  DREndPointMap::RouterType map_router_type;
+  DREndPointMap *map_map;
   int map_router_number;
   bool map_save_names;
   QString map_router_name;

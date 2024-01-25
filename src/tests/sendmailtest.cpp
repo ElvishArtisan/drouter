@@ -2,7 +2,7 @@
 //
 // Test the email sending routines.
 //
-//   (C) Copyright 2021-2022 Fred Gleason <fredg@paravelsystems.com>
+//   (C) Copyright 2021-2024 Fred Gleason <fredg@paravelsystems.com>
 //
 //   This program is free software; you can redistribute it and/or modify
 //   it under the terms of the GNU General Public License version 2 as
@@ -22,7 +22,8 @@
 
 #include <sy5/sycmdswitch.h>
 
-#include "sendmail.h"
+#include <drsendmail.h>
+
 #include "sendmailtest.h"
 
 MainObject::MainObject(QObject *parent)
@@ -110,7 +111,7 @@ MainObject::MainObject(QObject *parent)
     body=QString::fromUtf8(raw);
   }
 
-  if(!SendMail(&err_msg,subject,body,
+  if(!DRSendMail(&err_msg,subject,body,
 	       from_addr,to_addrs,cc_addrs,bcc_addrs,dry_run)) {
     fprintf(stderr,"%s\n",err_msg.toUtf8().constData());
     exit(256);

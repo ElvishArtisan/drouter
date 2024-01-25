@@ -34,9 +34,10 @@
 #include <systemd/sd-daemon.h>
 #endif  // LIBSYSTEMD
 
+#include <drsendmail.h>
+
 #include "drouterd.h"
 #include "paths.h"
-#include "sendmail.h"
 
 MainObject::MainObject(QObject *parent)
   : QObject(parent)
@@ -79,7 +80,7 @@ MainObject::MainObject(QObject *parent)
   //
   // Configuration
   //
-  main_config=new Config();
+  main_config=new DRConfig();
   main_config->load();
 
   //
@@ -260,18 +261,18 @@ void MainObject::instanceStateChangedData(bool state)
 
   if(state) {
     syslog(LOG_INFO,"we are now the active instance");
-    body="Server "+main_config->tetherHostname(Config::This)+
+    body="Server "+main_config->tetherHostname(DRConfig::This)+
       " is now the active instance\r\n";
   }
   else {
     syslog(LOG_INFO,"we are no longer the active instance");
-    body="Server "+main_config->tetherHostname(Config::This)+
+    body="Server "+main_config->tetherHostname(DRConfig::This)+
       " is no longer the active instance\r\n";
   }
-  if((Config::emailIsValid(main_config->alertAddress()))&&
-     (Config::emailIsValid(main_config->fromAddress()))) {
-    SendMail(&err_msg,tr("Drouter Server Alert"),body,
-	     main_config->fromAddress(),main_config->alertAddress());
+  if((DRConfig::emailIsValid(main_config->alertAddress()))&&
+     (DRConfig::emailIsValid(main_config->fromAddress()))) {
+    DRSendMail(&err_msg,tr("Drouter Server Alert"),body,
+	       main_config->fromAddress(),main_config->alertAddress());
   }
 }
 

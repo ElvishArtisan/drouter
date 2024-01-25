@@ -26,9 +26,10 @@
 #include <QPixmap>
 #include <QWidget>
 
-#include "logindialog.h"
+#include <drjparser.h>
+#include <drlogindialog.h>
+
 #include "panelwidget.h"
-#include "jparser.h"
 
 #define OUTPUTPANEL_USAGE "[options]\n"
 
@@ -59,8 +60,8 @@ class MainWidget : public QWidget
   unsigned panel_rows;
   bool clock_state;
   QPixmap *panel_saspanels_map;
-  JParser *panel_parser;
-  LoginDialog *panel_login_dialog;
+  DRJParser *panel_parser;
+  DRLoginDialog *panel_login_dialog;
   QList<PanelWidget *> panel_widgets;
 };
 

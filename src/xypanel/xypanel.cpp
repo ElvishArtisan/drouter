@@ -1,8 +1,8 @@
 // xypanel.cpp
 //
-// An applet for controling an LWPath output
+// X-Y controller applet for DRouter
 //
-//   (C) Copyright 2002-2022 Fred Gleason <fredg@paravelsystems.com>
+//   (C) Copyright 2002-2024 Fred Gleason <fredg@paravelsystems.com>
 //
 //   This program is free software; you can redistribute it and/or modify
 //   it under the terms of the GNU General Public License as
@@ -134,7 +134,7 @@ MainWidget::MainWidget(QWidget *parent)
   //
   // Dialogs
   //
-  panel_login_dialog=new LoginDialog("XYPanel",this);
+  panel_login_dialog=new DRLoginDialog("XYPanel",this);
 
   //
   // Router Control
@@ -143,7 +143,7 @@ MainWidget::MainWidget(QWidget *parent)
   panel_router_label->setAlignment(Qt::AlignRight|Qt::AlignVCenter);
   panel_router_label->setFont(button_font);
   panel_router_label->setDisabled(true);
-  panel_router_box=new ComboBox(this);
+  panel_router_box=new DRComboBox(this);
   panel_router_box->setDisabled(true);
   connect(panel_router_box,SIGNAL(activated(int)),
 	  this,SLOT(routerBoxActivatedData(int)));
@@ -154,7 +154,7 @@ MainWidget::MainWidget(QWidget *parent)
   panel_output_label=new QLabel(tr("Output (Destination)"),this);
   panel_output_label->setFont(button_font);
   panel_output_label->setDisabled(true);
-  panel_output_box=new ComboBox(this);
+  panel_output_box=new DRComboBox(this);
   panel_output_box->setDisabled(true);
   connect(panel_output_box,SIGNAL(activated(int)),
 	  this,SLOT(outputBoxActivatedData(int)));
@@ -165,7 +165,7 @@ MainWidget::MainWidget(QWidget *parent)
   panel_input_label=new QLabel(tr("Input (Source)"),this);
   panel_input_label->setFont(button_font);
   panel_input_label->setDisabled(true);
-  panel_input_box=new ComboBox(this);
+  panel_input_box=new DRComboBox(this);
   panel_input_box->setDisabled(true);
   connect(panel_input_box,SIGNAL(activated(int)),
 	  this,SLOT(inputBoxActivatedData(int)));
@@ -195,9 +195,9 @@ MainWidget::MainWidget(QWidget *parent)
   //
   // The SA Connection
   //
-  panel_parser=new SaParser(this);
-  connect(panel_parser,SIGNAL(connected(bool,SaParser::ConnectionState)),
-	  this,SLOT(connectedData(bool,SaParser::ConnectionState)));
+  panel_parser=new DRSaParser(this);
+  connect(panel_parser,SIGNAL(connected(bool,DRSaParser::ConnectionState)),
+	  this,SLOT(connectedData(bool,DRSaParser::ConnectionState)));
   connect(panel_parser,SIGNAL(error(QAbstractSocket::SocketError)),
 	  this,SLOT(errorData(QAbstractSocket::SocketError)));
   connect(panel_parser,SIGNAL(outputCrosspointChanged(int,int,int)),
@@ -307,7 +307,7 @@ void MainWidget::cancelData()
 }
 
 
-void MainWidget::connectedData(bool state,SaParser::ConnectionState cstate)
+void MainWidget::connectedData(bool state,DRSaParser::ConnectionState cstate)
 {
   if(state) {
     QMap<int,QString> routers=panel_parser->routers();
@@ -328,10 +328,10 @@ void MainWidget::connectedData(bool state,SaParser::ConnectionState cstate)
     panel_initial_connected=true;
   }
   else {
-    if(cstate!=SaParser::WatchdogActive) {
+    if(cstate!=DRSaParser::WatchdogActive) {
       QMessageBox::warning(this,"XYPanel - "+tr("Error"),
 			   tr("Login error")+": "+
-			   SaParser::connectionStateString(cstate));
+			   DRSaParser::connectionStateString(cstate));
       exit(1);
     }
     panel_router_label->setDisabled(true);

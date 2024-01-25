@@ -1,4 +1,4 @@
-// endpointmap.h
+// drendpointmap.h
 //
 // Map integers to DRouter endpoints.
 //
@@ -18,8 +18,8 @@
 //   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
 //
 
-#ifndef ENDPOINTMAP_H
-#define ENDPOINTMAP_H
+#ifndef DRENDPOINTMAP_H
+#define DRENDPOINTMAP_H
 
 #include <stdio.h>
 
@@ -28,13 +28,13 @@
 #include <QString>
 #include <QStringList>
 
-#define ENDPOINTMAP_MAP_DIRECTORY "/etc/drouter/maps.d"
-#define ENDPOINTMAP_MAP_FILTER QString("*.map")
+#define DRENDPOINTMAP_MAP_DIRECTORY "/etc/drouter/maps.d"
+#define DRENDPOINTMAP_MAP_FILTER QString("*.map")
 
-class Snapshot
+class DRSnapshot
 {
  public:
-  Snapshot(const QString &name);
+  DRSnapshot(const QString &name);
   QString name() const;
   void setName(const QString &str);
   int routeQuantity() const;
@@ -51,12 +51,12 @@ class Snapshot
 
 
 
-class EndPointMap
+class DREndPointMap
 {
  public:
   enum RouterType {AudioRouter=0,GpioRouter=1,LastRouter=2};
   enum Type {Input=0,Output=1,LastType=3};
-  EndPointMap();
+  DREndPointMap();
   RouterType routerType() const;
   void setRouterType(RouterType type);
   QString routerName() const;
@@ -80,12 +80,12 @@ class EndPointMap
 	      const QString &name=QString());
   void erase(Type type,int n);
   int snapshotQuantity() const;
-  Snapshot *snapshot(int n) const;
-  Snapshot *snapshot(const QString &name);
+  DRSnapshot *snapshot(int n) const;
+  DRSnapshot *snapshot(const QString &name);
   bool load(const QString &filename,QStringList *unused_lines=NULL);
   bool save(const QString &filename,bool incl_names) const;
   void save(FILE *f,bool incl_names) const;
-  static bool loadSet(QMap<int,EndPointMap *> *maps,QStringList *msgs);
+  static bool loadSet(QMap<int,DREndPointMap *> *maps,QStringList *msgs);
   static QString routerTypeString(RouterType type);
   static QString typeString(Type type);
 
@@ -93,12 +93,12 @@ class EndPointMap
   QString map_router_name;
   int map_router_number;
   RouterType map_router_type;
-  QList<QHostAddress> map_host_addresses[EndPointMap::LastType];
-  QList<int> map_slots[EndPointMap::LastType];
-  QStringList map_names[EndPointMap::LastType];
-  QList<bool> map_name_is_customs[EndPointMap::LastType];
-  QList<Snapshot *> map_snapshots;
+  QList<QHostAddress> map_host_addresses[DREndPointMap::LastType];
+  QList<int> map_slots[DREndPointMap::LastType];
+  QStringList map_names[DREndPointMap::LastType];
+  QList<bool> map_name_is_customs[DREndPointMap::LastType];
+  QList<DRSnapshot *> map_snapshots;
 };
 
 
-#endif  // ENDPOINTMAP_H
+#endif  // DRENDPOINTMAP_H

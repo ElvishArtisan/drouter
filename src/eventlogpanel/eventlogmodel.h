@@ -26,7 +26,7 @@
 #include <QList>
 #include <QPalette>
 
-#include "sqlquery.h"
+#include <drsqlquery.h>
 
 class EventLogModel : public QAbstractTableModel
 {
@@ -55,11 +55,11 @@ class EventLogModel : public QAbstractTableModel
  protected:
   void updateModel();
   void updateRowLine(int line);
-  void updateRow(int row,SqlQuery *q);
+  void updateRow(int row,DRSqlQuery *q);
   QString sqlFields() const;
 
  private:
-  QString RouteString(SqlQuery *q) const;
+  QString RouteString(DRSqlQuery *q) const;
   QString RouteParameter(const QVariant &name,QColor *color) const;
   QString Fmt(const QString &str,const QColor &col,bool bold) const;
   QString Fmt(int num,const QColor &col,bool bold) const;

@@ -29,7 +29,7 @@ MultiStateLabel::MultiStateLabel(int router,int linenum,const QString &legend,
   c_label->setText(legend);
   c_label->setAlignment(Qt::AlignCenter);
 
-  c_widget=new MultiStateWidget(router,linenum,Qt::Horizontal,this);
+  c_widget=new DRMultiStateWidget(router,linenum,Qt::Horizontal,this);
 }
 
 

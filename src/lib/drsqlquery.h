@@ -1,4 +1,4 @@
-// sqlquery.h
+// drsqlquery.h
 //
 // Database driver with automatic error reporting
 //
@@ -19,17 +19,17 @@
 //   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
 //
 
-#ifndef SQLQUERY_H
-#define SQLQUERY_H
+#ifndef DRSQLQUERY_H
+#define DRSQLQUERY_H
 
 #include <QString>
 #include <QSqlQuery>
 #include <QVariant>
 
-class SqlQuery : public QSqlQuery
+class DRSqlQuery : public QSqlQuery
 {
  public:
-  SqlQuery(const QString &query);
+  DRSqlQuery(const QString &query);
   int columns() const;
   QVariant value(int index) const;
   static QVariant run(const QString &sql,bool *ok=NULL);
@@ -42,4 +42,4 @@ class SqlQuery : public QSqlQuery
 };
 
 
-#endif  // SQLQUERY_H
+#endif  // DRSQLQUERY_H

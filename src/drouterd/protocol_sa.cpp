@@ -150,33 +150,33 @@ void ProtocolSa::disconnectedData()
 void ProtocolSa::snapshotHostLookupFinishedData(const QHostInfo &info)
 {
   QString sql=QString("update `PERM_SA_EVENTS` set ")+
-    "`HOSTNAME`='"+SqlQuery::escape(info.hostName())+"',"+
+    "`HOSTNAME`='"+DRSqlQuery::escape(info.hostName())+"',"+
     "`STATUS`='Y' where "+
     QString::asprintf("`ID`=%d",proto_event_lookups.value(info.lookupId()));
-  SqlQuery::apply(sql);
+  DRSqlQuery::apply(sql);
 }
 
 
 void ProtocolSa::routeHostLookupFinishedData(const QHostInfo &info)
 {
   QString sql=QString("update `PERM_SA_EVENTS` set ")+
-    "`HOSTNAME`='"+SqlQuery::escape(info.hostName())+"' where "+
+    "`HOSTNAME`='"+DRSqlQuery::escape(info.hostName())+"' where "+
     QString::asprintf("`ID`=%d",proto_event_lookups.value(info.lookupId()));
-  SqlQuery::apply(sql);
+  DRSqlQuery::apply(sql);
 }
 
 
 void ProtocolSa::destinationCrosspointChanged(const QHostAddress &host_addr,int slotnum)
 {
   QString sql;
-  SqlQuery *q;
+  DRSqlQuery *q;
  
   if(!proto_routestat_masked) {
-    sql=RouteStatSqlFields(EndPointMap::AudioRouter)+
+    sql=RouteStatSqlFields(DREndPointMap::AudioRouter)+
       " `SA_DESTINATIONS`.`HOST_ADDRESS`='"+host_addr.toString()+"' && "+
       QString::asprintf("`SA_DESTINATIONS`.`SLOT`=%d ",slotnum)+
       "order by `SA_DESTINATIONS`.`SOURCE_NUMBER`,`SA_DESTINATIONS`.`ROUTER_NUMBER`";
-    q=new SqlQuery(sql);
+    q=new DRSqlQuery(sql);
     while(q->next()) {
       proto_socket->write(RouteStatMessage(q).toUtf8());
       proto_socket->write(">>",2);
@@ -189,13 +189,13 @@ void ProtocolSa::destinationCrosspointChanged(const QHostAddress &host_addr,int 
 void ProtocolSa::gpiCodeChanged(const QHostAddress &host_addr,int slotnum)
 {
   QString sql;
-  SqlQuery *q;
+  DRSqlQuery *q;
 
   if(!proto_gpistat_masked) {
     sql=GPIStatSqlFields()+" where "+
       "`GPIS`.`HOST_ADDRESS`='"+host_addr.toString()+"' && "+
       QString::asprintf("`GPIS`.`SLOT`=%d",slotnum);
-    q=new SqlQuery(sql);
+    q=new DRSqlQuery(sql);
     while(q->next()) {
       proto_socket->write(GPIStatMessage(q).toUtf8());
       proto_socket->write(">>",2);
@@ -208,13 +208,13 @@ void ProtocolSa::gpiCodeChanged(const QHostAddress &host_addr,int slotnum)
 void ProtocolSa::gpoCodeChanged(const QHostAddress &host_addr,int slotnum)
 {
   QString sql;
-  SqlQuery *q;
+  DRSqlQuery *q;
 
   if(!proto_gpostat_masked) {
     sql=GPOStatSqlFields()+" where "+
       "`GPOS`.`HOST_ADDRESS`='"+host_addr.toString()+"' && "+
       QString::asprintf("`GPOS`.`SLOT`=%d",slotnum);
-    q=new SqlQuery(sql);
+    q=new DRSqlQuery(sql);
     while(q->next()) {
       proto_socket->write(GPOStatMessage(q).toUtf8());
       proto_socket->write(">>",2);
@@ -227,14 +227,14 @@ void ProtocolSa::gpoCodeChanged(const QHostAddress &host_addr,int slotnum)
 void ProtocolSa::gpoCrosspointChanged(const QHostAddress &host_addr,int slotnum)
 {
   QString sql;
-  SqlQuery *q;
+  DRSqlQuery *q;
 
   if(!proto_routestat_masked) {
-    sql=RouteStatSqlFields(EndPointMap::GpioRouter)+
+    sql=RouteStatSqlFields(DREndPointMap::GpioRouter)+
       " `SA_GPOS`.`HOST_ADDRESS`='"+host_addr.toString()+"' && "+
       QString::asprintf("`SA_GPOS`.`SLOT`=%d ",slotnum)+
       "order by `SA_GPOS`.`SOURCE_NUMBER`,`SA_GPOS`.`ROUTER_NUMBER`";
-    q=new SqlQuery(sql);
+    q=new DRSqlQuery(sql);
     while(q->next()) {
       proto_socket->write(RouteStatMessage(q).toUtf8());
       proto_socket->write(">>",2);
@@ -252,47 +252,47 @@ void ProtocolSa::quitting()
 
 void ProtocolSa::ActivateRoute(unsigned router,unsigned output,unsigned input)
 {
-  EndPointMap *map;
+  DREndPointMap *map;
 
   AddRouteEvent(router,output,input-1);
   if((map=proto_maps.value(router))!=NULL) {
-    QHostAddress dst_addr=map->hostAddress(EndPointMap::Output,output);
-    int dst_slotnum=map->slot(EndPointMap::Output,output);
+    QHostAddress dst_addr=map->hostAddress(DREndPointMap::Output,output);
+    int dst_slotnum=map->slot(DREndPointMap::Output,output);
     if(!dst_addr.isNull()&&(dst_slotnum>=0)) {
       if(input==0) {
 	switch(map->routerType()) {
-	case EndPointMap::AudioRouter:
+	case DREndPointMap::AudioRouter:
 	  clearCrosspoint(dst_addr,dst_slotnum);
 	  break;
 
-	case EndPointMap::GpioRouter:
+	case DREndPointMap::GpioRouter:
 	  clearGpioCrosspoint(dst_addr,dst_slotnum);
 	  break;
 
-	case EndPointMap::LastRouter:
+	case DREndPointMap::LastRouter:
 	  break;
 	}
       }
       else {
-	QHostAddress src_addr=map->hostAddress(EndPointMap::Input,input-1);
-	int src_slotnum=map->slot(EndPointMap::Input,input-1);
+	QHostAddress src_addr=map->hostAddress(DREndPointMap::Input,input-1);
+	int src_slotnum=map->slot(DREndPointMap::Input,input-1);
 	if(!src_addr.isNull()&&(src_slotnum>=0)) {
 	  switch(map->routerType()) {
-	  case EndPointMap::AudioRouter:
+	  case DREndPointMap::AudioRouter:
 	    setCrosspoint(dst_addr,dst_slotnum,src_addr,src_slotnum);
 	    syslog(LOG_INFO,"activated audio route router: %d  input: %d to output: %d from %s",
 		   router+1,output+1,input,
 		   proto_socket->peerAddress().toString().toUtf8().constData());
 	    break;
 	  
-	  case EndPointMap::GpioRouter:
+	  case DREndPointMap::GpioRouter:
 	    setGpioCrosspoint(dst_addr,dst_slotnum,src_addr,src_slotnum);
 	    syslog(LOG_INFO,"activated gpio route router: %d  input: %d to output: %d from %s",
 		   router+1,output+1,input,
 		   proto_socket->peerAddress().toString().toUtf8().constData());
 	    break;
 
-	  case EndPointMap::LastRouter:
+	  case DREndPointMap::LastRouter:
 	    break;
 	  }
 	}
@@ -304,12 +304,12 @@ void ProtocolSa::ActivateRoute(unsigned router,unsigned output,unsigned input)
 
 void ProtocolSa::TriggerGpi(unsigned router,unsigned input,unsigned msecs,const QString &code)
 {
-  EndPointMap *map;
+  DREndPointMap *map;
 
   if((map=proto_maps.value(router))!=NULL) {
-    if(map->routerType()==EndPointMap::GpioRouter) {
-      QHostAddress addr=map->hostAddress(EndPointMap::Input,input);
-      int slotnum=map->slot(EndPointMap::Input,input);
+    if(map->routerType()==DREndPointMap::GpioRouter) {
+      QHostAddress addr=map->hostAddress(DREndPointMap::Input,input);
+      int slotnum=map->slot(DREndPointMap::Input,input);
       if((!addr.isNull())&&(slotnum>=0)) {
 	setGpiState(addr,slotnum,code);
 	syslog(LOG_INFO,
@@ -324,12 +324,12 @@ void ProtocolSa::TriggerGpi(unsigned router,unsigned input,unsigned msecs,const 
 
 void ProtocolSa::TriggerGpo(unsigned router,unsigned output,unsigned msecs,const QString &code)
 {
-  EndPointMap *map;
+  DREndPointMap *map;
 
   if((map=proto_maps.value(router))!=NULL) {
-    if(map->routerType()==EndPointMap::GpioRouter) {
-      QHostAddress addr=map->hostAddress(EndPointMap::Output,output);
-      int slotnum=map->slot(EndPointMap::Output,output);
+    if(map->routerType()==DREndPointMap::GpioRouter) {
+      QHostAddress addr=map->hostAddress(DREndPointMap::Output,output);
+      int slotnum=map->slot(DREndPointMap::Output,output);
       if((!addr.isNull())&&(slotnum>=0)) {
 	setGpoState(addr,slotnum,code);
 	syslog(LOG_INFO,
@@ -345,7 +345,7 @@ void ProtocolSa::TriggerGpo(unsigned router,unsigned output,unsigned msecs,const
 
 void ProtocolSa::SendSnapshotNames(unsigned router)
 {
-  EndPointMap *map=NULL;
+  DREndPointMap *map=NULL;
 
   if((map=proto_maps.value(router))==NULL) {
     proto_socket->write(QString("Error - Bay Does Not exist.\r\n").toUtf8());
@@ -362,8 +362,8 @@ void ProtocolSa::SendSnapshotNames(unsigned router)
 
 void ProtocolSa::SendSnapshotRoutes(unsigned router,const QString &snap_name)
 {
-  EndPointMap *map=NULL;
-  Snapshot *ss=NULL;
+  DREndPointMap *map=NULL;
+  DRSnapshot *ss=NULL;
 
   if((map=proto_maps.value(router))==NULL) {
     proto_socket->write(QString("Error - Bay Does Not exist.\r\n").toUtf8());
@@ -394,8 +394,8 @@ void ProtocolSa::SendSnapshotRoutes(unsigned router,const QString &snap_name)
 void ProtocolSa::ActivateSnapshot(unsigned router,const QString &snapshot_name)
 {
   QString sql;
-  EndPointMap *map=NULL;
-  Snapshot *ss=NULL;
+  DREndPointMap *map=NULL;
+  DRSnapshot *ss=NULL;
 
   if((map=proto_maps.value(router))==NULL) {
     proto_socket->write(QString("Error - Bay Does Not exist.\r\n").toUtf8());
@@ -416,15 +416,15 @@ void ProtocolSa::ActivateSnapshot(unsigned router,const QString &snapshot_name)
 
 void ProtocolSa::SendSourceInfo(unsigned router)
 {
-  EndPointMap *map;
+  DREndPointMap *map;
   QString sql;
-  SqlQuery *q;
+  DRSqlQuery *q;
 
   if((map=proto_maps.value(router))==NULL) {
     proto_socket->write(QString("Error - Bay Does Not exist.\r\n").toUtf8());
     return;
   }
-  if(map->routerType()==EndPointMap::AudioRouter) {
+  if(map->routerType()==DREndPointMap::AudioRouter) {
     sql=SourceNamesSqlFields(map->routerType())+"where "+
       QString::asprintf("`SA_SOURCES`.`ROUTER_NUMBER`=%u ",router)+
       "order by `SA_SOURCES`.`SOURCE_NUMBER`";
@@ -434,7 +434,7 @@ void ProtocolSa::SendSourceInfo(unsigned router)
       QString::asprintf("`SA_GPIS`.`ROUTER_NUMBER`=%u ",router)+
       "order by `SA_GPIS`.`SOURCE_NUMBER`";
   }
-  q=new SqlQuery(sql);
+  q=new DRSqlQuery(sql);
   proto_socket->write(QString::asprintf("Begin SourceNames - %d\r\n",router+1).toUtf8());
   while(q->next()) {
     proto_socket->write(SourceNamesMessage(map->routerType(),q).toUtf8());
@@ -444,9 +444,9 @@ void ProtocolSa::SendSourceInfo(unsigned router)
 }
 
 
-QString ProtocolSa::SourceNamesSqlFields(EndPointMap::RouterType type) const
+QString ProtocolSa::SourceNamesSqlFields(DREndPointMap::RouterType type) const
 {
-  if(type==EndPointMap::AudioRouter) {
+  if(type==DREndPointMap::AudioRouter) {
     return QString("select ")+
       "`SA_SOURCES`.`SOURCE_NUMBER`,"+  // 00
       "`SOURCES`.`NAME`,"+              // 01
@@ -469,9 +469,9 @@ QString ProtocolSa::SourceNamesSqlFields(EndPointMap::RouterType type) const
 }
 
 
-QString ProtocolSa::SourceNamesMessage(EndPointMap::RouterType type,SqlQuery *q)
+QString ProtocolSa::SourceNamesMessage(DREndPointMap::RouterType type,DRSqlQuery *q)
 {
-  if(type==EndPointMap::AudioRouter) {
+  if(type==DREndPointMap::AudioRouter) {
     QString name=q->value(1).toString();
     if(!q->value(6).toString().isEmpty()) {
       name=q->value(6).toString();
@@ -504,16 +504,16 @@ QString ProtocolSa::SourceNamesMessage(EndPointMap::RouterType type,SqlQuery *q)
 
 void ProtocolSa::SendDestInfo(unsigned router)
 {
-  EndPointMap *map;
+  DREndPointMap *map;
   QString sql;
-  SqlQuery *q;
+  DRSqlQuery *q;
 
   if((map=proto_maps.value(router))==NULL) {
     proto_socket->write(QString("Error - Bay Does Not exist.\r\n").toUtf8());
     return;
   }
   proto_socket->write(">>",2);
-  if(map->routerType()==EndPointMap::AudioRouter) {
+  if(map->routerType()==DREndPointMap::AudioRouter) {
     sql=DestNamesSqlFields(map->routerType())+"where "+
       QString::asprintf("`SA_DESTINATIONS`.`ROUTER_NUMBER`=%u ",router)+
       "order by `SA_DESTINATIONS`.`SOURCE_NUMBER`";
@@ -523,7 +523,7 @@ void ProtocolSa::SendDestInfo(unsigned router)
       QString::asprintf("`SA_GPOS`.`ROUTER_NUMBER`=%u ",router)+
       "order by `SA_GPOS`.`SOURCE_NUMBER`";
   }
-  q=new SqlQuery(sql);
+  q=new DRSqlQuery(sql);
   proto_socket->write(QString::asprintf("Begin DestNames - %d\r\n",router+1).toUtf8());
   while(q->next()) {
     proto_socket->write(DestNamesMessage(map->routerType(),q).toUtf8());
@@ -533,9 +533,9 @@ void ProtocolSa::SendDestInfo(unsigned router)
 }
 
 
-QString ProtocolSa::DestNamesSqlFields(EndPointMap::RouterType type) const
+QString ProtocolSa::DestNamesSqlFields(DREndPointMap::RouterType type) const
 {
-  if(type==EndPointMap::AudioRouter) {
+  if(type==DREndPointMap::AudioRouter) {
     return QString("select ")+
       "`SA_DESTINATIONS`.`SOURCE_NUMBER`,"+  // 00
       "`DESTINATIONS`.`NAME`,"+              // 01
@@ -556,7 +556,7 @@ QString ProtocolSa::DestNamesSqlFields(EndPointMap::RouterType type) const
 }
 
 
-QString ProtocolSa::DestNamesMessage(EndPointMap::RouterType type,SqlQuery *q)
+QString ProtocolSa::DestNamesMessage(DREndPointMap::RouterType type,DRSqlQuery *q)
 {
   QString name=q->value(1).toString();
   if(!q->value(5).toString().isEmpty()) {
@@ -574,16 +574,16 @@ QString ProtocolSa::DestNamesMessage(EndPointMap::RouterType type,SqlQuery *q)
 
 void ProtocolSa::SendGpiInfo(unsigned router,int input)
 {
-  EndPointMap *map;
+  DREndPointMap *map;
   QString sql;
-  SqlQuery *q;
+  DRSqlQuery *q;
 
   if((map=proto_maps.value(router))==NULL) {
     proto_socket->write(QString("Error - Router Does Not exist.\r\n").toUtf8());
     proto_socket->write(">>",2);
     return;
   }
-  if(map->routerType()!=EndPointMap::GpioRouter) {
+  if(map->routerType()!=DREndPointMap::GpioRouter) {
     proto_socket->write(QString("Error - Router is not a GPIO Router.\r\n").toUtf8());
     return;
   }
@@ -598,7 +598,7 @@ void ProtocolSa::SendGpiInfo(unsigned router,int input)
       QString::asprintf("`SA_GPIS`.`SOURCE_NUMBER`=%u ",input)+
       "order by `SA_GPIS`.`SOURCE_NUMBER`";
   }
-  q=new SqlQuery(sql);
+  q=new DRSqlQuery(sql);
   while(q->next()) {
     proto_socket->write(GPIStatMessage(q).toUtf8());
   }
@@ -616,7 +616,7 @@ QString ProtocolSa::GPIStatSqlFields() const
 }
 
 
-QString ProtocolSa::GPIStatMessage(SqlQuery *q)
+QString ProtocolSa::GPIStatMessage(DRSqlQuery *q)
 {
   return QString::asprintf("GPIStat %d %d ",q->value(0).toInt()+1,q->value(1).toInt()+1)+
     q->value(2).toString()+"\r\n";
@@ -625,15 +625,15 @@ QString ProtocolSa::GPIStatMessage(SqlQuery *q)
 
 void ProtocolSa::SendGpoInfo(unsigned router,int output)
 {
-  EndPointMap *map;
+  DREndPointMap *map;
   QString sql;
-  SqlQuery *q;
+  DRSqlQuery *q;
 
   if((map=proto_maps.value(router))==NULL) {
     proto_socket->write(QString("Error - Router Does Not exist.\r\n").toUtf8());
     return;
   }
-  if(map->routerType()!=EndPointMap::GpioRouter) {
+  if(map->routerType()!=DREndPointMap::GpioRouter) {
     proto_socket->write(QString("Error - Router is not a GPIO Router.\r\n").toUtf8());
     return;
   }
@@ -649,7 +649,7 @@ void ProtocolSa::SendGpoInfo(unsigned router,int output)
       QString::asprintf("`SA_GPOS`.`SOURCE_NUMBER`=%u ",output)+
       "order by `SA_GPOS`.`SOURCE_NUMBER`";
   }
-  q=new SqlQuery(sql);
+  q=new DRSqlQuery(sql);
   while(q->next()) {
     proto_socket->write(GPOStatMessage(q).toUtf8());
   }
@@ -667,7 +667,7 @@ QString ProtocolSa::GPOStatSqlFields() const
 }
 
 
-QString ProtocolSa::GPOStatMessage(SqlQuery *q)
+QString ProtocolSa::GPOStatMessage(DRSqlQuery *q)
 {
   return QString::asprintf("GPOStat %d %d ",q->value(0).toInt()+1,q->value(1).toInt()+1)+
     q->value(2).toString()+"\r\n";
@@ -676,16 +676,16 @@ QString ProtocolSa::GPOStatMessage(SqlQuery *q)
 
 void ProtocolSa::SendRouteInfo(unsigned router,int output)
 {
-  EndPointMap *map;
+  DREndPointMap *map;
   QString sql;
-  SqlQuery *q;
+  DRSqlQuery *q;
 
   if((map=proto_maps.value(router))==NULL) {
     proto_socket->write(QString("Error - Bay Does Not exist.\r\n").toUtf8());
     return;
   }
   sql=RouteStatSqlFields(map->routerType());
-  if(map->routerType()==EndPointMap::AudioRouter) {
+  if(map->routerType()==DREndPointMap::AudioRouter) {
     sql+=QString::asprintf("`SA_DESTINATIONS`.`ROUTER_NUMBER`=%d ",router);
     if(output>=0) {
       sql+=QString::asprintf("&& `SA_DESTINATIONS`.`SOURCE_NUMBER`=%d ",output);
@@ -704,10 +704,10 @@ void ProtocolSa::SendRouteInfo(unsigned router,int output)
     }
     sql+="order by `SA_GPOS`.`SOURCE_NUMBER`";
   }
-  q=new SqlQuery(sql);
+  q=new DRSqlQuery(sql);
   q->first();
   if(output<0) {  // Send all crosspoints for the router
-    for(int i=0;i<map->quantity(EndPointMap::Output);i++) {
+    for(int i=0;i<map->quantity(DREndPointMap::Output);i++) {
       if(q->isValid()&&q->value(1).toInt()==i) {
 	proto_socket->write(RouteStatMessage(q).toUtf8());
 	q->next();
@@ -719,7 +719,7 @@ void ProtocolSa::SendRouteInfo(unsigned router,int output)
     }
   }
   else {  // Send just the requested crosspoint
-    if(output<map->quantity(EndPointMap::Output)) {
+    if(output<map->quantity(DREndPointMap::Output)) {
       if(q->isValid()) {
 	proto_socket->write(RouteStatMessage(q).toUtf8());
       }
@@ -733,9 +733,9 @@ void ProtocolSa::SendRouteInfo(unsigned router,int output)
 }
 
 
-QString ProtocolSa::RouteStatSqlFields(EndPointMap::RouterType type)
+QString ProtocolSa::RouteStatSqlFields(DREndPointMap::RouterType type)
 {
-  if(type==EndPointMap::AudioRouter) {
+  if(type==DREndPointMap::AudioRouter) {
     return QString("select ")+
       "`SA_DESTINATIONS`.`ROUTER_NUMBER`,"+  // 00
       "`SA_DESTINATIONS`.`SOURCE_NUMBER`,"+  // 01
@@ -758,7 +758,7 @@ QString ProtocolSa::RouteStatSqlFields(EndPointMap::RouterType type)
 }
 
 
-QString ProtocolSa::RouteStatMessage(SqlQuery *q)
+QString ProtocolSa::RouteStatMessage(DRSqlQuery *q)
 {
   int input=q->value(2).toInt()+1;
   if(q->value(2).isNull()) {
@@ -835,7 +835,7 @@ void ProtocolSa::ProcessCommand(const QString &cmd)
 
   if(cmds[0].toLower()=="routernames") {
     proto_socket->write(QString("Begin RouterNames\r\n").toUtf8());
-    for(QMap<int,EndPointMap *>::const_iterator it=proto_maps.begin();
+    for(QMap<int,DREndPointMap *>::const_iterator it=proto_maps.begin();
 	it!=proto_maps.end();it++) {
       proto_socket->write((QString::asprintf("    %d ",it.value()->routerNumber()+1)+
 			   it.value()->routerName()+"\r\n").toUtf8());
@@ -1082,7 +1082,7 @@ void ProtocolSa::LoadMaps()
   // Load New Maps
   //
   QStringList msgs;
-  if(!EndPointMap::loadSet(&proto_maps,&msgs)) {
+  if(!DREndPointMap::loadSet(&proto_maps,&msgs)) {
     syslog(LOG_ERR,"map load error: %s, aborting",
 	   msgs.join("\n").toUtf8().constData());
     exit(1);
@@ -1149,12 +1149,12 @@ void ProtocolSa::AddRouteEvent(int router,int output,int input)
     sql+="`USERNAME`=NULL";
   }
   else {
-    sql+="`USERNAME`='"+SqlQuery::escape(proto_username)+"'";
+    sql+="`USERNAME`='"+DRSqlQuery::escape(proto_username)+"'";
   }
   proto_event_lookups
     [QHostInfo::lookupHost(proto_socket->peerAddress().toString(),
      this,SLOT(routeHostLookupFinishedData(const QHostInfo &)))]=
-    SqlQuery::run(sql).toInt();
+    DRSqlQuery::run(sql).toInt();
 }
 
 
@@ -1167,16 +1167,16 @@ void ProtocolSa::AddSnapEvent(int router,const QString &name)
     "`ORIGINATING_ADDRESS`='"+proto_socket->peerAddress().toString()+"',"+
     QString::asprintf("`ROUTER_NUMBER`=%d,",router)+
     "`COMMENT`='"+tr("Executing snapshot")+" "+
-    SqlQuery::escape("<strong>"+name+"</strong>")+" - "+
+    DRSqlQuery::escape("<strong>"+name+"</strong>")+" - "+
     tr("Router")+": "+QString::asprintf("<strong>%d</strong>",1+router)+"',";
   if(proto_username.isEmpty()) {
     sql+="`USERNAME`=NULL";
   }
   else {
-    sql+="`USERNAME`='"+SqlQuery::escape(proto_username)+"'";
+    sql+="`USERNAME`='"+DRSqlQuery::escape(proto_username)+"'";
   }
   proto_event_lookups
     [QHostInfo::lookupHost(proto_socket->peerAddress().toString(),
      this,SLOT(snapshotHostLookupFinishedData(const QHostInfo &)))]=
-    SqlQuery::run(sql).toInt();
+    DRSqlQuery::run(sql).toInt();
 }

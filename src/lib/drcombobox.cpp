@@ -1,4 +1,4 @@
-// combobox.cpp
+// drcombobox.cpp
 //
 // ComboBox widget
 //
@@ -20,28 +20,28 @@
 
 #include <stdio.h>
 
-#include "combobox.h"
+#include "drcombobox.h"
 
-ComboBox::ComboBox(QWidget *parent)
+DRComboBox::DRComboBox(QWidget *parent)
   : QComboBox(parent)
 {
   box_read_only=false;
 }
 
 
-void ComboBox::setReadOnly(bool state)
+void DRComboBox::setReadOnly(bool state)
 {
   box_read_only=state;
 }
 
 
-QVariant ComboBox::currentItemData(int role)
+QVariant DRComboBox::currentItemData(int role)
 {
   return itemData(currentIndex(),role);
 }
 
 
-bool ComboBox::setCurrentItemData(unsigned val)
+bool DRComboBox::setCurrentItemData(unsigned val)
 {
   for(int i=0;i<count();i++) {
     if(itemData(i).toUInt()==val) {
@@ -53,7 +53,7 @@ bool ComboBox::setCurrentItemData(unsigned val)
 }
 
 
-void ComboBox::keyPressEvent(QKeyEvent *e)
+void DRComboBox::keyPressEvent(QKeyEvent *e)
 {
   if(box_read_only) {
     e->accept();
@@ -64,7 +64,7 @@ void ComboBox::keyPressEvent(QKeyEvent *e)
 }
 
 
-void ComboBox::mousePressEvent(QMouseEvent *e)
+void DRComboBox::mousePressEvent(QMouseEvent *e)
 {
   if(box_read_only) {
     e->accept();

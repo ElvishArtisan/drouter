@@ -25,8 +25,8 @@
 
 #include "matrix_gvg7000.h"
 
-MatrixGvg7000::MatrixGvg7000(unsigned id,Config *conf,QObject *parent)
-  : Matrix(Config::Gvg7000Matrix,id,conf,parent)
+MatrixGvg7000::MatrixGvg7000(unsigned id,DRConfig *conf,QObject *parent)
+  : Matrix(DRConfig::Gvg7000Matrix,id,conf,parent)
 {
   d_host_port=0;
   d_connected=false;
@@ -88,7 +88,7 @@ QString MatrixGvg7000::hostName() const
 
 QString MatrixGvg7000::deviceName() const
 {
-  return Config::matrixTypeString(matrixType());
+  return DRConfig::matrixTypeString(matrixType());
 }
 
 
@@ -201,7 +201,7 @@ void MatrixGvg7000::connectToHost(const QHostAddress &addr,uint16_t port,
 void MatrixGvg7000::connectedData()
 {
   d_node.setHostAddress(d_host_address);
-  d_node.setDeviceName(Config::matrixTypeString(Config::Gvg7000Matrix));
+  d_node.setDeviceName(DRConfig::matrixTypeString(DRConfig::Gvg7000Matrix));
   d_node.setProductName("Grass Valley Series 7000 Protocol");
   d_node.setSrcSlotQuantity(0);
   d_node.setDstSlotQuantity(0);

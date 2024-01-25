@@ -20,8 +20,8 @@
 ##
 ## Use automake to process this into a Makefile.in
 
-SUBDIRS = buttonpanel\
-          common\
+SUBDIRS = lib\
+          buttonpanel\
           dmap\
           drouterd\
           eventlogpanel\

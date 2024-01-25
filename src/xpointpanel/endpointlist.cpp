@@ -2,7 +2,7 @@
 //
 // Input/Output labels for xpointpanel(1)
 //
-//   (C) Copyright 2017-2022 Fred Gleason <fredg@paravelsystems.com>
+//   (C) Copyright 2017-2024 Fred Gleason <fredg@paravelsystems.com>
 //
 //   This program is free software; you can redistribute it and/or modify
 //   it under the terms of the GNU General Public License as
@@ -53,11 +53,11 @@ EndpointList::EndpointList(Qt::Orientation orient,QWidget *parent)
   //
   switch(orient) {
   case Qt::Horizontal:
-    list_gpio_type=EndPointMap::Input;
+    list_gpio_type=DREndPointMap::Input;
     break;
 
   case Qt::Vertical:
-    list_gpio_type=EndPointMap::Output;
+    list_gpio_type=DREndPointMap::Output;
     break;
   }
 
@@ -122,7 +122,7 @@ void EndpointList::setRouter(int router)
 }
 
 
-void EndpointList::setParser(SaParser *psr)
+void EndpointList::setParser(DRSaParser *psr)
 {
   list_parser=psr;
 }
@@ -181,7 +181,7 @@ void EndpointList::addEndpoint(int router,int endpt,const QString &name)
   list_endpoints.push_back(endpt);
   list_labels[endpt]=name;
   list_gpio_widgets[endpt]=
-    new MultiStateWidget(router,endpt,list_orientation,this);
+    new DRMultiStateWidget(router,endpt,list_orientation,this);
   list_gpio_widgets.value(endpt)->setVisible(list_show_gpio);
 
   //  QFontMetrics fm(font());
@@ -202,7 +202,7 @@ void EndpointList::clearEndpoints()
   list_labels.clear();
   list_width=0;
 
-  for(QMap<int,MultiStateWidget *>::const_iterator it=list_gpio_widgets.begin();
+  for(QMap<int,DRMultiStateWidget *>::const_iterator it=list_gpio_widgets.begin();
       it!=list_gpio_widgets.end();it++) {
     delete it.value();
   }
@@ -252,7 +252,7 @@ void EndpointList::setPosition(int pixels)
 
 void EndpointList::setGpioState(int router,int linenum,const QString &code)
 {
-  for(QMap<int,MultiStateWidget *>::const_iterator it=list_gpio_widgets.begin();
+  for(QMap<int,DRMultiStateWidget *>::const_iterator it=list_gpio_widgets.begin();
       it!=list_gpio_widgets.end();it++) {
     it.value()->setState(router,linenum,code);
   }
@@ -575,7 +575,7 @@ void EndpointList::resizeEvent(QResizeEvent *e)
   int ypos=-list_position;
 
   if(list_orientation==Qt::Horizontal) {
-    for(QMap<int,MultiStateWidget *>::const_iterator it=
+    for(QMap<int,DRMultiStateWidget *>::const_iterator it=
 	  list_gpio_widgets.begin();it!=list_gpio_widgets.end();it++) {
       it.value()->setGeometry(w-65,
 			      ypos+4,
@@ -586,7 +586,7 @@ void EndpointList::resizeEvent(QResizeEvent *e)
   }
 
   if(list_orientation==Qt::Vertical) {
-    for(QMap<int,MultiStateWidget *>::const_iterator it=
+    for(QMap<int,DRMultiStateWidget *>::const_iterator it=
 	  list_gpio_widgets.begin();it!=list_gpio_widgets.end();it++) {
       it.value()->setGeometry(ypos+4,
 			      h-65,

@@ -1,8 +1,8 @@
 // xypanel.h
 //
-// X-Y controller applet for LWPath
+// X-Y controller applet for DRouter
 //
-//   (C) Copyright 2002-2016 Fred Gleason <fredg@paravelsystems.com>
+//   (C) Copyright 2002-2024 Fred Gleason <fredg@paravelsystems.com>
 //
 //   This program is free software; you can redistribute it and/or modify
 //   it under the terms of the GNU General Public License as
@@ -29,9 +29,9 @@
 #include <QTimer>
 #include <QWidget>
 
-#include "combobox.h"
-#include "logindialog.h"
-#include "saparser.h"
+#include <drcombobox.h>
+#include <drlogindialog.h>
+#include <drsaparser.h>
 
 #define XYPANEL_USAGE "[options]\n"
 
@@ -50,7 +50,7 @@ class MainWidget : public QWidget
   void inputBoxActivatedData(int n);
   void takeData();
   void cancelData();
-  void connectedData(bool state,SaParser::ConnectionState cstate);
+  void connectedData(bool state,DRSaParser::ConnectionState cstate);
   void errorData(QAbstractSocket::SocketError err);
   void outputCrosspointChangedData(int router,int output,int input);
   void clockData();
@@ -59,21 +59,21 @@ class MainWidget : public QWidget
   void resizeEvent(QResizeEvent *e);
 
  private:
-  LoginDialog *panel_login_dialog;
+  DRLoginDialog *panel_login_dialog;
   QString panel_hostname;
   QString panel_username;
   QString panel_password;
   void SetArmedState(bool state);
   QLabel *panel_router_label;
-  ComboBox *panel_router_box;
+  DRComboBox *panel_router_box;
   int panel_current_input;
   QLabel *panel_output_label;
-  ComboBox *panel_input_box;
+  DRComboBox *panel_input_box;
   QLabel *panel_input_label;
   QPushButton *panel_take_button;
   QPushButton *panel_cancel_button;
-  ComboBox *panel_output_box;
-  SaParser *panel_parser;
+  DRComboBox *panel_output_box;
+  DRSaParser *panel_parser;
   QTimer *panel_clock_timer;
   bool panel_clock_state;
   bool panel_initial_connected;

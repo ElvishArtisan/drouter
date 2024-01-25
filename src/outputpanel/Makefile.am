@@ -2,7 +2,7 @@
 ##
 ## Makefile for the outputpanel(1) applet
 ##
-## (C) Copyright 2016-2022 Fred Gleason <fredg@paravelsystems.com>
+## (C) Copyright 2016-2024 Fred Gleason <fredg@paravelsystems.com>
 ##
 ##   This program is free software; you can redistribute it and/or modify
 ##   it under the terms of the GNU General Public License as
@@ -20,7 +20,8 @@
 ##
 ## Use automake to process this into a Makefile.in
 
-AM_CPPFLAGS = -Wall -DPREFIX=\"$(prefix)\" -Wno-strict-aliasing -std=c++11 -fPIC @QT5GUI_CFLAGS@ @SWITCHYARD5_CFLAGS@
+AM_CPPFLAGS = -Wall -DPREFIX=\"$(prefix)\" -I$(top_srcdir)/src/lib -Wno-strict-aliasing -std=c++11 -fPIC @QT5GUI_CFLAGS@ @SWITCHYARD5_CFLAGS@
+LIBS = -L$(top_srcdir)/src/lib
 MOC = @QT_MOC@
 
 # The dependency for qt's Meta Object Compiler (moc)
@@ -33,18 +34,11 @@ bin_PROGRAMS = outputpanel
 dist_outputpanel_SOURCES = outputpanel.cpp outputpanel.h\
                            panelwidget.cpp panelwidget.h
 
-nodist_outputpanel_SOURCES = combobox.cpp combobox.h\
-                             jparser.cpp jparser.h\
-                             logindialog.cpp logindialog.h\
-                             saparser.cpp saparser.h\
-                             moc_combobox.cpp\
-                             moc_jparser.cpp\
-                             moc_logindialog.cpp\
-                             moc_saparser.cpp\
-                             moc_outputpanel.cpp\
+nodist_outputpanel_SOURCES = moc_outputpanel.cpp\
                              moc_panelwidget.cpp
 
-outputpanel_LDADD = @QT5GUI_LIBS@ @SWITCHYARD5_LIBS@
+outputpanel_LDADD = -ldrouter @QT5GUI_LIBS@ @SWITCHYARD5_LIBS@
+outputpanel_LDFLAGS = -rdynamic
 
 CLEANFILES = *~\
              moc_*\
@@ -53,17 +47,7 @@ CLEANFILES = *~\
              *.pdb\
              *ilk
 
-DISTCLEANFILES = combobox.cpp combobox.h\
-                 config.cpp config.h\
-                 dparser.cpp dparser.h\
-                 endpointmap.cpp endpointmap.h\
-                 jparser.cpp jparser.h\
-                 logindialog.cpp logindialog.h\
-                 multistatewidget.cpp multistatewidget.h\
-                 paths.h\
-                 saparser.cpp saparser.h\
-                 sendmail.cpp sendmail.h\
-                 sqlquery.cpp sqlquery.h
+DISTCLEANFILES = 
 
 MAINTAINERCLEANFILES = *~\
                        Makefile.in

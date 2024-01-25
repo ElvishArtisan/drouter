@@ -2,7 +2,7 @@
 //
 // dmap(8) routing daemon
 //
-//   (C) Copyright 2017-2022 Fred Gleason <fredg@paravelsystems.com>
+//   (C) Copyright 2017-2024 Fred Gleason <fredg@paravelsystems.com>
 //
 //   This program is free software; you can redistribute it and/or modify
 //   it under the terms of the GNU General Public License version 2 as
@@ -42,7 +42,7 @@ MainObject::MainObject(QObject *parent)
   map_save_names=false;
   map_router_number=0;
   map_router_name="Livewire";
-  map_router_type=EndPointMap::AudioRouter;
+  map_router_type=DREndPointMap::AudioRouter;
   map_verbose=false;
 
   SyCmdSwitch *cmd=new SyCmdSwitch("dmap",VERSION,DMAP_USAGE);
@@ -77,10 +77,10 @@ MainObject::MainObject(QObject *parent)
     }
     if(cmd->key(i)=="--router-type") {
       bool found=false;
-      for(int j=0;j<EndPointMap::LastRouter;j++) {
-	EndPointMap::RouterType rtype=(EndPointMap::RouterType)j;
+      for(int j=0;j<DREndPointMap::LastRouter;j++) {
+	DREndPointMap::RouterType rtype=(DREndPointMap::RouterType)j;
 	if(cmd->value(i).toLower()==
-	   EndPointMap::routerTypeString(rtype).toLower()) {
+	   DREndPointMap::routerTypeString(rtype).toLower()) {
 	  map_router_type=rtype;
 	  found=true;
 	}
@@ -195,7 +195,7 @@ void MainObject::connectedData(bool state)
     }
   }
 
-  if(map_router_type==EndPointMap::AudioRouter) {
+  if(map_router_type==DREndPointMap::AudioRouter) {
     //
     // Sources
     //
@@ -204,7 +204,7 @@ void MainObject::connectedData(bool state)
       for(unsigned j=0;j<node->srcSlotQuantity();j++) {
 	SySource *src=map_parser->src(hosts.at(i),j);
 	map_map->
-	  insert(EndPointMap::Input,map_map->quantity(EndPointMap::Input),
+	  insert(DREndPointMap::Input,map_map->quantity(DREndPointMap::Input),
 		 node->hostAddress(),j,src->name());
       }
     }
@@ -217,12 +217,12 @@ void MainObject::connectedData(bool state)
       for(unsigned j=0;j<node->dstSlotQuantity();j++) {
 	SyDestination *dst=map_parser->dst(hosts.at(i),j);
 	map_map->
-	  insert(EndPointMap::Output,map_map->quantity(EndPointMap::Output),
+	  insert(DREndPointMap::Output,map_map->quantity(DREndPointMap::Output),
 		 node->hostAddress(),j,dst->name());
       }
     }
   }
-  if(map_router_type==EndPointMap::GpioRouter) {
+  if(map_router_type==DREndPointMap::GpioRouter) {
     //
     // GPIs
     //
@@ -230,7 +230,7 @@ void MainObject::connectedData(bool state)
       SyNode *node=map_parser->node(hosts.at(i));
       for(unsigned j=0;j<node->gpiSlotQuantity();j++) {
 	map_map->
-	  insert(EndPointMap::Input,map_map->quantity(EndPointMap::Input),
+	  insert(DREndPointMap::Input,map_map->quantity(DREndPointMap::Input),
 		 node->hostAddress(),j,QString::asprintf("OUT %d",j+1));
       }
     }
@@ -242,7 +242,7 @@ void MainObject::connectedData(bool state)
       SyNode *node=map_parser->node(hosts.at(i));
       for(unsigned j=0;j<node->gpoSlotQuantity();j++) {
 	map_map->
-	  insert(EndPointMap::Output,map_map->quantity(EndPointMap::Output),
+	  insert(DREndPointMap::Output,map_map->quantity(DREndPointMap::Output),
 		 node->hostAddress(),j,QString::asprintf("OUT %d",j+1));
       }
     }
@@ -275,10 +275,10 @@ void MainObject::errorData(QAbstractSocket::SocketError err,
 
 void MainObject::Check()
 {
-  QMap<int,EndPointMap *> maps;
+  QMap<int,DREndPointMap *> maps;
   QStringList msgs;
 
-  if(!EndPointMap::loadSet(&maps,&msgs)) {
+  if(!DREndPointMap::loadSet(&maps,&msgs)) {
     for(int i=0;i<msgs.size();i++) {
       fprintf(stderr,"%s\n",(const char *)msgs.at(i).toUtf8());
     }
@@ -298,7 +298,7 @@ void MainObject::Generate()
   //
   // Create Map
   //
-  map_map=new EndPointMap();
+  map_map=new DREndPointMap();
   map_map->setRouterType(map_router_type);
   map_map->setRouterName(map_router_name);
   map_map->setRouterNumber(map_router_number-1);
@@ -306,7 +306,7 @@ void MainObject::Generate()
   //
   // Connect to DRouter
   //
-  map_parser=new DParser(this);
+  map_parser=new DRDParser(this);
   connect(map_parser,SIGNAL(connected(bool)),this,SLOT(connectedData(bool)));
   connect(map_parser,
 	  SIGNAL(error(QAbstractSocket::SocketError,const QString &)),

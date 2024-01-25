@@ -153,13 +153,13 @@ QModelIndex EventLogModel::refresh()
 {
   QModelIndex ret;
   QList<QVariant> texts; 
-  SqlQuery *q=NULL;
+  DRSqlQuery *q=NULL;
   QString sql=sqlFields()+" where "+
     "`STATUS`!='O' && "+
     QString::asprintf("`PERM_SA_EVENTS`.`ID`>%d ",d_max_id)+
     "order by `PERM_SA_EVENTS`.`ID` ";
   beginResetModel();
-  q=new SqlQuery(sql);
+  q=new DRSqlQuery(sql);
   while(q->next()) {
     d_line_ids.push_back(-1);
     d_texts.push_back(texts);
@@ -179,7 +179,7 @@ void EventLogModel::refresh(const QModelIndex &row)
     QString sql=sqlFields()+
       "where "+
       QString::asprintf("`PERM_SA_EVENTS`.`ID`=%d",d_line_ids.at(row.row()));
-    SqlQuery *q=new SqlQuery(sql);
+    DRSqlQuery *q=new DRSqlQuery(sql);
     if(q->first()) {
       updateRow(row.row(),q);
       emit dataChanged(createIndex(row.row(),0),
@@ -220,7 +220,7 @@ void EventLogModel::setShowAttributes(int attrs)
 void EventLogModel::updateModel()
 {
   QList<QVariant> texts; 
-  SqlQuery *q=NULL;
+  DRSqlQuery *q=NULL;
   QString sql=sqlFields()+" where "+
     "`STATUS`!='O' && "+
     QString::asprintf("`PERM_SA_EVENTS`.`ID`>%d ",d_max_id)+
@@ -229,7 +229,7 @@ void EventLogModel::updateModel()
   d_line_ids.clear();
   d_texts.clear();
   d_icons.clear();
-  q=new SqlQuery(sql);
+  q=new DRSqlQuery(sql);
   while(q->next()) {
     d_line_ids.push_back(-1);
     d_texts.push_back(texts);
@@ -247,7 +247,7 @@ void EventLogModel::updateRowLine(int line)
     QString sql=sqlFields()+
       "where "+
       QString::asprintf("`PERM_SA_EVENTS`.`ID`=%d",d_line_ids.at(line));
-    SqlQuery *q=new SqlQuery(sql);
+    DRSqlQuery *q=new DRSqlQuery(sql);
     if(q->first()) {
       updateRow(line,q);
     }
@@ -256,7 +256,7 @@ void EventLogModel::updateRowLine(int line)
 }
 
 
-void EventLogModel::updateRow(int row,SqlQuery *q)
+void EventLogModel::updateRow(int row,DRSqlQuery *q)
 {
   QString str;
   QList<QVariant> texts;
@@ -350,7 +350,7 @@ QString EventLogModel::sqlFields() const
 }
 
 
-QString EventLogModel::RouteString(SqlQuery *q) const
+QString EventLogModel::RouteString(DRSqlQuery *q) const
 {
   QString ret;
   QColor router_color;

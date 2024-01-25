@@ -28,10 +28,11 @@
 
 #include <sy5/sylwrp_client.h>
 
-#include "endpointmap.h"
-#include "jparser.h"
+#include <drendpointmap.h>
+#include <drjparser.h>
+#include <drsqlquery.h>
+
 #include "protocol.h"
-#include "sqlquery.h"
 
 class ProtocolJ : public Protocol
 {
@@ -61,23 +62,23 @@ class ProtocolJ : public Protocol
   void SendSnapshotRoutes(unsigned router,const QString &snap_name);
   void ActivateSnapshot(unsigned router,const QString &snapshot_name);
   void SendSourceInfo(unsigned router);
-  QString SourceNamesSqlFields(EndPointMap::RouterType type) const;
-  QString SourceNamesMessage(EndPointMap::RouterType type,SqlQuery *q,
+  QString SourceNamesSqlFields(DREndPointMap::RouterType type) const;
+  QString SourceNamesMessage(DREndPointMap::RouterType type,DRSqlQuery *q,
 			     int padding=0,bool final=false);
   void SendDestInfo(unsigned router);
-  QString DestNamesSqlFields(EndPointMap::RouterType type) const;
-  QString DestNamesMessage(EndPointMap::RouterType type,SqlQuery *q,
+  QString DestNamesSqlFields(DREndPointMap::RouterType type) const;
+  QString DestNamesMessage(DREndPointMap::RouterType type,DRSqlQuery *q,
 			   int padding=0,bool final=false);
   void SendGpiInfo(unsigned router,int input);
   QString GPIStatSqlFields() const;
-  QString GPIStatMessage(SqlQuery *q);
+  QString GPIStatMessage(DRSqlQuery *q);
   void SendGpoInfo(unsigned router,int output);
   QString GPOStatSqlFields() const;
-  QString GPOStatMessage(SqlQuery *q);
+  QString GPOStatMessage(DRSqlQuery *q);
   void SendRouteInfo(unsigned router,int output);
-  QString RouteStatSqlFields(EndPointMap::RouterType type);
+  QString RouteStatSqlFields(DREndPointMap::RouterType type);
   QString RouteStatMessage(int router,int output,int input);
-  QString RouteStatMessage(SqlQuery *q);
+  QString RouteStatMessage(DRSqlQuery *q);
   void MaskGpiStat(bool state);
   void MaskGpoStat(bool state);
   void MaskRouteStat(bool state);
@@ -90,7 +91,7 @@ class ProtocolJ : public Protocol
   void AddRouteEvent(int router,int output,int input);
   void AddSnapEvent(int router,const QString &name);
 
-  void SendError(JParser::ErrorType etype,const QString &remarks=QString());
+  void SendError(DRJParser::ErrorType etype,const QString &remarks=QString());
 
   QString JsonPadding(int padding);
   QString JsonEscape(const QString &str);
@@ -134,7 +135,7 @@ class ProtocolJ : public Protocol
   QTcpServer *proto_server;
   QByteArray proto_accum;
   int proto_accum_level;
-  QMap<int,EndPointMap *> proto_maps;
+  QMap<int,DREndPointMap *> proto_maps;
   QMap <int,int> proto_event_lookups;
   QString proto_username;
   QString proto_hostname;

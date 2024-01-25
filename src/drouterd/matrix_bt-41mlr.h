@@ -42,7 +42,7 @@ class MatrixBt41Mlr :public Matrix
 {
   Q_OBJECT;
  public:
-  MatrixBt41Mlr(unsigned id,Config *conf,QObject *parent=0);
+  MatrixBt41Mlr(unsigned id,DRConfig *conf,QObject *parent=0);
   ~MatrixBt41Mlr();
   bool isConnected() const;
   QHostAddress hostAddress() const;

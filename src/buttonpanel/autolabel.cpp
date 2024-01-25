@@ -2,7 +2,7 @@
 //
 // Label widget with automatic text sizing
 //
-// (C) 2017-2022 Fred Gleason <fredg@paravelsystems.com>
+// (C) 2017-2024 Fred Gleason <fredg@paravelsystems.com>
 //
 //   This program is free software; you can redistribute it and/or modify
 //   it under the terms of the GNU General Public License as

@@ -30,6 +30,7 @@ m4_ifdef([AM_SILENT_RULES],[AM_SILENT_RULES([yes])])
 #
 AC_PROG_CXX
 AC_LANG(C++)
+AC_PROG_LIBTOOL
 
 # to avoid rpath usage :
 # http://wiki.debian.net/index.cgi?RpathIssue
@@ -266,10 +267,9 @@ AC_CONFIG_FILES([ \
     python/Makefile \
     scripts/install_python.sh \
     scripts/Makefile \
-    src/Makefile \
+    src/lib/Makefile \
     src/buttonpanel/Makefile \
-    src/common/Makefile \
-    src/common/paths.h\
+    src/lib/paths.h\
     src/dmap/Makefile \
     src/drouterd/Makefile \
     src/eventlogpanel/Makefile \
@@ -278,6 +278,7 @@ AC_CONFIG_FILES([ \
     src/tests/Makefile \
     src/xpointpanel/Makefile \
     src/xypanel/Makefile \
+    src/Makefile \
     systemd/Makefile \
     systemd/drouter.service \
     drouter.spec \
@@ -286,19 +287,6 @@ AC_CONFIG_FILES([ \
 AC_OUTPUT()
 chmod 755 build_debs.sh
 chmod 755 scripts/install_python.sh
-
-#
-# Link Common Elements
-#
-./link_common.sh buttonpanel
-./link_common.sh dmap
-./link_common.sh drouterd
-./link_common.sh eventlogpanel
-./link_common.sh outputpanel
-./link_common.sh shotpanel
-./link_common.sh tests
-./link_common.sh xpointpanel
-./link_common.sh xypanel
 
 AC_MSG_NOTICE()
 AC_MSG_NOTICE(Now enter 'make' to build the software.)

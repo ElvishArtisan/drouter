@@ -23,7 +23,7 @@
 #define STATELIGHT_H
 
 #include "autolabel.h"
-#include "jparser.h"
+#include "drjparser.h"
 
 #define STATELIGHT_OFF_STYLESHEET "color: #444444; background-color: #111111;"
 
@@ -32,7 +32,7 @@ class StateLight : public AutoLabel
   Q_OBJECT
  public:
   StateLight(int router,int endpt,const QString &legend,const QString &mask,
-	     const QChar &dir,JParser *parser,QWidget *parent=0);
+	     const QChar &dir,DRJParser *parser,QWidget *parent=0);
   ~StateLight();
   QSize sizeHint() const;
   QSizePolicy sizePolicy() const;
@@ -42,7 +42,7 @@ class StateLight : public AutoLabel
   void setTextColor(const QColor &color);
 
  private slots:
-  void changeConnectionState(bool state,JParser::ConnectionState cstate);
+  void changeConnectionState(bool state,DRJParser::ConnectionState cstate);
   void setState(int router,int endpt,const QString &code);
 
  protected:
@@ -58,7 +58,7 @@ class StateLight : public AutoLabel
   QColor c_text_color;
   QColor c_background_color;
   QString c_on_stylesheet;
-  JParser *c_parser;
+  DRJParser *c_parser;
 };
 
 

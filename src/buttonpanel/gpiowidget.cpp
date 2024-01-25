@@ -27,7 +27,7 @@
 #include "statebutton.h"
 #include "statelight.h"
 
-GpioWidget::GpioWidget(GpioParser *gpio_parser,JParser *sa_parser,
+GpioWidget::GpioWidget(GpioParser *gpio_parser,DRJParser *sa_parser,
 		       QWidget *parent)
   : QWidget(parent)
 {
@@ -164,8 +164,8 @@ GpioWidget::GpioWidget(GpioParser *gpio_parser,JParser *sa_parser,
   //
   // The SA Connection
   //
-  connect(c_parser,SIGNAL(connected(bool,JParser::ConnectionState)),
-	  this,SLOT(changeConnectionState(bool,JParser::ConnectionState)));
+  connect(c_parser,SIGNAL(connected(bool,DRJParser::ConnectionState)),
+	  this,SLOT(changeConnectionState(bool,DRJParser::ConnectionState)));
 
   show();
 }
@@ -231,7 +231,7 @@ void GpioWidget::resizeEvent(QResizeEvent *e)
 
 
 void GpioWidget::changeConnectionState(bool state,
-				       JParser::ConnectionState cstate)
+				       DRJParser::ConnectionState cstate)
 {
   c_title_label->setVisible(state);
   for(int i=0;i<c_widgets.size();i++) {

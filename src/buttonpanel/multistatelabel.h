@@ -23,7 +23,7 @@
 #define MULTISTATELABEL_H
 
 #include "autolabel.h"
-#include "multistatewidget.h"
+#include "drmultistatewidget.h"
 
 class MultiStateLabel : public QWidget
 {
@@ -42,7 +42,7 @@ class MultiStateLabel : public QWidget
 
  private:
   AutoLabel *c_label;
-  MultiStateWidget *c_widget;
+  DRMultiStateWidget *c_widget;
 };
 
 

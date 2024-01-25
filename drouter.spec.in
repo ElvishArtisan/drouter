@@ -72,6 +72,8 @@ make -j @CPUS_AVAIL@
 %install
 rm -rf $RPM_BUILD_ROOT
 make install DESTDIR=$RPM_BUILD_ROOT
+rm -f $RPM_BUILD_ROOT%{_libdir}/libdrouter.a
+rm -f $RPM_BUILD_ROOT%{_libdir}/libdrouter.la
 mkdir -p $RPM_BUILD_ROOT/etc/drouter/maps.d
 mkdir -p $RPM_BUILD_ROOT/etc/drouter/scripts.d
 mkdir -p $RPM_BUILD_ROOT/%{_datadir}/doc/drouter-%{version}
@@ -144,6 +146,8 @@ rm -rf $RPM_BUILD_ROOT
 %{_bindir}/pf_import.py
 %{_sbindir}/drouterd
 %{_sbindir}/dprotod
+%{_libdir}/libdrouter-@VERSION@.so
+%{_libdir}/libdrouter.so
 %{_datadir}/man/man1/dmap.1.gz
 %{_datadir}/man/man5/drouter.conf.5.gz
 %{_datadir}/man/man5/drouter.map.5.gz
@@ -170,6 +174,8 @@ rm -rf $RPM_BUILD_ROOT
 %{_bindir}/shotpanel
 %{_bindir}/xpointpanel
 %{_bindir}/xypanel
+%{_libdir}/libdrouter-@VERSION@.so
+%{_libdir}/libdrouter.so
 %{_datadir}/man/man1/buttonpanel.1.gz
 %{_datadir}/man/man1/eventlogpanel.1.gz
 %{_datadir}/man/man1/outputpanel.1.gz
@@ -190,6 +196,8 @@ rm -rf $RPM_BUILD_ROOT
 
 
 %changelog
+* Thu Jan 24 2024 Fred Gleason <fredg@paravelsystems.com>
+-- Refactored file layout for dynamic linking.
 * Sat Jul 30 2022 Fred Gleason <fredg@paravelsystems.com>
 -- Removed the 32x32 version of the 'drouter' icon.
 * Thu Jul 21 2022 Fred Gleason <fredg@paravelsystems.com>

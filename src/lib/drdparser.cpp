@@ -1,4 +1,4 @@
-// dparser.cpp
+// drdparser.cpp
 //
 // Parser for Protocol D
 //
@@ -20,9 +20,9 @@
 
 #include <QStringList>
 
-#include "dparser.h"
+#include "drdparser.h"
 
-DParser::DParser(QObject *parent)
+DRDParser::DRDParser(QObject *parent)
   : QObject(parent)
 {
   d_socket=NULL;
@@ -38,7 +38,7 @@ DParser::DParser(QObject *parent)
 }
 
 
-QList<QHostAddress> DParser::nodeHostAddresses() const
+QList<QHostAddress> DRDParser::nodeHostAddresses() const
 {
   QList<QHostAddress> addrs;
 
@@ -50,7 +50,7 @@ QList<QHostAddress> DParser::nodeHostAddresses() const
 }
 
 
-SyNode *DParser::node(const QHostAddress &hostaddr)
+SyNode *DRDParser::node(const QHostAddress &hostaddr)
 {
   try {
     return d_nodes[hostaddr.toIPv4Address()];
@@ -61,7 +61,7 @@ SyNode *DParser::node(const QHostAddress &hostaddr)
 }
 
 
-SySource *DParser::src(const QHostAddress &hostaddr,int slot) const
+SySource *DRDParser::src(const QHostAddress &hostaddr,int slot) const
 {
   try {
     return d_sources[ToIndex(hostaddr,slot)];
@@ -72,7 +72,7 @@ SySource *DParser::src(const QHostAddress &hostaddr,int slot) const
 }
 
 
-SyDestination *DParser::dst(const QHostAddress &hostaddr,int slot) const
+SyDestination *DRDParser::dst(const QHostAddress &hostaddr,int slot) const
 {
   try {
     return d_destinations[ToIndex(hostaddr,slot)];
@@ -83,7 +83,7 @@ SyDestination *DParser::dst(const QHostAddress &hostaddr,int slot) const
 }
 
 
-void DParser::connectToHost(const QString &hostname,uint16_t port)
+void DRDParser::connectToHost(const QString &hostname,uint16_t port)
 {
   d_hostname=hostname;
   d_port=port;
@@ -97,7 +97,7 @@ void DParser::connectToHost(const QString &hostname,uint16_t port)
 }
 
 
-void DParser::connectedData()
+void DRDParser::connectedData()
 {
   SendCommand("SubscribeDestinations");
   SendCommand("SubscribeNodes");
@@ -106,7 +106,7 @@ void DParser::connectedData()
 }
 
 
-void DParser::readyReadData()
+void DRDParser::readyReadData()
 {
   char data[1501];
   int n;
@@ -131,7 +131,7 @@ void DParser::readyReadData()
 }
 
 
-void DParser::errorData(QAbstractSocket::SocketError err)
+void DRDParser::errorData(QAbstractSocket::SocketError err)
 {
   QString err_msg=tr("Socket Error")+QString::asprintf(" %u",err);
 
@@ -171,13 +171,13 @@ void DParser::errorData(QAbstractSocket::SocketError err)
 }
 
 
-void DParser::pollTimerData()
+void DRDParser::pollTimerData()
 {
   SendCommand("Ping");
 }
 
 
-void DParser::watchdogTimerData()
+void DRDParser::watchdogTimerData()
 {
   for(QMap<uint64_t,SyDestination *>::const_iterator it=d_destinations.begin();
       it!=d_destinations.end();it++) {
@@ -208,7 +208,7 @@ void DParser::watchdogTimerData()
 }
 
 
-void DParser::ProcessCommand(const QString &cmd)
+void DRDParser::ProcessCommand(const QString &cmd)
 {
   QStringList cmds=cmd.split("\t");  
   QHostAddress addr;
@@ -324,8 +324,8 @@ void DParser::ProcessCommand(const QString &cmd)
       emit connected(true);
     }
     d_watchdog_timer->stop();
-    d_watchdog_timer->start(DPARSER_WATCHDOG_TIMEOUT_INTERVAL);
-    d_poll_timer->start(DPARSER_WATCHDOG_POLL_INTERVAL);
+    d_watchdog_timer->start(DRDPARSER_WATCHDOG_TIMEOUT_INTERVAL);
+    d_poll_timer->start(DRDPARSER_WATCHDOG_POLL_INTERVAL);
   }
 
   if((cmds.at(0).toLower()=="src")&&(cmds.size()==9)) {
@@ -401,7 +401,7 @@ void DParser::ProcessCommand(const QString &cmd)
 }
 
 
-void DParser::SendCommand(const QString &cmd)
+void DRDParser::SendCommand(const QString &cmd)
 {
   if(d_socket!=NULL) {
     d_socket->write((cmd+"\r\n").toUtf8(),cmd.length()+2);
@@ -409,7 +409,7 @@ void DParser::SendCommand(const QString &cmd)
 }
 
 
-uint64_t DParser::IndexByStreamAddress(const QHostAddress &saddr) const
+uint64_t DRDParser::IndexByStreamAddress(const QHostAddress &saddr) const
 {
   for(QMap<uint64_t,SySource *>::const_iterator it=d_sources.begin();
       it!=d_sources.end();it++) {
@@ -421,19 +421,19 @@ uint64_t DParser::IndexByStreamAddress(const QHostAddress &saddr) const
 }
 
 
-uint64_t DParser::ToIndex(const QHostAddress &addr,int slot) const
+uint64_t DRDParser::ToIndex(const QHostAddress &addr,int slot) const
 {
   return (((uint64_t)addr.toIPv4Address())<<32)+(uint64_t)slot;
 }
 
 
-QHostAddress DParser::ToAddress(uint64_t index) const
+QHostAddress DRDParser::ToAddress(uint64_t index) const
 {
   return QHostAddress(index>>32);
 }
 
 
-int DParser::ToSlot(uint64_t index) const
+int DRDParser::ToSlot(uint64_t index) const
 {
   return 0xFFFFFFFF&index;
 }

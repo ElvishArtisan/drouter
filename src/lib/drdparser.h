@@ -1,4 +1,4 @@
-// dparser.h
+// drdparser.h
 //
 // Parser for Protocol D
 //
@@ -18,8 +18,8 @@
 //   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
 //
 
-#ifndef DPARSER_H
-#define DPARSER_H
+#ifndef DRDPARSER_H
+#define DRDPARSER_H
 
 #include <stdint.h>
 
@@ -35,14 +35,14 @@
 #include <sy5/synode.h>
 #include <sy5/sysource.h>
 
-#define DPARSER_WATCHDOG_POLL_INTERVAL 1000
-#define DPARSER_WATCHDOG_TIMEOUT_INTERVAL 3000
+#define DRDPARSER_WATCHDOG_POLL_INTERVAL 1000
+#define DRDPARSER_WATCHDOG_TIMEOUT_INTERVAL 3000
 
-class DParser : public QObject
+class DRDParser : public QObject
 {
   Q_OBJECT;
  public:
-  DParser(QObject *parent=0);
+  DRDParser(QObject *parent=0);
   QList<QHostAddress> nodeHostAddresses() const;
   SyNode *node(const QHostAddress &hostaddr);
   SySource *src(const QHostAddress &hostaddr,int slot) const;
@@ -92,4 +92,4 @@ class DParser : public QObject
 };
 
 
-#endif  // DPARSER_H
+#endif  // DRDPARSER_H

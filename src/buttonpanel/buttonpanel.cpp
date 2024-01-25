@@ -100,7 +100,7 @@ MainWidget::MainWidget(QWidget *parent)
       cmd->setProcessed(i,true);
     }
     if(cmd->key(i)=="--gpio") {
-      panel_arg_types.push_back(EndPointMap::GpioRouter);
+      panel_arg_types.push_back(DREndPointMap::GpioRouter);
       GpioParser *parser=GpioParser::fromString(cmd->value(i),&err_msg);
       if(parser==NULL) {
 	processError(err_msg);
@@ -110,7 +110,7 @@ MainWidget::MainWidget(QWidget *parent)
     }
 
     if(cmd->key(i)=="--output") {
-      panel_arg_types.push_back(EndPointMap::AudioRouter);
+      panel_arg_types.push_back(DREndPointMap::AudioRouter);
       panel_arg_audio_routers.push_back(1);
       QStringList f0=cmd->value(i).split(":");
       if(f0.size()>2) {
@@ -155,11 +155,11 @@ MainWidget::MainWidget(QWidget *parent)
   //
   // The Protocol J Connection
   //
-  panel_parser=new JParser(this);
+  panel_parser=new DRJParser(this);
   int audionum=0;
   int gpionum=0;
   for(int i=0;i<panel_arg_types.size();i++) {
-    if(panel_arg_types[i]==EndPointMap::AudioRouter) {
+    if(panel_arg_types[i]==DREndPointMap::AudioRouter) {
       panel_widgets.
 	push_back(new ButtonWidget(panel_arg_audio_routers.at(audionum),
 				   panel_arg_audio_outputs.at(audionum),
@@ -167,17 +167,17 @@ MainWidget::MainWidget(QWidget *parent)
 				   panel_arm_button,this));
       audionum++;
     }
-    if(panel_arg_types[i]==EndPointMap::GpioRouter) {
+    if(panel_arg_types[i]==DREndPointMap::GpioRouter) {
       GpioWidget *w=NULL;
       w=new GpioWidget(panel_gpio_parsers.at(gpionum),panel_parser,this);
       panel_widgets.push_back(w);
       gpionum++;
     }
   }
-  connect(panel_parser,SIGNAL(connected(bool,JParser::ConnectionState)),
-	  this,SLOT(changeConnectionState(bool,JParser::ConnectionState)));
-  connect(panel_parser,SIGNAL(parserError(JParser::ErrorType,const QString &)),
-	  this,SLOT(parserErrorData(JParser::ErrorType,const QString &)));
+  connect(panel_parser,SIGNAL(connected(bool,DRJParser::ConnectionState)),
+	  this,SLOT(changeConnectionState(bool,DRJParser::ConnectionState)));
+  connect(panel_parser,SIGNAL(parserError(DRJParser::ErrorType,const QString &)),
+	  this,SLOT(parserErrorData(DRJParser::ErrorType,const QString &)));
 
   panel_resize_timer=new QTimer(this);
   panel_resize_timer->setSingleShot(true);
@@ -186,7 +186,7 @@ MainWidget::MainWidget(QWidget *parent)
   //
   // Dialogs
   //
-  panel_login_dialog=new LoginDialog("ButtonPanel",this);
+  panel_login_dialog=new DRLoginDialog("ButtonPanel",this);
 
   //
   // Connecting Label
@@ -243,9 +243,9 @@ void MainWidget::processError(const QString err_msg)
 }
 
 
-void MainWidget::parserErrorData(JParser::ErrorType err,const QString &remarks)
+void MainWidget::parserErrorData(DRJParser::ErrorType err,const QString &remarks)
 {
-  QString str=JParser::errorString(err);
+  QString str=DRJParser::errorString(err);
   if(!remarks.isEmpty()) {
     str+="\n\n"+remarks;
   }
@@ -254,7 +254,7 @@ void MainWidget::parserErrorData(JParser::ErrorType err,const QString &remarks)
 
 
 void MainWidget::changeConnectionState(bool state,
-				       JParser::ConnectionState cstate)
+				       DRJParser::ConnectionState cstate)
 {
   if(state) {
     panel_resize_timer->start(0);  // So the widgets can create buttons first

@@ -30,7 +30,7 @@ class MatrixLwrp :public Matrix
 {
   Q_OBJECT;
  public:
-  MatrixLwrp(unsigned id,Config *conf,QObject *parent=0);
+  MatrixLwrp(unsigned id,DRConfig *conf,QObject *parent=0);
   ~MatrixLwrp();
   bool isConnected() const;
   QHostAddress hostAddress() const;

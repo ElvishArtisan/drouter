@@ -20,7 +20,8 @@
 ##
 ## Use automake to process this into a Makefile.in
 
-AM_CPPFLAGS = -Wall -DPREFIX=\"$(prefix)\" -Wno-strict-aliasing -std=c++11 -fPIC @QT5GUI_CFLAGS@ @SWITCHYARD5_CFLAGS@
+AM_CPPFLAGS = -Wall -DPREFIX=\"$(prefix)\" -I$(top_srcdir)/src/lib -Wno-strict-aliasing -std=c++11 -fPIC @QT5GUI_CFLAGS@ @SWITCHYARD5_CFLAGS@
+LIBS = -L$(top_srcdir)/src/lib
 MOC = @QT_MOC@
 
 # The dependency for qt's Meta Object Compiler (moc)
@@ -38,11 +39,10 @@ dist_eventlogpanel_SOURCES = eventlogmodel.cpp eventlogmodel.h\
 nodist_eventlogpanel_SOURCES = moc_eventlogmodel.cpp\
                                moc_eventlogpanel.cpp\
                                moc_instanceindicator.cpp\
-                               moc_richtextdelegate.cpp\
-                               moc_sqlquery.cpp\
-                               sqlquery.cpp sqlquery.h
+                               moc_richtextdelegate.cpp
 
-eventlogpanel_LDADD = @QT5GUI_LIBS@ @SWITCHYARD5_LIBS@
+eventlogpanel_LDADD = -ldrouter @QT5GUI_LIBS@ @SWITCHYARD5_LIBS@
+eventlogpanel_LDFLAGS = -rdynamic
 
 CLEANFILES = *~\
              moc_*\
@@ -51,17 +51,7 @@ CLEANFILES = *~\
              *.pdb\
              *ilk
 
-DISTCLEANFILES = combobox.cpp combobox.h\
-                 config.cpp config.h\
-                 dparser.cpp dparser.h\
-                 endpointmap.cpp endpointmap.h\
-                 jparser.cpp jparser.h\
-                 logindialog.cpp logindialog.h\
-                 multistatewidget.cpp multistatewidget.h\
-                 paths.h\
-                 saparser.cpp saparser.h\
-                 sendmail.cpp sendmail.h\
-                 sqlquery.cpp sqlquery.h
+DISTCLEANFILES = 
 
 MAINTAINERCLEANFILES = *~\
                        Makefile.in

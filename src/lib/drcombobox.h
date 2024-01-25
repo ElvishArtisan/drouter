@@ -1,6 +1,6 @@
-// combobox.h
+// drcombobox.h
 //
-// ComboBox widget
+// DRComboBox widget
 //
 //   (C) Copyright 2015 Fred Gleason <fredg@paravelsystems.com>
 //
@@ -18,18 +18,18 @@
 //   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
 //
 
-#ifndef COMBOBOX_H
-#define COMBOBOX_H
+#ifndef DRCOMBOBOX_H
+#define DRCOMBOBOX_H
 
 #include <QComboBox>
 #include <QKeyEvent>
 #include <QVariant>
 
-class ComboBox : public QComboBox
+class DRComboBox : public QComboBox
 {
  Q_OBJECT;
  public:
-  ComboBox(QWidget *parent=0);
+  DRComboBox(QWidget *parent=0);
   void setReadOnly(bool state);
   QVariant currentItemData(int role=Qt::UserRole);
   bool setCurrentItemData(unsigned val);
@@ -43,4 +43,4 @@ class ComboBox : public QComboBox
 };
 
 
-#endif  // COMBOBOX_H
+#endif  // DRCOMBOBOX_H

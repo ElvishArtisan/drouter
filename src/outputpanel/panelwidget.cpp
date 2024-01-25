@@ -51,7 +51,7 @@ bool PanelInput::operator<(const PanelInput &other) const
 
 
 
-PanelWidget::PanelWidget(JParser *parser,int router,int output,QWidget *parent)
+PanelWidget::PanelWidget(DRJParser *parser,int router,int output,QWidget *parent)
   : QWidget(parent)
 {
   QFont label_font("helvetica",16,QFont::Bold);
@@ -82,7 +82,7 @@ PanelWidget::PanelWidget(JParser *parser,int router,int output,QWidget *parent)
   widget_output_label->setAlignment(Qt::AlignCenter);
   widget_output_label->setDisabled(true);
 
-  widget_input_box=new ComboBox(this); 
+  widget_input_box=new DRComboBox(this); 
   widget_input_box->setDisabled(true);
   connect(widget_input_box,SIGNAL(activated(int)),
 	  this,SLOT(inputBoxActivatedData(int)));
@@ -123,7 +123,7 @@ QSizePolicy PanelWidget::sizePolicy() const
 
 
 void PanelWidget::changeConnectionState(bool state,
-					JParser::ConnectionState cstate)
+					DRJParser::ConnectionState cstate)
 {
   if(state) {
     if(!widget_parser->routers().contains(widget_router)) {

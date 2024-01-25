@@ -1,4 +1,4 @@
-// logindialog.cpp
+// drlogindialog.cpp
 //
 // Dialog for login information
 //
@@ -19,9 +19,9 @@
 //   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
 //
 
-#include "logindialog.h"
+#include "drlogindialog.h"
 
-LoginDialog::LoginDialog(const QString &title,QWidget *parent)
+DRLoginDialog::DRLoginDialog(const QString &title,QWidget *parent)
   : QDialog(parent)
 {
   setWindowTitle(title+" - "+tr("Login"));
@@ -53,13 +53,13 @@ LoginDialog::LoginDialog(const QString &title,QWidget *parent)
 }
 
 
-QSize LoginDialog::sizeHint() const
+QSize DRLoginDialog::sizeHint() const
 {
   return QSize(400,120);
 }
 
 
-int LoginDialog::exec(QString *username,QString *password)
+int DRLoginDialog::exec(QString *username,QString *password)
 {
   d_username_edit->setText(*username);
   d_username_edit->selectAll();
@@ -70,13 +70,13 @@ int LoginDialog::exec(QString *username,QString *password)
 }
 
 
-void LoginDialog::closeEvent(QCloseEvent *e)
+void DRLoginDialog::closeEvent(QCloseEvent *e)
 {
   cancelData();
 }
 
 
-void LoginDialog::resizeEvent(QResizeEvent *e)
+void DRLoginDialog::resizeEvent(QResizeEvent *e)
 {
   d_username_label->setGeometry(10,10,100,20);
   d_username_edit->setGeometry(115,10,size().width()-125,20);
@@ -90,7 +90,7 @@ void LoginDialog::resizeEvent(QResizeEvent *e)
 }
 
 
-void LoginDialog::okData()
+void DRLoginDialog::okData()
 {
   *d_username=d_username_edit->text();
   *d_password=d_password_edit->text();
@@ -98,7 +98,7 @@ void LoginDialog::okData()
 }
 
 
-void LoginDialog::cancelData()
+void DRLoginDialog::cancelData()
 {
   done(false);
 }

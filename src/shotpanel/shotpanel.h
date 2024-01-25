@@ -29,9 +29,9 @@
 #include <QTimer>
 #include <QWidget>
 
-#include "combobox.h"
-#include "logindialog.h"
-#include "saparser.h"
+#include <drcombobox.h>
+#include <drlogindialog.h>
+#include <drsaparser.h>
 
 #define SHOTPANEL_USAGE "[options]\n"
 
@@ -47,24 +47,24 @@ class MainWidget : public QWidget
  private slots:
   void routerBoxActivatedData(int n);
   void activateData();
-  void connectedData(bool state,SaParser::ConnectionState cstate);
+  void connectedData(bool state,DRSaParser::ConnectionState cstate);
   void errorData(QAbstractSocket::SocketError err);
 
  protected:
   void resizeEvent(QResizeEvent *e);
 
  private:
-  LoginDialog *panel_login_dialog;
+  DRLoginDialog *panel_login_dialog;
   QString panel_hostname;
   QString panel_username;
   QString panel_password;
   int panel_initial_router;
   QLabel *panel_router_label;
-  ComboBox *panel_router_box;
+  DRComboBox *panel_router_box;
   QLabel *panel_snapshot_label;
   QPushButton *panel_activate_button;
-  ComboBox *panel_snapshot_box;
-  SaParser *panel_parser;
+  DRComboBox *panel_snapshot_box;
+  DRSaParser *panel_parser;
   bool panel_initial_connected;
 };
 
