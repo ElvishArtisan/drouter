@@ -8,6 +8,8 @@
 *.ddeb
 *.dsc
 *.html
+*.la
+*.lo
 *.o
 *.pdf
 *.rpm
@@ -16,6 +18,7 @@
 *.tar.gz
 *.tar.xz
 .deps
+.libs
 build_debs.sh
 changelog
 control
@@ -31,6 +34,8 @@ config.sub
 configure
 depcomp
 install-sh
+libtool
+ltmain.sh
 missing
 moc_*
 paths.h
