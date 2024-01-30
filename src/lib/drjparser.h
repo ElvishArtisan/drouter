@@ -35,6 +35,10 @@
 #include <QTcpSocket>
 #include <QTimer>
 
+#include "drinputlistmodel.h"
+#include "droutputlistmodel.h"
+#include "drrouterlistmodel.h"
+
 #define DRJPARSER_STARTUP_INTERVAL 1000
 #define DRJPARSER_HOLDOFF_INTERVAL 5000
 
@@ -49,6 +53,13 @@ class DRJParser : public QObject
   DRJParser(QObject *parent=0);
   ~DRJParser();
   QMap<int,QString> routers() const;
+  //
+  // Models
+  //
+  DRRouterListModel *routerModel() const;
+  DROutputListModel *outputModel(int router) const;
+  DRInputListModel *inputModel(int router) const;
+
   bool isConnected() const;
   bool gpioSupported(int router) const;
   int inputQuantity(int router) const;
@@ -112,6 +123,11 @@ class DRJParser : public QObject
 		  std::vector<unsigned> *ptrs);
   void SendCommand(const QString &cmd);
   void MakeSocket();
+
+  DRRouterListModel *j_router_model;
+  QMap<int,DROutputListModel *> j_output_models;
+  QMap<int,DRInputListModel *> j_input_models;
+
   QTcpSocket *j_socket;
   QString j_hostname;
   uint16_t j_port;

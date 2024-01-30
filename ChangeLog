@@ -1011,3 +1011,9 @@
 	* Refactored code layout to dynamically link common classes.
 2024-01-25 Fred Gleason <fredg@paravelsystems.com>
 	* Fixed the build dependencies for 'src/lib/path.h'.
+2024-01-30 Fred Gleason <fredg@paravelsystems.com>
+	* Added a 'DRInputListModel' class.
+	* Added a 'DROutputListModel' class.
+	* Added 'ProtocolJ::inputModel()' and 'ProtocolJ::outputModel()'
+	methods.
+	* Converted xypanel(1) to use model-based methods.

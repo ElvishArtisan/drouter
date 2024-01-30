@@ -32,18 +32,24 @@ dist_libdrouter_la_SOURCES = drcombobox.cpp drcombobox.h\
                              drconfig.cpp drconfig.h\
                              drdparser.cpp drdparser.h\
                              drendpointmap.cpp drendpointmap.h\
+                             drinputlistmodel.cpp drinputlistmodel.h\
                              drjparser.cpp drjparser.h\
                              drlogindialog.cpp drlogindialog.h\
                              drmultistatewidget.cpp drmultistatewidget.h\
+                             droutputlistmodel.cpp droutputlistmodel.h\
+                             drrouterlistmodel.cpp drrouterlistmodel.h\
                              drsaparser.cpp drsaparser.h\
                              drsendmail.cpp drsendmail.h\
                              drsqlquery.cpp drsqlquery.h
 
 nodist_libdrouter_la_SOURCES = moc_drcombobox.cpp\
                                moc_drdparser.cpp\
+                               moc_drinputlistmodel.cpp\
                                moc_drjparser.cpp\
                                moc_drlogindialog.cpp\
                                moc_drmultistatewidget.cpp\
+                               moc_droutputlistmodel.cpp\
+                               moc_drrouterlistmodel.cpp\
                                moc_drsaparser.cpp\
                                paths.h
 

@@ -31,7 +31,7 @@
 
 #include <drcombobox.h>
 #include <drlogindialog.h>
-#include <drsaparser.h>
+#include <drjparser.h>
 
 #define XYPANEL_USAGE "[options]\n"
 
@@ -50,7 +50,7 @@ class MainWidget : public QWidget
   void inputBoxActivatedData(int n);
   void takeData();
   void cancelData();
-  void connectedData(bool state,DRSaParser::ConnectionState cstate);
+  void connectedData(bool state,DRJParser::ConnectionState cstate);
   void errorData(QAbstractSocket::SocketError err);
   void outputCrosspointChangedData(int router,int output,int input);
   void clockData();
@@ -59,6 +59,9 @@ class MainWidget : public QWidget
   void resizeEvent(QResizeEvent *e);
 
  private:
+  int SelectedRouter() const;
+  int SelectedOutput() const;
+  int SelectedInput() const;
   DRLoginDialog *panel_login_dialog;
   QString panel_hostname;
   QString panel_username;
@@ -66,14 +69,14 @@ class MainWidget : public QWidget
   void SetArmedState(bool state);
   QLabel *panel_router_label;
   DRComboBox *panel_router_box;
-  int panel_current_input;
+  int panel_current_input_index;
   QLabel *panel_output_label;
   DRComboBox *panel_input_box;
   QLabel *panel_input_label;
   QPushButton *panel_take_button;
   QPushButton *panel_cancel_button;
   DRComboBox *panel_output_box;
-  DRSaParser *panel_parser;
+  DRJParser *panel_parser;
   QTimer *panel_clock_timer;
   bool panel_clock_state;
   bool panel_initial_connected;

@@ -1,6 +1,6 @@
-// drrouterlistmodel.cpp
+// droutputlistmodel.cpp
 //
-// Qt Model for a list of Routers
+// Qt Model for a list of outputs
 //
 //   (C) Copyright 2024 Fred Gleason <fredg@paravelsystems.com>
 //
@@ -18,50 +18,67 @@
 //   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
 //
 
-#include "drrouterlistmodel.h"
+#include "droutputlistmodel.h"
 
-DRRouterListModel::DRRouterListModel(QObject *parent)
+DROutputListModel::DROutputListModel(int router,QObject *parent)
   : QAbstractTableModel(parent)
 {
+  d_router_number=router;
+
   //
   // Column Attributes
   //
   unsigned left=Qt::AlignLeft|Qt::AlignVCenter;
   //unsigned center=Qt::AlignCenter;
-  //unsigned right=Qt::AlignRight|Qt::AlignVCenter;
+  unsigned right=Qt::AlignRight|Qt::AlignVCenter;
 
-  d_headers.push_back(tr("Id"));
+  d_headers.push_back(tr("Id"));                // 00
   d_alignments.push_back(left);
 
-  d_headers.push_back(tr("Type"));
+  d_headers.push_back(tr("Number"));            // 01
+  d_alignments.push_back(right);
+
+  d_headers.push_back(tr("Name"));              // 02
   d_alignments.push_back(left);
+
+  d_headers.push_back(tr("Host Description"));  // 03
+  d_alignments.push_back(left);
+
+  d_headers.push_back(tr("Host Address"));      // 04
+  d_alignments.push_back(left);
+
+  d_headers.push_back(tr("Host Name"));         // 05
+  d_alignments.push_back(left);
+
+  d_headers.push_back(tr("Slot"));              // 06
+  d_alignments.push_back(right);
 }
 
 
-DRRouterListModel::~DRRouterListModel()
+DROutputListModel::~DROutputListModel()
 {
 }
 
 
-void DRRouterListModel::setFont(const QFont &font)
+void DROutputListModel::setFont(const QFont &font)
 {
   d_font=font;
 }
 
 
-int DRRouterListModel::columnCount(const QModelIndex &parent) const
+int DROutputListModel::columnCount(const QModelIndex &parent) const
 {
   return d_headers.size();
 }
 
 
-int DRRouterListModel::rowCount(const QModelIndex &parent) const
+int DROutputListModel::rowCount(const QModelIndex &parent) const
 {
   return d_texts.size();
 }
 
 
-QVariant DRRouterListModel::headerData(int section,Qt::Orientation orient,
+QVariant DROutputListModel::headerData(int section,Qt::Orientation orient,
 				       int role) const
 {
   if((orient==Qt::Horizontal)&&(role==Qt::DisplayRole)) {
@@ -71,7 +88,7 @@ QVariant DRRouterListModel::headerData(int section,Qt::Orientation orient,
 }
 
 
-QVariant DRRouterListModel::data(const QModelIndex &index,int role) const
+QVariant DROutputListModel::data(const QModelIndex &index,int role) const
 {
   QString str;
   int col=index.column();
@@ -109,20 +126,23 @@ QVariant DRRouterListModel::data(const QModelIndex &index,int role) const
 }
 
 
-int DRRouterListModel::routerNumber(int rownum) const
+int DROutputListModel::outputNumber(int rownum) const
 {
   return d_numbers.at(rownum);
 }
 
 
-int DRRouterListModel::rowNumber(int router) const
+int DROutputListModel::rowNumber(int output) const
 {
-  return d_numbers.indexOf(router);
+  return d_numbers.indexOf(output);
 }
 
 
-void DRRouterListModel::addRouter(int number,const QString &name,
-				  const QString &rtype)
+void DROutputListModel::addOutput(int number,const QString &name,
+				  const QString &desc,
+				  const QHostAddress &host_addr,
+				  const QString &hostname,int slot)
+
 {
   int index=0;
 
@@ -143,7 +163,12 @@ void DRRouterListModel::addRouter(int number,const QString &name,
   d_numbers.insert(index,number);
   QList<QVariant> row;
   row.push_back(QString::asprintf("%d - %s",number,name.toUtf8().constData()));
-  row.push_back(rtype);
+  row.push_back(QString::asprintf("%d",number));
+  row.push_back(name);
+  row.push_back(desc);
+  row.push_back(host_addr.toString());
+  row.push_back(hostname);
+  row.push_back(QString::asprintf("%d",1+slot));
   d_texts.insert(index,row);
   endInsertRows();
 }

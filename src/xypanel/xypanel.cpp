@@ -47,7 +47,7 @@ MainWidget::MainWidget(QWidget *parent)
   bool ok=false;
 
   panel_clock_state=false;
-  panel_current_input=0;
+  panel_current_input_index=-1;
   panel_initial_connected=false;
   panel_initial_router=-1;
 
@@ -193,11 +193,11 @@ MainWidget::MainWidget(QWidget *parent)
   setMaximumHeight(sizeHint().height());
 
   //
-  // The SA Connection
+  // The Protocol J Connection
   //
-  panel_parser=new DRSaParser(this);
-  connect(panel_parser,SIGNAL(connected(bool,DRSaParser::ConnectionState)),
-	  this,SLOT(connectedData(bool,DRSaParser::ConnectionState)));
+  panel_parser=new DRJParser(this);
+  connect(panel_parser,SIGNAL(connected(bool,DRJParser::ConnectionState)),
+	  this,SLOT(connectedData(bool,DRJParser::ConnectionState)));
   connect(panel_parser,SIGNAL(error(QAbstractSocket::SocketError)),
 	  this,SLOT(errorData(QAbstractSocket::SocketError)));
   connect(panel_parser,SIGNAL(outputCrosspointChanged(int,int,int)),
@@ -210,8 +210,11 @@ MainWidget::MainWidget(QWidget *parent)
       exit(1);
     }
   }
+  panel_router_box->setModel(panel_parser->routerModel());
+  panel_router_box->setModelColumn(0);
+
   panel_parser->
-    connectToHost(panel_hostname,9500,panel_username,panel_password);
+    connectToHost(panel_hostname,9600,panel_username,panel_password);
 }
 
 
@@ -234,104 +237,74 @@ QSizePolicy MainWidget::sizePolicy() const
 
 void MainWidget::routerBoxActivatedData(int n)
 {
-  QString name;
-  int count;
-  int endpt;
-  int router=panel_router_box->itemData(n).toInt();
+  int router=panel_parser->routerModel()->routerNumber(n);
 
-  panel_output_box->clear();
-  count=0;
-  endpt=0;
-  while(count<panel_parser->outputQuantity(router)) {
-    name=panel_parser->outputLongName(router,endpt+1);
-    if(!name.isEmpty()) {
-      panel_output_box->
-	insertItem(endpt,QString::asprintf("%u - ",endpt+1)+name,endpt+1);
-      count++;
-    }
-    endpt++;
-  }
-  panel_input_box->clear();
-  endpt=0;
-  for(int i=0;i<panel_parser->inputQuantity(router);i++) {
-    if(panel_parser->inputIsReal(router,i+1)) {
-      name=panel_parser->inputLongName(router,i+1);
-      panel_input_box->
-	insertItem(panel_input_box->count(),QString::asprintf("%u - ",i+1)+name,i+1);
-      count++;
-    }
-  }
-  panel_input_box->
-    insertItem(panel_parser->inputQuantity(router),tr("--- OFF ---"),0);
-  int output=panel_output_box->currentItemData().toInt();
-  outputCrosspointChangedData(router,output,
-			      panel_parser->outputCrosspoint(router,output));
+  panel_output_box->setModel(panel_parser->outputModel(router));
+  panel_output_box->setCurrentIndex(0);
+  outputBoxActivatedData(0);
+
   SetArmedState(false);
 }
 
 
 void MainWidget::outputBoxActivatedData(int n)
 {
-  int router=panel_router_box->currentItemData().toInt();
-  int output=panel_output_box->currentItemData().toInt();
 
-  outputCrosspointChangedData(router,output,
-			      panel_parser->outputCrosspoint(router,output));
+  int router=SelectedRouter();
+  int output=SelectedOutput();
+
+  panel_input_box->setModel(panel_parser->inputModel(router));
+  panel_input_box->setCurrentIndex(panel_parser->inputModel(router)->
+		rowNumber(panel_parser->outputCrosspoint(router,output)));
+  panel_current_input_index=panel_input_box->currentIndex();
 }
 
 
 void MainWidget::inputBoxActivatedData(int n)
 {
-  int current=panel_input_box->currentItemData().toInt();
+  int index=panel_input_box->currentIndex();
 
-  if(current>=0) {
-    SetArmedState(panel_current_input!=(current));
+  if(index>=0) {
+    SetArmedState(panel_current_input_index!=index);
   }
 }
 
 
 void MainWidget::takeData()
 {
-  int router=panel_router_box->currentItemData().toInt();
   panel_parser->
-    setOutputCrosspoint(router,
-			panel_output_box->currentItemData().toInt(),
-			panel_input_box->currentItemData().toInt());
+    setOutputCrosspoint(SelectedRouter(),SelectedOutput(),SelectedInput());
 }
 
 
 void MainWidget::cancelData()
 {
-  panel_input_box->setCurrentItemData(panel_current_input);
+  panel_input_box->setCurrentIndex(panel_current_input_index);
   SetArmedState(false);
 }
 
 
-void MainWidget::connectedData(bool state,DRSaParser::ConnectionState cstate)
+void MainWidget::connectedData(bool state,DRJParser::ConnectionState cstate)
 {
   if(state) {
-    QMap<int,QString> routers=panel_parser->routers();
-    panel_router_box->clear();
-    for(QMap<int,QString>::const_iterator it=routers.begin();it!=routers.end();
-	it++) {
-      panel_router_box->
-	insertItem(panel_router_box->count(),
-		   QString::asprintf("%d - ",it.key())+it.value(),it.key());
-      if(it.key()==panel_initial_router) {
-	panel_router_box->setCurrentIndex(panel_router_box->count()-1);
-      }
-    }
-    if(panel_initial_router<0) {
-      panel_router_box->setCurrentIndex(0);
+    if(panel_initial_router>0) {
+      panel_router_box->setCurrentIndex(panel_parser->routerModel()->
+					rowNumber(panel_initial_router));
     }
     routerBoxActivatedData(panel_router_box->currentIndex());
     panel_initial_connected=true;
+    panel_router_label->setEnabled(true);
+    panel_router_box->setEnabled(true);
+    panel_output_label->setEnabled(true);
+    panel_output_box->setEnabled(true);
+    panel_input_label->setEnabled(true);
+    panel_input_box->setEnabled(true);
   }
   else {
-    if(cstate!=DRSaParser::WatchdogActive) {
+    if(cstate!=DRJParser::WatchdogActive) {
       QMessageBox::warning(this,"XYPanel - "+tr("Error"),
 			   tr("Login error")+": "+
-			   DRSaParser::connectionStateString(cstate));
+			   DRJParser::connectionStateString(cstate));
       exit(1);
     }
     panel_router_label->setDisabled(true);
@@ -357,28 +330,13 @@ void MainWidget::errorData(QAbstractSocket::SocketError err)
 
 void MainWidget::outputCrosspointChangedData(int router,int output,int input)
 {
-  if(router==panel_router_box->currentItemData().toInt()) {
-    if(output==panel_output_box->currentItemData()) {
-      if(!panel_input_box->setCurrentItemData(input)) {
-	panel_input_box->
-	  insertItem(panel_input_box->count(),tr("** UNKNOWN **"),-3);
-	panel_input_box->setCurrentItemData(-3);
-      }
-      panel_current_input=input;
+  if(router==SelectedRouter()) {
+    if(output==SelectedOutput()) {
+      panel_input_box->
+	setCurrentIndex(panel_parser->inputModel(router)->rowNumber(input));
+
+      panel_current_input_index=panel_input_box->currentIndex();
       SetArmedState(false);
-      panel_router_label->setEnabled(true);
-      panel_router_box->setEnabled(true);
-      panel_output_label->setEnabled(true);
-      panel_output_box->setEnabled(true);
-      panel_input_label->setEnabled(true);
-      panel_input_box->setEnabled(true);
-    }
-    if(input>=0) {
-      for(int i=0;i<panel_input_box->count();i++) {
-	if(panel_input_box->itemData(i).toInt()<0) {
-	  panel_input_box->removeItem(i);
-	}
-      }
     }
   }
 }
@@ -386,7 +344,7 @@ void MainWidget::outputCrosspointChangedData(int router,int output,int input)
 
 void MainWidget::clockData()
 {
-  if(panel_current_input!=panel_input_box->currentItemData()) {
+  if(panel_current_input_index!=panel_input_box->currentIndex()) {
     if(panel_clock_state) {
       panel_take_button->
 	setStyleSheet("color: #FFFFFF;background-color: #FF0000;");
@@ -432,6 +390,27 @@ void MainWidget::SetArmedState(bool state)
     panel_take_button->setStyleSheet("");
     panel_cancel_button->setStyleSheet("");
   }
+}
+
+
+int MainWidget::SelectedRouter() const
+{
+  return panel_parser->
+    routerModel()->routerNumber(panel_router_box->currentIndex());
+}
+
+
+int MainWidget::SelectedOutput() const
+{
+  return panel_parser->outputModel(SelectedRouter())->
+    outputNumber(panel_output_box->currentIndex());
+}
+
+
+int MainWidget::SelectedInput() const
+{
+  return panel_parser->inputModel(SelectedRouter())->
+    inputNumber(panel_input_box->currentIndex());
 }
 
 
