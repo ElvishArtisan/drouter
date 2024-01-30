@@ -522,7 +522,8 @@ QString ProtocolJ::SourceNamesMessage(DREndPointMap::RouterType type,DRSqlQuery 
   if(!q->value(4).toString().isEmpty()) {
     name=q->value(4).toString();
   }
-  QString json=JsonPadding(padding)+"\"source\": {\r\n";
+  QString json=JsonPadding(padding)+
+    QString::asprintf("\"source%d\": {\r\n",q->at());
   json+=JsonField("number",1+q->value(0).toInt(),4+padding);
   json+=JsonField("name",name,4+padding);
   json+=JsonField("hostDescription",q->value(6).toString(),4+padding,

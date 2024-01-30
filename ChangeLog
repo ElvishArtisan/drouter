@@ -1017,3 +1017,6 @@
 	* Added 'ProtocolJ::inputModel()' and 'ProtocolJ::outputModel()'
 	methods.
 	* Converted xypanel(1) to use model-based methods.
+2024-01-30 Fred Gleason <fredg@paravelsystems.com>
+	* Fixed a bug in drouterd(8) that caused invalid JSON to be emitted
+	for the Protocol J 'sourcenames' command when addressing GPIO routers.
