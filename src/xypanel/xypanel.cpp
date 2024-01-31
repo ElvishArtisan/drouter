@@ -403,14 +403,14 @@ int MainWidget::SelectedRouter() const
 int MainWidget::SelectedOutput() const
 {
   return panel_parser->outputModel(SelectedRouter())->
-    outputNumber(panel_output_box->currentIndex());
+    endPointNumber(panel_output_box->currentIndex());
 }
 
 
 int MainWidget::SelectedInput() const
 {
   return panel_parser->inputModel(SelectedRouter())->
-    inputNumber(panel_input_box->currentIndex());
+    endPointNumber(panel_input_box->currentIndex());
 }
 
 

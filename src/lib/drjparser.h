@@ -35,8 +35,7 @@
 #include <QTcpSocket>
 #include <QTimer>
 
-#include "drinputlistmodel.h"
-#include "droutputlistmodel.h"
+#include "drendpointlistmodel.h"
 #include "drrouterlistmodel.h"
 
 #define DRJPARSER_STARTUP_INTERVAL 1000
@@ -50,15 +49,15 @@ class DRJParser : public QObject
   enum ErrorType {OkError=0,JsonError=1,ParameterError=2,NoRouterError=3,
 		  NoSnapshotError=4,NoSourceError=5,NoDestinationError=6,
 		  NotGpioRouterError=7,NoCommandError=8,LastError=9};
-  DRJParser(QObject *parent=0);
+  DRJParser(bool use_long_names,QObject *parent=0);
   ~DRJParser();
   QMap<int,QString> routers() const;
   //
   // Models
   //
   DRRouterListModel *routerModel() const;
-  DROutputListModel *outputModel(int router) const;
-  DRInputListModel *inputModel(int router) const;
+  DREndPointListModel *outputModel(int router) const;
+  DREndPointListModel *inputModel(int router) const;
 
   bool isConnected() const;
   bool gpioSupported(int router) const;
@@ -125,14 +124,15 @@ class DRJParser : public QObject
   void MakeSocket();
 
   DRRouterListModel *j_router_model;
-  QMap<int,DROutputListModel *> j_output_models;
-  QMap<int,DRInputListModel *> j_input_models;
+  QMap<int,DREndPointListModel *> j_output_models;
+  QMap<int,DREndPointListModel *> j_input_models;
 
   QTcpSocket *j_socket;
   QString j_hostname;
   uint16_t j_port;
   QString j_username;
   QString j_password;
+  bool j_use_long_names;
   bool j_connected;
   QByteArray j_accum;
   bool j_accum_quoted;

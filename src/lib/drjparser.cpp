@@ -25,9 +25,10 @@
 
 #include "drjparser.h"
 
-DRJParser::DRJParser(QObject *parent)
+DRJParser::DRJParser(bool use_long_names,QObject *parent)
   : QObject(parent)
 {
+  j_use_long_names=use_long_names;
   j_connected=false;
   j_reading_routers=false;
   j_reading_sources=false;
@@ -87,13 +88,13 @@ DRRouterListModel *DRJParser::routerModel() const
 }
 
 
-DROutputListModel *DRJParser::outputModel(int router) const
+DREndPointListModel *DRJParser::outputModel(int router) const
 {
   return j_output_models.value(router);
 }
 
 
-DRInputListModel *DRJParser::inputModel(int router) const
+DREndPointListModel *DRJParser::inputModel(int router) const
 {
   return j_input_models.value(router);
 }
@@ -482,7 +483,7 @@ void DRJParser::DispatchMessage(const QJsonDocument &jdoc)
       j_router_names[router]=jo1.value("name").toString();
       */
 
-      j_input_models[router]=new DRInputListModel(router,this);
+      j_input_models[router]=new DREndPointListModel(router,j_use_long_names,this);
       /*
       j_input_quantities[router]=0;
       j_input_is_reals[router]=QMap<int,bool>();
@@ -491,7 +492,8 @@ void DRJParser::DispatchMessage(const QJsonDocument &jdoc)
       j_input_source_numbers[router]=QMap<int,int>();
       j_input_stream_addresses[router]=QMap<int,QHostAddress>();
       */
-      j_output_models[router]=new DROutputListModel(router,this);
+      j_output_models[router]=
+	new DREndPointListModel(router,j_use_long_names,this);
       /*
       j_output_quantities[router]=0;
       j_output_is_reals[router]=QMap<int,bool>();
@@ -531,33 +533,17 @@ void DRJParser::DispatchMessage(const QJsonDocument &jdoc)
   if(jdoc.object().contains("sourcenames")) {
     QJsonObject jo0=jdoc.object().value("sourcenames").toObject();
     int router=jo0.value("router").toInt();
-    DRInputListModel *imod=j_input_models.value(router);
+    DREndPointListModel *imod=j_input_models.value(router);
     if(imod!=NULL) {
       for(QJsonObject::const_iterator it=jo0.begin();it!=jo0.end();it++) {
 	if(it.key().left(6)=="source") {
 	  QJsonObject jo1=it.value().toObject();
-	  imod->addInput(jo1.value("number").toInt(),
-			 jo1.value("name").toString(),
-			 jo1.value("hostDescriptions").toString(),
-			 QHostAddress(jo1.value("hostAddress").toString()),
-			 jo1.value("hostName").toString(),
-			 jo1.value("slot").toInt(),
-			 jo1.value("sourceNumber").toInt(),
-			 QHostAddress(jo1.value("streamAddress").toString()));
-
-	  /*
-	    int number=jo1.value("number").toInt();
-	    if(number>j_input_quantities.value(router)) {
-	    j_input_quantities[router]=number;
-	    }
-	    j_input_is_reals[router][number]=true;
-	    j_input_names[router][number]=jo1.value("name").toString();
-	    j_input_long_names[router][number]=QString();
-	    j_input_source_numbers[router][number]=
-	    jo1.value("sourceNumber").toInt();
-	    j_input_stream_addresses[router][number]=
-	    QHostAddress(jo1.value("streamAddress").toString());
-	  */
+	  QStringList keys=jo1.keys();
+	  QMap<QString,QVariant> fields;
+	  for(int i=0;i<keys.size();i++) {
+	    fields[keys.at(i)]=jo1.value(keys.at(i)).toVariant();
+	  }
+	  imod->addEndPoint(fields);
 	}
       }
     }
@@ -566,31 +552,20 @@ void DRJParser::DispatchMessage(const QJsonDocument &jdoc)
   if(jdoc.object().contains("destnames")) {
     QJsonObject jo0=jdoc.object().value("destnames").toObject();
     int router=jo0.value("router").toInt();
-    DROutputListModel *omod=j_output_models.value(router);
+    DREndPointListModel *omod=j_output_models.value(router);
     if(omod!=NULL) {
       for(QJsonObject::const_iterator it=jo0.begin();it!=jo0.end();it++) {
 	if(it.key().left(11)=="destination") {
 	  QJsonObject jo1=it.value().toObject();
-	  omod->addOutput(jo1.value("number").toInt(),
-			  jo1.value("name").toString(),
-			  jo1.value("hostDescriptions").toString(),
-			  QHostAddress(jo1.value("hostAddress").toString()),
-			  jo1.value("hostName").toString(),
-			  jo1.value("slot").toInt());
-	  int number=jo1.value("number").toInt();
-	  /*
-	  if(number>j_output_quantities.value(router)) {
-	    j_output_quantities[router]=number;
+	  QStringList keys=jo1.keys();
+	  QMap<QString,QVariant> fields;
+	  for(int i=0;i<keys.size();i++) {
+	    fields[keys.at(i)]=jo1.value(keys.at(i)).toVariant();
 	  }
-	  j_output_is_reals[router][number]=true;
-	  j_output_names[router][number]=jo1.value("name").toString();
-	  j_output_long_names[router][number]=QString();
-	  */
-	  j_output_xpoints[router][number]=-1;
+	  omod->addEndPoint(fields);
 	}
       }
     }
-
   }
 
   if(jdoc.object().contains("snapshots")) {

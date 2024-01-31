@@ -1,4 +1,4 @@
-// drinputlistmodel.cpp
+// drendpointlistmodel.cpp
 //
 // Qt Model for a list of outputs
 //
@@ -18,12 +18,16 @@
 //   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
 //
 
-#include "drinputlistmodel.h"
+#include <syslog.h>
 
-DRInputListModel::DRInputListModel(int router,QObject *parent)
+#include "drendpointlistmodel.h"
+
+DREndPointListModel::DREndPointListModel(int router,bool use_long_names,
+				   QObject *parent)
   : QAbstractTableModel(parent)
 {
   d_router_number=router;
+  d_use_long_names=use_long_names;
 
   //
   // Column Attributes
@@ -40,51 +44,33 @@ DRInputListModel::DRInputListModel(int router,QObject *parent)
 
   d_headers.push_back(tr("Name"));              // 02
   d_alignments.push_back(left);
-
-  d_headers.push_back(tr("Host Description"));  // 03
-  d_alignments.push_back(left);
-
-  d_headers.push_back(tr("Host Address"));      // 04
-  d_alignments.push_back(left);
-
-  d_headers.push_back(tr("Host Name"));         // 05
-  d_alignments.push_back(left);
-
-  d_headers.push_back(tr("Slot"));              // 06
-  d_alignments.push_back(right);
-
-  d_headers.push_back(tr("Source Number"));     // 07
-  d_alignments.push_back(right);
-
-  d_headers.push_back(tr("Stream Address"));    // 08
-  d_alignments.push_back(right);
 }
 
 
-DRInputListModel::~DRInputListModel()
+DREndPointListModel::~DREndPointListModel()
 {
 }
 
 
-void DRInputListModel::setFont(const QFont &font)
+void DREndPointListModel::setFont(const QFont &font)
 {
   d_font=font;
 }
 
 
-int DRInputListModel::columnCount(const QModelIndex &parent) const
+int DREndPointListModel::columnCount(const QModelIndex &parent) const
 {
   return d_headers.size();
 }
 
 
-int DRInputListModel::rowCount(const QModelIndex &parent) const
+int DREndPointListModel::rowCount(const QModelIndex &parent) const
 {
   return d_texts.size();
 }
 
 
-QVariant DRInputListModel::headerData(int section,Qt::Orientation orient,
+QVariant DREndPointListModel::headerData(int section,Qt::Orientation orient,
 				       int role) const
 {
   if((orient==Qt::Horizontal)&&(role==Qt::DisplayRole)) {
@@ -94,7 +80,7 @@ QVariant DRInputListModel::headerData(int section,Qt::Orientation orient,
 }
 
 
-QVariant DRInputListModel::data(const QModelIndex &index,int role) const
+QVariant DREndPointListModel::data(const QModelIndex &index,int role) const
 {
   QString str;
   int col=index.column();
@@ -132,29 +118,55 @@ QVariant DRInputListModel::data(const QModelIndex &index,int role) const
 }
 
 
-int DRInputListModel::inputNumber(int rownum) const
+int DREndPointListModel::endPointNumber(int rownum) const
 {
+  if(rownum<0) {
+    return -1;
+  }
   return d_numbers.at(rownum);
 }
 
 
-int DRInputListModel::rowNumber(int input) const
+QMap<QString,QVariant> DREndPointListModel::endPointMetadata(int rownum)
 {
-  return d_numbers.indexOf(input);
+  return d_metadatas.at(rownum);
 }
 
 
-void DRInputListModel::addInput(int number,const QString &name,
-				const QString &desc,
-				const QHostAddress &host_addr,
-				const QString &hostname,int slot,
-				int srcnum,const QHostAddress &s_addr)
+int DREndPointListModel::rowNumber(int endpt) const
 {
-  int index=0;
+  return d_numbers.indexOf(endpt);
+}
+
+
+void DREndPointListModel::addEndPoint(const QMap<QString,QVariant> &fields)
+{
+  //
+  // Sanity Checks
+  //
+  if(!fields.contains("number")) {
+    syslog(LOG_WARNING,
+	   "input on router %d missing required field \"number\", rejecting",
+	   d_router_number);
+    return;
+  }
+  int number=fields.value("number").toInt();
+
+  if(!fields.contains("name")) {
+    syslog(LOG_WARNING,
+	   "input on router %d missing required field \"name\", rejecting",
+	   d_router_number);
+    return;
+  }
+  QString name=fields.value("name").toString();
+  if(d_use_long_names&&(fields.contains("hostName"))) {
+    name+=" "+tr("ON")+" "+fields.value("hostName").toString();
+  }
 
   //
   // Find the insertion position
   //
+  int index=0;
   for(int i=0;i<d_numbers.size();i++) {
     if(number>d_numbers.at(i)) {
       index=i;
@@ -166,18 +178,12 @@ void DRInputListModel::addInput(int number,const QString &name,
   // Insert It
   //
   beginInsertRows(QModelIndex(),index,index);
-  d_numbers.insert(index,number);
   QList<QVariant> row;
   row.push_back(QString::asprintf("%d - %s",number,name.toUtf8().constData()));
   row.push_back(QString::asprintf("%d",number));
   row.push_back(name);
-  row.push_back(desc);
-  row.push_back(host_addr.toString());
-  row.push_back(hostname);
-  row.push_back(QString::asprintf("%d",1+slot));
-  row.push_back(QString::asprintf("%d",srcnum));
-  row.push_back(s_addr.toString());
-
   d_texts.insert(index,row);
+  d_numbers.insert(index,number);
+  d_metadatas.insert(index,fields);
   endInsertRows();
 }

@@ -1,4 +1,4 @@
-// drinputlistmodel.h
+// drendpointlistmodel.h
 //
 // Qt Model for a list of outputs.
 //
@@ -18,19 +18,20 @@
 //   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
 //
 
-#ifndef DRINPUTLISTMODEL_H
-#define DRINPUTLISTMODEL_H
+#ifndef DRENDPOINTLISTMODEL_H
+#define DRENDPOINTLISTMODEL_H
 
 #include <QAbstractTableModel>
 #include <QFont>
 #include <QHostAddress>
+#include <QMap>
 
-class DRInputListModel : public QAbstractTableModel
+class DREndPointListModel : public QAbstractTableModel
 {
  Q_OBJECT;
  public:
-  DRInputListModel(int router,QObject *parent=0);
-  ~DRInputListModel();
+  DREndPointListModel(int router,bool use_long_names,QObject *parent);
+  ~DREndPointListModel();
   int routerNumber() const;
   void setFont(const QFont &font);
   int columnCount(const QModelIndex &parent=QModelIndex()) const;
@@ -38,11 +39,10 @@ class DRInputListModel : public QAbstractTableModel
   QVariant headerData(int section,Qt::Orientation orient,
 		      int role=Qt::DisplayRole) const;
   QVariant data(const QModelIndex &index,int role=Qt::DisplayRole) const;
-  int inputNumber(int rownum) const;
-  int rowNumber(int input) const;
-  void addInput(int number,const QString &name,const QString &desc,
-		const QHostAddress &host_addr,const QString &hostname,
-		int slot,int srcnum,const QHostAddress &s_addr);
+  int endPointNumber(int rownum) const;
+  QMap<QString,QVariant> endPointMetadata(int rownum);
+  int rowNumber(int endpt) const;
+  void addEndPoint(const QMap<QString,QVariant> &fields);
 
  private:
   QFont d_font;
@@ -50,8 +50,10 @@ class DRInputListModel : public QAbstractTableModel
   QList<QVariant> d_alignments;
   QList<QList<QVariant> > d_texts;
   QList<int> d_numbers;
+  QList<QMap<QString,QVariant> > d_metadatas;
   int d_router_number;
+  bool d_use_long_names;
 };
 
 
-#endif  // DRINPUTLISTMODEL_H
+#endif  // DRENDPOINTLISTMODEL_H
