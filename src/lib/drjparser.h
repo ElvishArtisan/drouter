@@ -37,6 +37,7 @@
 
 #include "drendpointlistmodel.h"
 #include "drrouterlistmodel.h"
+#include "drsnapshotlistmodel.h"
 
 #define DRJPARSER_STARTUP_INTERVAL 1000
 #define DRJPARSER_HOLDOFF_INTERVAL 5000
@@ -58,7 +59,7 @@ class DRJParser : public QObject
   DRRouterListModel *routerModel() const;
   DREndPointListModel *outputModel(int router) const;
   DREndPointListModel *inputModel(int router) const;
-
+  DRSnapshotListModel *snapshotModel(int router) const;
   bool isConnected() const;
   bool gpioSupported(int router) const;
   int outputCrosspoint(int router,int output) const;
@@ -67,8 +68,6 @@ class DRJParser : public QObject
   void setGpiState(int router,int input,const QString &code,int msec=-1);
   QString gpoState(int router,int output) const;
   void setGpoState(int router,int output,const QString &code,int msec=-1);
-  int snapshotQuantity(int router) const;
-  QString snapshotName(int router,int n) const;
   void activateSnapshot(int router,const QString &snapshot);
   void connectToHost(const QString &hostname,uint16_t port,
 		     const QString &username,const QString &passwd);
@@ -97,14 +96,13 @@ class DRJParser : public QObject
  private:
   void Clear();
   void DispatchMessage(const QJsonDocument &jdoc);
-  void ReadSnapshotName(const QString &cmd);
   void SendCommand(const QString &cmd);
   void MakeSocket();
 
   DRRouterListModel *j_router_model;
   QMap<int,DREndPointListModel *> j_output_models;
   QMap<int,DREndPointListModel *> j_input_models;
-
+  QMap<int,DRSnapshotListModel *> j_snapshot_models;
   QTcpSocket *j_socket;
   QString j_hostname;
   uint16_t j_port;
@@ -131,7 +129,6 @@ class DRJParser : public QObject
   QMap<int,QMap<int,QString> > j_gpi_states;
   QMap<int,QMap<int,QString> > j_gpo_states;
   QMap<int,bool> j_gpio_supporteds;
-  QMap<int,QStringList> j_snapshot_names;
   QTimer *j_startup_timer;
   QTimer *j_holdoff_timer;
 };

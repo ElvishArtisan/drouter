@@ -100,6 +100,12 @@ DREndPointListModel *DRJParser::inputModel(int router) const
 }
 
 
+DRSnapshotListModel *DRJParser::snapshotModel(int router) const
+{
+  return j_snapshot_models.value(router);
+}
+
+
 bool DRJParser::isConnected() const
 {
   return j_connected;
@@ -159,18 +165,6 @@ void DRJParser::setGpoState(int router,int output,const QString &code,int msec)
     SendCommand(QString::asprintf("TriggerGPO %d %d %s %d",router,output,
 				  code.toUtf8().constData(),msec));
   }
-}
-
-
-int DRJParser::snapshotQuantity(int router) const
-{
-  return j_snapshot_names[router].size();
-}
-
-
-QString DRJParser::snapshotName(int router,int n) const
-{
-  return j_snapshot_names[router].at(n);
 }
 
 
@@ -351,7 +345,6 @@ void DRJParser::Clear()
   j_gpi_states.clear();
   j_gpo_states.clear();
   j_gpio_supporteds.clear();
-  j_snapshot_names.clear();
 }
 
 
@@ -377,6 +370,8 @@ void DRJParser::DispatchMessage(const QJsonDocument &jdoc)
 	new DREndPointListModel(router,j_use_long_names,this);
       j_output_xpoints[router]=QMap<int,int>();
 
+      j_snapshot_models[router]=new DRSnapshotListModel(router,this);
+
       /*
       j_gpi_states[router]=QMap<int,QString>();
       j_gpo_states[router]=QMap<int,QString>();
@@ -389,10 +384,10 @@ void DRJParser::DispatchMessage(const QJsonDocument &jdoc)
 
       cmd=QString::asprintf("destnames %d\r\n",router);
       j_socket->write(cmd.toUtf8());
-      /*
+
       cmd=QString::asprintf("snapshots %d\r\n",router);
       j_socket->write(cmd.toUtf8());
-
+      /*
       cmd=QString::asprintf("gpistat %d\r\n",router);
       j_socket->write(cmd.toUtf8());
 
@@ -447,11 +442,16 @@ void DRJParser::DispatchMessage(const QJsonDocument &jdoc)
 
   if(jdoc.object().contains("snapshots")) {
     QJsonObject jo0=jdoc.object().value("snapshots").toObject();
-    int router=jo0.value("snapshots").toInt();
-    for(QJsonObject::const_iterator it=jo0.begin();it!=jo0.end();it++) {
-      if(it.key().left(8)=="snapshot") {
-	QJsonObject jo1=it.value().toObject();
-	j_snapshot_names[router].push_back(jo1.value("name").toString());
+    int router=jo0.value("router").toInt();
+    DRSnapshotListModel *smodel=j_snapshot_models.value(router);
+    if(smodel!=NULL) {
+      for(QJsonObject::const_iterator it=jo0.begin();it!=jo0.end();it++) {
+	if(it.key().left(8)=="snapshot") {
+	  QJsonObject jo1=it.value().toObject();
+	  if(smodel!=NULL) {
+	    smodel->addSnapshot(jo1.value("name").toString());
+	  }
+	}
       }
     }
   }
@@ -690,12 +690,6 @@ void DRJParser::DispatchCommand(QString cmd)
   //  printf("CMD: %s\n",(const char *)cmd.toUtf8());
 }
 */
-
-void DRJParser::ReadSnapshotName(const QString &cmd)
-{
-  j_snapshot_names[j_current_router].push_back(cmd.trimmed());
-}
-
 
 void DRJParser::SendCommand(const QString &cmd)
 {

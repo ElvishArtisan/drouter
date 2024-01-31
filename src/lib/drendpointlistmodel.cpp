@@ -194,4 +194,5 @@ void DREndPointListModel::finalize()
     d_metadatas.push_back(it.value());
   }
   d_raw_metadatas.clear();
+  endInsertRows();
 }

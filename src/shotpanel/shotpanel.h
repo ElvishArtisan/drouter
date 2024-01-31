@@ -1,8 +1,8 @@
 // shotpanel.h
 //
-// An applet for activating a snapshot
+// Applet for activating a snapshot
 //
-//   (C) Copyright 2017-2022 Fred Gleason <fredg@paravelsystems.com>
+//   (C) Copyright 2017-2024 Fred Gleason <fredg@paravelsystems.com>
 //
 //   This program is free software; you can redistribute it and/or modify
 //   it under the terms of the GNU General Public License as
@@ -24,14 +24,14 @@
 
 #include <vector>
 
+#include <QComboBox>
 #include <QLabel>
 #include <QPushButton>
 #include <QTimer>
 #include <QWidget>
 
-#include <drcombobox.h>
 #include <drlogindialog.h>
-#include <drsaparser.h>
+#include <drjparser.h>
 
 #define SHOTPANEL_USAGE "[options]\n"
 
@@ -47,24 +47,25 @@ class MainWidget : public QWidget
  private slots:
   void routerBoxActivatedData(int n);
   void activateData();
-  void connectedData(bool state,DRSaParser::ConnectionState cstate);
+  void connectedData(bool state,DRJParser::ConnectionState cstate);
   void errorData(QAbstractSocket::SocketError err);
 
  protected:
   void resizeEvent(QResizeEvent *e);
 
  private:
+  int SelectedRouter() const;
   DRLoginDialog *panel_login_dialog;
   QString panel_hostname;
   QString panel_username;
   QString panel_password;
   int panel_initial_router;
   QLabel *panel_router_label;
-  DRComboBox *panel_router_box;
+  QComboBox *panel_router_box;
   QLabel *panel_snapshot_label;
   QPushButton *panel_activate_button;
-  DRComboBox *panel_snapshot_box;
-  DRSaParser *panel_parser;
+  QComboBox *panel_snapshot_box;
+  DRJParser *panel_parser;
   bool panel_initial_connected;
 };
 

@@ -39,6 +39,7 @@ dist_libdrouter_la_SOURCES = drcombobox.cpp drcombobox.h\
                              drrouterlistmodel.cpp drrouterlistmodel.h\
                              drsaparser.cpp drsaparser.h\
                              drsendmail.cpp drsendmail.h\
+                             drsnapshotlistmodel.cpp drsnapshotlistmodel.h\
                              drsqlquery.cpp drsqlquery.h
 
 nodist_libdrouter_la_SOURCES = moc_drcombobox.cpp\
@@ -49,6 +50,7 @@ nodist_libdrouter_la_SOURCES = moc_drcombobox.cpp\
                                moc_drmultistatewidget.cpp\
                                moc_drrouterlistmodel.cpp\
                                moc_drsaparser.cpp\
+                               moc_drsnapshotlistmodel.cpp\
                                paths.h
 
 libdrouter_la_LDFLAGS = -release $(VERSION)

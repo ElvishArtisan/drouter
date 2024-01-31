@@ -134,7 +134,7 @@ MainWidget::MainWidget(QWidget *parent)
   panel_router_label=new QLabel(tr("Router")+":",this);
   panel_router_label->setAlignment(Qt::AlignRight|Qt::AlignVCenter);
   panel_router_label->setFont(button_font);
-  panel_router_box=new DRComboBox(this);
+  panel_router_box=new QComboBox(this);
   connect(panel_router_box,SIGNAL(activated(int)),
 	  this,SLOT(routerBoxActivatedData(int)));
 
@@ -144,7 +144,7 @@ MainWidget::MainWidget(QWidget *parent)
   panel_snapshot_label=new QLabel(tr("Snapshot"),this);
   panel_snapshot_label->setFont(button_font);
   panel_snapshot_label->setDisabled(true);
-  panel_snapshot_box=new DRComboBox(this);
+  panel_snapshot_box=new QComboBox(this);
   panel_snapshot_box->setDisabled(true);
 
   //
@@ -165,9 +165,9 @@ MainWidget::MainWidget(QWidget *parent)
   //
   // The SA Connection
   //
-  panel_parser=new DRSaParser(this);
-  connect(panel_parser,SIGNAL(connected(bool,DRSaParser::ConnectionState)),
-	  this,SLOT(connectedData(bool,DRSaParser::ConnectionState)));
+  panel_parser=new DRJParser(this);
+  connect(panel_parser,SIGNAL(connected(bool,DRJParser::ConnectionState)),
+	  this,SLOT(connectedData(bool,DRJParser::ConnectionState)));
   connect(panel_parser,SIGNAL(error(QAbstractSocket::SocketError)),
 	  this,SLOT(errorData(QAbstractSocket::SocketError)));
 
@@ -179,7 +179,7 @@ MainWidget::MainWidget(QWidget *parent)
     }
   }
   panel_parser->
-    connectToHost(panel_hostname,9500,panel_username,panel_password);
+    connectToHost(panel_hostname,9600,panel_username,panel_password);
 }
 
 
@@ -202,52 +202,39 @@ QSizePolicy MainWidget::sizePolicy() const
 
 void MainWidget::routerBoxActivatedData(int n)
 {
-  int router=panel_router_box->currentItemData().toInt();
-  panel_snapshot_box->clear();
-  for(int i=0;i<panel_parser->snapshotQuantity(router);i++) {
-    panel_snapshot_box->insertItem(panel_snapshot_box->count(),
-				   panel_parser->snapshotName(router,i));
-  }
-  panel_snapshot_label->setEnabled(panel_parser->snapshotQuantity(router)>0);
-  panel_snapshot_box->setEnabled(panel_parser->snapshotQuantity(router)>0);
-  panel_activate_button->setEnabled(panel_parser->snapshotQuantity(router)>0);
+  int router=SelectedRouter();
+  DRSnapshotListModel *smodel=panel_parser->snapshotModel(router);
+  panel_snapshot_box->setModel(smodel);
+  panel_snapshot_label->setEnabled(smodel->rowCount()>0);
+  panel_snapshot_box->setEnabled(smodel->rowCount()>0);
+  panel_activate_button->setEnabled(smodel->rowCount()>0);
 }
 
 void MainWidget::activateData()
 {
-  int router=panel_router_box->currentItemData().toInt();
+  int router=SelectedRouter();
   panel_parser->activateSnapshot(router,panel_snapshot_box->currentText());
 }
 
-void MainWidget::connectedData(bool state,DRSaParser::ConnectionState cstate)
+void MainWidget::connectedData(bool state,DRJParser::ConnectionState cstate)
 {
   if(state) {
-    QMap<int,QString> routers=panel_parser->routers();
-    panel_router_box->clear();
-    for(QMap<int,QString>::const_iterator it=routers.begin();it!=routers.end();
-	it++) {
-      panel_router_box->
-	insertItem(panel_router_box->count(),
-		   QString::asprintf("%d - ",it.key())+it.value(),it.key());
-      if(it.key()==panel_initial_router) {
-	panel_router_box->setCurrentIndex(panel_router_box->count()-1);
-      }
-    }
+    panel_router_box->setModel(panel_parser->routerModel());
     routerBoxActivatedData(panel_router_box->currentIndex());
     panel_initial_connected=true;
   }
   else {
-    if(cstate!=DRSaParser::WatchdogActive) {
+    if(cstate!=DRJParser::WatchdogActive) {
       QMessageBox::warning(this,"ShotPanel - "+tr("Error"),
 			   tr("Login error")+": "+
-			   DRSaParser::connectionStateString(cstate));
+			   DRJParser::connectionStateString(cstate));
       exit(1);
     }
-    panel_router_label->setDisabled(true);
-    panel_router_box->setDisabled(true);
-    panel_snapshot_label->setDisabled(true);
-    panel_snapshot_box->setDisabled(true);
   }
+  panel_router_label->setEnabled(state);
+  panel_router_box->setEnabled(state);
+  panel_snapshot_label->setEnabled(state);
+  panel_snapshot_box->setEnabled(state);
 }
 
 
@@ -271,6 +258,13 @@ void MainWidget::resizeEvent(QResizeEvent *e)
   panel_snapshot_box->setGeometry(10,60,size().width()-20,20);
 
   panel_activate_button->setGeometry(size().width()-90,10,80,40);
+}
+
+
+int MainWidget::SelectedRouter() const
+{
+  return panel_parser->routerModel()->
+    routerNumber(panel_router_box->currentIndex());
 }
 
 
