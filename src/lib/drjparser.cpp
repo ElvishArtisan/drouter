@@ -547,6 +547,7 @@ void DRJParser::DispatchMessage(const QJsonDocument &jdoc)
 	}
       }
     }
+    imod->finalize();
   }
 
   if(jdoc.object().contains("destnames")) {
@@ -566,6 +567,7 @@ void DRJParser::DispatchMessage(const QJsonDocument &jdoc)
 	}
       }
     }
+    omod->finalize();
   }
 
   if(jdoc.object().contains("snapshots")) {

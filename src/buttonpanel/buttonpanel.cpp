@@ -155,7 +155,7 @@ MainWidget::MainWidget(QWidget *parent)
   //
   // The Protocol J Connection
   //
-  panel_parser=new DRJParser(this);
+  panel_parser=new DRJParser(false,this);
   int audionum=0;
   int gpionum=0;
   for(int i=0;i<panel_arg_types.size();i++) {

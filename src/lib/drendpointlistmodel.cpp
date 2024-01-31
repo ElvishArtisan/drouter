@@ -159,31 +159,39 @@ void DREndPointListModel::addEndPoint(const QMap<QString,QVariant> &fields)
     return;
   }
   QString name=fields.value("name").toString();
-  if(d_use_long_names&&(fields.contains("hostName"))) {
-    name+=" "+tr("ON")+" "+fields.value("hostName").toString();
-  }
-
-  //
-  // Find the insertion position
-  //
-  int index=0;
-  for(int i=0;i<d_numbers.size();i++) {
-    if(number>d_numbers.at(i)) {
-      index=i;
-      break;
-    }
-  }
 
   //
   // Insert It
   //
-  beginInsertRows(QModelIndex(),index,index);
-  QList<QVariant> row;
-  row.push_back(QString::asprintf("%d - %s",number,name.toUtf8().constData()));
-  row.push_back(QString::asprintf("%d",number));
-  row.push_back(name);
-  d_texts.insert(index,row);
-  d_numbers.insert(index,number);
-  d_metadatas.insert(index,fields);
-  endInsertRows();
+  d_raw_metadatas[number]=fields;
+
+  //
+  // Add Long Name Component
+  //
+  if(d_use_long_names&&fields.contains("hostName")) {
+    d_raw_metadatas[number]["name"]=
+      name+" "+tr("ON")+" "+fields.value("hostName").toString();
+  }
+}
+
+
+void DREndPointListModel::finalize()
+{
+  //
+  // Insert The Fields
+  //
+  beginInsertRows(QModelIndex(),0,d_raw_metadatas.size());
+  for(QMap<int,QMap<QString,QVariant> >::const_iterator it=d_raw_metadatas.begin();
+      it!=d_raw_metadatas.end();it++) {
+    QList<QVariant> row;
+    row.push_back(QString::asprintf("%d - %s",it.key(),
+				    it.value().value("name").toString().
+				    toUtf8().constData()));
+    row.push_back(QString::asprintf("%d",it.key()));
+    row.push_back(it.value().value("name").toString());
+    d_texts.push_back(row);
+    d_numbers.push_back(it.key());
+    d_metadatas.push_back(it.value());
+  }
+  d_raw_metadatas.clear();
 }

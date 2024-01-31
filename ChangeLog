@@ -1025,3 +1025,8 @@
 	into a single 'DREndPointListModel' class.
 2024-01-31 Fred Gleason <fredg@paravelsystems.com>
 	* Converted outputpanel(1) to use model-based methods.
+2024-01-31 Fred Gleason <fredg@paravelsystems.com>
+	* Fixed a bug in 'DREndPointListModel' that caused endpoints to be
+	enumerated in reverse order.
+	* Converted the button widget in buttonpanel(1) to use model-based
+	methods.

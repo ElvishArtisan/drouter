@@ -43,6 +43,7 @@ class DREndPointListModel : public QAbstractTableModel
   QMap<QString,QVariant> endPointMetadata(int rownum);
   int rowNumber(int endpt) const;
   void addEndPoint(const QMap<QString,QVariant> &fields);
+  void finalize();
 
  private:
   QFont d_font;
@@ -50,6 +51,7 @@ class DREndPointListModel : public QAbstractTableModel
   QList<QVariant> d_alignments;
   QList<QList<QVariant> > d_texts;
   QList<int> d_numbers;
+  QMap<int,QMap<QString,QVariant> > d_raw_metadatas;
   QList<QMap<QString,QVariant> > d_metadatas;
   int d_router_number;
   bool d_use_long_names;

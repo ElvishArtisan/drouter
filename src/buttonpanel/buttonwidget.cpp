@@ -28,7 +28,7 @@ ButtonWidget::ButtonWidget(int router,int output,int columns,DRJParser *parser,
   : QWidget(parent)
 {
   panel_columns=columns;
-  panel_output=output-1;
+  panel_output=output;
   panel_rows=1;
   panel_router=router;
   panel_parser=parser;
@@ -61,7 +61,7 @@ ButtonWidget::ButtonWidget(int router,int output,int columns,DRJParser *parser,
   }
 
   //
-  // The SA Connection
+  // The Protocol J Connection
   //
   connect(panel_parser,SIGNAL(connected(bool,DRJParser::ConnectionState)),
 	  this,SLOT(changeConnectionState(bool,DRJParser::ConnectionState)));
@@ -97,7 +97,8 @@ QSize ButtonWidget::sizeHint() const
 void ButtonWidget::buttonClickedData(int n)
 {
   if(panel_armed) {
-    panel_parser->setOutputCrosspoint(panel_router,panel_output+1,n+1);
+    panel_parser->setOutputCrosspoint(panel_router,panel_output,
+		  panel_parser->inputModel(panel_router)->endPointNumber(n));
     if(panel_arm_button!=NULL) {
       panel_arm_button->setStyleSheet("");
       panel_armed=false;
@@ -125,37 +126,60 @@ void ButtonWidget::changeConnectionState(bool state,
 					 DRJParser::ConnectionState cstate)
 {
   if(state) {
+    //
+    // Sanity Check Models
+    //
+    DREndPointListModel *omodel=panel_parser->outputModel(panel_router);
+    DREndPointListModel *imodel=panel_parser->inputModel(panel_router);
+    if(omodel==NULL) {
+      QMessageBox::warning(this,"ButtonPanel - "+tr("Error"),
+	  tr("Router")+QString::asprintf(" %u ",panel_router)+
+	  tr("does not exist!"));
+      exit(256);
+    }
+    if(omodel->endPointMetadata(omodel->rowNumber(panel_output)).contains("name")) {
+      panel_title_label->setText(omodel->endPointMetadata(omodel->
+		       rowNumber(panel_output)).value("name").toString());
+    }
+    else {
+      QMessageBox::warning(this,"ButtonPanel - "+tr("Error"),
+			   tr("Output")+QString::asprintf(" %u:%u ",
+			   panel_router,panel_output)+
+	  tr("does not exist!"));
+      exit(256);
+    }
+
+    //
+    // Delete Previous Buttons
+    //
     for(QMap<int,AutoPushButton *>::const_iterator it=panel_buttons.begin();
 	it!=panel_buttons.end();it++) {
       delete it.value();
     }
     panel_buttons.clear();
 
-    if(panel_parser->outputName(panel_router,panel_output+1).isEmpty()) {
-      QMessageBox::
-	warning(this,"ButtonPanel - "+tr("Error"),
-		tr("Output")+
-		QString::asprintf(" %d:%d ",panel_router,panel_output+1)+
-		tr("does not exist!"));
-      exit(1);
-    }
-
-    panel_title_label->
-      setText(panel_parser->outputName(panel_router,panel_output+1));
-    for(int i=0;i<panel_parser->inputQuantity(panel_router);i++) {
-      if(panel_parser->inputIsReal(panel_router,i+1)) {
-	panel_buttons[i]=new AutoPushButton(this);
-	panel_buttons.value(i)->
-	  setText(panel_parser->inputName(panel_router,i+1));
-	panel_buttons.value(i)->show();
-	connect(panel_buttons.value(i),SIGNAL(clicked()),
-		panel_button_mapper,SLOT(map()));
-	panel_button_mapper->setMapping(panel_buttons.value(i),i);
-	if(panel_parser->outputCrosspoint(panel_router,panel_output+1)==(i+1)) {
-	  panel_buttons.value(i)->setStyleSheet(BUTTONWIDGET_ACTIVE_STYLESHEET);
-	}
+    //
+    // Create Buttons
+    //
+    for(int i=0;i<imodel->rowCount();i++) {
+      panel_buttons[i]=new AutoPushButton(this);
+      panel_buttons.value(i)->
+	setText(imodel->endPointMetadata(i).value("name").toString());
+      panel_buttons.value(i)->show();
+      connect(panel_buttons.value(i),SIGNAL(clicked()),
+	      panel_button_mapper,SLOT(map()));
+      panel_button_mapper->setMapping(panel_buttons.value(i),i);
+      if(panel_parser->outputCrosspoint(panel_router,panel_output)==(i)) {
+	panel_buttons.value(i)->setStyleSheet(BUTTONWIDGET_ACTIVE_STYLESHEET);
       }
     }
+
+    //
+    // Initialize Crosspoint Indication
+    //
+    changeOutputCrosspoint(panel_router,panel_output,
+		 panel_parser->outputCrosspoint(panel_router,panel_output));
+
     show();
   }
   else {
@@ -188,10 +212,10 @@ void ButtonWidget::changeConnectionState(bool state,
 
 void ButtonWidget::changeOutputCrosspoint(int router,int output,int input)
 {
-  if((router==panel_router)&&((output-1)==panel_output)) {
+  if((router==panel_router)&&((output)==(panel_output))) {
     for(QMap<int,AutoPushButton *>::const_iterator it=panel_buttons.begin();
 	it!=panel_buttons.end();it++) {
-      if((input-1)==it.key()) {
+      if((input)==panel_parser->inputModel(panel_router)->endPointNumber(it.key())) {
 	it.value()->setStyleSheet(BUTTONWIDGET_ACTIVE_STYLESHEET);
       }
       else {
