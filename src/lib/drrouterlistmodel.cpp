@@ -18,7 +18,15 @@
 //   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
 //
 
+#include <QPixmap>
+
 #include "drrouterlistmodel.h"
+
+//
+// Icons
+//
+#include "../../icons/audio-16x16.xpm"
+#include "../../icons/gpio-16x16.xpm"
 
 DRRouterListModel::DRRouterListModel(QObject *parent)
   : QAbstractTableModel(parent)
@@ -83,8 +91,7 @@ QVariant DRRouterListModel::data(const QModelIndex &index,int role) const
       return d_texts.at(row).at(col);
 
     case Qt::DecorationRole:
-      // Nothing to do!
-      break;
+      return d_icons.at(row);
 
     case Qt::TextAlignmentRole:
       return d_alignments.at(col);
@@ -145,5 +152,16 @@ void DRRouterListModel::addRouter(int number,const QString &name,
   row.push_back(QString::asprintf("%d - %s",number,name.toUtf8().constData()));
   row.push_back(rtype);
   d_texts.insert(index,row);
+  if(rtype.toLower()=="audio") {
+    d_icons.insert(index,QPixmap(audio_16x16_xpm));
+  }
+  else {
+    if(rtype.toLower()=="gpio") {
+      d_icons.insert(index,QPixmap(gpio_16x16_xpm));
+    }
+    else {
+      d_icons.insert(index,QVariant());
+    }
+  }
   endInsertRows();
 }

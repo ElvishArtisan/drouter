@@ -1038,3 +1038,5 @@
 2024-01-31 Fred Gleason <fredg@paravelsystems.com>
 	* Fixed a bug in buttonpanel(1) that caused the Lamp widget to
 	be initialized in an indeterminate state.
+2024-01-31 Fred Gleason <fredg@paravelsystems.com>
+	* Added icon support to the 'DRRouterListModel' class.

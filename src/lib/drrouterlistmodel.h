@@ -24,6 +24,8 @@
 #include <QAbstractTableModel>
 #include <QFont>
 
+#include "drendpointmap.h"
+
 class DRRouterListModel : public QAbstractTableModel
 {
  Q_OBJECT;
@@ -46,6 +48,7 @@ class DRRouterListModel : public QAbstractTableModel
   QList<QVariant> d_alignments;
   QList<QList<QVariant> > d_texts;
   QList<int> d_numbers;
+  QList<QVariant> d_icons;
 };
 
 

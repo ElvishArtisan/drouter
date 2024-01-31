@@ -31,7 +31,8 @@ uninstall-local:
 	rm -f $(DESTDIR)@prefix@/share/icons/hicolor/16x16/apps/drouter.png
 	rm -f $(DESTDIR)@prefix@/share/icons/hicolor/48x48/apps/drouter.png
 
-EXTRA_DIST = drouter-16x16.png\
+EXTRA_DIST = audio-16x16.xpm\
+             drouter-16x16.png\
              drouter-16x16.xpm\
              drouter-48x48.png\
              event-comment-16x16.xcf\
@@ -40,6 +41,7 @@ EXTRA_DIST = drouter-16x16.png\
              event-fail-16x16.xpm\
              event-route-16x16.xpm\
              event-snapshot-16x16.xpm\
+             gpio-16x16.xpm\
              greenx.xpm
 
 CLEANFILES = *~
