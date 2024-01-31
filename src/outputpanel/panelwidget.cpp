@@ -22,6 +22,8 @@
 #include <QtAlgorithms>
 #include <QMessageBox>
 
+#include <drendpointlistmodel.h>
+
 #include "panelwidget.h"
 
 PanelInput::PanelInput(unsigned num,const QString &name)
@@ -82,7 +84,7 @@ PanelWidget::PanelWidget(DRJParser *parser,int router,int output,QWidget *parent
   widget_output_label->setAlignment(Qt::AlignCenter);
   widget_output_label->setDisabled(true);
 
-  widget_input_box=new DRComboBox(this); 
+  widget_input_box=new QComboBox(this); 
   widget_input_box->setDisabled(true);
   connect(widget_input_box,SIGNAL(activated(int)),
 	  this,SLOT(inputBoxActivatedData(int)));
@@ -126,72 +128,41 @@ void PanelWidget::changeConnectionState(bool state,
 					DRJParser::ConnectionState cstate)
 {
   if(state) {
-    if(!widget_parser->routers().contains(widget_router)) {
+    DREndPointListModel *omodel=widget_parser->outputModel(widget_router);
+    DREndPointListModel *imodel=widget_parser->inputModel(widget_router);
+    if(omodel==NULL) {
       QMessageBox::warning(this,"OutputPanel - "+tr("Error"),
-	  tr("Router")+QString::asprintf(" %u ",widget_router+1)+
+	  tr("Router")+QString::asprintf(" %u ",widget_router)+
 	  tr("does not exist!"));
       exit(256);
     }
-    if(!widget_parser->outputIsReal(widget_router,widget_output+1)) {
+    if(omodel->endPointMetadata(omodel->rowNumber(widget_output)).contains("name")) {
+      widget_output_label->setText(omodel->endPointMetadata(omodel->
+		       rowNumber(widget_output)).value("name").toString());
+      widget_output_label->setEnabled(widget_xpoint_synced);
+    }
+    else {
       QMessageBox::warning(this,"OutputPanel - "+tr("Error"),
-	  tr("Output")+QString::asprintf(" %u ",widget_output+1)+
+			   tr("Output")+QString::asprintf(" %u:%u ",
+			   widget_router,widget_output)+
 	  tr("does not exist!"));
       exit(256);
     }
-    widget_output_label->setEnabled(widget_xpoint_synced);
+    widget_input_box->setModel(imodel);
     widget_input_box->setEnabled(widget_xpoint_synced);
 
-    updateInputNames();
-    updateOutputNames();
-    changeOutputCrosspoint(widget_router,1+widget_output,
-	   widget_parser->outputCrosspoint(widget_router,1+widget_output));
+    changeOutputCrosspoint(widget_router,widget_output,
+	   widget_parser->outputCrosspoint(widget_router,widget_output));
   }
   else {
-    widget_input_names.clear();
-    widget_input_box->clear();
+    widget_input_box->setModel(NULL);
   }
-}
-
-
-void PanelWidget::updateInputNames()
-{
-  QList<PanelInput> inputs;
-
-  for(int i=0;i<widget_parser->inputQuantity(widget_router);i++) {
-    if(widget_parser->inputIsReal(widget_router,i+1)) {
-      inputs.push_back(PanelInput(i,widget_parser->inputName(widget_router,
-							     i+1)));
-    }
-  }
-  qSort(inputs);
-
-  //
-  // Populate the List Box
-  //
-  widget_input_names.clear();
-  widget_input_box->clear();
-  widget_input_names[0]=tr("--- OFF ---");
-  widget_input_box->insertItem(0,tr("--- OFF ---"),-1);
-  for(int i=0;i<inputs.size();i++) {
-    widget_input_names[inputs[i].number()]=inputs[i].name();
-    widget_input_box->insertItem(i,inputs[i].name(),inputs[i].number());
-  }
-}
-
-
-void PanelWidget::updateOutputNames()
-{
-  QString name=widget_parser->outputName(widget_router,widget_output+1);
-  if(name.isEmpty()) {
-    name=tr("Output")+QString::asprintf(" %d",widget_output+1);
-  }
-  widget_output_label->setText(name);
 }
 
 
 void PanelWidget::tickClock(bool state)
 {
-  if(widget_input!=widget_input_box->currentItemData().toInt()) {
+  if(widget_input!=SelectedInput()) {
     if(state) {
       widget_take_button->
 	setStyleSheet(widget_red_stylesheet);
@@ -213,28 +184,13 @@ void PanelWidget::tickClock(bool state)
 void PanelWidget::changeOutputCrosspoint(int router,int output,int input)
 {
   if(router==widget_router) {
-    if((output-1)==widget_output) {
-      if(!widget_input_box->setCurrentItemData(input-1)) {
-	if(input<-1) {
-	  widget_input_box->
-	    insertItem(widget_input_box->count(),tr("** UNKNOWN **"),input-1);
-	}
-	else {
-	  widget_input_box->insertItem(widget_input_box->count(),
-				       "* "+widget_input_names[input-1],input);
-	}
-	widget_input_box->setCurrentItemData(input-1);
-      }
-      widget_input=input-1;
+    if(output==widget_output) {
+
+      widget_input_box->setCurrentIndex(widget_parser->
+			inputModel(widget_router)->rowNumber(input));
+      widget_input=input;
       widget_xpoint_synced=true;
       SetArmedState(false);
-      if(input>0) {
-	for(int i=0;i<widget_input_box->count();i++) {
-	  if(widget_input_box->itemData(i).toInt()<-1) {
-	    widget_input_box->removeItem(i);
-	  }
-	}
-      }
     }
   }
 }
@@ -242,7 +198,7 @@ void PanelWidget::changeOutputCrosspoint(int router,int output,int input)
 
 void PanelWidget::inputBoxActivatedData(int index)
 {
-  int input=widget_input_box->currentItemData().toInt();
+  int input=SelectedInput();
   SetArmedState(widget_input!=input);
 }
 
@@ -250,14 +206,14 @@ void PanelWidget::inputBoxActivatedData(int index)
 void PanelWidget::takeButtonClickedData()
 {
   widget_parser->
-    setOutputCrosspoint(widget_router,widget_output+1,
-			widget_input_box->currentItemData().toInt()+1);
+    setOutputCrosspoint(widget_router,widget_output,SelectedInput());
 }
 
 
 void PanelWidget::cancelButtonClickedData()
 {
-  widget_input_box->setCurrentItemData(widget_input);
+  widget_input_box->setCurrentIndex(widget_parser->
+		       inputModel(widget_router)->rowNumber(widget_input));
   SetArmedState(false);
 }
 
@@ -268,6 +224,13 @@ void PanelWidget::resizeEvent(QResizeEvent *e)
   widget_input_box->setGeometry(0,40,size().width(),40);
   widget_take_button->setGeometry(0,85,size().width(),60);
   widget_cancel_button->setGeometry(0,150,size().width(),40);
+}
+
+
+int PanelWidget::SelectedInput() const
+{
+  return widget_parser->inputModel(widget_router)->
+    endPointNumber(widget_input_box->currentIndex());
 }
 
 

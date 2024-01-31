@@ -116,7 +116,7 @@ MainWidget::MainWidget(QWidget *parent)
   //
   // The Protocol J Connection
   //
-  panel_parser=new DRJParser(this);
+  panel_parser=new DRJParser(false,this);
 
   //
   // Dialogs
@@ -152,7 +152,7 @@ MainWidget::MainWidget(QWidget *parent)
 	  exit(1);
 	}
       }
-      output=f0.back().toInt(&ok)-1;
+      output=f0.back().toInt(&ok);
       if((!ok)||(output<0)) {
 	QMessageBox::warning(this,"OutputPanel - "+tr("Error"),
 			     tr("Invalid output specified!"));
@@ -163,10 +163,6 @@ MainWidget::MainWidget(QWidget *parent)
       connect(panel_parser,SIGNAL(connected(bool,DRJParser::ConnectionState)),
 	      widget,
 	      SLOT(changeConnectionState(bool,DRJParser::ConnectionState)));
-      connect(panel_parser,SIGNAL(inputListChanged()),
-	      widget,SLOT(updateInputNames()));
-      connect(panel_parser,SIGNAL(outputListChanged()),
-	      widget,SLOT(updateOutputNames()));
       connect(panel_parser,
 	      SIGNAL(outputCrosspointChanged(int,int,int)),
 	      widget,SLOT(changeOutputCrosspoint(int,int,int)));

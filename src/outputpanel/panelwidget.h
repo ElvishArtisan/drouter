@@ -23,12 +23,12 @@
 #ifndef PANELWIDGET_H
 #define PANELWIDGET_H
 
+#include <QComboBox>
 #include <QLabel>
 #include <QPushButton>
 #include <QStringList>
 #include <QWidget>
 
-#include <drcombobox.h>
 #include <drjparser.h>
 
 #define PANELWIDGET_FLASH_INTERVAL 300
@@ -60,8 +60,6 @@ class PanelWidget : public QWidget
 
  public slots:
   void changeConnectionState(bool state,DRJParser::ConnectionState cstate);
-  void updateInputNames();
-  void updateOutputNames();
   void changeOutputCrosspoint(int router,int output,int input);
   void tickClock(bool);
 
@@ -74,16 +72,16 @@ class PanelWidget : public QWidget
   void resizeEvent(QResizeEvent *e);
 
  private:
+  int SelectedInput() const;
   void SetArmedState(bool state);
   QLabel *widget_output_label;
-  DRComboBox *widget_input_box;
+  QComboBox *widget_input_box;
   QPushButton *widget_take_button;
   QPushButton *widget_cancel_button;
   DRJParser *widget_parser;
   int widget_router;
   int widget_output;
   int widget_input;
-  QMap<int,QString> widget_input_names;
   bool widget_xpoint_synced;
   QPalette widget_blue_palette;
   QString widget_blue_stylesheet;
