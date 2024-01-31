@@ -53,7 +53,7 @@ StateLight::StateLight(int router,int endpt,const QString &legend,
   setAlignment(Qt::AlignCenter|Qt::AlignVCenter);
 
   //
-  // The SA Connection
+  // The Protocol J Connection
   //
   connect(c_parser,SIGNAL(connected(bool,DRJParser::ConnectionState)),
 	  this,SLOT(changeConnectionState(bool,DRJParser::ConnectionState)));
@@ -65,6 +65,7 @@ StateLight::StateLight(int router,int endpt,const QString &legend,
     connect(c_parser,SIGNAL(gpoStateChanged(int,int,const QString &)),
 	    this,SLOT(setState(int,int,const QString &)));
   }
+  setStyleSheet(STATELIGHT_OFF_STYLESHEET);
 }
 
 

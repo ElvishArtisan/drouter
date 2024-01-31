@@ -36,7 +36,7 @@ class GpioWidget : public QWidget
 {
   Q_OBJECT
  public:
-  GpioWidget(GpioParser *gpio_parser,DRJParser *sa_parser,QWidget *parent=0);
+  GpioWidget(GpioParser *gpio_parser,DRJParser *parser,QWidget *parent=0);
   ~GpioWidget();
   QSize sizeHint() const;
   QString title() const;

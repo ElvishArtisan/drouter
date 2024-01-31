@@ -27,11 +27,11 @@
 #include "statebutton.h"
 #include "statelight.h"
 
-GpioWidget::GpioWidget(GpioParser *gpio_parser,DRJParser *sa_parser,
+GpioWidget::GpioWidget(GpioParser *gpio_parser,DRJParser *parser,
 		       QWidget *parent)
   : QWidget(parent)
 {
-  c_parser=sa_parser;
+  c_parser=parser;
   c_hint_width=0;
   c_hint_height=0;
 
@@ -140,11 +140,11 @@ GpioWidget::GpioWidget(GpioParser *gpio_parser,DRJParser *sa_parser,
       w=new MultiStateLabel(gpio_parser->router(i),gpio_parser->endPoint(i)-1,
 			    gpio_parser->legend(i),this);
       if(gpio_parser->direction(i)==QChar('i')) {
-	connect(sa_parser,SIGNAL(gpiStateChanged(int,int,const QString &)),
+	connect(parser,SIGNAL(gpiStateChanged(int,int,const QString &)),
 		w,SLOT(setState(int,int,const QString &)));
       }
       else {
-	connect(sa_parser,SIGNAL(gpoStateChanged(int,int,const QString &)),
+	connect(parser,SIGNAL(gpoStateChanged(int,int,const QString &)),
 		w,SLOT(setState(int,int,const QString &)));
       }
       c_widgets.push_back(w);
@@ -162,7 +162,7 @@ GpioWidget::GpioWidget(GpioParser *gpio_parser,DRJParser *sa_parser,
   }
 
   //
-  // The SA Connection
+  // The Protocol J Connection
   //
   connect(c_parser,SIGNAL(connected(bool,DRJParser::ConnectionState)),
 	  this,SLOT(changeConnectionState(bool,DRJParser::ConnectionState)));
