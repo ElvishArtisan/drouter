@@ -112,102 +112,6 @@ bool DRJParser::gpioSupported(int router) const
 }
 
 
-int DRJParser::inputQuantity(int router) const
-{
-  return j_input_quantities.value(router);
-}
-
-
-bool DRJParser::inputIsReal(int router,int input) const
-{
-  return j_input_is_reals.value(router).value(input,false);
-}
-
-
-QString DRJParser::inputNodeName(int router,int input) const
-{
-  return j_input_node_names[router][input];
-}
-
-
-QHostAddress DRJParser::inputNodeAddress(int router,int input) const
-{
-  return j_input_node_addresses[router][input];
-}
-
-
-int DRJParser::inputNodeSlotNumber(int router,int input) const
-{
-  return j_input_node_slot_numbers[router][input];
-}
-
-
-QString DRJParser::inputName(int router,int input) const
-{
-  return j_input_names[router][input];
-}
-
-
-QString DRJParser::inputLongName(int router,int input) const
-{
-  return j_input_long_names[router][input];
-}
-
-
-int DRJParser::inputSourceNumber(int router,int input) const
-{
-  return j_input_source_numbers[router][input];
-}
-
-
-QHostAddress DRJParser::inputStreamAddress(int router,int input) const
-{
-  return j_input_stream_addresses[router][input];
-}
-
-
-int DRJParser::outputQuantity(int router) const
-{
-  return j_output_quantities.value(router);
-}
-
-
-bool DRJParser::outputIsReal(int router,int output) const
-{
-  return j_output_is_reals[router][output];
-}
-
-
-QString DRJParser::outputNodeName(int router,int output) const
-{
-  return j_output_node_names[router][output];
-}
-
-
-QHostAddress DRJParser::outputNodeAddress(int router,int output) const
-{
-  return j_output_node_addresses[router][output];
-}
-
-
-int DRJParser::outputNodeSlotNumber(int router,int output) const
-{
-  return j_output_node_slot_numbers[router][output];
-}
-
-
-QString DRJParser::outputName(int router,int output) const
-{
-  return j_output_names[router][output];
-}
-
-
-QString DRJParser::outputLongName(int router,int output) const
-{
-  return j_output_long_names[router][output];
-}
-
-
 int DRJParser::outputCrosspoint(int router,int output) const
 {
   return j_output_xpoints[router][output];
@@ -361,7 +265,6 @@ QString DRJParser::errorString(ErrorType err)
 
 void DRJParser::connectedData()
 {
-  //  SendCommand("Login "+j_username+" "+j_password);
   j_accum.clear();
   j_accum_quoted=false;
   j_accum_level=0;
@@ -444,19 +347,6 @@ void DRJParser::errorData(QAbstractSocket::SocketError err)
 
 void DRJParser::Clear()
 {
-  j_router_names.clear();
-  j_input_node_names.clear();
-  j_input_node_slot_numbers.clear();
-  j_input_node_addresses.clear();
-  j_input_names.clear();
-  j_input_long_names.clear();
-  j_input_source_numbers.clear();
-  j_input_stream_addresses.clear();
-  j_output_node_names.clear();
-  j_output_node_addresses.clear();
-  j_output_node_slot_numbers.clear();
-  j_output_names.clear();
-  j_output_long_names.clear();
   j_output_xpoints.clear();
   j_gpi_states.clear();
   j_gpo_states.clear();
@@ -479,27 +369,12 @@ void DRJParser::DispatchMessage(const QJsonDocument &jdoc)
 				jo1.value("name").toString(),
 				jo1.value("type").toString());
       int router=jo1.value("number").toInt();
-      /*
-      j_router_names[router]=jo1.value("name").toString();
-      */
 
-      j_input_models[router]=new DREndPointListModel(router,j_use_long_names,this);
-      /*
-      j_input_quantities[router]=0;
-      j_input_is_reals[router]=QMap<int,bool>();
-      j_input_names[router]=QMap<int,QString>();
-      j_input_long_names[router]=QMap<int,QString>();
-      j_input_source_numbers[router]=QMap<int,int>();
-      j_input_stream_addresses[router]=QMap<int,QHostAddress>();
-      */
+      j_input_models[router]=
+	new DREndPointListModel(router,j_use_long_names,this);
+
       j_output_models[router]=
 	new DREndPointListModel(router,j_use_long_names,this);
-      /*
-      j_output_quantities[router]=0;
-      j_output_is_reals[router]=QMap<int,bool>();
-      j_output_names[router]=QMap<int,QString>();
-      j_output_long_names[router]=QMap<int,QString>();
-      */
       j_output_xpoints[router]=QMap<int,int>();
 
       /*
@@ -816,161 +691,9 @@ void DRJParser::DispatchCommand(QString cmd)
 }
 */
 
-void DRJParser::ReadRouterName(const QString &cmd)
-{
-  bool ok=false;
-  QStringList f0=cmd.split(" ",QString::SkipEmptyParts);
-  if(f0.size()>=2) {
-    for(int i=2;i<f0.size();i++) {
-      f0[1]+=" "+f0[i];
-    }
-    int router=f0.at(0).toInt(&ok);
-    if(ok) {
-      j_router_names[router]=f0.at(1);
-    }
-  }
-}
-
-
-void DRJParser::ReadSourceName(const QString &cmd)
-{
-  QStringList f0=cmd.split("\t");
-  bool ok=false;
-  int srcnum=0;
-  int input=f0.at(0).toInt(&ok);
-  QHostAddress addr;
-
-  if(ok) {
-    for(int i=j_prev_input+1;i<input;i++) {
-      j_input_is_reals[j_current_router][i]=false;
-    }
-    if(f0.size()==8) {
-      srcnum=f0[6].toInt(&ok);
-    }
-    if(f0.size()>=3) {
-      QStringList f1=f0.at(2).split("ON");
-      j_input_node_names[j_current_router][input]=f1.back().trimmed();
-      if(addr.setAddress(f0.at(3))) {
-	j_input_node_addresses[j_current_router][input]=addr;
-      }
-      int slot=f0.at(5).toUInt(&ok);
-      if(ok) {
-	j_input_node_slot_numbers[j_current_router][input]=slot-1;
-      }
-      if(f0[1].trimmed().isEmpty()) {
-	if(j_gpio_supporteds[j_current_router]) {
-	  j_input_names[j_current_router][input]=
-	    tr("GPI")+QString::asprintf(" %d",input);
-	  j_input_long_names[j_current_router][input]=
-	    tr("GPI")+QString::asprintf(" %d",input)+f0[2];
-	}
-	else {
-	  j_input_names[j_current_router][input]=
-	    tr("Input")+QString::asprintf(" %d",input);
-	  j_input_long_names[j_current_router][input]=
-	    tr("Input")+QString::asprintf(" %d",input)+f0[2];
-	}
-      }
-      else {
-	j_input_names[j_current_router][input]=f0[1];
-	j_input_long_names[j_current_router][input]=f0[2];
-      }
-      j_input_is_reals[j_current_router][input]=true;
-      if(ok) {
-	if(srcnum<=0) {
-	  //	  j_input_long_names[j_current_router][input]=f0[2];
-	  j_input_source_numbers[j_current_router][input]=-1;
-	  j_input_stream_addresses[j_current_router][input]=QHostAddress();
-	}
-	else {
-	  //	  j_input_long_names[j_current_router][input]=f0[2];
-	  j_input_source_numbers[j_current_router][input]=f0.at(6).toInt();
-	  QHostAddress addr;
-	  if(addr.setAddress(f0.at(7))) {
-	    j_input_stream_addresses[j_current_router][input]=addr;
-	  }
-	  else {
-	    j_input_stream_addresses[j_current_router][input]=QHostAddress();
-	  }
-	}
-      }
-      else {
-	j_input_long_names[j_current_router][input]=f0[2];
-	j_input_source_numbers[j_current_router][input]=-1;
-	j_input_stream_addresses[j_current_router][input]=QHostAddress();
-      }
-    }
-    j_prev_input=input;
-  }
-}
-
-
-void DRJParser::ReadDestName(const QString &cmd)
-{
-  QStringList f0=cmd.split("\t");
-  bool ok=false;
-  int output=f0.at(0).toInt(&ok);
-  QHostAddress addr;
-
-  if(f0.size()>=3) {
-    for(int i=j_prev_output+1;i<output;i++) {
-      j_output_is_reals[j_current_router][i]=false;
-    }
-    if(ok) {
-      QStringList f1=f0.at(2).split("ON");
-      j_output_node_names[j_current_router][output]=f1.back().trimmed();
-      j_output_names[j_current_router][output]=f0.at(1);
-      j_output_is_reals[j_current_router][output]=true;
-      j_output_long_names[j_current_router][output]=f0.at(2);
-      if(f0.size()>=4) {
-	if(addr.setAddress(f0.at(3))) {
-	  j_output_node_addresses[j_current_router][output]=addr;
-	}
-	if(f0.size()>=6) {
-	  int slot=f0.at(5).toUInt(&ok);
-	  if(ok) {
-	    j_output_node_slot_numbers[j_current_router][output]=slot-1;
-	  }
-	}
-      }
-    }
-    j_prev_output=output;
-  }
-}
-
-
 void DRJParser::ReadSnapshotName(const QString &cmd)
 {
   j_snapshot_names[j_current_router].push_back(cmd.trimmed());
-}
-
-
-void DRJParser::BubbleSort(std::map<unsigned,QString> *names,
-			    std::vector<unsigned> *ptrs)
-{
-  //
-  // Reset Pointer Table
-  //
-  ptrs->clear();
-  for(unsigned i=0;i<names->size();i++) {
-    ptrs->push_back(i);
-  }
-
-  //
-  // Sort
-  //
-  bool changed=true;
-  while(changed) {
-    changed=false;
-    for(unsigned i=1;i<names->size();i++) {
-      if((*names)[ptrs->at(i-1)]>(*names)[ptrs->at(i)]) {
-	unsigned ptr=ptrs->at(i-1);
-	ptrs->at(i-1)=ptrs->at(i);
-	ptrs->at(i)=ptr;
-	changed=true;
-      }
-    }
-  }
 }
 
 

@@ -61,22 +61,6 @@ class DRJParser : public QObject
 
   bool isConnected() const;
   bool gpioSupported(int router) const;
-  int inputQuantity(int router) const;
-  bool inputIsReal(int router,int input) const;
-  QString inputNodeName(int router,int input) const;
-  QHostAddress inputNodeAddress(int router,int input) const;
-  int inputNodeSlotNumber(int router,int input) const;
-  QString inputName(int router,int input) const;
-  QString inputLongName(int router,int input) const;
-  int inputSourceNumber(int router,int input) const;
-  QHostAddress inputStreamAddress(int router,int input) const;
-  int outputQuantity(int router) const;
-  bool outputIsReal(int router,int output) const;
-  QString outputNodeName(int router,int output) const;
-  QHostAddress outputNodeAddress(int router,int output) const;
-  int outputNodeSlotNumber(int router,int output) const;
-  QString outputName(int router,int output) const;
-  QString outputLongName(int router,int output) const;
   int outputCrosspoint(int router,int output) const;
   void setOutputCrosspoint(int router,int output,int input);
   QString gpiState(int router,int input) const;
@@ -113,13 +97,7 @@ class DRJParser : public QObject
  private:
   void Clear();
   void DispatchMessage(const QJsonDocument &jdoc);
-  //  void DispatchCommand(QString cmd);
-  void ReadRouterName(const QString &cmd);
-  void ReadSourceName(const QString &cmd);
-  void ReadDestName(const QString &cmd);
   void ReadSnapshotName(const QString &cmd);
-  void BubbleSort(std::map<unsigned,QString> *names,
-		  std::vector<unsigned> *ptrs);
   void SendCommand(const QString &cmd);
   void MakeSocket();
 
@@ -149,22 +127,6 @@ class DRJParser : public QObject
   int j_last_router;
   int j_prev_input;
   int j_prev_output;
-  QMap<int,int> j_input_quantities;
-  QMap<int,QMap<int,QString> > j_input_node_names;
-  QMap<int,QMap<int,QHostAddress> > j_input_node_addresses;
-  QMap<int,QMap<int,int> > j_input_node_slot_numbers;
-  QMap<int,QMap<int,bool> > j_input_is_reals;
-  QMap<int,QMap<int,QString> > j_input_names;
-  QMap<int,QMap<int,QString> > j_input_long_names;
-  QMap<int,QMap<int,int> > j_input_source_numbers;
-  QMap<int,QMap<int,QHostAddress> > j_input_stream_addresses;
-  QMap<int,QMap<int,QString> > j_output_node_names;
-  QMap<int,QMap<int,QHostAddress> > j_output_node_addresses;
-  QMap<int,QMap<int,int> > j_output_node_slot_numbers;
-  QMap<int,int> j_output_quantities;
-  QMap<int,QMap<int,bool> > j_output_is_reals;
-  QMap<int,QMap<int,QString> > j_output_names;
-  QMap<int,QMap<int,QString> > j_output_long_names;
   QMap<int,QMap<int,int> > j_output_xpoints;
   QMap<int,QMap<int,QString> > j_gpi_states;
   QMap<int,QMap<int,QString> > j_gpo_states;
