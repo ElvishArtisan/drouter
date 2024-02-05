@@ -30,7 +30,7 @@
 #define STATEDIALOG_CONTROL_WIDTH 185
 
 StateDialog::StateDialog(int router,int endpt,DREndPointMap::Type gpio_type,
-			 DRSaParser *parser,QWidget *parent)
+			 DRJParser *parser,QWidget *parent)
   : QDialog(parent,Qt::Tool)
 {
   d_router=router;
@@ -59,20 +59,23 @@ StateDialog::StateDialog(int router,int endpt,DREndPointMap::Type gpio_type,
   d_reset_button->setFont(bold_font);
   connect(d_reset_button,SIGNAL(clicked()),this,SLOT(resetData()));
 
+  QMap<QString,QVariant> mdata;
   switch(d_type) {
   case DREndPointMap::Input:
+    mdata=d_parser->inputModel(d_router)->endPointMetadata(endpt);
     connect(d_parser,SIGNAL(gpiStateChanged(int,int,const QString &)),
 	    this,SLOT(gpioStateChangedData(int,int,const QString &)));
     d_name_label->setText(QString::asprintf("%d - ",endpt+1)+
-			  d_parser->inputLongName(d_router,d_endpoint));
+			  mdata.value("name").toString());
     setWindowTitle(tr("GPI State"));
     break;
 
   case DREndPointMap::Output:
+    mdata=d_parser->outputModel(d_router)->endPointMetadata(endpt);
     connect(d_parser,SIGNAL(gpoStateChanged(int,int,const QString &)),
 	    this,SLOT(gpioStateChangedData(int,int,const QString &)));
     d_name_label->setText(QString::asprintf("%d - ",endpt+1)+
-			  d_parser->outputLongName(d_router,d_endpoint));
+			  mdata.value("name").toString());
     setWindowTitle(tr("GPO State"));
     break;
 

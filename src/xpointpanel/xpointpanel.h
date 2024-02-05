@@ -2,7 +2,7 @@
 //
 // Full graphical crosspoint panel for SA devices.
 //
-//   (C) Copyright 2002-2022 Fred Gleason <fredg@paravelsystems.com>
+//   (C) Copyright 2002-2024 Fred Gleason <fredg@paravelsystems.com>
 //
 //   This program is free software; you can redistribute it and/or modify
 //   it under the terms of the GNU General Public License as
@@ -22,6 +22,7 @@
 #ifndef XPOINTPANEL_H
 #define XPOINTPANEL_H
 
+#include <QComboBox>
 #include <QGraphicsScene>
 #include <QLabel>
 #include <QList>
@@ -30,10 +31,9 @@
 #include <QTimer>
 #include <QWidget>
 
-#include <drcombobox.h>
 #include <drdparser.h>
 #include <drlogindialog.h>
-#include <drsaparser.h>
+#include <drjparser.h>
 
 #include "endpointlist.h"
 #include "sidelabel.h"
@@ -52,13 +52,13 @@ class MainWidget : public QWidget
 
  private slots:
   void routerBoxActivatedData(int n);
-  void connectedData(bool state,DRSaParser::ConnectionState cstate);
+  void connectedData(bool state,DRJParser::ConnectionState cstate);
   void protocolDConnected(bool state);
   void errorData(QAbstractSocket::SocketError err);
   void outputCrosspointChangedData(int router,int output,int input);
   void xpointDoubleClickedData(int output_num,int input_num);
-  void inputHoveredEndpointChangedData(int router,int input);
-  void outputHoveredEndpointChangedData(int router,int output);
+  void inputHoveredEndpointChangedData(int router,int rownum);
+  void outputHoveredEndpointChangedData(int router,int rownum);
   void crosspointSelectedData(int slot_x,int slot_y);
 
  protected:
@@ -66,6 +66,7 @@ class MainWidget : public QWidget
   void paintEvent(QPaintEvent *e);
 
  private:
+  int SelectedRouter() const;
   QString InputDescriptionTitle(int router,int input) const;
   QString OutputDescriptionTitle(int router,int output) const;
   DRLoginDialog *panel_login_dialog;
@@ -76,11 +77,11 @@ class MainWidget : public QWidget
   QLabel *panel_router_label;
   QLabel *panel_inputs_label;
   SideLabel *panel_outputs_label;
-  DRComboBox *panel_router_box;
+  QComboBox *panel_router_box;
   QLabel *panel_description_name_label;
   QLabel *panel_description_text_label;
   DRDParser *panel_dparser;
-  DRSaParser *panel_parser;
+  DRJParser *panel_parser;
   bool panel_initial_connected;
   QGraphicsScene *panel_scene;
   XPointView *panel_view;

@@ -122,6 +122,12 @@ int DRRouterListModel::routerNumber(int rownum) const
 }
 
 
+DREndPointMap::RouterType DRRouterListModel::routerType(int rownum) const
+{
+  return d_router_types.at(rownum);
+}
+
+
 int DRRouterListModel::rowNumber(int router) const
 {
   return d_numbers.indexOf(router);
@@ -153,13 +159,16 @@ void DRRouterListModel::addRouter(int number,const QString &name,
   row.push_back(rtype);
   d_texts.insert(index,row);
   if(rtype.toLower()=="audio") {
+    d_router_types.insert(index,DREndPointMap::AudioRouter);
     d_icons.insert(index,QPixmap(audio_16x16_xpm));
   }
   else {
     if(rtype.toLower()=="gpio") {
+    d_router_types.insert(index,DREndPointMap::GpioRouter);
       d_icons.insert(index,QPixmap(gpio_16x16_xpm));
     }
     else {
+      d_router_types.insert(index,DREndPointMap::LastRouter);
       d_icons.insert(index,QVariant());
     }
   }

@@ -41,9 +41,7 @@ EndpointList::EndpointList(Qt::Orientation orient,QWidget *parent)
   list_mouse_endpoint=-1;
   list_move_endpoint=-1;
   list_router=0;
-  list_selected_slot=-1;
-  list_selected_endpoint=-1;
-
+  list_selected_rownum=-1;
   list_selected_font=QFont(font().family(),font().pointSize(),QFont::Bold);
 
   setMouseTracking(true);
@@ -118,11 +116,22 @@ int EndpointList::router() const
 
 void EndpointList::setRouter(int router)
 {
-  list_router=router;
+  if(list_router!=router) {
+    list_router=router;
+    switch(list_orientation) {
+    case Qt::Horizontal:
+      list_model=list_parser->inputModel(list_router);
+      break;
+
+    case Qt::Vertical:
+      list_model=list_parser->outputModel(list_router);
+      break;
+    }
+  }
 }
 
 
-void EndpointList::setParser(DRSaParser *psr)
+void EndpointList::setParser(DRJParser *psr)
 {
   list_parser=psr;
 }
@@ -137,27 +146,6 @@ bool EndpointList::showGpio() const
 void EndpointList::setShowGpio(bool state)
 {
   list_show_gpio=state;
-}
-
-
-int EndpointList::endpoint(int slot) const
-{
-  if((slot<0)||(slot>=list_labels.size())) {
-    return -1;
-  }
-  return (list_labels.begin()+slot-1).key();
-}
-
-
-QList<int> EndpointList::endpoints() const
-{
-  QList<int> ret;
-
-  for(QMap<int,QString>::const_iterator it=list_labels.begin();
-      it!=list_labels.end();it++) {
-    ret.push_back(it.key());
-  }
-  return ret;
 }
 
 
@@ -178,13 +166,11 @@ int EndpointList::slot(int endpt) const
 
 void EndpointList::addEndpoint(int router,int endpt,const QString &name)
 {
-  list_endpoints.push_back(endpt);
   list_labels[endpt]=name;
   list_gpio_widgets[endpt]=
     new DRMultiStateWidget(router,endpt,list_orientation,this);
   list_gpio_widgets.value(endpt)->setVisible(list_show_gpio);
 
-  //  QFontMetrics fm(font());
   QFontMetrics fm(list_selected_font);
   for(QMap<int,QString>::const_iterator it=list_labels.begin();
       it!=list_labels.end();it++) {
@@ -198,7 +184,6 @@ void EndpointList::addEndpoint(int router,int endpt,const QString &name)
 
 void EndpointList::clearEndpoints()
 {
-  list_endpoints.clear();
   list_labels.clear();
   list_width=0;
 
@@ -230,13 +215,13 @@ void EndpointList::selectCrosspoint(int slot_x,int slot_y)
   if(list_orientation==Qt::Horizontal) {
     slot=slot_y;
   }
-  if(slot!=list_selected_slot) {
-    list_selected_slot=slot;
+  if(slot!=list_selected_rownum) {
+    list_selected_rownum=slot;
     if(slot<0) {
-      list_selected_endpoint=-1;
+      list_selected_rownum=-1;
     }
     else {
-      list_selected_endpoint=endpoint(slot);
+      list_selected_rownum=slot;
     }
     update();
   }
@@ -261,27 +246,33 @@ void EndpointList::setGpioState(int router,int linenum,const QString &code)
 
 void EndpointList::aboutToShowMenuData()
 {
+  QMap<QString,QVariant> mdata;
+
   list_state_dialog_action->setEnabled(list_show_gpio);
   switch(list_orientation) {
   case Qt::Horizontal:
+    mdata=list_parser->inputModel(list_router)->
+      endPointMetadata(list_mouse_endpoint);
     list_connect_via_http_action->
       setText(tr("Connect to")+" "+
-	      list_parser->inputNodeName(list_router,1+list_mouse_endpoint)+" "+
+	      mdata.value("hostName").toString()+" "+
 	      tr("via HTTP"));
     list_connect_via_lwrp_action->
       setText(tr("Connect to")+" "+
-	      list_parser->inputNodeName(list_router,1+list_mouse_endpoint)+" "+
+	      mdata.value("hostName").toString()+" "+
 	      tr("via LWRP"));
     break;
 
   case Qt::Vertical:
+    mdata=list_parser->outputModel(list_router)->
+      endPointMetadata(list_mouse_endpoint);
     list_connect_via_http_action->
       setText(tr("Connect to")+" "+
-	      list_parser->outputNodeName(list_router,1+list_mouse_endpoint)+" "+
+	      mdata.value("hostName").toString()+" "+
 	      tr("via HTTP"));
     list_connect_via_lwrp_action->
       setText(tr("Connect to")+" "+
-	      list_parser->outputNodeName(list_router,1+list_mouse_endpoint)+" "+
+	      mdata.value("hostName").toString()+" "+
 	      tr("via LWRP"));
     break;
   }
@@ -319,12 +310,14 @@ void EndpointList::showStateDialogData()
 void EndpointList::connectViaHttpData()
 {
   char c_str[256];
+  QMap<QString,QVariant> mdata;
 
   switch(list_orientation) {
   case Qt::Horizontal:
-    strncpy(c_str,list_parser->inputNodeAddress(list_router,
-						list_mouse_endpoint).
-	    toString().toUtf8().constData(),255);
+    mdata=list_parser->inputModel(list_router)->
+      endPointMetadata(list_mouse_endpoint);
+    strncpy(c_str,mdata.value("nodeAddress").toString().toUtf8().constData(),
+	    255);
     if(fork()==0) {
       execlp("firefox","firefox",c_str,(char *)NULL);
       exit(0);
@@ -332,9 +325,10 @@ void EndpointList::connectViaHttpData()
     break;
 
   case Qt::Vertical:
-    strncpy(c_str,list_parser->outputNodeAddress(list_router,
-						 list_mouse_endpoint).
-	    toString().toUtf8().constData(),255);
+    mdata=list_parser->outputModel(list_router)->
+      endPointMetadata(list_mouse_endpoint);
+    strncpy(c_str,mdata.value("nodeAddress").toString().toUtf8().constData(),
+	    255);
     if(fork()==0) {
       execlp("firefox","firefox",c_str,(char *)NULL);
       exit(0);
@@ -347,12 +341,14 @@ void EndpointList::connectViaHttpData()
 void EndpointList::connectViaLwrpData()
 {
   char c_str[256];
+  QMap<QString,QVariant> mdata;
 
   switch(list_orientation) {
   case Qt::Horizontal:
-    strncpy(c_str,list_parser->inputNodeAddress(list_router,
-						list_mouse_endpoint+1).
-	    toString().toUtf8().constData(),255);
+    mdata=list_parser->inputModel(list_router)->
+      endPointMetadata(list_mouse_endpoint);
+    strncpy(c_str,mdata.value("nodeAddress").toString().toUtf8().constData(),
+	    255);
     if(fork()==0) {
       execlp("lwmon","lwmon","--mode=lwrp",c_str,(char *)NULL);
       exit(0);
@@ -360,9 +356,10 @@ void EndpointList::connectViaLwrpData()
     break;
 
   case Qt::Vertical:
-    strncpy(c_str,list_parser->outputNodeAddress(list_router,
-						 list_mouse_endpoint+1).
-	    toString().toUtf8().constData(),255);
+    mdata=list_parser->outputModel(list_router)->
+      endPointMetadata(list_mouse_endpoint);
+    strncpy(c_str,mdata.value("nodeAddress").toString().toUtf8().constData(),
+	    255);
     if(fork()==0) {
       execlp("lwmon","lwmon","--mode=lwrp",c_str,(char *)NULL);
       exit(0);
@@ -375,33 +372,39 @@ void EndpointList::connectViaLwrpData()
 void EndpointList::copySourceNumberData()
 {
   QClipboard *cb=QApplication::clipboard();
-  cb->setText(QString::asprintf("%d",list_parser->
-				inputSourceNumber(list_router,
-						  1+list_mouse_endpoint)));
+  QMap<QString,QVariant> mdata=list_parser->inputModel(list_router)->
+    endPointMetadata(list_mouse_endpoint);
+
+  cb->setText(QString::asprintf("%d",mdata.value("sourceNumber").toInt()));
 }
 
 
 void EndpointList::copySourceStreamAddressData()
 {
   QClipboard *cb=QApplication::clipboard();
-  cb->setText(list_parser->
-	      inputStreamAddress(list_router,1+list_mouse_endpoint).toString());
+  QMap<QString,QVariant> mdata=list_parser->inputModel(list_router)->
+    endPointMetadata(list_mouse_endpoint);
+
+  cb->setText(mdata.value("streamAddress").toString());
 }
 
 
 void EndpointList::copyNodeAddressData()
 {
   QClipboard *cb=QApplication::clipboard();
+  QMap<QString,QVariant> mdata;
+
   switch(list_orientation) {
   case Qt::Horizontal:
-    cb->setText(list_parser->
-		inputNodeAddress(list_router,1+list_mouse_endpoint).toString());
+    mdata=list_parser->inputModel(list_router)->
+      endPointMetadata(list_mouse_endpoint);
+    cb->setText(mdata.value("hostAddress").toString());
     break;
 
   case Qt::Vertical:
-    cb->setText(list_parser->
-		outputNodeAddress(list_router,1+list_mouse_endpoint).
-		toString());
+    mdata=list_parser->outputModel(list_router)->
+      endPointMetadata(list_mouse_endpoint);
+    cb->setText(mdata.value("hostAddress").toString());
     break;
   }
 }
@@ -410,17 +413,19 @@ void EndpointList::copyNodeAddressData()
 void EndpointList::copySlotNumberData()
 {
   QClipboard *cb=QApplication::clipboard();
+  QMap<QString,QVariant> mdata;
+
   switch(list_orientation) {
   case Qt::Horizontal:
-    cb->setText(QString::asprintf("%d",1+list_parser->
-				  inputNodeSlotNumber(list_router,
-						      1+list_mouse_endpoint)));
+    mdata=list_parser->inputModel(list_router)->
+      endPointMetadata(list_mouse_endpoint);
+    cb->setText(QString::asprintf("%d",mdata.value("slot").toInt()));
     break;
 
   case Qt::Vertical:
-    cb->setText(QString::asprintf("%d",1+list_parser->
-				  outputNodeSlotNumber(list_router,
-						       1+list_mouse_endpoint)));
+    mdata=list_parser->outputModel(list_router)->
+      endPointMetadata(list_mouse_endpoint);
+    cb->setText(QString::asprintf("%d",mdata.value("slot").toInt()));
     break;
   }
 }
@@ -441,36 +446,26 @@ void EndpointList::mouseMoveEvent(QMouseEvent *e)
   //
   // Get the Endpoint
   //
-  int listpos=(e->pos().x()+list_position)/ENDPOINTLIST_ITEM_HEIGHT;
+  int rownum=(e->pos().x()+list_position)/ENDPOINTLIST_ITEM_HEIGHT;
   QPoint pos(e->globalPos().x(),e->globalPos().y()-ENDPOINTLIST_ITEM_HEIGHT-13);
 
   if(list_orientation==Qt::Horizontal) {
-    listpos=(e->pos().y()+list_position)/ENDPOINTLIST_ITEM_HEIGHT;
+    rownum=(e->pos().y()+list_position)/ENDPOINTLIST_ITEM_HEIGHT;
   }
 
   //
   // Get Endpoint
   //
-  bool ok=false;
-  if(listpos>=list_endpoints.size()) {
+  if(rownum>=list_model->rowCount()) {
     return;
   }
-  QString label=list_labels.value(list_endpoints.at(listpos));
-  QStringList f0=label.split("-",QString::SkipEmptyParts);
-  if(f0.size()<1) {
-    return;
-  }
-  int endpt=f0.first().toInt(&ok);
-  if(!ok) {
-    endpt=-1;
-  }
+  int endpt=list_model->endPointNumber(rownum);
 
   if(endpt!=list_move_endpoint) {
     list_move_endpoint=endpt;
-    list_selected_slot=listpos;
-    list_selected_endpoint=endpt-1;
+    list_selected_rownum=rownum;
     update();
-    emit hoveredEndpointChanged(list_router,endpt);
+    emit hoveredEndpointChanged(list_router,rownum);
   }
 }
 
@@ -479,8 +474,7 @@ void EndpointList::leaveEvent(QEvent *event)
 {
   if(list_move_endpoint>=0) {
     list_move_endpoint=-1;
-    list_selected_slot=-1;
-    list_selected_endpoint=-1;
+    list_selected_rownum=-1;
     update();
     emit hoveredEndpointChanged(list_router,list_move_endpoint);
   }
@@ -511,7 +505,7 @@ void EndpointList::paintEvent(QPaintEvent *e)
 
     QMap<int,QString>::const_iterator it=list_labels.begin();
     for(int i=0;i<(ENDPOINTLIST_ITEM_HEIGHT*endpointQuantity());i+=ENDPOINTLIST_ITEM_HEIGHT) {
-      if(it.key()==list_selected_endpoint) {
+      if(it.key()==list_selected_rownum) {
 	p->setFont(list_selected_font);
       }
       else {
@@ -537,7 +531,7 @@ void EndpointList::paintEvent(QPaintEvent *e)
     QMap<int,QString>::const_iterator it=list_labels.begin();
     for(int i=0;i<(ENDPOINTLIST_ITEM_HEIGHT*endpointQuantity());i+=ENDPOINTLIST_ITEM_HEIGHT) {
       if(it!=list_labels.end()) {
-	if(it.key()==list_selected_endpoint) {
+	if(it.key()==list_selected_rownum) {
 	  p->setFont(list_selected_font);
 	}
 	else {
@@ -600,27 +594,23 @@ void EndpointList::resizeEvent(QResizeEvent *e)
 
 int EndpointList::LocalEndpoint(QMouseEvent *e) const
 {
-  int slot=-1;
+  int rownum=-1;
   int endpt=-1;
 
   if(e->button()==Qt::RightButton) {
     switch(list_orientation) {
     case Qt::Horizontal:
-      slot=(e->pos().y()+list_position)/ENDPOINTLIST_ITEM_HEIGHT;
-      if(slot>=list_endpoints.size()) {
-	return -1;
-      }
-      endpt=list_endpoints.at(slot);
+      rownum=(e->pos().y()+list_position)/ENDPOINTLIST_ITEM_HEIGHT;
       break;
 
     case Qt::Vertical:
-      slot=(e->pos().x()+list_position)/ENDPOINTLIST_ITEM_HEIGHT;
-      endpt=list_endpoints.at(slot);
+      rownum=(e->pos().x()+list_position)/ENDPOINTLIST_ITEM_HEIGHT;
       break;
     }
-    if((slot<0)||(slot>=list_labels.size())) {
-      endpt=-1;
+    if((rownum<0)||(rownum>=list_model->rowCount())) {
+      return -1;
     }
+    endpt=list_model->endPointNumber(rownum);
   }
   else {
     endpt=-1;

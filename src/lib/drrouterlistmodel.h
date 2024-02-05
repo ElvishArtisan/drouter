@@ -39,6 +39,7 @@ class DRRouterListModel : public QAbstractTableModel
 		      int role=Qt::DisplayRole) const;
   QVariant data(const QModelIndex &index,int role=Qt::DisplayRole) const;
   int routerNumber(int rownum) const;
+  DREndPointMap::RouterType routerType(int rownum) const;
   int rowNumber(int router) const;
   void addRouter(int number,const QString &name,const QString &rtype);
 
@@ -49,6 +50,7 @@ class DRRouterListModel : public QAbstractTableModel
   QList<QList<QVariant> > d_texts;
   QList<int> d_numbers;
   QList<QVariant> d_icons;
+  QList<DREndPointMap::RouterType> d_router_types;
 };
 
 

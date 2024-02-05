@@ -28,13 +28,13 @@
 #include <QPushButton>
 
 #include <drendpointmap.h>
-#include <drsaparser.h>
+#include <drjparser.h>
 
 class StateDialog : public QDialog
 {
  Q_OBJECT
  public:
- StateDialog(int router,int endpoint,DREndPointMap::Type type,DRSaParser *parser,
+ StateDialog(int router,int endpoint,DREndPointMap::Type type,DRJParser *parser,
 	     QWidget *parent=0);
   QSize sizeHint() const;
 
@@ -57,7 +57,7 @@ class StateDialog : public QDialog
   int d_router;
   int d_endpoint;
   DREndPointMap::Type d_type;
-  DRSaParser *d_parser;
+  DRJParser *d_parser;
   int d_width;
 };
 

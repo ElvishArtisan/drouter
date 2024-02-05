@@ -52,6 +52,12 @@ DREndPointListModel::~DREndPointListModel()
 }
 
 
+int DREndPointListModel::routerNumber() const
+{
+  return d_router_number;
+}
+
+
 void DREndPointListModel::setFont(const QFont &font)
 {
   d_font=font;

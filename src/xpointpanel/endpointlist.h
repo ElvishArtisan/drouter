@@ -28,7 +28,7 @@
 #include <QWidget>
 
 #include <drmultistatewidget.h>
-#include <drsaparser.h>
+#include <drjparser.h>
 
 #include "statedialog.h"
 
@@ -46,11 +46,9 @@ class EndpointList : public QWidget
   QSizePolicy sizePolicy() const;
   int router() const;
   void setRouter(int router);
-  void setParser(DRSaParser *psr);
+  void setParser(DRJParser *psr);
   bool showGpio() const;
   void setShowGpio(bool state);
-  int endpoint(int slot) const;
-  QList<int> endpoints() const;
   int slot(int endpt) const;
   void addEndpoint(int router,int endpt,const QString &name);
   void clearEndpoints();
@@ -62,7 +60,7 @@ class EndpointList : public QWidget
   void setGpioState(int router,int linenum,const QString &code);
 
  signals:
-  void hoveredEndpointChanged(int router,int endpt);
+  void hoveredEndpointChanged(int router,int rownum);
 
  private slots:
   void showStateDialogData();
@@ -88,7 +86,7 @@ class EndpointList : public QWidget
   DREndPointMap::Type list_gpio_type;
   int list_router;
   int list_position;
-  DRSaParser *list_parser;
+  DRJParser *list_parser;
   Qt::Orientation list_orientation;
   bool list_show_gpio;
   int list_width;
@@ -104,11 +102,10 @@ class EndpointList : public QWidget
   QAction *list_copy_host_address_action;
   QAction *list_copy_slot_number_action;
   QMap<int,StateDialog *> list_state_dialogs;
-  QList<int> list_endpoints;
+  DREndPointListModel *list_model;
   Qt::MouseButtons list_mouse_buttons;
   QString list_description_text;
-  int list_selected_slot;
-  int list_selected_endpoint;
+  int list_selected_rownum;
   QFont list_selected_font;
 };
 

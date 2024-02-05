@@ -2,7 +2,7 @@
 //
 // QGraphicsScene viewer for xpointpanel(1)
 //
-//   (C) Copyright 2017-2022 Fred Gleason <fredg@paravelsystems.com>
+//   (C) Copyright 2017-2024 Fred Gleason <fredg@paravelsystems.com>
 //
 //   This program is free software; you can redistribute it and/or modify
 //   it under the terms of the GNU General Public License as
@@ -76,9 +76,8 @@ void XPointView::setYSlotQuantity(int quan)
 
 void XPointView::mouseMoveEvent(QMouseEvent *e)
 {
-  int x_slot=
-    1+(horizontalScrollBar()->value()+e->x()-1)/ENDPOINTLIST_ITEM_HEIGHT;
-  int y_slot=1+(verticalScrollBar()->value()+e->y()-1)/ENDPOINTLIST_ITEM_HEIGHT;
+  int x_slot=(horizontalScrollBar()->value()+e->x()-1)/ENDPOINTLIST_ITEM_HEIGHT;
+  int y_slot=(verticalScrollBar()->value()+e->y()-1)/ENDPOINTLIST_ITEM_HEIGHT;
 
   if((d_prev_hover_x!=x_slot)||(d_prev_hover_y!=y_slot)) {
     if((x_slot<=d_x_slot_quantity)&&(y_slot<=d_y_slot_quantity)) { 
@@ -95,14 +94,14 @@ void XPointView::mouseMoveEvent(QMouseEvent *e)
       }
       if((x_slot>=0)&&(y_slot>=0)) {
 	d_input_cursor=
-	  scene()->addRect(0,ENDPOINTLIST_ITEM_HEIGHT*(y_slot-1),
-			   ENDPOINTLIST_ITEM_HEIGHT*x_slot-2,24,
+	  scene()->addRect(0,ENDPOINTLIST_ITEM_HEIGHT*(y_slot),
+			   ENDPOINTLIST_ITEM_HEIGHT*(1+x_slot)-2,24,
 			   QPen(d_selection_color),
 			   QBrush(d_selection_color));
 	d_input_cursor->setZValue(-1);
 	
 	d_output_cursor=
-	  scene()->addRect(ENDPOINTLIST_ITEM_HEIGHT*(x_slot-1),0,24,
+	  scene()->addRect(ENDPOINTLIST_ITEM_HEIGHT*(x_slot),0,24,
 			   ENDPOINTLIST_ITEM_HEIGHT*y_slot-2,
 			   QPen(d_selection_color),
 			   QBrush(d_selection_color));
@@ -139,9 +138,9 @@ void XPointView::leaveEvent(QEvent *e)
 
 void XPointView::mouseDoubleClickEvent(QMouseEvent *e)
 {
-  emit crosspointDoubleClicked(1+(horizontalScrollBar()->value()+e->x()-1)/
+  emit crosspointDoubleClicked((horizontalScrollBar()->value()+e->x()-1)/
 			       ENDPOINTLIST_ITEM_HEIGHT,
-			       1+(verticalScrollBar()->value()+e->y()-1)/
+			       (verticalScrollBar()->value()+e->y()-1)/
 			       ENDPOINTLIST_ITEM_HEIGHT);
   QGraphicsView::mouseDoubleClickEvent(e);
 }
