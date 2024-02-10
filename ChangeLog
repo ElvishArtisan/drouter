@@ -1043,3 +1043,6 @@
 2024-02-04 Fred Gleason <fredg@paravelsystems.com>
 	* Added a 'DRRouterListModel::routerType()' method.
 	* Converted xpointpanel(1) to use model-based methods.
+2024-02-10 Fred Gleason <fredg@paravelsystems.com>
+	* Added a 'PERM_SA_ROUTES' table to the database.
+	* Incremented the database version to 7.

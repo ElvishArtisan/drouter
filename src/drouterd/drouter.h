@@ -86,6 +86,7 @@ class DRouter : public QObject
   bool StartProtocolIpc(QString *err_msg);
   bool ProcessIpcCommand(int sock,const QString &cmd);
   bool StartDb(QString *err_msg);
+  void SetSchemaVersion(int ver) const;
   bool StartStaticMatrices(QString *err_msg);
   bool StartLivewire(QString *err_msg);
   Matrix *StartMatrix(DRConfig::MatrixType type,unsigned id);

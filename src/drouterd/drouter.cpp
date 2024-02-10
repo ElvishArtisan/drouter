@@ -1091,10 +1091,7 @@ bool DRouter::StartDb(QString *err_msg)
     DRSqlQuery::apply(sql);
 
     schema_ver=1;
-    sql=QString("insert into `PERM_VERSION` set ")+
-      QString::asprintf("`DB`=%d",schema_ver);
-    DRSqlQuery::apply(sql);
-    syslog(LOG_DEBUG,"applied schema version %d",schema_ver);
+    SetSchemaVersion(schema_ver);
   }
 
   if(schema_ver<2) {
@@ -1111,10 +1108,7 @@ bool DRouter::StartDb(QString *err_msg)
     DRSqlQuery::apply(sql);
 
     schema_ver=2;
-    sql=QString("update `PERM_VERSION` set ")+
-      QString::asprintf("`DB`=%d",schema_ver);
-    DRSqlQuery::apply(sql);
-    syslog(LOG_DEBUG,"applied schema version %d",schema_ver);
+    SetSchemaVersion(schema_ver);
   }
 
   if(schema_ver<3) {
@@ -1127,10 +1121,7 @@ bool DRouter::StartDb(QString *err_msg)
     DRSqlQuery::apply(sql);
 
     schema_ver=3;
-    sql=QString("update `PERM_VERSION` set ")+
-      QString::asprintf("`DB`=%d",schema_ver);
-    DRSqlQuery::apply(sql);
-    syslog(LOG_DEBUG,"applied schema version %d",schema_ver);
+    SetSchemaVersion(schema_ver);
   }
 
   if(schema_ver<4) {
@@ -1165,10 +1156,7 @@ bool DRouter::StartDb(QString *err_msg)
     DRSqlQuery::apply(sql);
 
     schema_ver=4;
-    sql=QString("update `PERM_VERSION` set ")+
-      QString::asprintf("`DB`=%d",schema_ver);
-    DRSqlQuery::apply(sql);
-    syslog(LOG_DEBUG,"applied schema version %d",schema_ver);
+    SetSchemaVersion(schema_ver);
   }
 
   if(schema_ver<5) {
@@ -1185,10 +1173,7 @@ bool DRouter::StartDb(QString *err_msg)
     DRSqlQuery::apply(sql);
 
     schema_ver=5;
-    sql=QString("update `PERM_VERSION` set ")+
-      QString::asprintf("`DB`=%d",schema_ver);
-    DRSqlQuery::apply(sql);
-    syslog(LOG_DEBUG,"applied schema version %d",schema_ver);
+    SetSchemaVersion(schema_ver);
   }
 
   if(schema_ver<6) {
@@ -1209,11 +1194,31 @@ bool DRouter::StartDb(QString *err_msg)
     DRSqlQuery::apply(sql);
 
     schema_ver=6;
-    sql=QString("update `PERM_VERSION` set ")+
-      QString::asprintf("`DB`=%d",schema_ver);
-    DRSqlQuery::apply(sql);
-    syslog(LOG_DEBUG,"applied schema version %d",schema_ver);
+    SetSchemaVersion(schema_ver);
   }
+
+  if(schema_ver<7) {
+    sql=QString("create table if not exists `PERM_SA_ROUTES` (")+
+      "`ID` int auto_increment not null primary key,"+
+      "`TIME` time not null,"+
+      "`SUN` enum('N','Y') default 'N' not null,"+
+      "`MON` enum('N','Y') default 'N' not null,"+
+      "`TUE` enum('N','Y') default 'N' not null,"+
+      "`WED` enum('N','Y') default 'N' not null,"+
+      "`THU` enum('N','Y') default 'N' not null,"+
+      "`FRI` enum('N','Y') default 'N' not null,"+
+      "`SAT` enum('N','Y') default 'N' not null,"+
+      "`ROUTER_NUMBER` int not null,"+
+      "`DESTINATION_NUMBER` int not null,"+
+      "`SOURCE_NUMBER` int not null,"+
+      "`COMMENT` text) "+
+      "engine InnoDB character set utf8 collate utf8_general_ci";
+    DRSqlQuery::apply(sql);
+
+    schema_ver=7;
+    SetSchemaVersion(schema_ver);
+  }
+
 
   // New schema updates go here
 
@@ -1363,6 +1368,15 @@ bool DRouter::StartDb(QString *err_msg)
 
   return true;
 }
+
+
+void DRouter::SetSchemaVersion(int ver) const
+{
+  QString sql=QString("update `PERM_VERSION` set ")+
+    QString::asprintf("`DB`=%d",ver);
+  DRSqlQuery::apply(sql);
+  syslog(LOG_DEBUG,"applied schema version %d",ver);
+ }
 
 
 bool DRouter::StartStaticMatrices(QString *err_msg)
