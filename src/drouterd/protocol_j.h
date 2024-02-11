@@ -69,6 +69,9 @@ class ProtocolJ : public Protocol
   QString DestNamesSqlFields(DREndPointMap::RouterType type) const;
   QString DestNamesMessage(DREndPointMap::RouterType type,DRSqlQuery *q,
 			   int padding=0,bool final=false);
+  void SendActionInfo(unsigned router);
+  QString ActionListSqlFields() const;
+  QString ActionListMessage(DRSqlQuery *q,int padding=0,bool final=false);
   void SendGpiInfo(unsigned router,int input);
   QString GPIStatSqlFields() const;
   QString GPIStatMessage(DRSqlQuery *q);
@@ -107,6 +110,8 @@ class ProtocolJ : public Protocol
 		    int padding=0,bool final=false);
   QString JsonField(const QString &name,const QDateTime &value,
 		    int padding=0,bool final=false);
+  QString JsonField(const QString &name,const QTime &value,int utc_offset,
+		    int padding=0,bool final=false);
   QString JsonCloseBlock(bool final);
 
   //
@@ -119,7 +124,7 @@ class ProtocolJ : public Protocol
   // XML xs:time format
   //
   QTime ParseXmlTime(const QString &str,bool *ok,int *day_offset=NULL);
-  QString WriteXmlTime(const QTime &time);
+  QString WriteXmlTime(const QTime &time,int utc_offset);
 
   //
   // XML xs:dateTime format

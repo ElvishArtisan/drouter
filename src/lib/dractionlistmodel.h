@@ -1,4 +1,4 @@
-// drendpointlistmodel.h
+// dractionlistmodel.h
 //
 // Qt Model for a list of outputs.
 //
@@ -18,45 +18,53 @@
 //   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
 //
 
-#ifndef DRENDPOINTLISTMODEL_H
-#define DRENDPOINTLISTMODEL_H
+#ifndef DRACTIONLISTMODEL_H
+#define DRACTIONLISTMODEL_H
 
 #include <QAbstractTableModel>
 #include <QFont>
 #include <QHostAddress>
 #include <QMap>
+#include <QStringList>
+#include <QTime>
 
-class DREndPointListModel : public QAbstractTableModel
+#include <drendpointlistmodel.h>
+
+class DRActionListModel : public QAbstractTableModel
 {
  Q_OBJECT;
  public:
-  DREndPointListModel(int router,bool use_long_names,QObject *parent);
-  ~DREndPointListModel();
+  DRActionListModel(int router,QObject *parent);
+  ~DRActionListModel();
   int routerNumber() const;
   void setFont(const QFont &font);
+  void setInputsModel(DREndPointListModel *model);
+  void setOutputsModel(DREndPointListModel *model);
   int columnCount(const QModelIndex &parent=QModelIndex()) const;
   int rowCount(const QModelIndex &parent=QModelIndex()) const;
   QVariant headerData(int section,Qt::Orientation orient,
 		      int role=Qt::DisplayRole) const;
   QVariant data(const QModelIndex &index,int role=Qt::DisplayRole) const;
-  int endPointNumber(int rownum) const;
-  QMap<QString,QVariant> endPointMetadata(int rownum);
-  QMap<QString,QVariant> rowMetadata(int rownum);
-  int rowNumber(int endpt) const;
-  void addEndPoint(const QMap<QString,QVariant> &fields);
+  int id(int rownum) const;
+  QMap<QString,QVariant> actionMetadata(int rownum);
+  int rowNumber(int id) const;
+  void addAction(const QMap<QString,QVariant> &fields);
   void finalize();
 
  private:
+  QString DowMarker(bool state,const QString &marker) const;
   QFont d_font;
   QList<QVariant> d_headers;
+  QStringList d_keys;
   QList<QVariant> d_alignments;
   QList<QList<QVariant> > d_texts;
-  QList<int> d_numbers;
-  QMap<int,QMap<QString,QVariant> > d_raw_metadatas;
+  QList<int> d_ids;
+  QMap<QTime,QMap<QString,QVariant> > d_raw_metadatas;
   QList<QMap<QString,QVariant> > d_metadatas;
   int d_router_number;
-  bool d_use_long_names;
+  DREndPointListModel *d_inputs_model;
+  DREndPointListModel *d_outputs_model;
 };
 
 
-#endif  // DRENDPOINTLISTMODEL_H
+#endif  // DRACTIONLISTMODEL_H

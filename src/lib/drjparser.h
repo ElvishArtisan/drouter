@@ -35,6 +35,7 @@
 #include <QTcpSocket>
 #include <QTimer>
 
+#include "dractionlistmodel.h"
 #include "drendpointlistmodel.h"
 #include "drrouterlistmodel.h"
 #include "drsnapshotlistmodel.h"
@@ -60,6 +61,7 @@ class DRJParser : public QObject
   DREndPointListModel *outputModel(int router) const;
   DREndPointListModel *inputModel(int router) const;
   DRSnapshotListModel *snapshotModel(int router) const;
+  DRActionListModel *actionModel(int router) const;
   bool isConnected() const;
   bool gpioSupported(int router) const;
   int outputCrosspoint(int router,int output) const;
@@ -103,6 +105,7 @@ class DRJParser : public QObject
   QMap<int,DREndPointListModel *> j_output_models;
   QMap<int,DREndPointListModel *> j_input_models;
   QMap<int,DRSnapshotListModel *> j_snapshot_models;
+  QMap<int,DRActionListModel *> j_action_models;
   QTcpSocket *j_socket;
   QString j_hostname;
   uint16_t j_port;

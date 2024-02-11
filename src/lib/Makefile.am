@@ -28,7 +28,8 @@ moc_%.cpp:	%.h
 	$(MOC) $< -o $@
 
 lib_LTLIBRARIES = libdrouter.la
-dist_libdrouter_la_SOURCES = drcombobox.cpp drcombobox.h\
+dist_libdrouter_la_SOURCES = dractionlistmodel.cpp dractionlistmodel.h\
+                             drcombobox.cpp drcombobox.h\
                              drconfig.cpp drconfig.h\
                              drdparser.cpp drdparser.h\
                              drendpointmap.cpp drendpointmap.h\
@@ -42,7 +43,8 @@ dist_libdrouter_la_SOURCES = drcombobox.cpp drcombobox.h\
                              drsnapshotlistmodel.cpp drsnapshotlistmodel.h\
                              drsqlquery.cpp drsqlquery.h
 
-nodist_libdrouter_la_SOURCES = moc_drcombobox.cpp\
+nodist_libdrouter_la_SOURCES = moc_dractionlistmodel.cpp\
+                               moc_drcombobox.cpp\
                                moc_drdparser.cpp\
                                moc_drendpointlistmodel.cpp\
                                moc_drjparser.cpp\

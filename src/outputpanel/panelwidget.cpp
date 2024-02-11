@@ -136,8 +136,8 @@ void PanelWidget::changeConnectionState(bool state,
 	  tr("does not exist!"));
       exit(256);
     }
-    if(omodel->endPointMetadata(omodel->rowNumber(widget_output)).contains("name")) {
-      widget_output_label->setText(omodel->endPointMetadata(omodel->
+    if(omodel->rowMetadata(omodel->rowNumber(widget_output)).contains("name")) {
+      widget_output_label->setText(omodel->rowMetadata(omodel->
 		       rowNumber(widget_output)).value("name").toString());
       widget_output_label->setEnabled(widget_xpoint_synced);
     }

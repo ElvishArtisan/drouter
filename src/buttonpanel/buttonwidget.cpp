@@ -137,8 +137,8 @@ void ButtonWidget::changeConnectionState(bool state,
 	  tr("does not exist!"));
       exit(256);
     }
-    if(omodel->endPointMetadata(omodel->rowNumber(panel_output)).contains("name")) {
-      panel_title_label->setText(omodel->endPointMetadata(omodel->
+    if(omodel->rowMetadata(omodel->rowNumber(panel_output)).contains("name")) {
+      panel_title_label->setText(omodel->rowMetadata(omodel->
 		       rowNumber(panel_output)).value("name").toString());
     }
     else {
@@ -164,7 +164,7 @@ void ButtonWidget::changeConnectionState(bool state,
     for(int i=0;i<imodel->rowCount();i++) {
       panel_buttons[i]=new AutoPushButton(this);
       panel_buttons.value(i)->
-	setText(imodel->endPointMetadata(i).value("name").toString());
+	setText(imodel->rowMetadata(i).value("name").toString());
       panel_buttons.value(i)->show();
       connect(panel_buttons.value(i),SIGNAL(clicked()),
 	      panel_button_mapper,SLOT(map()));

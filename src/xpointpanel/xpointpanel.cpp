@@ -279,7 +279,7 @@ void MainWidget::routerBoxActivatedData(int n)
   panel_input_list->setShowGpio(panel_parser->gpioSupported(router));
   QMap<int,QString> endpts;
   for(int i=0;i<imodel->rowCount();i++) {
-    mdata=imodel->endPointMetadata(i);
+    mdata=imodel->rowMetadata(i);
     panel_input_list->addEndpoint(router,endpt,
 				  QString::asprintf("%d - ",endpt+1)+
 				  mdata.value("name").toString());
@@ -296,7 +296,7 @@ void MainWidget::routerBoxActivatedData(int n)
   endpts.clear();
   int count=0;
   while(count<omodel->rowCount()) {
-    mdata=omodel->endPointMetadata(count);
+    mdata=omodel->rowMetadata(count);
     panel_output_list->addEndpoint(router,endpt,
 				   QString::asprintf("%d - ",endpt+1)+
 				   mdata.value("name").toString());
@@ -480,7 +480,7 @@ void MainWidget::inputHoveredEndpointChangedData(int router,int rownum)
   //
   // Set Description Text
   //
-  mdata=imodel->endPointMetadata(rownum);
+  mdata=imodel->rowMetadata(rownum);
   tt="";
   if(mdata.contains("hostDescription")) {
     tt+="Device: <strong>"+
@@ -538,7 +538,7 @@ void MainWidget::outputHoveredEndpointChangedData(int router,int rownum)
   //
   // Set Description Text
   //
-  mdata=omodel->endPointMetadata(rownum);
+  mdata=omodel->rowMetadata(rownum);
   tt="";
   if(mdata.contains("hostDescription")) {
     tt+="Device: <strong>"+
@@ -699,7 +699,7 @@ void MainWidget::paintEvent(QPaintEvent *e)
 QString MainWidget::InputDescriptionTitle(int router,int rownum) const
 {
   DREndPointListModel *imodel=panel_parser->inputModel(router);
-  QMap<QString,QVariant> mdata=imodel->endPointMetadata(rownum);
+  QMap<QString,QVariant> mdata=imodel->rowMetadata(rownum);
 
   QString ret="";
   ret+="<strong>"+QString::asprintf("%d - ",mdata.value("number").toInt());
@@ -712,7 +712,7 @@ QString MainWidget::InputDescriptionTitle(int router,int rownum) const
 QString MainWidget::OutputDescriptionTitle(int router,int rownum) const
 {
   DREndPointListModel *omodel=panel_parser->outputModel(router);
-  QMap<QString,QVariant> mdata=omodel->endPointMetadata(rownum);
+  QMap<QString,QVariant> mdata=omodel->rowMetadata(rownum);
 
   QString ret="";
   ret+="<strong>"+QString::asprintf("%d - ",mdata.value("number").toInt());

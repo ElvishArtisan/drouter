@@ -106,6 +106,12 @@ DRSnapshotListModel *DRJParser::snapshotModel(int router) const
 }
 
 
+DRActionListModel *DRJParser::actionModel(int router) const
+{
+  return j_action_models.value(router);
+}
+
+
 bool DRJParser::isConnected() const
 {
   return j_connected;
@@ -372,6 +378,11 @@ void DRJParser::DispatchMessage(const QJsonDocument &jdoc)
 
       j_snapshot_models[router]=new DRSnapshotListModel(router,this);
 
+      DRActionListModel *amodel=new DRActionListModel(router,this);
+      amodel->setInputsModel(j_input_models.value(router));
+      amodel->setOutputsModel(j_output_models.value(router));
+      j_action_models[router]=amodel;
+
       /*
       j_gpi_states[router]=QMap<int,QString>();
       j_gpo_states[router]=QMap<int,QString>();
@@ -386,6 +397,9 @@ void DRJParser::DispatchMessage(const QJsonDocument &jdoc)
       j_socket->write(cmd.toUtf8());
 
       cmd=QString::asprintf("snapshots %d\r\n",router);
+      j_socket->write(cmd.toUtf8());
+
+      cmd=QString::asprintf("actionlist %d\r\n",router);
       j_socket->write(cmd.toUtf8());
       /*
       cmd=QString::asprintf("gpistat %d\r\n",router);
@@ -456,6 +470,27 @@ void DRJParser::DispatchMessage(const QJsonDocument &jdoc)
 	}
       }
     }
+  }
+
+  if(jdoc.object().contains("actionlist")) {
+    QJsonObject jo0=jdoc.object().value("actionlist").toObject();
+    int router=jo0.value("router").toInt();
+    DRActionListModel *amod=j_action_models.value(router);
+    if(amod!=NULL) {
+      for(QJsonObject::const_iterator it=jo0.begin();it!=jo0.end();it++) {
+	if(it.key().left(6)=="action") {
+	  QJsonObject jo1=it.value().toObject();
+	  QStringList keys=jo1.keys();
+	  QMap<QString,QVariant> fields;
+	  for(int i=0;i<keys.size();i++) {
+	    fields[keys.at(i)]=jo1.value(keys.at(i)).toVariant();
+	  }
+	  amod->addAction(fields);
+	}
+      }
+    }
+    amod->finalize();
+    return;
   }
 
   if(jdoc.object().contains("gpistat")) {

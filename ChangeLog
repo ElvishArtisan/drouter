@@ -1046,3 +1046,8 @@
 2024-02-10 Fred Gleason <fredg@paravelsystems.com>
 	* Added a 'PERM_SA_ROUTES' table to the database.
 	* Incremented the database version to 7.
+2024-02-11 Fred Gleason <fredg@paravelsystems.com>
+	* Renamed the 'PERM_SA_ROUTES' table to `PERM_SA_ACTIONS`.
+	* Added a 'ROUTER_NUMBER_IDX' index to the 'PERM_SA_ACTIONS' table.
+	* Incremented the database version to 8.
+	* Added a 'DRActionListModel' class.

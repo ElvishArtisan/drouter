@@ -640,6 +640,81 @@ QString ProtocolJ::DestNamesMessage(DREndPointMap::RouterType type,DRSqlQuery *q
 }
 
 
+void ProtocolJ::SendActionInfo(unsigned router)
+{
+  DREndPointMap *map;
+  QString sql;
+  DRSqlQuery *q;
+
+  if((map=proto_maps.value(router))==NULL) {
+    SendError(DRJParser::NoRouterError);
+    return;
+  }
+  sql=ActionListSqlFields()+"where "+
+    QString::asprintf("`PERM_SA_ACTIONS`.`ROUTER_NUMBER`=%u ",router)+
+    "order by `PERM_SA_ACTIONS`.`DESTINATION_NUMBER`";
+  q=new DRSqlQuery(sql);
+  int quan=0;
+  QString json="{\r\n";
+  json+="    \"actions\": {\r\n";
+  json+=JsonField("router",1+router,8,q->size()<=0);
+  while(q->next()) {
+    quan++;
+    json+=ActionListMessage(q,8,quan==q->size());
+  }
+  delete q;
+  json+="    }\r\n";
+  json+="}\r\n";
+  proto_socket->write(json.toUtf8());
+}
+
+
+QString ProtocolJ::ActionListSqlFields() const
+{
+  return QString("select ")+
+    "`PERM_SA_ACTIONS`.`ID`,"+                  // 00
+    "`PERM_SA_ACTIONS`.`TIME`,"+                // 01
+    "`PERM_SA_ACTIONS`.`SUN`,"+                 // 02
+    "`PERM_SA_ACTIONS`.`MON`,"+                 // 03
+    "`PERM_SA_ACTIONS`.`TUE`,"+                 // 04
+    "`PERM_SA_ACTIONS`.`WED`,"+                 // 05
+    "`PERM_SA_ACTIONS`.`THU`,"+                 // 06
+    "`PERM_SA_ACTIONS`.`FRI`,"+                 // 07
+    "`PERM_SA_ACTIONS`.`SAT`,"+                 // 08
+    "`PERM_SA_ACTIONS`.`ROUTER_NUMBER`,"+       // 09
+    "`PERM_SA_ACTIONS`.`DESTINATION_NUMBER`,"+  // 10
+    "`PERM_SA_ACTIONS`.`SOURCE_NUMBER`,"+       // 11
+    "`PERM_SA_ACTIONS`.`COMMENT` "+             // 12
+    "from `PERM_SA_ACTIONS` ";
+}
+
+
+QString ProtocolJ::ActionListMessage(DRSqlQuery *q,int padding,bool final)
+{
+  QString json=JsonPadding(padding)+
+    QString::asprintf("\"action%d\": {\r\n",q->at());
+  json+=JsonField("id",q->value(0).toInt(),4+padding);
+  json+=JsonField("time",q->value(1).toTime(),0,4+padding);
+  json+=JsonField("sunday",q->value(2).toString()=="Y",4+padding);
+  json+=JsonField("monday",q->value(3).toString()=="Y",4+padding);
+  json+=JsonField("tuesday",q->value(4).toString()=="Y",4+padding);
+  json+=JsonField("wednesday",q->value(5).toString()=="Y",4+padding);
+  json+=JsonField("thursday",q->value(6).toString()=="Y",4+padding);
+  json+=JsonField("friday",q->value(7).toString()=="Y",4+padding);
+  json+=JsonField("saturday",q->value(8).toString()=="Y",4+padding);
+  json+=JsonField("destination",1+q->value(10).toInt(),4+padding);
+  json+=JsonField("source",1+q->value(11).toInt(),4+padding);
+  json+=JsonField("comment",q->value(12).toString(),4+padding,true);
+  json+=JsonPadding(padding)+"}";
+  if(!final) {
+    json+=",";
+  }
+  json+="\r\n";
+
+  return json;
+}
+
+
 void ProtocolJ::SendGpiInfo(unsigned router,int input)
 {
   DREndPointMap *map;
@@ -1058,6 +1133,16 @@ void ProtocolJ::ProcessCommand(const QString &cmd)
     }
   }
 
+  if((cmds.at(0).toLower()=="actionlist")&&(cmds.size()==2)) {
+    cardnum=cmds.at(1).toUInt(&ok);
+    if(ok) {
+      SendActionInfo(cardnum-1);
+    }
+    else {
+      SendError(DRJParser::NoRouterError);
+    }
+  }
+
   if(cmds.at(0).toLower()=="activateroute") {
     if(cmds.size()==4) {
       cardnum=cmds.at(1).toUInt(&ok);
@@ -1234,7 +1319,8 @@ void ProtocolJ::LoadMaps()
 
 void ProtocolJ::LoadHelp()
 {
-  proto_help_patterns[""]=QString("ActivateRoute")+
+  proto_help_patterns[""]=QString("ActionList")+
+    ", ActivateRoute"+
     ", ActivateSnap"+
     ", DestNames"+
     ", MaskGPIStat"+
@@ -1254,6 +1340,11 @@ void ProtocolJ::LoadHelp()
     ", TriggerGPO";
   proto_help_comments[""]=
     "Enter 'help' or '?' followed by the name of the command. Command keywords are case insensitive.";
+
+  proto_help_patterns["actionlist"]="ActionList <router>";
+  proto_help_comments["actionlist"]=
+    "Return a list of scheduled crosspoint changes for the specified router.";
+
   proto_help_patterns["activateroute"]=
     "ActivateRoute <router> <output> <input>";
   proto_help_comments["activateroute"]="Route <input> to <output> on <router>.";
@@ -1521,6 +1612,24 @@ QString ProtocolJ::JsonField(const QString &name,const QDateTime &value,int padd
 }
 
 
+QString ProtocolJ::JsonField(const QString &name,const QTime &value,
+			     int utc_offset,int padding,bool final)
+{
+  QString comma=",";
+
+  if(final) {
+    comma="";
+  }
+
+  if(!value.isValid()) {
+    return JsonNullField(name,padding,final);
+  }
+  return JsonPadding(padding)+"\""+name+"\": \""+
+    WriteXmlTime(value,utc_offset)+"\""+
+    comma+"\r\n";
+}
+
+
 QString ProtocolJ::JsonCloseBlock(bool final)
 {
   if(final) {
@@ -1641,8 +1750,18 @@ QTime ProtocolJ::ParseXmlTime(const QString &str,bool *ok,int *day_offset)
 }
 
 
-QString ProtocolJ::WriteXmlTime(const QTime &time)
+QString ProtocolJ::WriteXmlTime(const QTime &time,int utc_offset)
 {
+  QString tz_str="-";
+  if(utc_offset<0) {
+    tz_str="+";
+  }
+  tz_str+=QString().
+    sprintf("%02d:%02d",utc_offset/3600,(utc_offset-3600*(utc_offset/3600))/60);
+
+  return time.toString("hh:mm:ss")+tz_str;
+
+  /*
   int utc_off=TimeZoneOffset();
   QString tz_str="-";
   if(utc_off<0) {
@@ -1652,6 +1771,7 @@ QString ProtocolJ::WriteXmlTime(const QTime &time)
     sprintf("%02d:%02d",utc_off/3600,(utc_off-3600*(utc_off/3600))/60);
 
   return time.toString("hh:mm:ss")+tz_str;
+  */
 }
 
 
@@ -1713,7 +1833,7 @@ QDateTime ProtocolJ::ParseXmlDateTime(const QString &str,bool *ok)
 
 QString ProtocolJ::WriteXmlDateTime(const QDateTime &dt)
 {
-  return WriteXmlDate(dt.date())+"T"+WriteXmlTime(dt.time());
+  return WriteXmlDate(dt.date())+"T"+WriteXmlTime(dt.time(),dt.offsetFromUtc());
 }
 
 

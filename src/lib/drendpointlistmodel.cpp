@@ -133,7 +133,13 @@ int DREndPointListModel::endPointNumber(int rownum) const
 }
 
 
-QMap<QString,QVariant> DREndPointListModel::endPointMetadata(int rownum)
+QMap<QString,QVariant> DREndPointListModel::endPointMetadata(int endpt)
+{
+  return d_metadatas.at(rowNumber(endpt));
+}
+
+
+QMap<QString,QVariant> DREndPointListModel::rowMetadata(int rownum)
 {
   return d_metadatas.at(rownum);
 }

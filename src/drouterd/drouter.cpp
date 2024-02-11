@@ -1219,6 +1219,18 @@ bool DRouter::StartDb(QString *err_msg)
     SetSchemaVersion(schema_ver);
   }
 
+  if(schema_ver<8) {
+    sql=QString("rename table `PERM_SA_ROUTES` to `PERM_SA_ACTIONS` ");
+    DRSqlQuery::apply(sql);
+
+    sql=QString("alter table `PERM_SA_ACTIONS` ")+
+      "add index `ROUTER_NUMBER_IDX` (`ROUTER_NUMBER`)";
+    DRSqlQuery::apply(sql);
+
+    schema_ver=8;
+    SetSchemaVersion(schema_ver);
+  }
+
 
   // New schema updates go here
 

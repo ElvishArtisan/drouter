@@ -62,7 +62,7 @@ StateDialog::StateDialog(int router,int endpt,DREndPointMap::Type gpio_type,
   QMap<QString,QVariant> mdata;
   switch(d_type) {
   case DREndPointMap::Input:
-    mdata=d_parser->inputModel(d_router)->endPointMetadata(endpt);
+    mdata=d_parser->inputModel(d_router)->rowMetadata(endpt);
     connect(d_parser,SIGNAL(gpiStateChanged(int,int,const QString &)),
 	    this,SLOT(gpioStateChangedData(int,int,const QString &)));
     d_name_label->setText(QString::asprintf("%d - ",endpt+1)+
@@ -71,7 +71,7 @@ StateDialog::StateDialog(int router,int endpt,DREndPointMap::Type gpio_type,
     break;
 
   case DREndPointMap::Output:
-    mdata=d_parser->outputModel(d_router)->endPointMetadata(endpt);
+    mdata=d_parser->outputModel(d_router)->rowMetadata(endpt);
     connect(d_parser,SIGNAL(gpoStateChanged(int,int,const QString &)),
 	    this,SLOT(gpioStateChangedData(int,int,const QString &)));
     d_name_label->setText(QString::asprintf("%d - ",endpt+1)+
