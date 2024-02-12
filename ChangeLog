@@ -1051,3 +1051,6 @@
 	* Added a 'ROUTER_NUMBER_IDX' index to the 'PERM_SA_ACTIONS' table.
 	* Incremented the database version to 8.
 	* Added a 'DRActionListModel' class.
+2024-02-12 Fred Gleason <fredg@paravelsystems.com>
+	* Added 'DRJParser::routerFilter()' and 'DRJParser::setRouterFilter()'
+	methods.

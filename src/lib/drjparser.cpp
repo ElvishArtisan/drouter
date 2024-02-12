@@ -76,6 +76,18 @@ DRJParser::~DRJParser()
 }
 
 
+QList<int> DRJParser::routerFilter() const
+{
+  return j_router_filter;
+}
+
+
+void DRJParser::setRouterFilter(const QList<int> routers)
+{
+  j_router_filter=routers;
+}
+
+
 QMap<int,QString> DRJParser::routers() const
 {
   return j_router_names;
@@ -363,53 +375,55 @@ void DRJParser::DispatchMessage(const QJsonDocument &jdoc)
 
     for(QJsonObject::const_iterator it=jo0.begin();it!=jo0.end();it++) {
       QJsonObject jo1=it.value().toObject();
+      if((j_router_filter.size()==0)||
+	 (j_router_filter.contains(jo1.value("number").toInt()))) {
+	j_router_model->addRouter(jo1.value("number").toInt(),
+				  jo1.value("name").toString(),
+				  jo1.value("type").toString());
+	int router=jo1.value("number").toInt();
 
-      j_router_model->addRouter(jo1.value("number").toInt(),
-				jo1.value("name").toString(),
-				jo1.value("type").toString());
-      int router=jo1.value("number").toInt();
+	j_input_models[router]=
+	  new DREndPointListModel(router,j_use_long_names,this);
 
-      j_input_models[router]=
-	new DREndPointListModel(router,j_use_long_names,this);
+	j_output_models[router]=
+	  new DREndPointListModel(router,j_use_long_names,this);
+	j_output_xpoints[router]=QMap<int,int>();
 
-      j_output_models[router]=
-	new DREndPointListModel(router,j_use_long_names,this);
-      j_output_xpoints[router]=QMap<int,int>();
+	j_snapshot_models[router]=new DRSnapshotListModel(router,this);
 
-      j_snapshot_models[router]=new DRSnapshotListModel(router,this);
+	DRActionListModel *amodel=new DRActionListModel(router,this);
+	amodel->setInputsModel(j_input_models.value(router));
+	amodel->setOutputsModel(j_output_models.value(router));
+	j_action_models[router]=amodel;
 
-      DRActionListModel *amodel=new DRActionListModel(router,this);
-      amodel->setInputsModel(j_input_models.value(router));
-      amodel->setOutputsModel(j_output_models.value(router));
-      j_action_models[router]=amodel;
+	/*
+	  j_gpi_states[router]=QMap<int,QString>();
+	  j_gpo_states[router]=QMap<int,QString>();
+	  j_gpio_supporteds[router]=false;
 
-      /*
-      j_gpi_states[router]=QMap<int,QString>();
-      j_gpo_states[router]=QMap<int,QString>();
-      j_gpio_supporteds[router]=false;
+	  j_snapshot_names[router]=QStringList();
+	*/
+	cmd=QString::asprintf("sourcenames %d\r\n",router);
+	j_socket->write(cmd.toUtf8());
 
-      j_snapshot_names[router]=QStringList();
-      */
-      cmd=QString::asprintf("sourcenames %d\r\n",router);
-      j_socket->write(cmd.toUtf8());
+	cmd=QString::asprintf("destnames %d\r\n",router);
+	j_socket->write(cmd.toUtf8());
 
-      cmd=QString::asprintf("destnames %d\r\n",router);
-      j_socket->write(cmd.toUtf8());
+	cmd=QString::asprintf("snapshots %d\r\n",router);
+	j_socket->write(cmd.toUtf8());
 
-      cmd=QString::asprintf("snapshots %d\r\n",router);
-      j_socket->write(cmd.toUtf8());
-
-      cmd=QString::asprintf("actionlist %d\r\n",router);
-      j_socket->write(cmd.toUtf8());
-      /*
-      cmd=QString::asprintf("gpistat %d\r\n",router);
-      j_socket->write(cmd.toUtf8());
-
-      cmd=QString::asprintf("gpostat %d\r\n",router);
-      j_socket->write(cmd.toUtf8());
-      */
-      cmd=QString::asprintf("routestat %d\r\n",router);
-      j_socket->write(cmd.toUtf8());
+	cmd=QString::asprintf("actionlist %d\r\n",router);
+	j_socket->write(cmd.toUtf8());
+	/*
+	  cmd=QString::asprintf("gpistat %d\r\n",router);
+	  j_socket->write(cmd.toUtf8());
+	  
+	  cmd=QString::asprintf("gpostat %d\r\n",router);
+	  j_socket->write(cmd.toUtf8());
+	*/
+	cmd=QString::asprintf("routestat %d\r\n",router);
+	j_socket->write(cmd.toUtf8());
+      }
     }
     j_socket->write("ping\r\n");
   }

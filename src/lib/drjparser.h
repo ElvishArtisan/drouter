@@ -53,7 +53,10 @@ class DRJParser : public QObject
 		  NotGpioRouterError=7,NoCommandError=8,LastError=9};
   DRJParser(bool use_long_names,QObject *parent=0);
   ~DRJParser();
+  QList<int> routerFilter() const;
+  void setRouterFilter(const QList<int> routers);
   QMap<int,QString> routers() const;
+
   //
   // Models
   //
@@ -101,6 +104,7 @@ class DRJParser : public QObject
   void SendCommand(const QString &cmd);
   void MakeSocket();
 
+  QList<int> j_router_filter;
   DRRouterListModel *j_router_model;
   QMap<int,DREndPointListModel *> j_output_models;
   QMap<int,DREndPointListModel *> j_input_models;
