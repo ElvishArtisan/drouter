@@ -25,7 +25,7 @@
 %.html:	%.xml
 	xsltproc -o $@ $(DOCBOOK_STYLESHEETS)/xhtml/docbook.xsl $<
 %.pdf:	%.xml
-	xsltproc --stringparam page.orientation landscape $(DOCBOOK_STYLESHEETS)/fo/docbook.xsl $< | fop - -pdf $@
+	xsltproc --stringparam page.orientation portrait $(DOCBOOK_STYLESHEETS)/fo/docbook.xsl $< | fop - -pdf $@
 %.1:	%.xml
 	xsltproc $(DOCBOOK_STYLESHEETS)/manpages/docbook.xsl $<
 %.5:	%.xml

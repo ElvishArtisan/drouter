@@ -1,8 +1,10 @@
 <?xml version="1.0" encoding="ISO-8859-1"?>
-<article xmlns="http://docbook.org/ns/docbook" version="5.0">
+<article xmlns="http://docbook.org/ns/docbook" version="5.0" xmlns:xlink="http://www.w3.org/1999/xlink">
 <info>
   <title>Protocol J</title>
-  <subtitle>TCP/IP Protocol for controlling endpoint routers</subtitle>
+  <subtitle>
+    RESTful API for the monitoring and control of endpoint routers
+  </subtitle>
   <edition>0.0.0</edition>
   <author>
     <personname>
@@ -13,16 +15,16 @@
   </author>
 </info>
 
-<sect1 id="sect.overview">
+<sect1 xml:id="sect.overview">
   <title>Overview</title>
   <para>
     Messages to the Protocol J routing service are by means of a
     TCP SOCK_STREAM connection to TCP port 9600 on the host server.
   </para>
-  <sect2 id="sect.overview.commands">
-    <title>Protocol Command Syntax</title>
+  <sect2 xml:id="sect.overview.message_command_syntax">
+    <title>Message Command Syntax</title>
     <para>
-      Every protocol message in ProtocolJ is a valid JSON document.
+      Every message in ProtocolJ is a valid JSON document.
       A minimally valid message has the form:
     </para>
     <literallayout class="monospaced">
@@ -34,7 +36,2009 @@
     }
 }
     </literallayout>
+    <para>
+      JSON objects as well as values may be nested within the body of an
+      operation.
+    </para>
+  </sect2>
+  <sect2 xml:id="sect.overview.message_command_syntax.specifying_time">
+    <title>Specifying Time</title>
+    <para>
+      All time values in ProtocolJ are assumed to be in the UTC timezone,
+      encoded in <link xlink:href="https://www.ibm.com/docs/en/i/7.5?topic=types-xstime">xs.time</link> format as follows:
+    </para>
+    <para>
+      <replaceable>HH</replaceable><userinput>:</userinput><replaceable>MM</replaceable><userinput>:</userinput><replaceable>SS</replaceable><userinput>Z</userinput>
+    </para>
+      <table xml:id="table.overview.message_command_syntax.specifying_time" frame="all" pgwide="0">
+	<title>Time Format Elements</title>
+	<tgroup cols="3" align="left" colstep="1" rowstep="1">
+	  <colspec colname="Element" colwidth="1.5*"/>
+	  <colspec colname="Value" colwidth="5.0*"/>
+	  <colspec colname="Range" colwidth="1.5*"/>
+	  <thead>
+	    <row>
+	      <entry>
+		Element
+	      </entry>
+	      <entry>
+		Meaning
+	      </entry>
+	      <entry>
+		Valid Range
+	      </entry>
+	    </row>
+	  </thead>
+	  <tbody>
+	    <row>
+	      <entry>
+		<replaceable>HH</replaceable>
+	      </entry>
+	      <entry>
+		The hours component of the time, in twenty-four hour format
+		and zero-padded.
+	      </entry>
+	      <entry>
+		<userinput>00</userinput> through <userinput>23</userinput>
+		inclusive.
+	      </entry>
+	    </row>
+	    <row>
+	      <entry>
+		<replaceable>MM</replaceable>
+	      </entry>
+	      <entry>
+		The minutes component of the time, zero-padded.
+	      </entry>
+	      <entry>
+		<userinput>00</userinput> through <userinput>59</userinput>
+		inclusive.
+	      </entry>
+	    </row>
+	    <row>
+	      <entry>
+		<replaceable>SS</replaceable>
+	      </entry>
+	      <entry>
+		The seconds component of the time, zero-padded.
+	      </entry>
+	      <entry>
+		<userinput>00</userinput> through <userinput>60</userinput>
+		inclusive.
+	      </entry>
+	    </row>
+	  </tbody>
+	</tgroup>
+      </table>
+      <sect3 xml:id="sect.overview.message_command_syntax.specifying_time.examples">
+	<title>Examples</title>
+	<para>
+	  The following examples all express the same time (14:30:15 UTC):
+	</para>
+	<para>
+	  <userinput>14:30:15-00:00</userinput>
+	</para>
+	<para>
+	  <userinput>19:30:15-05:00</userinput>
+	</para>
+	<para>
+	  <userinput>12:00:15+02:30</userinput>
+	</para>
+      </sect3>
   </sect2>
 </sect1>
 
+<sect1 xml:id="sect.commands">
+  <title>Commands</title>
+  <para>
+    The following commands are provided:
+  </para>
+
+  <!-- *********************************** -->
+  <!-- *** START OF ActionList COMMAND *** -->
+  <!-- *********************************** -->
+  <sect2 xml:id="sect.commands.actionlist">
+    <title>ActionList</title>
+    <para>
+      Return a list of configured actions for a given router
+    </para>
+    <sect3 xml:id="sect.commands.actionlist.send_syntax">
+      <title>Send Syntax</title>
+      <literallayout class="monospaced">
+{
+    "actionlist": {
+        "router": <replaceable>router-num</replaceable>
+    }
+}
+      </literallayout>
+      <para>
+	Where:
+      </para>
+      <table xml:id="table.commands.actionlist.send.parameters" frame="all" pgwide="0">
+	<title>Send Parameters</title>
+	<tgroup cols="3" align="left" colstep="1" rowstep="1">
+	  <colspec colname="Parameter" colwidth="1.5*"/>
+	  <colspec colname="Value" colwidth="5.0*"/>
+	  <colspec colname="Type" colwidth="1.5*"/>
+	  <thead>
+	    <row>
+	      <entry>
+		Parameter
+	      </entry>
+	      <entry>
+		Meaning
+	      </entry>
+	      <entry>
+		JSON Value
+	      </entry>
+	    </row>
+	  </thead>
+	  <tbody>
+	    <row>
+	      <entry>
+		<replaceable>router-num</replaceable>
+	      </entry>
+	      <entry>
+		Router number
+	      </entry>
+	      <entry>
+		Number
+	      </entry>
+	    </row>
+	  </tbody>
+	</tgroup>
+      </table>
+    </sect3>
+    <sect3 xml:id="sect.commands.actionlist.response_syntax">
+      <title>Response Syntax</title>
+      <literallayout class="monospaced">
+{
+    "actionlist": {
+        "router": <replaceable>router-num</replaceable>
+        "action0": {
+            "id": <replaceable>id-num</replaceable>,
+            "time": <replaceable>time</replaceable>,
+            "sunday":<replaceable>boolean</replaceable>,
+            "monday":<replaceable>boolean</replaceable>,
+            "tuesday":<replaceable>boolean</replaceable>,
+            "wednesday":<replaceable>boolean</replaceable>,
+            "thursday":<replaceable>boolean</replaceable>,
+            "friday":<replaceable>boolean</replaceable>,
+            "saturday":<replaceable>boolean</replaceable>,
+            "destination":<replaceable>dest-num</replaceable>,
+            "source":<replaceable>src-num</replaceable>,
+            "comment"<replaceable>str</replaceable>
+        }[,]
+    [...]
+        "action<replaceable>N</replaceable>": {
+            "id": <replaceable>id-num</replaceable>,
+            "time": <replaceable>time</replaceable>,
+            "sunday":<replaceable>boolean</replaceable>,
+            "monday":<replaceable>boolean</replaceable>,
+            "tuesday":<replaceable>boolean</replaceable>,
+            "wednesday":<replaceable>boolean</replaceable>,
+            "thursday":<replaceable>boolean</replaceable>,
+            "friday":<replaceable>boolean</replaceable>,
+            "saturday":<replaceable>boolean</replaceable>,
+            "destination":<replaceable>dest-num</replaceable>,
+            "source":<replaceable>src-num</replaceable>,
+            "comment"<replaceable>str</replaceable>
+        }
+    }
+}
+      </literallayout>
+      <table xml:id="table.commands.actionlist.response.parameters" frame="all" pgwide="0">
+	<title>Response Parameters</title>
+	<tgroup cols="3" align="left" colstep="1" rowstep="1">
+	  <colspec colname="Parameter" colwidth="1.5*"/>
+	  <colspec colname="Value" colwidth="5.0*"/>
+	  <colspec colname="Type" colwidth="1.5*"/>
+	  <thead>
+	    <row>
+	      <entry>
+		Parameter
+	      </entry>
+	      <entry>
+		Meaning
+	      </entry>
+	      <entry>
+		JSON Value
+	      </entry>
+	    </row>
+	  </thead>
+	  <tbody>
+	    <row>
+	      <entry>
+		<replaceable>router-num</replaceable>
+	      </entry>
+	      <entry>
+		Router number
+	      </entry>
+	      <entry>
+		Number
+	      </entry>
+	    </row>
+	    <row>
+	      <entry>
+		<replaceable>id</replaceable>
+	      </entry>
+	      <entry>
+		ID number of action entry.
+	      </entry>
+	      <entry>
+		Number
+	      </entry>
+	    </row>
+	    <row>
+	      <entry>
+		<replaceable>time</replaceable>
+	      </entry>
+	      <entry>
+		Scheduled time of action, in xs.time format. See
+		<xref linkend="sect.overview.message_command_syntax.specifying_time"/> for details.
+	      </entry>
+	      <entry>
+		String
+	      </entry>
+	    </row>
+	    <row>
+	      <entry>
+		<replaceable>boolean</replaceable>
+	      </entry>
+	      <entry>
+		&quot;true&quot; indicates action is to be executed on
+		indicated day
+	      </entry>
+	      <entry>
+		&quot;true&quot; or &quot;false&quot;
+	      </entry>
+	    </row>
+	    <row>
+	      <entry>
+		<replaceable>dest-num</replaceable>
+	      </entry>
+	      <entry>
+		Destination number
+	      </entry>
+	      <entry>
+		Number
+	      </entry>
+	    </row>
+	    <row>
+	      <entry>
+		<replaceable>source-num</replaceable>
+	      </entry>
+	      <entry>
+		Source number
+	      </entry>
+	      <entry>
+		Number
+	      </entry>
+	    </row>
+	    <row>
+	      <entry>
+		<replaceable>str</replaceable>
+	      </entry>
+	      <entry>
+		Comment text
+	      </entry>
+	      <entry>
+		String
+	      </entry>
+	    </row>
+	  </tbody>
+	</tgroup>
+      </table>
+    </sect3>
+
+    <sect3 xml:id="sect.commands.actionlist.example">
+      <title>Example</title>
+      <sect4 xml:id="sect.commands.actionlist.example.send">
+	<title>Send</title>
+	<literallayout class="monospaced">
+{
+    "actionlist" {
+        "router": 2
+    }
+}
+	</literallayout>
+      </sect4>
+      <sect4 xml:id="sect.commands.actionlist.example.response">
+	<title>Response</title>
+	<literallayout class="monospaced">
+{
+    "actionlist": {
+        "router": 2,
+        "action0": {
+            "id": 1,
+            "time": "16:00:00Z",
+            "sunday": false,
+            "monday": true,
+            "tuesday": false,
+            "wednesday": false,
+            "thursday": false,
+            "friday": false,
+            "saturday": false,
+            "destination": 2,
+            "source": 3,
+            "comment": "Take input 3 to output 2"
+        },
+        "action1": {
+            "id": 2,
+            "time": "16:10:00Z",
+            "sunday": false,
+            "monday": true,
+            "tuesday": false,
+            "wednesday": false,
+            "thursday": false,
+            "friday": false,
+            "saturday": false,
+            "destination": 2,
+            "source": 4,
+            "comment": "Take input 4 to output 2"
+        }
+    }
+}
+	</literallayout>
+      </sect4>
+    </sect3>
+  </sect2>
+  <!-- *********************************** -->
+  <!-- **** END OF ActionList COMMAND **** -->
+  <!-- *********************************** -->
+
+  <!-- ************************************** -->
+  <!-- *** START OF ActivateRoute COMMAND *** -->
+  <!-- ************************************** -->
+  <sect2 xml:id="sect.commands.activateroute">
+    <title>ActivateRoute</title>
+    <para>
+      Command a crosspoint change
+    </para>
+    <sect3 xml:id="sect.commands.activateroute.send_syntax">
+      <title>Send Syntax</title>
+      <literallayout class="monospaced">
+{
+    "activateroute": {
+        "router": <replaceable>router-num</replaceable>,
+        "destination": <replaceable>dest-num</replaceable>,
+        "source": <replaceable>src-num</replaceable>,
+    }
+}
+      </literallayout>
+      <para>
+	Where:
+      </para>
+      <table xml:id="table.commands.activateroute.send.parameters" frame="all" pgwide="0">
+	<title>Send Parameters</title>
+	<tgroup cols="3" align="left" colstep="1" rowstep="1">
+	  <colspec colname="Parameter" colwidth="1.5*"/>
+	  <colspec colname="Value" colwidth="5.0*"/>
+	  <colspec colname="Type" colwidth="1.5*"/>
+	  <thead>
+	    <row>
+	      <entry>
+		Parameter
+	      </entry>
+	      <entry>
+		Meaning
+	      </entry>
+	      <entry>
+		JSON Value
+	      </entry>
+	    </row>
+	  </thead>
+	  <tbody>
+	    <row>
+	      <entry>
+		<replaceable>router-num</replaceable>
+	      </entry>
+	      <entry>
+		Router number
+	      </entry>
+	      <entry>
+		Number
+	      </entry>
+	    </row>
+	    <row>
+	      <entry>
+		<replaceable>dest-num</replaceable>
+	      </entry>
+	      <entry>
+		Destination number
+	      </entry>
+	      <entry>
+		Number
+	      </entry>
+	    </row>
+	    <row>
+	      <entry>
+		<replaceable>src-num</replaceable>
+	      </entry>
+	      <entry>
+		Source number
+	      </entry>
+	      <entry>
+		Number
+	      </entry>
+	    </row>
+	  </tbody>
+	</tgroup>
+      </table>
+    </sect3>
+    <sect3 xml:id="sect.commands.activateroute.response_syntax">
+      <title>Response Syntax</title>
+      <para>
+	See the <literal>routestat</literal> command response in
+	<xref linkend="sect.commands.routestat"/>
+      </para>
+    </sect3>
+  </sect2>
+  <!-- ************************************** -->
+  <!-- **** END OF ActivateRoute COMMAND **** -->
+  <!-- ************************************** -->
+
+  <!-- ************************************* -->
+  <!-- *** START OF ActivateSnap COMMAND *** -->
+  <!-- ************************************* -->
+  <sect2 xml:id="sect.commands.activatesnap">
+    <title>ActivateSnap</title>
+    <para>
+      Execute a route snapshot
+    </para>
+    <sect3 xml:id="sect.commands.activatesnap.send_syntax">
+      <title>Send Syntax</title>
+      <literallayout class="monospaced">
+{
+    "activatesnap": {
+        "router": <replaceable>router-num</replaceable>
+        "snapshot": <replaceable>snap-name</replaceable>
+    }
+}
+      </literallayout>
+      <para>
+	Where:
+      </para>
+      <table xml:id="table.commands.activatesnap.send.parameters" frame="all" pgwide="0">
+	<title>Send Parameters</title>
+	<tgroup cols="3" align="left" colstep="1" rowstep="1">
+	  <colspec colname="Parameter" colwidth="1.5*"/>
+	  <colspec colname="Value" colwidth="5.0*"/>
+	  <colspec colname="Type" colwidth="1.5*"/>
+	  <thead>
+	    <row>
+	      <entry>
+		Parameter
+	      </entry>
+	      <entry>
+		Meaning
+	      </entry>
+	      <entry>
+		JSON Value
+	      </entry>
+	    </row>
+	  </thead>
+	  <tbody>
+	    <row>
+	      <entry>
+		<replaceable>router-num</replaceable>
+	      </entry>
+	      <entry>
+		Router number
+	      </entry>
+	      <entry>
+		Number
+	      </entry>
+	    </row>
+	    <row>
+	      <entry>
+		<replaceable>snap-name</replaceable>
+	      </entry>
+	      <entry>
+		Name of snapshot
+	      </entry>
+	      <entry>
+		String
+	      </entry>
+	    </row>
+	  </tbody>
+	</tgroup>
+      </table>
+    </sect3>
+    <sect3 xml:id="sect.commands.activatesnap.response_syntax">
+      <title>Response Syntax</title>
+      <para>
+	See the <literal>routestat</literal> command response in
+	<xref linkend="sect.commands.routestat"/>
+      </para>
+    </sect3>
+
+    <sect3 xml:id="sect.commands.activatesnap.example">
+      <title>Example</title>
+      <sect4 xml:id="sect.commands.activatesnap.example.send">
+	<title>Send</title>
+	<literallayout class="monospaced">
+{
+    "activatesnap" {
+        "router": 2
+    }
+}
+	</literallayout>
+      </sect4>
+      <sect4 xml:id="sect.commands.activatesnap.example.response">
+	<title>Response</title>
+	<literallayout class="monospaced">
+{
+    "routestat": {
+        "router": 2,
+        "destination": 3,
+        "source": 4
+    }
+}
+{
+    "routestat": {
+        "router": 2,
+        "destination": 10,
+        "source": 7
+    }
+}
+	</literallayout>
+      </sect4>
+    </sect3>
+  </sect2>
+  <!-- ************************************* -->
+  <!-- **** END OF ActivateSnap COMMAND **** -->
+  <!-- ************************************* -->
+
+  <!-- ********************************** -->
+  <!-- *** START OF DestNames COMMAND *** -->
+  <!-- ********************************** -->
+  <sect2 xml:id="sect.commands.destnames">
+    <title>DestNames</title>
+    <para>
+      Return the list of destinations on a given router
+    </para>
+    <sect3 xml:id="sect.commands.destnames.send_syntax">
+      <title>Send Syntax</title>
+      <literallayout class="monospaced">
+{
+    "destnames": {
+        "router": <replaceable>router-num</replaceable>
+    }
+}
+      </literallayout>
+      <para>
+	Where:
+      </para>
+      <table xml:id="table.commands.destnames.send.parameters" frame="all" pgwide="0">
+	<title>Send Parameters</title>
+	<tgroup cols="3" align="left" colstep="1" rowstep="1">
+	  <colspec colname="Parameter" colwidth="1.5*"/>
+	  <colspec colname="Value" colwidth="5.0*"/>
+	  <colspec colname="Type" colwidth="1.5*"/>
+	  <thead>
+	    <row>
+	      <entry>
+		Parameter
+	      </entry>
+	      <entry>
+		Meaning
+	      </entry>
+	      <entry>
+		JSON Value
+	      </entry>
+	    </row>
+	  </thead>
+	  <tbody>
+	    <row>
+	      <entry>
+		<replaceable>router-num</replaceable>
+	      </entry>
+	      <entry>
+		Router number
+	      </entry>
+	      <entry>
+		Number
+	      </entry>
+	    </row>
+	  </tbody>
+	</tgroup>
+      </table>
+    </sect3>
+    <sect3 xml:id="sect.commands.destnames.response_syntax">
+      <title>Response Syntax</title>
+      <literallayout class="monospaced">
+{
+    "destnames": {
+        "router": <replaceable>router-num</replaceable>
+        "destination0": {
+            "number": <replaceable>num</replaceable>,
+            "name": <replaceable>name-str</replaceable>,
+            "hostDescription":<replaceable>dest-str</replaceable>,
+            "hostAddress":<replaceable>ipv4-addr</replaceable>,
+            "hostName":<replaceable>host-str</replaceable>,
+            "slot":<replaceable>slot-num</replaceable>
+        }[,]
+        [...]
+        "destination<replaceable>N</replaceable>": {
+            "number": <replaceable>dest-num</replaceable>,
+            "name": <replaceable>name-str</replaceable>,
+            "hostDescription":<replaceable>dest-str</replaceable>,
+            "hostAddress":<replaceable>ipv4-addr</replaceable>,
+            "hostName":<replaceable>host-str</replaceable>,
+            "slot":<replaceable>slot-num</replaceable>
+        }
+    }
+}
+      </literallayout>
+      <table xml:id="table.commands.destnames.response.parameters" frame="all" pgwide="0">
+	<title>Response Parameters</title>
+	<tgroup cols="3" align="left" colstep="1" rowstep="1">
+	  <colspec colname="Parameter" colwidth="1.5*"/>
+	  <colspec colname="Value" colwidth="5.0*"/>
+	  <colspec colname="Type" colwidth="1.5*"/>
+	  <thead>
+	    <row>
+	      <entry>
+		Parameter
+	      </entry>
+	      <entry>
+		Meaning
+	      </entry>
+	      <entry>
+		JSON Value
+	      </entry>
+	    </row>
+	  </thead>
+	  <tbody>
+	    <row>
+	      <entry>
+		<replaceable>router-num</replaceable>
+	      </entry>
+	      <entry>
+		Router number
+	      </entry>
+	      <entry>
+		Number
+	      </entry>
+	    </row>
+	    <row>
+	      <entry>
+		<replaceable>dest-num</replaceable>
+	      </entry>
+	      <entry>
+		Endpoint number of the destination
+	      </entry>
+	      <entry>
+		Number
+	      </entry>
+	    </row>
+	    <row>
+	      <entry>
+		<replaceable>name</replaceable>
+	      </entry>
+	      <entry>
+		Name of the destination
+	      </entry>
+	      <entry>
+		String
+	      </entry>
+	    </row>
+	    <row>
+	      <entry>
+		<replaceable>dest-str</replaceable>
+	      </entry>
+	      <entry>
+		Free-form description of the host device (Livewire only)
+	      </entry>
+	      <entry>
+		String
+	      </entry>
+	    </row>
+	    <row>
+	      <entry>
+		<replaceable>ipv4-addr</replaceable>
+	      </entry>
+	      <entry>
+		IPv4 address of the host device, in dotted-quad notation
+		(Livewire only)
+	      </entry>
+	      <entry>
+		String
+	      </entry>
+	    </row>
+	    <row>
+	      <entry>
+		<replaceable>host-str</replaceable>
+	      </entry>
+	      <entry>
+		Hostname of the host device (Livewire only)
+	      </entry>
+	      <entry>
+		String
+	      </entry>
+	    </row>
+	    <row>
+	      <entry>
+		<replaceable>slot-num</replaceable>
+	      </entry>
+	      <entry>
+		Slot number on the host device (Livewire only)
+	      </entry>
+	      <entry>
+		Number
+	      </entry>
+	    </row>
+	  </tbody>
+	</tgroup>
+      </table>
+    </sect3>
+
+    <sect3 xml:id="sect.commands.destnames.example">
+      <title>Example</title>
+      <sect4 xml:id="sect.commands.destnames.example.send">
+	<title>Send</title>
+	<literallayout class="monospaced">
+{
+    "destnames" {
+        "router": 2
+    }
+}
+	</literallayout>
+      </sect4>
+      <sect4 xml:id="sect.commands.destnames.example.response">
+	<title>Response</title>
+	<literallayout class="monospaced">
+{
+    "destnames": {
+        "router": 2,
+        "destination0": {
+            "number": 1,
+            "name": "Mackie 5/6",
+            "hostDescription": "Combination xNode",
+            "hostAddress": "172.30.4.211",
+            "hostName": "FRED-XNODE",
+            "slot": 1
+        },
+        "destination1": {
+            "number": 2,
+            "name": "Mackie 7/8",
+            "hostDescription": "Combination xNode",
+            "hostAddress": "172.30.4.211",
+            "hostName": "FRED-XNODE",
+            "slot": 2
+        },
+        "destination2": {
+            "number": 17,
+            "name": "RD Port 0",
+            "hostDescription": "AudioScience 6685 Card",
+            "hostAddress": "172.30.4.213",
+            "hostName": "ELASTIGIRL",
+            "slot": 1
+        },
+        "destination3": {
+            "number": 18,
+            "name": "RD Port 1",
+            "hostDescription": "AudioScience 6685 Card",
+            "hostAddress": "172.30.4.213",
+            "hostName": "ELASTIGIRL",
+            "slot": 2
+        }
+    }
+}
+	</literallayout>
+      </sect4>
+    </sect3>
+  </sect2>
+  <!-- ********************************** -->
+  <!-- **** END OF DestNames COMMAND **** -->
+  <!-- ********************************** -->
+
+  <!-- *********************************** -->
+  <!-- *** START OF GPIStat COMMAND *** -->
+  <!-- *********************************** -->
+  <sect2 xml:id="sect.commands.gpistat">
+    <title>GPIStat</title>
+    <para>
+      Query the state of one or more GPIs.
+    </para>
+    <sect3 xml:id="sect.commands.gpistat.send_syntax">
+      <title>Send Syntax</title>
+      <literallayout class="monospaced">
+{
+    "gpistat": {
+        "router": <replaceable>router-num</replaceable>[,]
+        ["number": <replaceable>gpi-num</replaceable>]
+    }
+}
+      </literallayout>
+      <para>
+	Where:
+      </para>
+      <table xml:id="table.commands.gpistat.send.parameters" frame="all" pgwide="0">
+	<title>Send Parameters</title>
+	<tgroup cols="3" align="left" colstep="1" rowstep="1">
+	  <colspec colname="Parameter" colwidth="1.5*"/>
+	  <colspec colname="Value" colwidth="5.0*"/>
+	  <colspec colname="Type" colwidth="1.5*"/>
+	  <thead>
+	    <row>
+	      <entry>
+		Parameter
+	      </entry>
+	      <entry>
+		Meaning
+	      </entry>
+	      <entry>
+		JSON Value
+	      </entry>
+	    </row>
+	  </thead>
+	  <tbody>
+	    <row>
+	      <entry>
+		<replaceable>router-num</replaceable>
+	      </entry>
+	      <entry>
+		Router number
+	      </entry>
+	      <entry>
+		Number
+	      </entry>
+	    </row>
+	    <row>
+	      <entry>
+		<replaceable>gpi-num</replaceable>
+	      </entry>
+	      <entry>
+		GPI number (optional). If not given, the response will include
+		<emphasis>all</emphasis> GPIs associated with the specified
+		router.
+	      </entry>
+	      <entry>
+		Number
+	      </entry>
+	    </row>
+	  </tbody>
+	</tgroup>
+      </table>
+    </sect3>
+    <sect3 xml:id="sect.commands.gpistat.response_syntax">
+      <title>Response Syntax</title>
+      <literallayout class="monospaced">
+{
+    "gpistat": {
+        "router": <replaceable>router-num</replaceable>,
+        "number": <replaceable>gpi-num</replaceable>,
+        "code": <replaceable>state-code</replaceable>
+    }
+}
+      </literallayout>
+      <table xml:id="table.commands.gpistat.response.parameters" frame="all" pgwide="0">
+	<title>Response Parameters</title>
+	<tgroup cols="3" align="left" colstep="1" rowstep="1">
+	  <colspec colname="Parameter" colwidth="1.5*"/>
+	  <colspec colname="Value" colwidth="5.0*"/>
+	  <colspec colname="Type" colwidth="1.5*"/>
+	  <thead>
+	    <row>
+	      <entry>
+		Parameter
+	      </entry>
+	      <entry>
+		Meaning
+	      </entry>
+	      <entry>
+		JSON Value
+	      </entry>
+	    </row>
+	  </thead>
+	  <tbody>
+	    <row>
+	      <entry>
+		<replaceable>router-num</replaceable>
+	      </entry>
+	      <entry>
+		Router number
+	      </entry>
+	      <entry>
+		Number
+	      </entry>
+	    </row>
+	    <row>
+	      <entry>
+		<replaceable>gpi-num</replaceable>
+	      </entry>
+	      <entry>
+		The endpoint number of the GPI.
+	      </entry>
+	      <entry>
+		Number
+	      </entry>
+	    </row>
+	    <row>
+	      <entry>
+		<replaceable>state-code</replaceable>
+	      </entry>
+	      <entry>
+		Code representing the states of the five lines of the
+		specified GPI, with &quot;h&quot; indicating OFF, and
+		&quot;h&quot; indicating ON.
+	      </entry>
+	      <entry>
+		String
+	      </entry>
+	    </row>
+	  </tbody>
+	</tgroup>
+      </table>
+    </sect3>
+
+    <sect3 xml:id="sect.commands.gpistat.example">
+      <title>Example</title>
+      <sect4 xml:id="sect.commands.gpistat.example.send">
+	<title>Send</title>
+	<literallayout class="monospaced">
+{
+    "gpistat" {
+        "router": 2,
+        "number": 3
+    }
+}
+	</literallayout>
+      </sect4>
+      <sect4 xml:id="sect.commands.gpistat.example.response">
+	<title>Response</title>
+	<literallayout class="monospaced">
+{
+    "gpistat": {
+        "router": 2,
+        "number": 3,
+        "code": "llhlh"
+    }
+}
+	</literallayout>
+      </sect4>
+    </sect3>
+  </sect2>
+  <!-- *********************************** -->
+  <!-- **** END OF GPIStat COMMAND **** -->
+  <!-- *********************************** -->
+
+  <!-- *********************************** -->
+  <!-- *** START OF GPOStat COMMAND *** -->
+  <!-- *********************************** -->
+  <sect2 xml:id="sect.commands.gpostat">
+    <title>GPOStat</title>
+    <para>
+      Query the state of one or more GPOs.
+    </para>
+    <sect3 xml:id="sect.commands.gpostat.send_syntax">
+      <title>Send Syntax</title>
+      <literallayout class="monospaced">
+{
+    "gpostat": {
+        "router": <replaceable>router-num</replaceable>[,]
+        ["number": <replaceable>gpo-num</replaceable>]
+    }
+}
+      </literallayout>
+      <para>
+	Where:
+      </para>
+      <table xml:id="table.commands.gpostat.send.parameters" frame="all" pgwide="0">
+	<title>Send Parameters</title>
+	<tgroup cols="3" align="left" colstep="1" rowstep="1">
+	  <colspec colname="Parameter" colwidth="1.5*"/>
+	  <colspec colname="Value" colwidth="5.0*"/>
+	  <colspec colname="Type" colwidth="1.5*"/>
+	  <thead>
+	    <row>
+	      <entry>
+		Parameter
+	      </entry>
+	      <entry>
+		Meaning
+	      </entry>
+	      <entry>
+		JSON Value
+	      </entry>
+	    </row>
+	  </thead>
+	  <tbody>
+	    <row>
+	      <entry>
+		<replaceable>router-num</replaceable>
+	      </entry>
+	      <entry>
+		Router number
+	      </entry>
+	      <entry>
+		Number
+	      </entry>
+	    </row>
+	    <row>
+	      <entry>
+		<replaceable>gpo-num</replaceable>
+	      </entry>
+	      <entry>
+		GPO number (optional). If not given, the response will include
+		<emphasis>all</emphasis> GPOs associated with the specified
+		router.
+	      </entry>
+	      <entry>
+		Number
+	      </entry>
+	    </row>
+	  </tbody>
+	</tgroup>
+      </table>
+    </sect3>
+    <sect3 xml:id="sect.commands.gpostat.response_syntax">
+      <title>Response Syntax</title>
+      <literallayout class="monospaced">
+{
+    "gpostat": {
+        "router": <replaceable>router-num</replaceable>,
+        "number": <replaceable>gpo-num</replaceable>,
+        "code": <replaceable>state-code</replaceable>
+    }
+}
+      </literallayout>
+      <table xml:id="table.commands.gpostat.response.parameters" frame="all" pgwide="0">
+	<title>Response Parameters</title>
+	<tgroup cols="3" align="left" colstep="1" rowstep="1">
+	  <colspec colname="Parameter" colwidth="1.5*"/>
+	  <colspec colname="Value" colwidth="5.0*"/>
+	  <colspec colname="Type" colwidth="1.5*"/>
+	  <thead>
+	    <row>
+	      <entry>
+		Parameter
+	      </entry>
+	      <entry>
+		Meaning
+	      </entry>
+	      <entry>
+		JSON Value
+	      </entry>
+	    </row>
+	  </thead>
+	  <tbody>
+	    <row>
+	      <entry>
+		<replaceable>router-num</replaceable>
+	      </entry>
+	      <entry>
+		Router number
+	      </entry>
+	      <entry>
+		Number
+	      </entry>
+	    </row>
+	    <row>
+	      <entry>
+		<replaceable>gpo-num</replaceable>
+	      </entry>
+	      <entry>
+		The endpoint number of the GPO.
+	      </entry>
+	      <entry>
+		Number
+	      </entry>
+	    </row>
+	    <row>
+	      <entry>
+		<replaceable>state-code</replaceable>
+	      </entry>
+	      <entry>
+		Code representing the states of the five lines of the
+		specified GPO, with &quot;h&quot; indicating OFF, and
+		&quot;h&quot; indicating ON.
+	      </entry>
+	      <entry>
+		String
+	      </entry>
+	    </row>
+	  </tbody>
+	</tgroup>
+      </table>
+    </sect3>
+
+    <sect3 xml:id="sect.commands.gpostat.example">
+      <title>Example</title>
+      <sect4 xml:id="sect.commands.gpostat.example.send">
+	<title>Send</title>
+	<literallayout class="monospaced">
+{
+    "gpostat" {
+        "router": 2,
+        "number": 3
+    }
+}
+	</literallayout>
+      </sect4>
+      <sect4 xml:id="sect.commands.gpostat.example.response">
+	<title>Response</title>
+	<literallayout class="monospaced">
+{
+    "gpostat": {
+        "router": 2,
+        "number": 3,
+        "code": "llhlh"
+    }
+}
+	</literallayout>
+      </sect4>
+    </sect3>
+  </sect2>
+  <!-- *********************************** -->
+  <!-- **** END OF GPOStat COMMAND **** -->
+  <!-- *********************************** -->
+
+  <!-- *********************************** -->
+  <!-- *** START OF RouteStat COMMAND *** -->
+  <!-- *********************************** -->
+  <sect2 xml:id="sect.commands.routestat">
+    <title>RouteStat</title>
+    <para>
+      Query the state of one or more crosspoints.
+    </para>
+    <sect3 xml:id="sect.commands.routestat.send_syntax">
+      <title>Send Syntax</title>
+      <literallayout class="monospaced">
+{
+    "routestat": {
+        "router": <replaceable>router-num</replaceable>,
+        "destination": <replaceable>dest-num</replaceable>[,]
+        ["source": <replaceable>src-num</replaceable>]
+    }
+}
+      </literallayout>
+      <para>
+	Where:
+      </para>
+      <table xml:id="table.commands.routestat.send.parameters" frame="all" pgwide="0">
+	<title>Send Parameters</title>
+	<tgroup cols="3" align="left" colstep="1" rowstep="1">
+	  <colspec colname="Parameter" colwidth="1.5*"/>
+	  <colspec colname="Value" colwidth="5.0*"/>
+	  <colspec colname="Type" colwidth="1.5*"/>
+	  <thead>
+	    <row>
+	      <entry>
+		Parameter
+	      </entry>
+	      <entry>
+		Meaning
+	      </entry>
+	      <entry>
+		JSON Value
+	      </entry>
+	    </row>
+	  </thead>
+	  <tbody>
+	    <row>
+	      <entry>
+		<replaceable>router-num</replaceable>
+	      </entry>
+	      <entry>
+		Router number
+	      </entry>
+	      <entry>
+		Number
+	      </entry>
+	    </row>
+	    <row>
+	      <entry>
+		<replaceable>dest-num</replaceable>
+	      </entry>
+	      <entry>
+		Destination number (optional). If not given, the response will
+		include	<emphasis>all</emphasis> crosspoints associated with
+		the specified router destination.
+	      </entry>
+	      <entry>
+		Number
+	      </entry>
+	    </row>
+	  </tbody>
+	</tgroup>
+      </table>
+    </sect3>
+    <sect3 xml:id="sect.commands.routestat.response_syntax">
+      <title>Response Syntax</title>
+      <literallayout class="monospaced">
+{
+    "routestat": {
+        "router": <replaceable>router-num</replaceable>,
+        "destination": <replaceable>dest-num</replaceable>,
+        "source": <replaceable>src-num</replaceable>
+    }
+}
+      </literallayout>
+      <table xml:id="table.commands.routestat.response.parameters" frame="all" pgwide="0">
+	<title>Response Parameters</title>
+	<tgroup cols="3" align="left" colstep="1" rowstep="1">
+	  <colspec colname="Parameter" colwidth="1.5*"/>
+	  <colspec colname="Value" colwidth="5.0*"/>
+	  <colspec colname="Type" colwidth="1.5*"/>
+	  <thead>
+	    <row>
+	      <entry>
+		Parameter
+	      </entry>
+	      <entry>
+		Meaning
+	      </entry>
+	      <entry>
+		JSON Value
+	      </entry>
+	    </row>
+	  </thead>
+	  <tbody>
+	    <row>
+	      <entry>
+		<replaceable>router-num</replaceable>
+	      </entry>
+	      <entry>
+		Router number
+	      </entry>
+	      <entry>
+		Number
+	      </entry>
+	    </row>
+	    <row>
+	      <entry>
+		<replaceable>dest-num</replaceable>
+	      </entry>
+	      <entry>
+		Destination number
+	      </entry>
+	      <entry>
+		Number
+	      </entry>
+	    </row>
+	    <row>
+	      <entry>
+		<replaceable>src-num</replaceable>
+	      </entry>
+	      <entry>
+		Source number
+	      </entry>
+	      <entry>
+		Number
+	      </entry>
+	    </row>
+	  </tbody>
+	</tgroup>
+      </table>
+    </sect3>
+
+    <sect3 xml:id="sect.commands.routestat.example">
+      <title>Example</title>
+      <sect4 xml:id="sect.commands.routestat.example.send">
+	<title>Send</title>
+	<literallayout class="monospaced">
+{
+    "routestat" {
+        "router": 2,
+        "destination": 3
+    }
+}
+	</literallayout>
+      </sect4>
+      <sect4 xml:id="sect.commands.routestat.example.response">
+	<title>Response</title>
+	<literallayout class="monospaced">
+{
+    "routestat": {
+        "router": 2,
+        "destination": 3,
+        "source": 1
+    }
+}
+	</literallayout>
+      </sect4>
+    </sect3>
+  </sect2>
+  <!-- *********************************** -->
+  <!-- **** END OF RouteStat COMMAND **** -->
+  <!-- *********************************** -->
+
+  <!-- *********************************** -->
+  <!-- *** START OF SnapShots COMMAND *** -->
+  <!-- *********************************** -->
+  <sect2 xml:id="sect.commands.snapshots">
+    <title>SnapShots</title>
+    <para>
+      Return a list of configured snapshots on the given router.
+    </para>
+    <sect3 xml:id="sect.commands.snapshots.send_syntax">
+      <title>Send Syntax</title>
+      <literallayout class="monospaced">
+{
+    "snapshots": {
+        "router": <replaceable>router-num</replaceable>
+    }
+}
+      </literallayout>
+      <para>
+	Where:
+      </para>
+      <table xml:id="table.commands.snapshots.send.parameters" frame="all" pgwide="0">
+	<title>Send Parameters</title>
+	<tgroup cols="3" align="left" colstep="1" rowstep="1">
+	  <colspec colname="Parameter" colwidth="1.5*"/>
+	  <colspec colname="Value" colwidth="5.0*"/>
+	  <colspec colname="Type" colwidth="1.5*"/>
+	  <thead>
+	    <row>
+	      <entry>
+		Parameter
+	      </entry>
+	      <entry>
+		Meaning
+	      </entry>
+	      <entry>
+		JSON Value
+	      </entry>
+	    </row>
+	  </thead>
+	  <tbody>
+	    <row>
+	      <entry>
+		<replaceable>router-num</replaceable>
+	      </entry>
+	      <entry>
+		Router number
+	      </entry>
+	      <entry>
+		Number
+	      </entry>
+	    </row>
+	  </tbody>
+	</tgroup>
+      </table>
+    </sect3>
+    <sect3 xml:id="sect.commands.snapshots.response_syntax">
+      <title>Response Syntax</title>
+      <literallayout class="monospaced">
+{
+    "snapshots": {
+        "router": <replaceable>router-num</replaceable>
+        "snapshot0": {
+            "name": <replaceable>name-str</replaceable>
+        }[,]
+        [...]
+        "snapshot<replaceable>N</replaceable>": {
+            "name": <replaceable>name-str</replaceable>
+        }
+    }
+}
+      </literallayout>
+      <table xml:id="table.commands.snapshots.response.parameters" frame="all" pgwide="0">
+	<title>Response Parameters</title>
+	<tgroup cols="3" align="left" colstep="1" rowstep="1">
+	  <colspec colname="Parameter" colwidth="1.5*"/>
+	  <colspec colname="Value" colwidth="5.0*"/>
+	  <colspec colname="Type" colwidth="1.5*"/>
+	  <thead>
+	    <row>
+	      <entry>
+		Parameter
+	      </entry>
+	      <entry>
+		Meaning
+	      </entry>
+	      <entry>
+		JSON Value
+	      </entry>
+	    </row>
+	  </thead>
+	  <tbody>
+	    <row>
+	      <entry>
+		<replaceable>router-num</replaceable>
+	      </entry>
+	      <entry>
+		Router number
+	      </entry>
+	      <entry>
+		Number
+	      </entry>
+	    </row>
+	    <row>
+	      <entry>
+		<replaceable>name</replaceable>
+	      </entry>
+	      <entry>
+		Snapshot name
+	      </entry>
+	      <entry>
+		String
+	      </entry>
+	    </row>
+	  </tbody>
+	</tgroup>
+      </table>
+    </sect3>
+
+    <sect3 xml:id="sect.commands.snapshots.example">
+      <title>Example</title>
+      <sect4 xml:id="sect.commands.snapshots.example.send">
+	<title>Send</title>
+	<literallayout class="monospaced">
+{
+    "snapshots" {
+        "router": 2
+    }
+}
+	</literallayout>
+      </sect4>
+      <sect4 xml:id="sect.commands.snapshots.example.response">
+	<title>Response</title>
+	<literallayout class="monospaced">
+{
+    "snapshots": {
+        "router": 2,
+        "snapshot0": {
+            "name": "Mackie Inputs Normal"
+        },
+        "snapshot1": {
+            "name": "Mackie Inputs Reverse"
+        }
+    }
+}
+	</literallayout>
+      </sect4>
+    </sect3>
+  </sect2>
+  <!-- *********************************** -->
+  <!-- **** END OF SnapShots COMMAND **** -->
+  <!-- *********************************** -->
+
+  <!-- ********************************** -->
+  <!-- *** START OF SourceNames COMMAND *** -->
+  <!-- ********************************** -->
+  <sect2 xml:id="sect.commands.sourcenames">
+    <title>SourceNames</title>
+    <para>
+      Return the list of sources on a given router
+    </para>
+    <sect3 xml:id="sect.commands.sourcenames.send_syntax">
+      <title>Send Syntax</title>
+      <literallayout class="monospaced">
+{
+    "sourcenames": {
+        "router": <replaceable>router-num</replaceable>
+    }
+}
+      </literallayout>
+      <para>
+	Where:
+      </para>
+      <table xml:id="table.commands.sourcenames.send.parameters" frame="all" pgwide="0">
+	<title>Send Parameters</title>
+	<tgroup cols="3" align="left" colstep="1" rowstep="1">
+	  <colspec colname="Parameter" colwidth="1.5*"/>
+	  <colspec colname="Value" colwidth="5.0*"/>
+	  <colspec colname="Type" colwidth="1.5*"/>
+	  <thead>
+	    <row>
+	      <entry>
+		Parameter
+	      </entry>
+	      <entry>
+		Meaning
+	      </entry>
+	      <entry>
+		JSON Value
+	      </entry>
+	    </row>
+	  </thead>
+	  <tbody>
+	    <row>
+	      <entry>
+		<replaceable>router-num</replaceable>
+	      </entry>
+	      <entry>
+		Router number
+	      </entry>
+	      <entry>
+		Number
+	      </entry>
+	    </row>
+	  </tbody>
+	</tgroup>
+      </table>
+    </sect3>
+    <sect3 xml:id="sect.commands.sourcenames.response_syntax">
+      <title>Response Syntax</title>
+      <literallayout class="monospaced">
+{
+    "sourcenames": {
+        "router": <replaceable>router-num</replaceable>
+        "source0": {
+            "number": <replaceable>num</replaceable>,
+            "name": <replaceable>name-str</replaceable>,
+            "hostDescription":<replaceable>dest-str</replaceable>,
+            "hostAddress":<replaceable>ipv4-addr</replaceable>,
+            "hostName":<replaceable>host-str</replaceable>,
+            "slot":<replaceable>slot-num</replaceable>,
+            "sourceNumber":<replaceable>stream-num</replaceable>,
+            "streamAddress":<replaceable>stream-addr</replaceable>
+        }[,]
+        [...]
+        "source<replaceable>N</replaceable>": {
+            "number": <replaceable>dest-num</replaceable>,
+            "name": <replaceable>name-str</replaceable>,
+            "hostDescription":<replaceable>dest-str</replaceable>,
+            "hostAddress":<replaceable>ipv4-addr</replaceable>,
+            "hostName":<replaceable>host-str</replaceable>,
+            "slot":<replaceable>slot-num</replaceable>,
+            "sourceNumber":<replaceable>stream-num</replaceable>,
+            "streamAddress":<replaceable>stream-addr</replaceable>
+        }
+    }
+}
+      </literallayout>
+      <table xml:id="table.commands.sourcenames.response.parameters" frame="all" pgwide="0">
+	<title>Response Parameters</title>
+	<tgroup cols="3" align="left" colstep="1" rowstep="1">
+	  <colspec colname="Parameter" colwidth="1.5*"/>
+	  <colspec colname="Value" colwidth="5.0*"/>
+	  <colspec colname="Type" colwidth="1.5*"/>
+	  <thead>
+	    <row>
+	      <entry>
+		Parameter
+	      </entry>
+	      <entry>
+		Meaning
+	      </entry>
+	      <entry>
+		JSON Value
+	      </entry>
+	    </row>
+	  </thead>
+	  <tbody>
+	    <row>
+	      <entry>
+		<replaceable>router-num</replaceable>
+	      </entry>
+	      <entry>
+		Router number
+	      </entry>
+	      <entry>
+		Number
+	      </entry>
+	    </row>
+	    <row>
+	      <entry>
+		<replaceable>dest-num</replaceable>
+	      </entry>
+	      <entry>
+		Endpoint number of the source
+	      </entry>
+	      <entry>
+		Number
+	      </entry>
+	    </row>
+	    <row>
+	      <entry>
+		<replaceable>name</replaceable>
+	      </entry>
+	      <entry>
+		Name of the source
+	      </entry>
+	      <entry>
+		String
+	      </entry>
+	    </row>
+	    <row>
+	      <entry>
+		<replaceable>dest-str</replaceable>
+	      </entry>
+	      <entry>
+		Free-form description of the host device (Livewire only)
+	      </entry>
+	      <entry>
+		String
+	      </entry>
+	    </row>
+	    <row>
+	      <entry>
+		<replaceable>ipv4-addr</replaceable>
+	      </entry>
+	      <entry>
+		IPv4 address of the host device, in dotted-quad notation
+		(Livewire only)
+	      </entry>
+	      <entry>
+		String
+	      </entry>
+	    </row>
+	    <row>
+	      <entry>
+		<replaceable>host-str</replaceable>
+	      </entry>
+	      <entry>
+		Hostname of the host device (Livewire only)
+	      </entry>
+	      <entry>
+		String
+	      </entry>
+	    </row>
+	    <row>
+	      <entry>
+		<replaceable>slot-num</replaceable>
+	      </entry>
+	      <entry>
+		Slot number on the host device (Livewire only)
+	      </entry>
+	      <entry>
+		Number
+	      </entry>
+	    </row>
+	    <row>
+	      <entry>
+		<replaceable>stream-num</replaceable>
+	      </entry>
+	      <entry>
+		Stream number (Livewire only)
+	      </entry>
+	      <entry>
+		Number
+	      </entry>
+	    </row>
+	    <row>
+	      <entry>
+		<replaceable>stream-addr</replaceable>
+	      </entry>
+	      <entry>
+		IPv4 multicast stream address (Livewire only)
+	      </entry>
+	      <entry>
+		Number
+	      </entry>
+	    </row>
+	  </tbody>
+	</tgroup>
+      </table>
+    </sect3>
+
+    <sect3 xml:id="sect.commands.sourcenames.example">
+      <title>Example</title>
+      <sect4 xml:id="sect.commands.sourcenames.example.send">
+	<title>Send</title>
+	<literallayout class="monospaced">
+{
+    "sourcenames" {
+        "router": 2
+    }
+}
+	</literallayout>
+      </sect4>
+      <sect4 xml:id="sect.commands.sourcenames.example.response">
+	<title>Response</title>
+	<literallayout class="monospaced">
+{
+    "sourcenames": {
+        "router": 2,
+        "source0": {
+            "number": 1,
+            "name": "Mackie 5/6",
+            "hostDescription": "Combination xNode",
+            "hostAddress": "172.30.4.211",
+            "hostName": "FRED-XNODE",
+            "slot": 1
+        },
+        "source1": {
+            "number": 2,
+            "name": "Mackie 7/8",
+            "hostDescription": "Combination xNode",
+            "hostAddress": "172.30.4.211",
+            "hostName": "FRED-XNODE",
+            "slot": 2
+        },
+        "source2": {
+            "number": 17,
+            "name": "RD Port 0",
+            "hostDescription": "AudioScience 6685 Card",
+            "hostAddress": "172.30.4.213",
+            "hostName": "ELASTIGIRL",
+            "slot": 1
+        },
+        "source3": {
+            "number": 18,
+            "name": "RD Port 1",
+            "hostDescription": "AudioScience 6685 Card",
+            "hostAddress": "172.30.4.213",
+            "hostName": "ELASTIGIRL",
+            "slot": 2
+        }
+    }
+}
+	</literallayout>
+      </sect4>
+    </sect3>
+  </sect2>
+  <!-- ********************************** -->
+  <!-- **** END OF SourceNames COMMAND **** -->
+  <!-- ********************************** -->
+
+  <!-- *********************************** -->
+  <!-- *** START OF TriggerGPI COMMAND *** -->
+  <!-- *********************************** -->
+  <sect2 xml:id="sect.commands.triggergpi">
+    <title>TriggerGPI</title>
+    <para>
+      Set the specified virtual GPI's state for a specified duration.
+      (Supported only by virtual GPI devices).
+    </para>
+    <sect3 xml:id="sect.commands.triggergpi.send_syntax">
+      <title>Send Syntax</title>
+      <literallayout class="monospaced">
+{
+    "triggergpi": {
+        "router": <replaceable>router-num</replaceable>
+        "number": <replaceable>gpi-num</replaceable>
+        "code": <replaceable>state-code</replaceable>
+        "duration": <replaceable>msec</replaceable>
+    }
+}
+      </literallayout>
+      <para>
+	Where:
+      </para>
+      <table xml:id="table.commands.triggergpi.send.parameters" frame="all" pgwide="0">
+	<title>Send Parameters</title>
+	<tgroup cols="3" align="left" colstep="1" rowstep="1">
+	  <colspec colname="Parameter" colwidth="1.5*"/>
+	  <colspec colname="Value" colwidth="5.0*"/>
+	  <colspec colname="Type" colwidth="1.5*"/>
+	  <thead>
+	    <row>
+	      <entry>
+		Parameter
+	      </entry>
+	      <entry>
+		Meaning
+	      </entry>
+	      <entry>
+		JSON Value
+	      </entry>
+	    </row>
+	  </thead>
+	  <tbody>
+	    <row>
+	      <entry>
+		<replaceable>router-num</replaceable>
+	      </entry>
+	      <entry>
+		Router number
+	      </entry>
+	      <entry>
+		Number
+	      </entry>
+	    </row>
+	    <row>
+	      <entry>
+		<replaceable>gpi-num</replaceable>
+	      </entry>
+	      <entry>
+		The endpoint number of the GPI.
+	      </entry>
+	      <entry>
+		Number
+	      </entry>
+	    </row>
+	    <row>
+	      <entry>
+		<replaceable>state-code</replaceable>
+	      </entry>
+	      <entry>
+		Code representing the states of the five lines of the
+		specified GPI, with &quot;h&quot; indicating OFF, and
+		&quot;h&quot; indicating ON.
+	      </entry>
+	      <entry>
+		String
+	      </entry>
+	    </row>
+	    <row>
+	      <entry>
+		<replaceable>duration</replaceable>
+	      </entry>
+	      <entry>
+		The duration to hold the state, in milliseconds. Omitting
+                this parameter, or setting it to <userinput>0</userinput>
+		indicates that the state is to be held indefinitely.
+	      </entry>
+	      <entry>
+		Number
+	      </entry>
+	    </row>
+	  </tbody>
+	</tgroup>
+      </table>
+    </sect3>
+    <sect3 xml:id="sect.commands.triggergpi.response_syntax">
+      <title>Response Syntax</title>
+      <para>
+	See the <literal>gpistat</literal> command response in
+	<xref linkend="sect.commands.gpistat"/>
+      </para>
+    </sect3>
+
+    <sect3 xml:id="sect.commands.triggergpi.example">
+      <title>Example</title>
+      <sect4 xml:id="sect.commands.triggergpi.example.send">
+	<title>Send</title>
+	<literallayout class="monospaced">
+{
+    "triggergpi" {
+        "router": 2
+        "number": 3,
+        "code": "llhlh"
+        "duration": 0
+    }
+}
+	</literallayout>
+      </sect4>
+      <sect4 xml:id="sect.commands.triggergpi.example.response">
+	<title>Response</title>
+	<literallayout class="monospaced">
+{
+    "gpistat": {
+        "router": 2,
+        "number": 3,
+        "code": "llhlh"
+    }
+}
+	</literallayout>
+      </sect4>
+    </sect3>
+  </sect2>
+  <!-- *********************************** -->
+  <!-- **** END OF TriggerGPI COMMAND **** -->
+  <!-- *********************************** -->
+
+  <!-- *********************************** -->
+  <!-- *** START OF TriggerGPO COMMAND *** -->
+  <!-- *********************************** -->
+  <sect2 xml:id="sect.commands.triggergpo">
+    <title>TriggerGPO</title>
+    <para>
+      Set the specified GPO's state for a specified duration.
+    </para>
+    <sect3 xml:id="sect.commands.triggergpo.send_syntax">
+      <title>Send Syntax</title>
+      <literallayout class="monospaced">
+{
+    "triggergpo": {
+        "router": <replaceable>router-num</replaceable>
+        "number": <replaceable>gpo-num</replaceable>
+        "code": <replaceable>state-code</replaceable>
+        "duration": <replaceable>msec</replaceable>
+    }
+}
+      </literallayout>
+      <para>
+	Where:
+      </para>
+      <table xml:id="table.commands.triggergpo.send.parameters" frame="all" pgwide="0">
+	<title>Send Parameters</title>
+	<tgroup cols="3" align="left" colstep="1" rowstep="1">
+	  <colspec colname="Parameter" colwidth="1.5*"/>
+	  <colspec colname="Value" colwidth="5.0*"/>
+	  <colspec colname="Type" colwidth="1.5*"/>
+	  <thead>
+	    <row>
+	      <entry>
+		Parameter
+	      </entry>
+	      <entry>
+		Meaning
+	      </entry>
+	      <entry>
+		JSON Value
+	      </entry>
+	    </row>
+	  </thead>
+	  <tbody>
+	    <row>
+	      <entry>
+		<replaceable>router-num</replaceable>
+	      </entry>
+	      <entry>
+		Router number
+	      </entry>
+	      <entry>
+		Number
+	      </entry>
+	    </row>
+	    <row>
+	      <entry>
+		<replaceable>gpo-num</replaceable>
+	      </entry>
+	      <entry>
+		The endpoint number of the GPO.
+	      </entry>
+	      <entry>
+		Number
+	      </entry>
+	    </row>
+	    <row>
+	      <entry>
+		<replaceable>state-code</replaceable>
+	      </entry>
+	      <entry>
+		Code representing the states of the five lines of the
+		specified GPO, with &quot;h&quot; indicating OFF, and
+		&quot;h&quot; indicating ON.
+	      </entry>
+	      <entry>
+		String
+	      </entry>
+	    </row>
+	    <row>
+	      <entry>
+		<replaceable>duration</replaceable>
+	      </entry>
+	      <entry>
+		The duration to hold the state, in milliseconds. Omitting
+                this parameter, or setting it to <userinput>0</userinput>
+		indicates that the state is to be held indefinitely.
+	      </entry>
+	      <entry>
+		Number
+	      </entry>
+	    </row>
+	  </tbody>
+	</tgroup>
+      </table>
+    </sect3>
+    <sect3 xml:id="sect.commands.triggergpo.response_syntax">
+      <title>Response Syntax</title>
+      <para>
+	See the <literal>gpostat</literal> command response in
+	<xref linkend="sect.commands.gpostat"/>
+      </para>
+    </sect3>
+
+    <sect3 xml:id="sect.commands.triggergpo.example">
+      <title>Example</title>
+      <sect4 xml:id="sect.commands.triggergpo.example.send">
+	<title>Send</title>
+	<literallayout class="monospaced">
+{
+    "triggergpo" {
+        "router": 2
+        "number": 3,
+        "code": "llhlh"
+        "duration": 0
+    }
+}
+	</literallayout>
+      </sect4>
+      <sect4 xml:id="sect.commands.triggergpo.example.response">
+	<title>Response</title>
+	<literallayout class="monospaced">
+{
+    "gpostat": {
+        "router": 2,
+        "number": 3,
+        "code": "llhlh"
+    }
+}
+	</literallayout>
+      </sect4>
+    </sect3>
+  </sect2>
+  <!-- *********************************** -->
+  <!-- **** END OF TriggerGPO COMMAND **** -->
+  <!-- *********************************** -->
+</sect1>
 </article>

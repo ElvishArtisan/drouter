@@ -1054,3 +1054,5 @@
 2024-02-12 Fred Gleason <fredg@paravelsystems.com>
 	* Added 'DRJParser::routerFilter()' and 'DRJParser::setRouterFilter()'
 	methods.
+2024-02-12 Fred Gleason <fredg@paravelsystems.com>
+	* Documented all ProtocolJ commands in 'docs/protocol_j.xml'.
