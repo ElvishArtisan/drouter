@@ -1056,3 +1056,6 @@
 	methods.
 2024-02-12 Fred Gleason <fredg@paravelsystems.com>
 	* Documented all ProtocolJ commands in 'docs/protocol_j.xml'.
+2024-02-15 Fred Gleason <fredg@paravelsystems.com>
+	* Implemented JSON based commands in the server-side ProtocolJ parser.
+	* Stubbed out actionpanel() in 'src/actionpanel/'.

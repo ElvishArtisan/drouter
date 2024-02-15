@@ -53,6 +53,7 @@ class DRJParser : public QObject
 		  NotGpioRouterError=7,NoCommandError=8,LastError=9};
   DRJParser(bool use_long_names,QObject *parent=0);
   ~DRJParser();
+  void setModelFont(const QFont &font);
   QList<int> routerFilter() const;
   void setRouterFilter(const QList<int> routers);
   QMap<int,QString> routers() const;
@@ -110,6 +111,7 @@ class DRJParser : public QObject
   QMap<int,DREndPointListModel *> j_input_models;
   QMap<int,DRSnapshotListModel *> j_snapshot_models;
   QMap<int,DRActionListModel *> j_action_models;
+  QFont j_model_font;
   QTcpSocket *j_socket;
   QString j_hostname;
   uint16_t j_port;

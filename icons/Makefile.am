@@ -42,7 +42,10 @@ EXTRA_DIST = audio-16x16.xpm\
              event-route-16x16.xpm\
              event-snapshot-16x16.xpm\
              gpio-16x16.xpm\
-             greenx.xpm
+             greenx.xpm\
+             input-16x16.xpm\
+             output-16x16.xpm\
+             xpoint-16x16.xpm
 
 CLEANFILES = *~
 

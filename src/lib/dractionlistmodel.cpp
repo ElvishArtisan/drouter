@@ -20,7 +20,17 @@
 
 #include <syslog.h>
 
+#include <QPixmap>
+
 #include "dractionlistmodel.h"
+#include "drconfig.h"
+
+//
+// Icons
+//
+#include "../../icons/input-16x16.xpm"
+#include "../../icons/output-16x16.xpm"
+#include "../../icons/xpoint-16x16.xpm"
 
 DRActionListModel::DRActionListModel(int router,QObject *parent)
   : QAbstractTableModel(parent)
@@ -34,53 +44,65 @@ DRActionListModel::DRActionListModel(int router,QObject *parent)
   unsigned center=Qt::AlignCenter;
   unsigned right=Qt::AlignRight|Qt::AlignVCenter;
 
-  d_headers.push_back(tr("Time"));           // 00
-  d_alignments.push_back(center);
-  d_keys.push_back("time");
-
-  d_headers.push_back(tr("Sun"));            // 01
-  d_alignments.push_back(center);
-  d_keys.push_back("sunday");
-
-  d_headers.push_back(tr("Mon"));            // 02
-  d_alignments.push_back(center);
-  d_keys.push_back("monday");
-
-  d_headers.push_back(tr("Tue"));            // 03
-  d_alignments.push_back(center);
-  d_keys.push_back("tuesday");
-
-  d_headers.push_back(tr("Wed"));            // 04
-  d_alignments.push_back(center);
-  d_keys.push_back("wednesday");
-
-  d_headers.push_back(tr("Thu"));            // 05
-  d_alignments.push_back(center);
-  d_keys.push_back("thursday");
-
-  d_headers.push_back(tr("Fri"));            // 06
-  d_alignments.push_back(center);
-  d_keys.push_back("friday");
-
-  d_headers.push_back(tr("Sat"));            // 07
-  d_alignments.push_back(center);
-  d_keys.push_back("saturday");
-
-  d_headers.push_back(tr("Comment"));        // 08
+  d_headers.push_back(tr("Comment"));        // 00
   d_alignments.push_back(left);
   d_keys.push_back("comment");
+  d_icons.push_back(QPixmap(xpoint_16x16_xpm));
+
+  d_headers.push_back(tr("Time"));           // 01
+  d_alignments.push_back(center);
+  d_keys.push_back("time");
+  d_icons.push_back(QVariant());
+
+  d_headers.push_back(tr("Sun"));            // 02
+  d_alignments.push_back(center);
+  d_keys.push_back("sunday");
+  d_icons.push_back(QVariant());
+
+  d_headers.push_back(tr("Mon"));            // 03
+  d_alignments.push_back(center);
+  d_keys.push_back("monday");
+  d_icons.push_back(QVariant());
+
+  d_headers.push_back(tr("Tue"));            // 04
+  d_alignments.push_back(center);
+  d_keys.push_back("tuesday");
+  d_icons.push_back(QVariant());
+
+  d_headers.push_back(tr("Wed"));            // 05
+  d_alignments.push_back(center);
+  d_keys.push_back("wednesday");
+  d_icons.push_back(QVariant());
+
+  d_headers.push_back(tr("Thu"));            // 06
+  d_alignments.push_back(center);
+  d_keys.push_back("thursday");
+  d_icons.push_back(QVariant());
+
+  d_headers.push_back(tr("Fri"));            // 07
+  d_alignments.push_back(center);
+  d_keys.push_back("friday");
+  d_icons.push_back(QVariant());
+
+  d_headers.push_back(tr("Sat"));            // 08
+  d_alignments.push_back(center);
+  d_keys.push_back("saturday");
+  d_icons.push_back(QVariant());
 
   d_headers.push_back(tr("Source"));         // 09
   d_alignments.push_back(left);
   d_keys.push_back("source");
+  d_icons.push_back(QPixmap(input_16x16_xpm));
 
   d_headers.push_back(tr("Destination"));    // 10
   d_alignments.push_back(left);
   d_keys.push_back("destination");
+  d_icons.push_back(QPixmap(output_16x16_xpm));
 
   d_headers.push_back(tr("Id"));             // 11
   d_alignments.push_back(right);
   d_keys.push_back("id");
+  d_icons.push_back(QVariant());
 }
 
 
@@ -98,6 +120,7 @@ int DRActionListModel::routerNumber() const
 void DRActionListModel::setFont(const QFont &font)
 {
   d_font=font;
+  d_font_metrics=new QFontMetrics(d_font);
 }
 
 
@@ -147,14 +170,19 @@ QVariant DRActionListModel::data(const QModelIndex &index,int role) const
       return d_texts.at(row).at(col);
 
     case Qt::DecorationRole:
-      // Nothing to do!
-      break;
+      return d_icons.at(col);
 
     case Qt::TextAlignmentRole:
       return d_alignments.at(col);
 
     case Qt::FontRole:
       return d_font;
+
+    case Qt::SizeHintRole:
+      return QSize(DROUTER_LISTWIDGET_ITEM_WIDTH_PADDING+
+		   d_font_metrics->width(d_texts.at(row).at(col).toString()),
+		   DROUTER_LISTWIDGET_ITEM_HEIGHT);
+      break;
 
     case Qt::TextColorRole:
       // Nothing to do!
@@ -182,7 +210,7 @@ int DRActionListModel::id(int rownum) const
 }
 
 
-QMap<QString,QVariant> DRActionListModel::actionMetadata(int rownum)
+QMap<QString,QVariant> DRActionListModel::rowMetadata(int rownum)
 {
   return d_metadatas.at(rownum);
 }
@@ -227,6 +255,7 @@ void DRActionListModel::finalize()
   for(QMap<QTime,QMap<QString,QVariant> >::const_iterator it=d_raw_metadatas.begin();
       it!=d_raw_metadatas.end();it++) {
     QList<QVariant> row;
+    row.push_back(it.value().value("comment"));
     row.push_back(it.value().value("time").toTime().toString("hh:mm:ss"));
     row.push_back(DowMarker(it.value().value("sunday").toBool(),tr("Sun")));
     row.push_back(DowMarker(it.value().value("monday").toBool(),tr("Mon")));
@@ -235,7 +264,6 @@ void DRActionListModel::finalize()
     row.push_back(DowMarker(it.value().value("thursday").toBool(),tr("Thu")));
     row.push_back(DowMarker(it.value().value("friday").toBool(),tr("Fri")));
     row.push_back(DowMarker(it.value().value("saturday").toBool(),tr("Sat")));
-    row.push_back(it.value().value("comment"));
     int input=1+it.value().value("source").toInt();
     row.push_back(QString::asprintf("%d - %s",
 			   input,

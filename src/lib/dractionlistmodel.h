@@ -23,6 +23,7 @@
 
 #include <QAbstractTableModel>
 #include <QFont>
+#include <QFontMetrics>
 #include <QHostAddress>
 #include <QMap>
 #include <QStringList>
@@ -46,7 +47,7 @@ class DRActionListModel : public QAbstractTableModel
 		      int role=Qt::DisplayRole) const;
   QVariant data(const QModelIndex &index,int role=Qt::DisplayRole) const;
   int id(int rownum) const;
-  QMap<QString,QVariant> actionMetadata(int rownum);
+  QMap<QString,QVariant> rowMetadata(int rownum);
   int rowNumber(int id) const;
   void addAction(const QMap<QString,QVariant> &fields);
   void finalize();
@@ -54,7 +55,9 @@ class DRActionListModel : public QAbstractTableModel
  private:
   QString DowMarker(bool state,const QString &marker) const;
   QFont d_font;
+  QFontMetrics *d_font_metrics;
   QList<QVariant> d_headers;
+  QList<QVariant> d_icons;
   QStringList d_keys;
   QList<QVariant> d_alignments;
   QList<QList<QVariant> > d_texts;

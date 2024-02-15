@@ -1177,6 +1177,573 @@
   <!-- *********************************** -->
 
   <!-- *********************************** -->
+  <!-- *** START OF MaskGPIStat COMMAND *** -->
+  <!-- *********************************** -->
+  <sect2 xml:id="sect.commands.maskgpistat">
+    <title>MaskGPIStat</title>
+    <para>
+      Enable or suppress GPIStat notifications.
+    </para>
+    <sect3 xml:id="sect.commands.maskgpistat.send_syntax">
+      <title>Send Syntax</title>
+      <literallayout class="monospaced">
+{
+    "maskgpistat": {
+        "state": <replaceable>boolean</replaceable>
+    }
+}
+      </literallayout>
+      <para>
+	Where:
+      </para>
+      <table xml:id="table.commands.maskgpistat.send.parameters" frame="all" pgwide="0">
+	<title>Send Parameters</title>
+	<tgroup cols="3" align="left" colstep="1" rowstep="1">
+	  <colspec colname="Parameter" colwidth="1.5*"/>
+	  <colspec colname="Value" colwidth="5.0*"/>
+	  <colspec colname="Type" colwidth="1.5*"/>
+	  <thead>
+	    <row>
+	      <entry>
+		Parameter
+	      </entry>
+	      <entry>
+		Meaning
+	      </entry>
+	      <entry>
+		JSON Value
+	      </entry>
+	    </row>
+	  </thead>
+	  <tbody>
+	    <row>
+	      <entry>
+		<replaceable>boolean</replaceable>
+	      </entry>
+	      <entry>
+		Enable/disable GPIStat notifications
+	      </entry>
+	      <entry>
+		&quot;true&quot; or &quot;false&quot;
+	      </entry>
+	    </row>
+	  </tbody>
+	</tgroup>
+      </table>
+    </sect3>
+    <sect3 xml:id="sect.commands.maskgpistat.response_syntax">
+      <title>Response Syntax</title>
+      <para>
+	No response is sent for this command.
+      </para>
+    </sect3>
+    <sect3 xml:id="sect.commands.maskgpistat.example">
+      <title>Example</title>
+      <sect4 xml:id="sect.commands.maskgpistat.example.send">
+	<title>Send</title>
+	<literallayout class="monospaced">
+{
+    "maskgpistat" {
+        "state": true
+    }
+}
+	</literallayout>
+      </sect4>
+    </sect3>
+  </sect2>
+  <!-- ************************************ -->
+  <!-- **** END OF MaskGPIStat COMMAND **** -->
+  <!-- ************************************ -->
+
+  <!-- *********************************** -->
+  <!-- *** START OF MaskGPOStat COMMAND *** -->
+  <!-- *********************************** -->
+  <sect2 xml:id="sect.commands.maskgpostat">
+    <title>MaskGPOStat</title>
+    <para>
+      Enable or suppress GPOStat notifications.
+    </para>
+    <sect3 xml:id="sect.commands.maskgpostat.send_syntax">
+      <title>Send Syntax</title>
+      <literallayout class="monospaced">
+{
+    "maskgpostat": {
+        "state": <replaceable>boolean</replaceable>
+    }
+}
+      </literallayout>
+      <para>
+	Where:
+      </para>
+      <table xml:id="table.commands.maskgpostat.send.parameters" frame="all" pgwide="0">
+	<title>Send Parameters</title>
+	<tgroup cols="3" align="left" colstep="1" rowstep="1">
+	  <colspec colname="Parameter" colwidth="1.5*"/>
+	  <colspec colname="Value" colwidth="5.0*"/>
+	  <colspec colname="Type" colwidth="1.5*"/>
+	  <thead>
+	    <row>
+	      <entry>
+		Parameter
+	      </entry>
+	      <entry>
+		Meaning
+	      </entry>
+	      <entry>
+		JSON Value
+	      </entry>
+	    </row>
+	  </thead>
+	  <tbody>
+	    <row>
+	      <entry>
+		<replaceable>boolean</replaceable>
+	      </entry>
+	      <entry>
+		Enable/disable GPOStat notifications
+	      </entry>
+	      <entry>
+		&quot;true&quot; or &quot;false&quot;
+	      </entry>
+	    </row>
+	  </tbody>
+	</tgroup>
+      </table>
+    </sect3>
+    <sect3 xml:id="sect.commands.maskgpostat.response_syntax">
+      <title>Response Syntax</title>
+      <para>
+	No response is sent for this command.
+      </para>
+    </sect3>
+    <sect3 xml:id="sect.commands.maskgpostat.example">
+      <title>Example</title>
+      <sect4 xml:id="sect.commands.maskgpostat.example.send">
+	<title>Send</title>
+	<literallayout class="monospaced">
+{
+    "maskgpostat" {
+        "state": true
+    }
+}
+	</literallayout>
+      </sect4>
+    </sect3>
+  </sect2>
+  <!-- ************************************ -->
+  <!-- **** END OF MaskGPOStat COMMAND **** -->
+  <!-- ************************************ -->
+
+  <!-- *********************************** -->
+  <!-- *** START OF MaskRouteStat COMMAND *** -->
+  <!-- *********************************** -->
+  <sect2 xml:id="sect.commands.maskroutestat">
+    <title>MaskRouteStat</title>
+    <para>
+      Enable or suppress RouteStat notifications.
+    </para>
+    <sect3 xml:id="sect.commands.maskroutestat.send_syntax">
+      <title>Send Syntax</title>
+      <literallayout class="monospaced">
+{
+    "maskroutestat": {
+        "state": <replaceable>boolean</replaceable>
+    }
+}
+      </literallayout>
+      <para>
+	Where:
+      </para>
+      <table xml:id="table.commands.maskroutestat.send.parameters" frame="all" pgwide="0">
+	<title>Send Parameters</title>
+	<tgroup cols="3" align="left" colstep="1" rowstep="1">
+	  <colspec colname="Parameter" colwidth="1.5*"/>
+	  <colspec colname="Value" colwidth="5.0*"/>
+	  <colspec colname="Type" colwidth="1.5*"/>
+	  <thead>
+	    <row>
+	      <entry>
+		Parameter
+	      </entry>
+	      <entry>
+		Meaning
+	      </entry>
+	      <entry>
+		JSON Value
+	      </entry>
+	    </row>
+	  </thead>
+	  <tbody>
+	    <row>
+	      <entry>
+		<replaceable>boolean</replaceable>
+	      </entry>
+	      <entry>
+		Enable/disable RouteStat notifications
+	      </entry>
+	      <entry>
+		&quot;true&quot; or &quot;false&quot;
+	      </entry>
+	    </row>
+	  </tbody>
+	</tgroup>
+      </table>
+    </sect3>
+    <sect3 xml:id="sect.commands.maskroutestat.response_syntax">
+      <title>Response Syntax</title>
+      <para>
+	No response is sent for this command.
+      </para>
+    </sect3>
+    <sect3 xml:id="sect.commands.maskroutestat.example">
+      <title>Example</title>
+      <sect4 xml:id="sect.commands.maskroutestat.example.send">
+	<title>Send</title>
+	<literallayout class="monospaced">
+{
+    "maskroutestat" {
+        "state": true
+    }
+}
+	</literallayout>
+      </sect4>
+    </sect3>
+  </sect2>
+  <!-- ************************************ -->
+  <!-- **** END OF MaskRouteStat COMMAND **** -->
+  <!-- ************************************ -->
+
+  <!-- *********************************** -->
+  <!-- *** START OF MaskStat COMMAND *** -->
+  <!-- *********************************** -->
+  <sect2 xml:id="sect.commands.maskstat">
+    <title>MaskStat</title>
+    <para>
+      Enable or suppress GPIStat, GPOStat and RouteStat notifications.
+    </para>
+    <sect3 xml:id="sect.commands.maskstat.send_syntax">
+      <title>Send Syntax</title>
+      <literallayout class="monospaced">
+{
+    "maskstat": {
+        "state": <replaceable>boolean</replaceable>
+    }
+}
+      </literallayout>
+      <para>
+	Where:
+      </para>
+      <table xml:id="table.commands.maskstat.send.parameters" frame="all" pgwide="0">
+	<title>Send Parameters</title>
+	<tgroup cols="3" align="left" colstep="1" rowstep="1">
+	  <colspec colname="Parameter" colwidth="1.5*"/>
+	  <colspec colname="Value" colwidth="5.0*"/>
+	  <colspec colname="Type" colwidth="1.5*"/>
+	  <thead>
+	    <row>
+	      <entry>
+		Parameter
+	      </entry>
+	      <entry>
+		Meaning
+	      </entry>
+	      <entry>
+		JSON Value
+	      </entry>
+	    </row>
+	  </thead>
+	  <tbody>
+	    <row>
+	      <entry>
+		<replaceable>boolean</replaceable>
+	      </entry>
+	      <entry>
+		Enable/disable GPIStat, GPOStat and RouteStat notifications
+	      </entry>
+	      <entry>
+		&quot;true&quot; or &quot;false&quot;
+	      </entry>
+	    </row>
+	  </tbody>
+	</tgroup>
+      </table>
+    </sect3>
+    <sect3 xml:id="sect.commands.maskstat.response_syntax">
+      <title>Response Syntax</title>
+      <para>
+	No response is sent for this command.
+      </para>
+    </sect3>
+    <sect3 xml:id="sect.commands.maskstat.example">
+      <title>Example</title>
+      <sect4 xml:id="sect.commands.maskstat.example.send">
+	<title>Send</title>
+	<literallayout class="monospaced">
+{
+    "maskstat" {
+        "state": true
+    }
+}
+	</literallayout>
+      </sect4>
+    </sect3>
+  </sect2>
+  <!-- ************************************ -->
+  <!-- **** END OF MaskStat COMMAND **** -->
+  <!-- ************************************ -->
+
+  <!-- ***************************** -->
+  <!-- *** START OF Ping COMMAND *** -->
+  <!-- ***************************** -->
+  <sect2 xml:id="sect.commands.ping">
+    <title>Ping</title>
+    <para>
+      Return a pong object.
+    </para>
+    <sect3 xml:id="sect.commands.ping.send_syntax">
+      <title>Send Syntax</title>
+      <literallayout class="monospaced">
+{
+    "ping": null
+}
+      </literallayout>
+      <para>
+	There are no send parameters for the ping command.
+      </para>
+    </sect3>
+    <sect3 xml:id="sect.commands.ping.response_syntax">
+      <title>Response Syntax</title>
+      <literallayout class="monospaced">
+{
+    "pong": {
+        "datetime": <replaceable>timestamp</replaceable>
+    }
+}
+      </literallayout>
+      <table xml:id="table.commands.ping.response.parameters" frame="all" pgwide="0">
+	<title>Response Parameters</title>
+	<tgroup cols="3" align="left" colstep="1" rowstep="1">
+	  <colspec colname="Parameter" colwidth="1.5*"/>
+	  <colspec colname="Value" colwidth="5.0*"/>
+	  <colspec colname="Type" colwidth="1.5*"/>
+	  <thead>
+	    <row>
+	      <entry>
+		Parameter
+	      </entry>
+	      <entry>
+		Meaning
+	      </entry>
+	      <entry>
+		JSON Value
+	      </entry>
+	    </row>
+	  </thead>
+	  <tbody>
+	    <row>
+	      <entry>
+		<replaceable>datestamp</replaceable>
+	      </entry>
+	      <entry>
+		The datetime when the ping command was received, in
+		xs.dateTime format.
+	      </entry>
+	      <entry>
+		String
+	      </entry>
+	    </row>
+	  </tbody>
+	</tgroup>
+      </table>
+    </sect3>
+
+    <sect3 xml:id="sect.commands.ping.example">
+      <title>Example</title>
+      <sect4 xml:id="sect.commands.ping.example.send">
+	<title>Send</title>
+	<literallayout class="monospaced">
+{
+    "ping": null
+}
+	</literallayout>
+      </sect4>
+      <sect4 xml:id="sect.commands.ping.example.response">
+	<title>Response</title>
+	<literallayout class="monospaced">
+{
+    "pong": {
+        "datetime": "2024-02-15T14:28:01Z"
+    }
+}
+	</literallayout>
+      </sect4>
+    </sect3>
+  </sect2>
+  <!-- *********************************** -->
+  <!-- **** END OF Ping COMMAND **** -->
+  <!-- *********************************** -->
+
+
+  <!-- *********************************** -->
+  <!-- *** START OF RouterNames COMMAND *** -->
+  <!-- *********************************** -->
+  <sect2 xml:id="sect.commands.routernames">
+    <title>RouterNames</title>
+    <para>
+      Return a list of available routers.
+    </para>
+    <sect3 xml:id="sect.commands.routernames.send_syntax">
+      <title>Send Syntax</title>
+      <literallayout class="monospaced">
+{
+    "routernames": null
+}
+      </literallayout>
+      <para>
+	There are no send parameters for the RouterNames command.
+      </para>
+    </sect3>
+    <sect3 xml:id="sect.commands.routernames.response_syntax">
+      <title>Response Syntax</title>
+      <literallayout class="monospaced">
+{
+    "routernames": {
+        "router0": {
+            "number": <replaceable>router-num</replaceable>,
+            "name": <replaceable>router-name</replaceable>,
+            "type": <replaceable>router-type</replaceable>
+        }
+        }[,]
+    [...]
+        "router<replaceable>N</replaceable>": {
+            "number": <replaceable>router-num</replaceable>,
+            "name": <replaceable>router-name</replaceable>,
+            "type": <replaceable>router-type</replaceable>
+        }
+    }
+}
+      </literallayout>
+      <table xml:id="table.commands.routernames.response.parameters" frame="all" pgwide="0">
+	<title>Response Parameters</title>
+	<tgroup cols="3" align="left" colstep="1" rowstep="1">
+	  <colspec colname="Parameter" colwidth="1.5*"/>
+	  <colspec colname="Value" colwidth="5.0*"/>
+	  <colspec colname="Type" colwidth="1.5*"/>
+	  <thead>
+	    <row>
+	      <entry>
+		Parameter
+	      </entry>
+	      <entry>
+		Meaning
+	      </entry>
+	      <entry>
+		JSON Value
+	      </entry>
+	    </row>
+	  </thead>
+	  <tbody>
+	    <row>
+	      <entry>
+		<replaceable>router-num</replaceable>
+	      </entry>
+	      <entry>
+		Router number
+	      </entry>
+	      <entry>
+		Number
+	      </entry>
+	    </row>
+	    <row>
+	      <entry>
+		<replaceable>router-name</replaceable>
+	      </entry>
+	      <entry>
+		Name of the router.
+	      </entry>
+	      <entry>
+		String
+	      </entry>
+	    </row>
+	    <row>
+	      <entry>
+		<replaceable>router-type</replaceable>
+	      </entry>
+	      <entry>
+		Type of the router. Can be &quot;Audio&quot; or
+		&quot;GPIO&quot;.
+	      </entry>
+	      <entry>
+		String
+	      </entry>
+	    </row>
+	  </tbody>
+	</tgroup>
+      </table>
+    </sect3>
+
+    <sect3 xml:id="sect.commands.routernames.example">
+      <title>Example</title>
+      <sect4 xml:id="sect.commands.routernames.example.send">
+	<title>Send</title>
+	<literallayout class="monospaced">
+{
+    "routernames" {
+        "router": 2
+    }
+}
+	</literallayout>
+      </sect4>
+      <sect4 xml:id="sect.commands.routernames.example.response">
+	<title>Response</title>
+	<literallayout class="monospaced">
+{
+    "routernames": {
+        "router": 2,
+        "action0": {
+            "id": 1,
+            "time": "16:00:00-00:00",
+            "sunday": false,
+            "monday": true,
+            "tuesday": false,
+            "wednesday": false,
+            "thursday": false,
+            "friday": false,
+            "saturday": false,
+            "destination": 2,
+            "source": 3,
+            "comment": "Take input 3 to output 2"
+        },
+        "action1": {
+            "id": 2,
+            "time": "16:10:00-00:00",
+            "sunday": false,
+            "monday": true,
+            "tuesday": false,
+            "wednesday": false,
+            "thursday": false,
+            "friday": false,
+            "saturday": false,
+            "destination": 2,
+            "source": 4,
+            "comment": "Take input 4 to output 2"
+        }
+    }
+}
+	</literallayout>
+      </sect4>
+    </sect3>
+  </sect2>
+  <!-- *********************************** -->
+  <!-- **** END OF RouterNames COMMAND **** -->
+  <!-- *********************************** -->
+
+
+
+
+
+
+  <!-- *********************************** -->
   <!-- *** START OF RouteStat COMMAND *** -->
   <!-- *********************************** -->
   <sect2 xml:id="sect.commands.routestat">

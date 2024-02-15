@@ -24,6 +24,7 @@
 #include <unistd.h>
 
 #include <QJsonDocument>
+#include <QJsonObject>
 #include <QSqlError>
 #include <QStringList>
 
@@ -38,6 +39,8 @@ ProtocolJ::ProtocolJ(int sock,QObject *parent)
   QString sql;
 
   proto_socket=NULL;
+  proto_accum_quoted=false;
+  proto_accum_level=0;
   proto_destinations_subscribed=false;
   proto_gpis_subscribed=false;
   proto_gpos_subscribed=false;
@@ -46,9 +49,12 @@ ProtocolJ::ProtocolJ(int sock,QObject *parent)
   proto_clips_subscribed=false;
   proto_silences_subscribed=false;
 
-  proto_gpistat_masked=false;
-  proto_gpostat_masked=false;
-  proto_routestat_masked=false;
+  //  proto_gpistat_masked=false;
+  //  proto_gpostat_masked=false;
+  //  proto_routestat_masked=false;
+  proto_gpistat_masked=true;
+  proto_gpostat_masked=true;
+  proto_routestat_masked=true;
 
   openlog("dprotod(J)",LOG_PID,LOG_DAEMON);
 
@@ -122,6 +128,47 @@ void ProtocolJ::newConnectionData()
 
 void ProtocolJ::readyReadData()
 {
+  QByteArray data;
+
+  data=proto_socket->readAll();
+  for(int i=0;i<data.length();i++) {
+    switch(0xFFF&data[i]) {
+    case '"':
+      proto_accum_quoted=!proto_accum_quoted;
+      proto_accum+=data[i];
+      break;
+
+    case '{':
+      if(!proto_accum_quoted) {
+	proto_accum_level++;
+      }
+      proto_accum+=data[i];
+      break;
+
+    case '}':
+      proto_accum+=data[i];
+      if(!proto_accum_quoted) {
+	if(--proto_accum_level==0) {
+	  QJsonDocument jdoc=QJsonDocument::fromJson(proto_accum);
+	  if(jdoc.isNull()) {
+	    emit parserError(DRJParser::JsonError,QString::fromUtf8(proto_accum));
+	  }
+	  else {
+	    DispatchMessage(jdoc);
+	  }
+	  proto_accum.clear();
+	}
+      }
+      break;
+
+    default:
+      proto_accum+=data[i];
+      break;
+    }
+  }
+
+
+  /*
   char data[1501];
   int n;
 
@@ -141,6 +188,7 @@ void ProtocolJ::readyReadData()
       }
     }
   }
+  */
 }
 
 
@@ -246,6 +294,257 @@ void ProtocolJ::gpoCrosspointChanged(const QHostAddress &host_addr,int slotnum)
 void ProtocolJ::quitting()
 {
   shutdown(proto_socket->socketDescriptor(),SHUT_RDWR);
+}
+
+
+void ProtocolJ::DispatchMessage(const QJsonDocument &jdoc)
+{
+  QString cmd;
+
+  if(jdoc.object().contains("actionlist")) {
+    QJsonObject jo0=jdoc.object().value("actionlist").toObject();
+    int router=jo0.value("router").toInt();
+    if(router>0) {
+      SendActionInfo(router-1);
+    }
+    else {
+      SendError(DRJParser::NoRouterError);
+    }
+    return;
+  }
+
+  if(jdoc.object().contains("activateroute")) {
+    QJsonObject jo0=jdoc.object().value("activateroute").toObject();
+    int router=jo0.value("router").toInt();
+    if(router>0) {
+      int output=jo0.value("destination").toInt();
+      if(output>0) {
+	int input=jo0.value("source").toInt();
+	if(input>0) {
+	  ActivateRoute(router-1,output-1,input);
+	}
+	else {
+	  SendError(DRJParser::ParameterError,
+		    "missing/invalid \"source\" value");
+	}
+      }
+      else {
+	SendError(DRJParser::ParameterError,
+		  "missing/invalid \"destination\" value");
+      }
+    }
+    else {
+      SendError(DRJParser::ParameterError,
+		"missing/invalid \"router\" value");
+    }
+    return;
+  }
+
+  if(jdoc.object().contains("activatesnap")) {
+    QJsonObject jo0=jdoc.object().value("activatesnap").toObject();
+    int router=jo0.value("router").toInt();
+    if(router>0) {
+      QString snapshot=jo0.value("snapshot").toString();
+      ActivateSnapshot(router-1,snapshot.trimmed());
+    }
+    else {
+      SendError(DRJParser::NoRouterError);
+    }
+    return;
+  }
+
+  if(jdoc.object().contains("destnames")) {
+    QJsonObject jo0=jdoc.object().value("destnames").toObject();
+    int router=jo0.value("router").toInt();
+    if(router>0) {
+      SendDestInfo(router-1);
+    }
+    else {
+      SendError(DRJParser::NoRouterError);
+    }
+    return;
+  }
+
+  if(jdoc.object().contains("gpistat")) {
+    QJsonObject jo0=jdoc.object().value("gpistat").toObject();
+    int router=jo0.value("router").toInt();
+    if(router>0) {
+      int number=jo0.value("number").toInt();
+      if(number<=0) {
+	SendGpiInfo(router-1,-1);
+      }
+      else {
+	SendGpiInfo(router-1,number-1);
+      }
+    }
+    else {
+      SendError(DRJParser::NoRouterError);
+    }
+    return;
+  }
+
+  if(jdoc.object().contains("gpostat")) {
+    QJsonObject jo0=jdoc.object().value("gpostat").toObject();
+    int router=jo0.value("router").toInt();
+    if(router>0) {
+      int number=jo0.value("number").toInt();
+      if(number<=0) {
+	SendGpoInfo(router-1,-1);
+      }
+      else {
+	SendGpoInfo(router-1,number-1);
+      }
+    }
+    else {
+      SendError(DRJParser::NoRouterError);
+    }
+    return;
+  }
+
+  if(jdoc.object().contains("ping")) {
+    SendPingResponse();
+    return;
+  }
+
+  if(jdoc.object().contains("maskgpistat")) {
+    QJsonObject jo0=jdoc.object().value("maskgpistat").toObject();
+    MaskGpiStat(jo0.value("state").toBool());
+  }
+
+  if(jdoc.object().contains("maskgpostat")) {
+    QJsonObject jo0=jdoc.object().value("maskgpostat").toObject();
+    MaskGpoStat(jo0.value("state").toBool());
+  }
+
+  if(jdoc.object().contains("maskroutestat")) {
+    QJsonObject jo0=jdoc.object().value("maskroutestat").toObject();
+    MaskRouteStat(jo0.value("state").toBool());
+  }
+
+  if(jdoc.object().contains("maskstat")) {
+    QJsonObject jo0=jdoc.object().value("maskroutestat").toObject();
+    MaskStat(jo0.value("state").toBool());
+  }
+
+  if(jdoc.object().contains("routernames")) {
+    QJsonObject jo0=jdoc.object().value("routernames").toObject();
+    int count=0;
+    QString json="{\r\n";
+    json+="    \"routernames\": {\r\n";
+    for(QMap<int,DREndPointMap *>::const_iterator it=proto_maps.begin();
+	it!=proto_maps.end();it++) {
+      json+=QString::asprintf("        \"router%d\": {\r\n",count++);
+      json+=JsonField("number",1+it.value()->routerNumber(),12);
+      json+=JsonField("name",it.value()->routerName(),12);
+      json+=JsonField("type",
+	      DREndPointMap::routerTypeString(it.value()->routerType()),12,true);
+      json+="        "+JsonCloseBlock((it+1)==proto_maps.end());
+    }
+    json+="    }\r\n";
+    json+="}\r\n";
+    proto_socket->write(json.toUtf8());
+    return;
+  }
+
+  if(jdoc.object().contains("routestat")) {
+    QJsonObject jo0=jdoc.object().value("routestat").toObject();
+    int router=jo0.value("router").toInt();
+    if(router>0) {
+      int output=jo0.value("destination").toInt();
+      if(output<=0) {
+	SendRouteInfo(router-1,-1);
+      }
+      else {
+	SendRouteInfo(router-1,output-1);
+      }
+    }
+    else {
+      SendError(DRJParser::NoRouterError);
+    }
+    return;
+  }
+
+  if(jdoc.object().contains("snapshots")) {
+    QJsonObject jo0=jdoc.object().value("snapshots").toObject();
+    int router=jo0.value("router").toInt();
+    if(router>0) {
+      SendSnapshotNames(router-1);
+    }
+    else {
+      SendError(DRJParser::NoRouterError);
+    }
+    return;
+  }
+
+  if(jdoc.object().contains("sourcenames")) {
+    QJsonObject jo0=jdoc.object().value("sourcenames").toObject();
+    int router=jo0.value("router").toInt();
+    if(router>0) {
+      SendSourceInfo(router-1);
+    }
+    else {
+      SendError(DRJParser::NoRouterError);
+    }
+    return;
+  }
+
+  if(jdoc.object().contains("triggergpi")) {
+    QJsonObject jo0=jdoc.object().value("triggergpi").toObject();
+    int router=jo0.value("router").toInt();
+    if(router>0) {
+      int number=jo0.value("number").toInt();
+      if(number>0) {
+	QString code=jo0.value("code").toString();
+	if(code.length()==5) {
+	  int duration=jo0.value("duration").toInt();
+	  TriggerGpi(router-1,number-1,duration,code);
+	}
+	else {
+	  SendError(DRJParser::ParameterError,
+		    "missing/invalid \"code\" value");
+	}
+      }
+      else {
+	SendError(DRJParser::ParameterError,
+		  "missing/invalid \"number\" value");
+      }
+    }
+    else {
+      SendError(DRJParser::ParameterError,
+		"missing/invalid \"router\" value");
+    }
+    return;
+  }
+
+  if(jdoc.object().contains("triggergpo")) {
+    QJsonObject jo0=jdoc.object().value("triggergpo").toObject();
+    int router=jo0.value("router").toInt();
+    if(router>0) {
+      int number=jo0.value("number").toInt();
+      if(number>0) {
+	QString code=jo0.value("code").toString();
+	if(code.length()==5) {
+	  int duration=jo0.value("duration").toInt();
+	  TriggerGpo(router-1,number-1,duration,code);
+	}
+	else {
+	  SendError(DRJParser::ParameterError,
+		    "missing/invalid \"code\" value");
+	}
+      }
+      else {
+	SendError(DRJParser::ParameterError,
+		  "missing/invalid \"number\" value");
+      }
+    }
+    else {
+      SendError(DRJParser::ParameterError,
+		"missing/invalid \"router\" value");
+    }
+    return;
+  }
+
+  SendError(DRJParser::NoCommandError);
 }
 
 
@@ -656,7 +955,7 @@ void ProtocolJ::SendActionInfo(unsigned router)
   q=new DRSqlQuery(sql);
   int quan=0;
   QString json="{\r\n";
-  json+="    \"actions\": {\r\n";
+  json+="    \"actionlist\": {\r\n";
   json+=JsonField("router",1+router,8,q->size()<=0);
   while(q->next()) {
     quan++;
@@ -1031,7 +1330,7 @@ void ProtocolJ::SendPingResponse()
   proto_socket->write(json.toUtf8());
 }
 
-
+/*
 void ProtocolJ::ProcessCommand(const QString &cmd)
 {
   unsigned cardnum=0;
@@ -1053,24 +1352,6 @@ void ProtocolJ::ProcessCommand(const QString &cmd)
     else {
       HelpMessage(cmds.at(1).toLower());
     }
-  }
-
-  if(cmds.at(0).toLower()=="routernames") {
-    int count=0;
-    QString json="{\r\n";
-    json+="    \"routernames\": {\r\n";
-    for(QMap<int,DREndPointMap *>::const_iterator it=proto_maps.begin();
-	it!=proto_maps.end();it++) {
-      json+=QString::asprintf("        \"router%d\": {\r\n",count++);
-      json+=JsonField("number",1+it.value()->routerNumber(),12);
-      json+=JsonField("name",it.value()->routerName(),12);
-      json+=JsonField("type",
-	      DREndPointMap::routerTypeString(it.value()->routerType()),12,true);
-      json+="        "+JsonCloseBlock((it+1)==proto_maps.end());
-    }
-    json+="    }\r\n";
-    json+="}\r\n";
-    proto_socket->write(json.toUtf8());
   }
 
   if(cmds.at(0).toLower()=="ping") {
@@ -1301,7 +1582,7 @@ void ProtocolJ::ProcessCommand(const QString &cmd)
     }
   }
 }
-
+*/
 
 void ProtocolJ::LoadMaps()
 {
@@ -1760,18 +2041,6 @@ QString ProtocolJ::WriteXmlTime(const QTime &time,int utc_offset)
     sprintf("%02d:%02d",utc_offset/3600,(utc_offset-3600*(utc_offset/3600))/60);
 
   return time.toString("hh:mm:ss")+tz_str;
-
-  /*
-  int utc_off=TimeZoneOffset();
-  QString tz_str="-";
-  if(utc_off<0) {
-    tz_str="+";
-  }
-  tz_str+=QString().
-    sprintf("%02d:%02d",utc_off/3600,(utc_off-3600*(utc_off/3600))/60);
-
-  return time.toString("hh:mm:ss")+tz_str;
-  */
 }
 
 

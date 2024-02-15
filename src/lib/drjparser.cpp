@@ -76,6 +76,13 @@ DRJParser::~DRJParser()
 }
 
 
+void DRJParser::setModelFont(const QFont &font)
+{
+  j_model_font=font;
+  j_router_model->setFont(font);
+}
+
+
 QList<int> DRJParser::routerFilter() const
 {
   return j_router_filter;
@@ -384,14 +391,18 @@ void DRJParser::DispatchMessage(const QJsonDocument &jdoc)
 
 	j_input_models[router]=
 	  new DREndPointListModel(router,j_use_long_names,this);
+	j_input_models.value(router)->setFont(j_model_font);
 
 	j_output_models[router]=
 	  new DREndPointListModel(router,j_use_long_names,this);
+	j_output_models.value(router)->setFont(j_model_font);
 	j_output_xpoints[router]=QMap<int,int>();
 
 	j_snapshot_models[router]=new DRSnapshotListModel(router,this);
+	j_snapshot_models.value(router)->setFont(j_model_font);
 
 	DRActionListModel *amodel=new DRActionListModel(router,this);
+	amodel->setFont(j_model_font);
 	amodel->setInputsModel(j_input_models.value(router));
 	amodel->setOutputsModel(j_output_models.value(router));
 	j_action_models[router]=amodel;

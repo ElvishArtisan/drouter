@@ -268,6 +268,7 @@ AC_CONFIG_FILES([ \
     scripts/install_python.sh \
     scripts/Makefile \
     src/lib/Makefile \
+    src/actionpanel/Makefile \
     src/buttonpanel/Makefile \
     src/lib/paths.h\
     src/dmap/Makefile \

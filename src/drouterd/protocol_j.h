@@ -40,6 +40,9 @@ class ProtocolJ : public Protocol
  public:
   ProtocolJ(int sock,QObject *parent=0);
 
+ signals:
+  void parserError(DRJParser::ErrorType err,const QString &remarks);
+
  private slots:
   void newConnectionData();
   void readyReadData();
@@ -55,6 +58,7 @@ class ProtocolJ : public Protocol
   void quitting();
 
  private:
+  void DispatchMessage(const QJsonDocument &jdoc);
   void ActivateRoute(unsigned router,unsigned output,unsigned input);
   void TriggerGpi(unsigned router,unsigned input,unsigned msecs,const QString &code);
   void TriggerGpo(unsigned router,unsigned output,unsigned msecs,const QString &code);
@@ -88,7 +92,7 @@ class ProtocolJ : public Protocol
   void MaskStat(bool state);
   void HelpMessage(const QString &keyword);
   void SendPingResponse();
-  void ProcessCommand(const QString &cmd);
+  //  void ProcessCommand(const QString &cmd);
   void LoadMaps();
   void LoadHelp();
   void AddRouteEvent(int router,int output,int input);
@@ -139,6 +143,7 @@ class ProtocolJ : public Protocol
   QTcpSocket *proto_socket;
   QTcpServer *proto_server;
   QByteArray proto_accum;
+  bool proto_accum_quoted;
   int proto_accum_level;
   QMap<int,DREndPointMap *> proto_maps;
   QMap <int,int> proto_event_lookups;
