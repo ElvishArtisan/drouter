@@ -2,7 +2,7 @@
 //
 // Component for flashing GPIO devices via LWRP
 //
-//   (C) Copyright 2021 Fred Gleason <fredg@paravelsystems.com>
+//   (C) Copyright 2021-2024 Fred Gleason <fredg@paravelsystems.com>
 //
 //   This program is free software; you can redistribute it and/or modify
 //   it under the terms of the GNU General Public License version 2 as
@@ -82,12 +82,12 @@ void GpioFlasher::setActive(bool state)
 	if(d_types[DRConfig::This]==SyGpioBundleEvent::TypeGpi) {
 	  d_lwrps[DRConfig::This]->
 	    setGpiCode(d_slots[DRConfig::This],
-		       SyGpioBundle::invertCode(d_codes[DRConfig::This]));
+		       SyGpioBundle::invertCode(d_codes[DRConfig::This]),0);
 	}
 	else {
 	  d_lwrps[DRConfig::This]->
 	    setGpoCode(d_slots[DRConfig::This],
-		       SyGpioBundle::invertCode(d_codes[DRConfig::This]));
+		       SyGpioBundle::invertCode(d_codes[DRConfig::This]),0);
 	}
       }
     }
@@ -102,12 +102,12 @@ void GpioFlasher::timeoutData()
       if(d_types[DRConfig::This]==SyGpioBundleEvent::TypeGpi) {
 	d_lwrps[DRConfig::This]->
 	  setGpiCode(d_slots[DRConfig::This],
-		     SyGpioBundle::invertCode(d_codes[DRConfig::This]));
+		     SyGpioBundle::invertCode(d_codes[DRConfig::This]),0);
       }
       else {
 	d_lwrps[DRConfig::This]->
 	  setGpoCode(d_slots[DRConfig::This],
-		     SyGpioBundle::invertCode(d_codes[DRConfig::This]));
+		     SyGpioBundle::invertCode(d_codes[DRConfig::This]),0);
       }
     }
     d_timer->start(100);
@@ -116,10 +116,10 @@ void GpioFlasher::timeoutData()
     for(int i=0;i<2;i++) {  // Clear the DRConfig::That instance as well
       if(d_lwrps[i]!=NULL) {
 	if(d_types[i]==SyGpioBundleEvent::TypeGpi) {
-	  d_lwrps[i]->setGpiCode(d_slots[i],d_codes[i]);
+	  d_lwrps[i]->setGpiCode(d_slots[i],d_codes[i],0);
 	}
 	else {
-	  d_lwrps[i]->setGpoCode(d_slots[i],d_codes[i]);
+	  d_lwrps[i]->setGpoCode(d_slots[i],d_codes[i],0);
 	}
       }
     }

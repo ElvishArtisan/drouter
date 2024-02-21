@@ -55,9 +55,9 @@ class MatrixLwrp :public Matrix
   QString dstName(int slot) const;
   unsigned dstChannels(int slot) const;
   SyGpioBundle *gpiBundle(int slot) const;
-  void setGpiCode(int slot,const QString &code);
+  void setGpiCode(int slot,const QString &code,int duration);
   SyGpo *gpo(int slot) const;
-  void setGpoCode(int slot,const QString &code);
+  void setGpoCode(int slot,const QString &code,int duration);
   void setGpoSourceAddress(int slot,const QHostAddress &s_addr,
 			   int s_slot);
   bool clipAlarmActive(int slot,SyLwrpClient::MeterType type,int chan) const;

@@ -766,7 +766,7 @@ void ProtocolD::ProcessCommand(const QString &cmd)
     if(!gpi_addr.isNull()) {
       int gpi_slotnum=cmds.at(2).toInt(&ok);
       if(ok&&IsLivewire(gpi_addr)) {
-	setGpiState(gpi_addr,gpi_slotnum,cmds.at(3));
+	setGpiState(gpi_addr,gpi_slotnum,cmds.at(3),0);
 	proto_socket->write("ok\r\n");
 	return;
       }
@@ -780,7 +780,7 @@ void ProtocolD::ProcessCommand(const QString &cmd)
     if(!gpo_addr.isNull()) {
       int gpo_slotnum=cmds.at(2).toInt(&ok);
       if(ok&&IsLivewire(gpo_addr)) {
-	setGpoState(gpo_addr,gpo_slotnum,cmds.at(3));
+	setGpoState(gpo_addr,gpo_slotnum,cmds.at(3),0);
 	proto_socket->write("ok\r\n");
 	return;
       }

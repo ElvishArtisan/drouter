@@ -2,7 +2,7 @@
 //
 // Base class for drouterd(8) protocols
 //
-//   (C) Copyright 2018-2022 Fred Gleason <fredg@paravelsystems.com>
+//   (C) Copyright 2018-2024 Fred Gleason <fredg@paravelsystems.com>
 //
 //   This program is free software; you can redistribute it and/or modify
 //   it under the terms of the GNU General Public License version 2 as
@@ -155,20 +155,20 @@ void Protocol::setGpioCrosspoint(const QHostAddress &gpo_node_addr,
 
 
 void Protocol::setGpiState(const QHostAddress &gpi_node_addr,int gpi_slotnum,
-			   const QString &code)
+			   const QString &code,int duration)
 {
   proto_ipc_socket->write(("SetGpiState "+gpi_node_addr.toString()+
-			   QString::asprintf(" %d ",gpi_slotnum)+code+"\r\n").
-			  toUtf8());
+			   QString::asprintf(" %d ",gpi_slotnum)+code+
+			   QString::asprintf(" %d",duration)+"\r\n").toUtf8());
 }
 
 
 void Protocol::setGpoState(const QHostAddress &gpo_node_addr,int gpo_slotnum,
-			   const QString &code)
+			   const QString &code,int duration)
 {
   proto_ipc_socket->write(("SetGpoState "+gpo_node_addr.toString()+
-			   QString::asprintf(" %d ",gpo_slotnum)+code+"\r\n").
-			  toUtf8());
+			   QString::asprintf(" %d ",gpo_slotnum)+code+
+			   QString::asprintf(" %d",duration)+"\r\n").toUtf8());
 }
 
 

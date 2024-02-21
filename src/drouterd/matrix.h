@@ -24,8 +24,6 @@
 
 #include <stdint.h>
 
-#include <vector>
-
 #include <QHostAddress>
 #include <QObject>
 #include <QString>
@@ -67,9 +65,9 @@ class Matrix :public QObject
   virtual unsigned gpis() const;
   virtual unsigned gpos() const;
   virtual SyGpioBundle *gpiBundle(int slot) const;
-  virtual void setGpiCode(int slot,const QString &code);
+  virtual void setGpiCode(int slot,const QString &code,int duration);
   virtual SyGpo *gpo(int slot) const;
-  virtual void setGpoCode(int slot,const QString &code);
+  virtual void setGpoCode(int slot,const QString &code,int duration);
   virtual void setGpoSourceAddress(int slot,const QHostAddress &s_addr,
 				   int s_slot);
   virtual bool clipAlarmActive(int slot,SyLwrpClient::MeterType type,

@@ -583,7 +583,8 @@ void ProtocolJ::ActivateRoute(unsigned router,unsigned output,unsigned input)
 }
 
 
-void ProtocolJ::TriggerGpi(unsigned router,unsigned input,unsigned msecs,const QString &code)
+void ProtocolJ::TriggerGpi(unsigned router,unsigned input,unsigned duration,
+			   const QString &code)
 {
   DREndPointMap *map;
 
@@ -592,7 +593,7 @@ void ProtocolJ::TriggerGpi(unsigned router,unsigned input,unsigned msecs,const Q
       QHostAddress addr=map->hostAddress(DREndPointMap::Input,input);
       int slotnum=map->slot(DREndPointMap::Input,input);
       if((!addr.isNull())&&(slotnum>=0)) {
-	setGpiState(addr,slotnum,code);
+	setGpiState(addr,slotnum,code,duration);
 	syslog(LOG_INFO,
 	       "set gpi state router: %d  input: %d to state: %s from %s",
 	       router+1,input+1,code.toUtf8().constData(),
@@ -603,7 +604,7 @@ void ProtocolJ::TriggerGpi(unsigned router,unsigned input,unsigned msecs,const Q
 }
 
 
-void ProtocolJ::TriggerGpo(unsigned router,unsigned output,unsigned msecs,
+void ProtocolJ::TriggerGpo(unsigned router,unsigned output,unsigned duration,
 			   const QString &code)
 {
   DREndPointMap *map;
@@ -613,7 +614,7 @@ void ProtocolJ::TriggerGpo(unsigned router,unsigned output,unsigned msecs,
       QHostAddress addr=map->hostAddress(DREndPointMap::Output,output);
       int slotnum=map->slot(DREndPointMap::Output,output);
       if((!addr.isNull())&&(slotnum>=0)) {
-	setGpoState(addr,slotnum,code);
+	setGpoState(addr,slotnum,code,duration);
 	syslog(LOG_INFO,
 	       "set gpo state router: %d  output: %d to state: %s from %s",
 	       router+1,output+1,

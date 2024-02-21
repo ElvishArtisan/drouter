@@ -154,7 +154,7 @@ SyGpioBundle *Matrix::gpiBundle(int slot) const
 }
 
 
-void Matrix::setGpiCode(int slot,const QString &code)
+void Matrix::setGpiCode(int slot,const QString &code,int duration)
 {
 }
 
@@ -165,7 +165,7 @@ SyGpo *Matrix::gpo(int slot) const
 }
 
 
-void Matrix::setGpoCode(int slot,const QString &code)
+void Matrix::setGpoCode(int slot,const QString &code,int duration)
 {
 }
 

@@ -1011,21 +1011,29 @@ bool DRouter::ProcessIpcCommand(int sock,const QString &cmd)
     }
   }
 
-  if((cmds.at(0)=="SetGpiState")&&(cmds.size()==4)) {
+  if((cmds.at(0)=="SetGpiState")&&(cmds.size()==5)) {
     Matrix *gpi_lwrp=
       drouter_nodes[QHostAddress(cmds.at(1)).toIPv4Address()];
     unsigned gpi_slotnum=cmds.at(2).toUInt(&ok);
-    if((gpi_lwrp!=NULL)&&ok&&(gpi_slotnum<gpi_lwrp->gpis())) {
-      gpi_lwrp->setGpiCode(gpi_slotnum,cmds.at(3));
+    if(ok) {
+      int gpi_duration=cmds.at(4).toInt(&ok);
+      if((gpi_lwrp!=NULL)&&ok&&(gpi_slotnum<gpi_lwrp->gpis())&&
+	 (gpi_duration>=0)) {
+	gpi_lwrp->setGpiCode(gpi_slotnum,cmds.at(3),gpi_duration);
+      }
     }
   }
 
-  if((cmds.at(0)=="SetGpoState")&&(cmds.size()==4)) {
+  if((cmds.at(0)=="SetGpoState")&&(cmds.size()==5)) {
     Matrix *gpo_lwrp=
       drouter_nodes[QHostAddress(cmds.at(1)).toIPv4Address()];
     unsigned gpo_slotnum=cmds.at(2).toUInt(&ok);
-    if((gpo_lwrp!=NULL)&&ok&&(gpo_slotnum<gpo_lwrp->gpos())) {
-      gpo_lwrp->setGpoCode(gpo_slotnum,cmds.at(3));
+    if(ok) {
+      int gpo_duration=cmds.at(4).toInt(&ok);
+      if((gpo_lwrp!=NULL)&&ok&&(gpo_slotnum<gpo_lwrp->gpos())&&
+	 (gpo_duration>=0)) {
+	gpo_lwrp->setGpoCode(gpo_slotnum,cmds.at(3),gpo_duration);
+      }
     }
   }
 

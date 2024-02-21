@@ -199,9 +199,9 @@ SyGpioBundle *MatrixLwrp::gpiBundle(int slot) const
 }
 
 
-void MatrixLwrp::setGpiCode(int slot,const QString &code)
+void MatrixLwrp::setGpiCode(int slot,const QString &code,int duration)
 {
-  d_lwrp_client->setGpiCode(slot,code);
+  d_lwrp_client->setGpiCode(slot,code,duration);
 }
 
 
@@ -211,9 +211,9 @@ SyGpo *MatrixLwrp::gpo(int slot) const
 }
 
 
-void MatrixLwrp::setGpoCode(int slot,const QString &code)
+void MatrixLwrp::setGpoCode(int slot,const QString &code,int duration)
 {
-  d_lwrp_client->setGpoCode(slot,code);
+  d_lwrp_client->setGpoCode(slot,code,duration);
 }
 
 

@@ -43,9 +43,9 @@ class Protocol : public QObject
   void setGpioCrosspoint(const QHostAddress &gpo_node_addr,int gpo_slotnum,
 			 const QHostAddress &gpi_node_addr,int gpi_slotnum);
   void setGpiState(const QHostAddress &gpi_node_addr,int gpi_slotnum,
-		   const QString &code);
+		   const QString &code,int duration);
   void setGpoState(const QHostAddress &gpo_node_addr,int gpo_slotnum,
-		   const QString &code);
+		   const QString &code,int duration);
 
  private slots:
   void ipcReadyReadData();
