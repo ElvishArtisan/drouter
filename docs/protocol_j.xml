@@ -45,7 +45,7 @@
     <title>Specifying Time</title>
     <para>
       All time values in ProtocolJ are assumed to be in the UTC timezone,
-      encoded in <link xlink:href="https://www.ibm.com/docs/en/i/7.5?topic=types-xstime">xs.time</link> format as follows:
+      encoded in <link xlink:href="https://www.ibm.com/docs/en/i/7.5?topic=types-xstime">xs.time format</link> as follows:
     </para>
     <para>
       <replaceable>HH</replaceable><userinput>:</userinput><replaceable>MM</replaceable><userinput>:</userinput><replaceable>SS</replaceable><userinput>Z</userinput>
@@ -402,7 +402,7 @@
     "activateroute": {
         "router": <replaceable>router-num</replaceable>,
         "destination": <replaceable>dest-num</replaceable>,
-        "source": <replaceable>src-num</replaceable>,
+        "source": <replaceable>src-num</replaceable>
     }
 }
       </literallayout>

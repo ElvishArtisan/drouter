@@ -1059,3 +1059,7 @@
 2024-02-15 Fred Gleason <fredg@paravelsystems.com>
 	* Implemented JSON based commands in the server-side ProtocolJ parser.
 	* Stubbed out actionpanel() in 'src/actionpanel/'.
+2024-02-21 Fred Gleason <fredg@paravelsystems.com>
+	* Removed dead code from the Protocol J implementation.
+	* Fixed a bug that broke the 'TriggerGPI' and 'TriggerGPO'
+	Protocol J commands.

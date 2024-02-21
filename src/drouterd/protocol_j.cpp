@@ -30,6 +30,8 @@
 
 #include <sy5/syrouting.h>
 
+#include <drjson.h>
+
 #include "protocol_j.h"
 
 ProtocolJ::ProtocolJ(int sock,QObject *parent)
@@ -49,12 +51,12 @@ ProtocolJ::ProtocolJ(int sock,QObject *parent)
   proto_clips_subscribed=false;
   proto_silences_subscribed=false;
 
-  //  proto_gpistat_masked=false;
-  //  proto_gpostat_masked=false;
-  //  proto_routestat_masked=false;
-  proto_gpistat_masked=true;
-  proto_gpostat_masked=true;
-  proto_routestat_masked=true;
+  proto_gpistat_masked=false;
+  proto_gpostat_masked=false;
+  proto_routestat_masked=false;
+  //  proto_gpistat_masked=true;
+  //  proto_gpostat_masked=true;
+  //  proto_routestat_masked=true;
 
   openlog("dprotod(J)",LOG_PID,LOG_DAEMON);
 
@@ -166,29 +168,6 @@ void ProtocolJ::readyReadData()
       break;
     }
   }
-
-
-  /*
-  char data[1501];
-  int n;
-
-  while((n=proto_socket->read(data,1500))>0) {
-    for(int i=0;i<n;i++) {
-      switch(0xFF&data[i]) {
-      case 10:
-	break;
-
-      case 13:
-	ProcessCommand(proto_accum);
-	proto_accum="";
-	break;
-
-      default:
-	proto_accum+=0xFF&data[i];
-      }
-    }
-  }
-  */
 }
 
 
@@ -409,21 +388,25 @@ void ProtocolJ::DispatchMessage(const QJsonDocument &jdoc)
   if(jdoc.object().contains("maskgpistat")) {
     QJsonObject jo0=jdoc.object().value("maskgpistat").toObject();
     MaskGpiStat(jo0.value("state").toBool());
+    return;
   }
 
   if(jdoc.object().contains("maskgpostat")) {
     QJsonObject jo0=jdoc.object().value("maskgpostat").toObject();
     MaskGpoStat(jo0.value("state").toBool());
+    return;
   }
 
   if(jdoc.object().contains("maskroutestat")) {
     QJsonObject jo0=jdoc.object().value("maskroutestat").toObject();
     MaskRouteStat(jo0.value("state").toBool());
+    return;
   }
 
   if(jdoc.object().contains("maskstat")) {
     QJsonObject jo0=jdoc.object().value("maskroutestat").toObject();
     MaskStat(jo0.value("state").toBool());
+    return;
   }
 
   if(jdoc.object().contains("routernames")) {
@@ -434,11 +417,11 @@ void ProtocolJ::DispatchMessage(const QJsonDocument &jdoc)
     for(QMap<int,DREndPointMap *>::const_iterator it=proto_maps.begin();
 	it!=proto_maps.end();it++) {
       json+=QString::asprintf("        \"router%d\": {\r\n",count++);
-      json+=JsonField("number",1+it.value()->routerNumber(),12);
-      json+=JsonField("name",it.value()->routerName(),12);
-      json+=JsonField("type",
+      json+=DRJsonField("number",1+it.value()->routerNumber(),12);
+      json+=DRJsonField("name",it.value()->routerName(),12);
+      json+=DRJsonField("type",
 	      DREndPointMap::routerTypeString(it.value()->routerType()),12,true);
-      json+="        "+JsonCloseBlock((it+1)==proto_maps.end());
+      json+="        "+DRJsonCloseBlock((it+1)==proto_maps.end());
     }
     json+="    }\r\n";
     json+="}\r\n";
@@ -620,7 +603,8 @@ void ProtocolJ::TriggerGpi(unsigned router,unsigned input,unsigned msecs,const Q
 }
 
 
-void ProtocolJ::TriggerGpo(unsigned router,unsigned output,unsigned msecs,const QString &code)
+void ProtocolJ::TriggerGpo(unsigned router,unsigned output,unsigned msecs,
+			   const QString &code)
 {
   DREndPointMap *map;
 
@@ -652,11 +636,11 @@ void ProtocolJ::SendSnapshotNames(unsigned router)
 
   QString json="{\r\n";
   json+="    \"snapshots\": {\r\n";
-  json+=JsonField("router",1+router,8,map->snapshotQuantity()==0);
+  json+=DRJsonField("router",1+router,8,map->snapshotQuantity()==0);
   for(int i=0;i<map->snapshotQuantity();i++) {
     json+=QString::asprintf("        \"snapshot%d\": {\r\n",i);
-    json+=JsonField("name",map->snapshot(i)->name(),12,true);
-    json+="        "+JsonCloseBlock(i==(map->snapshotQuantity()-1));
+    json+=DRJsonField("name",map->snapshot(i)->name(),12,true);
+    json+="        "+DRJsonCloseBlock(i==(map->snapshotQuantity()-1));
   }
   json+="    }\r\n";
   json+="}\r\n";
@@ -741,7 +725,7 @@ void ProtocolJ::SendSourceInfo(unsigned router)
   int quan=0;
   QString json="{\r\n";
   json+="    \"sourcenames\": {\r\n";
-  json+=JsonField("router",1+router,8,q->size()<=0);
+  json+=DRJsonField("router",1+router,8,q->size()<=0);
   while(q->next()) {
     quan++;
     json+=SourceNamesMessage(map->routerType(),q,8,quan==q->size());
@@ -794,22 +778,22 @@ QString ProtocolJ::SourceNamesMessage(DREndPointMap::RouterType type,DRSqlQuery 
     if(!q->value(6).toString().isEmpty()) {
       name=q->value(6).toString();
     }
-    QString json=JsonPadding(padding)+
+    QString json=DRJsonPadding(padding)+
       QString::asprintf("\"source%d\": {\r\n",q->at());
-    json+=JsonField("number",1+q->value(0).toInt(),4+padding);
-    json+=JsonField("name",name,4+padding);
-    json+=JsonField("hostDescription",q->value(8).toString(),4+padding,
+    json+=DRJsonField("number",1+q->value(0).toInt(),4+padding);
+    json+=DRJsonField("name",name,4+padding);
+    json+=DRJsonField("hostDescription",q->value(8).toString(),4+padding,
 		    q->value(7).toUInt()!=DRConfig::LwrpMatrix);
     if(q->value(7).toUInt()==DRConfig::LwrpMatrix) {
-      json+=JsonField("hostAddress",q->value(2).toString(),4+padding);
-      json+=JsonField("hostName",q->value(3).toString(),4+padding);
-      json+=JsonField("slot",1+q->value(4).toInt(),4+padding);
-      json+=JsonField("sourceNumber",
+      json+=DRJsonField("hostAddress",q->value(2).toString(),4+padding);
+      json+=DRJsonField("hostName",q->value(3).toString(),4+padding);
+      json+=DRJsonField("slot",1+q->value(4).toInt(),4+padding);
+      json+=DRJsonField("sourceNumber",
 	       SyRouting::livewireNumber(QHostAddress(q->value(5).toString())),
 		    4+padding);
-      json+=JsonField("streamAddress",q->value(5).toString(),4+padding,true);
+      json+=DRJsonField("streamAddress",q->value(5).toString(),4+padding,true);
     }
-    json+=JsonPadding(padding)+"}";
+    json+=DRJsonPadding(padding)+"}";
     if(!final) {
       json+=",";
     }
@@ -821,21 +805,21 @@ QString ProtocolJ::SourceNamesMessage(DREndPointMap::RouterType type,DRSqlQuery 
   if(!q->value(4).toString().isEmpty()) {
     name=q->value(4).toString();
   }
-  QString json=JsonPadding(padding)+
+  QString json=DRJsonPadding(padding)+
     QString::asprintf("\"source%d\": {\r\n",q->at());
-  json+=JsonField("number",1+q->value(0).toInt(),4+padding);
-  json+=JsonField("name",name,4+padding);
-  json+=JsonField("hostDescription",q->value(6).toString(),4+padding,
+  json+=DRJsonField("number",1+q->value(0).toInt(),4+padding);
+  json+=DRJsonField("name",name,4+padding);
+  json+=DRJsonField("hostDescription",q->value(6).toString(),4+padding,
 		  q->value(5).toUInt()!=DRConfig::LwrpMatrix);
   if(q->value(5).toUInt()==DRConfig::LwrpMatrix) {
-    json+=JsonField("hostAddress",q->value(1).toString(),4+padding);
-    json+=JsonField("hostName",q->value(2).toString(),4+padding);
-    json+=JsonField("slot",1+q->value(3).toInt(),4+padding);
-    json+=JsonField("gpioAddress",q->value(1).toString()+
+    json+=DRJsonField("hostAddress",q->value(1).toString(),4+padding);
+    json+=DRJsonField("hostName",q->value(2).toString(),4+padding);
+    json+=DRJsonField("slot",1+q->value(3).toInt(),4+padding);
+    json+=DRJsonField("gpioAddress",q->value(1).toString()+
 		    QString::asprintf("/%d",q->value(3).toInt()+1),4+padding,
 		    true);
   }
-  json+=JsonPadding(padding)+"}";
+  json+=DRJsonPadding(padding)+"}";
   if(!final) {
     json+=",";
   }
@@ -869,7 +853,7 @@ void ProtocolJ::SendDestInfo(unsigned router)
   int quan=0;
   QString json="{\r\n";
   json+="    \"destnames\": {\r\n";
-  json+=JsonField("router",1+router,8,q->size()<=0);
+  json+=DRJsonField("router",1+router,8,q->size()<=0);
   while(q->next()) {
     quan++;
     json+=DestNamesMessage(map->routerType(),q,8,quan==q->size());
@@ -918,18 +902,18 @@ QString ProtocolJ::DestNamesMessage(DREndPointMap::RouterType type,DRSqlQuery *q
     name=q->value(5).toString();
   }
 
-  QString json=JsonPadding(padding)+
+  QString json=DRJsonPadding(padding)+
     QString::asprintf("\"destination%d\": {\r\n",q->at());
-  json+=JsonField("number",1+q->value(0).toInt(),4+padding);
-  json+=JsonField("name",name,4+padding);
-  json+=JsonField("hostDescription",q->value(7).toString(),4+padding,
+  json+=DRJsonField("number",1+q->value(0).toInt(),4+padding);
+  json+=DRJsonField("name",name,4+padding);
+  json+=DRJsonField("hostDescription",q->value(7).toString(),4+padding,
 		  q->value(6).toUInt()!=DRConfig::LwrpMatrix);
   if(q->value(6).toUInt()==DRConfig::LwrpMatrix) {
-    json+=JsonField("hostAddress",q->value(2).toString(),4+padding);
-    json+=JsonField("hostName",q->value(3).toString(),4+padding);
-    json+=JsonField("slot",1+q->value(4).toInt(),4+padding,true);
+    json+=DRJsonField("hostAddress",q->value(2).toString(),4+padding);
+    json+=DRJsonField("hostName",q->value(3).toString(),4+padding);
+    json+=DRJsonField("slot",1+q->value(4).toInt(),4+padding,true);
   }
-  json+=JsonPadding(padding)+"}";
+  json+=DRJsonPadding(padding)+"}";
   if(!final) {
     json+=",";
   }
@@ -956,7 +940,7 @@ void ProtocolJ::SendActionInfo(unsigned router)
   int quan=0;
   QString json="{\r\n";
   json+="    \"actionlist\": {\r\n";
-  json+=JsonField("router",1+router,8,q->size()<=0);
+  json+=DRJsonField("router",1+router,8,q->size()<=0);
   while(q->next()) {
     quan++;
     json+=ActionListMessage(q,8,quan==q->size());
@@ -990,21 +974,21 @@ QString ProtocolJ::ActionListSqlFields() const
 
 QString ProtocolJ::ActionListMessage(DRSqlQuery *q,int padding,bool final)
 {
-  QString json=JsonPadding(padding)+
+  QString json=DRJsonPadding(padding)+
     QString::asprintf("\"action%d\": {\r\n",q->at());
-  json+=JsonField("id",q->value(0).toInt(),4+padding);
-  json+=JsonField("time",q->value(1).toTime(),0,4+padding);
-  json+=JsonField("sunday",q->value(2).toString()=="Y",4+padding);
-  json+=JsonField("monday",q->value(3).toString()=="Y",4+padding);
-  json+=JsonField("tuesday",q->value(4).toString()=="Y",4+padding);
-  json+=JsonField("wednesday",q->value(5).toString()=="Y",4+padding);
-  json+=JsonField("thursday",q->value(6).toString()=="Y",4+padding);
-  json+=JsonField("friday",q->value(7).toString()=="Y",4+padding);
-  json+=JsonField("saturday",q->value(8).toString()=="Y",4+padding);
-  json+=JsonField("destination",1+q->value(10).toInt(),4+padding);
-  json+=JsonField("source",1+q->value(11).toInt(),4+padding);
-  json+=JsonField("comment",q->value(12).toString(),4+padding,true);
-  json+=JsonPadding(padding)+"}";
+  json+=DRJsonField("id",q->value(0).toInt(),4+padding);
+  json+=DRJsonField("time",q->value(1).toTime(),0,4+padding);
+  json+=DRJsonField("sunday",q->value(2).toString()=="Y",4+padding);
+  json+=DRJsonField("monday",q->value(3).toString()=="Y",4+padding);
+  json+=DRJsonField("tuesday",q->value(4).toString()=="Y",4+padding);
+  json+=DRJsonField("wednesday",q->value(5).toString()=="Y",4+padding);
+  json+=DRJsonField("thursday",q->value(6).toString()=="Y",4+padding);
+  json+=DRJsonField("friday",q->value(7).toString()=="Y",4+padding);
+  json+=DRJsonField("saturday",q->value(8).toString()=="Y",4+padding);
+  json+=DRJsonField("destination",1+q->value(10).toInt(),4+padding);
+  json+=DRJsonField("source",1+q->value(11).toInt(),4+padding);
+  json+=DRJsonField("comment",q->value(12).toString(),4+padding,true);
+  json+=DRJsonPadding(padding)+"}";
   if(!final) {
     json+=",";
   }
@@ -1061,9 +1045,9 @@ QString ProtocolJ::GPIStatMessage(DRSqlQuery *q)
 {
   QString json="{\r\n";
   json+="    \"gpistat\": {\r\n";
-  json+=JsonField("router",1+q->value(0).toInt(),8);
-  json+=JsonField("source",1+q->value(1).toInt(),8);
-  json+=JsonField("code",q->value(2).toString(),8,true);
+  json+=DRJsonField("router",1+q->value(0).toInt(),8);
+  json+=DRJsonField("source",1+q->value(1).toInt(),8);
+  json+=DRJsonField("code",q->value(2).toString(),8,true);
   json+="    }\r\n";
   json+="}\r\n";
 
@@ -1118,9 +1102,9 @@ QString ProtocolJ::GPOStatMessage(DRSqlQuery *q)
 {
   QString json="{\r\n";
   json+="    \"gpostat\": {\r\n";
-  json+=JsonField("router",1+q->value(0).toInt(),8);
-  json+=JsonField("destination",1+q->value(1).toInt(),8);
-  json+=JsonField("code",q->value(2).toString(),8,true);
+  json+=DRJsonField("router",1+q->value(0).toInt(),8);
+  json+=DRJsonField("destination",1+q->value(1).toInt(),8);
+  json+=DRJsonField("code",q->value(2).toString(),8,true);
   json+="    }\r\n";
   json+="}\r\n";
 
@@ -1214,9 +1198,9 @@ QString ProtocolJ::RouteStatMessage(int router,int output,int input)
 {
   QString json="{\r\n";
   json+="    \"routestat\": {\r\n";
-  json+=JsonField("router",1+router,8);
-  json+=JsonField("destination",1+output,8);
-  json+=JsonField("source",input,8,true);
+  json+=DRJsonField("router",1+router,8);
+  json+=DRJsonField("destination",1+output,8);
+  json+=DRJsonField("source",input,8,true);
   json+="    }\r\n";
   json+="}\r\n";
 
@@ -1240,7 +1224,7 @@ void ProtocolJ::MaskGpiStat(bool state)
 
   QString json="{\r\n";
   json+="    \"maskgpistat\": {\r\n";
-  json+=JsonField("state",state,8,true);
+  json+=DRJsonField("state",state,8,true);
   json+="    }\r\n";
   json+="}\r\n";
 
@@ -1254,7 +1238,7 @@ void ProtocolJ::MaskGpoStat(bool state)
 
   QString json="{\r\n";
   json+="    \"maskgpostat\": {\r\n";
-  json+=JsonField("state",state,8,true);
+  json+=DRJsonField("state",state,8,true);
   json+="    }\r\n";
   json+="}\r\n";
 
@@ -1268,7 +1252,7 @@ void ProtocolJ::MaskRouteStat(bool state)
 
   QString json="{\r\n";
   json+="    \"maskroutestat\": {\r\n";
-  json+=JsonField("state",state,8,true);
+  json+=DRJsonField("state",state,8,true);
   json+="    }\r\n";
   json+="}\r\n";
 
@@ -1293,22 +1277,22 @@ void ProtocolJ::HelpMessage(const QString &keyword)
     QString json="{\r\n";
     json+="    \"help\": {\r\n";
     if(keyword.isEmpty()) {
-      json+=JsonNullField("keyword",8);
-      json+=JsonField("pattern",proto_help_patterns.value(""),8,true);
-      json+=JsonField("comment",proto_help_comments.value(""),8,true);
+      json+=DRJsonNullField("keyword",8);
+      json+=DRJsonField("pattern",proto_help_patterns.value(""),8,true);
+      json+=DRJsonField("comment",proto_help_comments.value(""),8,true);
     }
     else {
       if(proto_help_patterns.value(keyword).isEmpty()) {
-	json+=JsonNullField("pattern",8);
+	json+=DRJsonNullField("pattern",8);
       }
       else {
-	json+=JsonField("pattern",proto_help_patterns.value(keyword),8);
+	json+=DRJsonField("pattern",proto_help_patterns.value(keyword),8);
       }
       if(proto_help_comments.value(keyword).isEmpty()) {
-	json+=JsonNullField("comment",8);
+	json+=DRJsonNullField("comment",8);
       }
       else {
-	json+=JsonField("comment",proto_help_comments.value(keyword),8,true);
+	json+=DRJsonField("comment",proto_help_comments.value(keyword),8,true);
       }
     }
     json+="    }\r\n";
@@ -1323,266 +1307,13 @@ void ProtocolJ::SendPingResponse()
 {
   QString json="{\r\n";
   json+="    \"pong\": {\r\n";
-  json+=JsonField("datetime",QDateTime::currentDateTime(),8,true);
+  json+=DRJsonField("datetime",QDateTime::currentDateTime(),8,true);
   json+="    }\r\n";
   json+="}\r\n";
 
   proto_socket->write(json.toUtf8());
 }
 
-/*
-void ProtocolJ::ProcessCommand(const QString &cmd)
-{
-  unsigned cardnum=0;
-  unsigned input=0;
-  unsigned output=0;
-  unsigned msecs=0;
-  bool ok=false;
-  QStringList cmds=cmd.split(" ");
-
-  if((cmds.at(0).toLower()=="exit")||(cmds.at(0).toLower()=="quit")) {
-    syslog(LOG_DEBUG,"exiting normally");
-    quit();
-  }
-
-  if((cmds.at(0).toLower()=="help")||(cmds.at(0)=="?")) {
-    if(cmds.size()==1) {
-      HelpMessage(QString());
-    }
-    else {
-      HelpMessage(cmds.at(1).toLower());
-    }
-  }
-
-  if(cmds.at(0).toLower()=="ping") {
-    SendPingResponse();
-  }
-
-  if((cmds.at(0).toLower()=="gpistat")&&(cmds.size()>=2)) {
-    cardnum=cmds.at(1).toUInt(&ok);
-    if(ok) {
-      if(cmds.size()==2) {
-	SendGpiInfo(cardnum-1,-1);
-      }
-      else {
-	input=cmds.at(2).toUInt(&ok);
-	if(ok) {
-	  SendGpiInfo(cardnum-1,input-1);
-	}
-      }
-    }
-    else {
-      SendError(DRJParser::NoRouterError);
-    }
-  }
-
-  if((cmds.at(0).toLower()=="gpostat")&&(cmds.size()>=2)) {
-    cardnum=cmds.at(1).toUInt(&ok);
-    if(ok) {
-      if(cmds.size()==2) {
-	SendGpoInfo(cardnum-1,-1);
-      }
-      else {
-	input=cmds.at(2).toUInt(&ok);
-	if(ok) {
-	  SendGpoInfo(cardnum-1,input-1);
-	}
-      }
-    }
-    else {
-      SendError(DRJParser::NoRouterError);
-    }
-  }
-
-  if((cmds.at(0).toLower()=="sourcenames")&&(cmds.size()==2)) {
-    cardnum=cmds.at(1).toUInt(&ok);
-    if(ok) {
-      SendSourceInfo(cardnum-1);
-    }
-    else {
-      SendError(DRJParser::NoRouterError);
-    }
-  }
-
-  if((cmds.at(0).toLower()=="destnames")&&(cmds.size()==2)) {
-    cardnum=cmds.at(1).toUInt(&ok);
-    if(ok) {
-      SendDestInfo(cardnum-1);
-    }
-    else {
-      SendError(DRJParser::NoRouterError);
-    }
-  }
-
-  if((cmds.at(0).toLower()=="actionlist")&&(cmds.size()==2)) {
-    cardnum=cmds.at(1).toUInt(&ok);
-    if(ok) {
-      SendActionInfo(cardnum-1);
-    }
-    else {
-      SendError(DRJParser::NoRouterError);
-    }
-  }
-
-  if(cmds.at(0).toLower()=="activateroute") {
-    if(cmds.size()==4) {
-      cardnum=cmds.at(1).toUInt(&ok);
-      if(ok) {
-	output=cmds.at(2).toUInt(&ok);
-	if(ok) {
-	  input=cmds.at(3).toUInt(&ok);
-	  if(ok) {
-	    ActivateRoute(cardnum-1,output-1,input);
-	  }
-	  else {
-	    SendError(DRJParser::ParameterError,
-		      tr("\"activateroute\" <router> <output> <input>"));
-	  }
-	}
-	else {
-	  SendError(DRJParser::ParameterError,
-		    tr("\"activateroute\" <router> <output> <input>"));
-	}
-      }
-      else {
-	SendError(DRJParser::ParameterError,
-		  tr("\"activateroute\" <router> <output> <input>"));
-      }
-    }
-    else {
-      SendError(DRJParser::ParameterError,
-		proto_help_patterns.value("activateroute"));
-    }
-  }
-
-  if(cmds.at(0).toLower()=="routestat") {
-    if((cmds.size()==2)||(cmds.size()==3)) {
-      cardnum=cmds.at(1).toUInt(&ok);
-      if(ok) {
-	if(cmds.size()==2) {
-	  SendRouteInfo(cardnum-1,-1);
-	}
-	if(cmds.size()==3) {
-	  input=cmds.at(2).toUInt(&ok);
-	  if(ok) {
-	    SendRouteInfo(cardnum-1,input-1);
-	  }
-	  else {
-	    SendError(DRJParser::NoSourceError);
-	  }
-	}
-      }
-      else {
-	SendError(DRJParser::NoRouterError);
-      }
-    }
-    else {
-      SendError(DRJParser::ParameterError,proto_help_patterns.value("routestat"));
-    }
-  }
-
-  if(cmds.at(0).toLower()=="triggergpi") {
-    if((cmds.size()==4)||(cmds.size()==5)) {
-      if(cmds.size()==5) {
-	msecs=cmds.at(4).toUInt();
-      }
-      cardnum=cmds.at(1).toUInt(&ok);
-      if(ok) {
-	input=cmds.at(2).toUInt(&ok);
-	if(cmds.at(3).length()==5) {
-	  TriggerGpi(cardnum-1,input-1,msecs,cmds.at(3));
-	}
-      }
-    }
-  }
-
-  if(cmds.at(0).toLower()=="triggergpo") {
-    if((cmds.size()==4)||(cmds.size()==5)) {
-      if(cmds.size()==5) {
-	msecs=cmds.at(4).toUInt();
-      }
-      cardnum=cmds.at(1).toUInt(&ok);
-      if(ok) {
-	input=cmds.at(2).toUInt(&ok);
-	if(cmds.at(3).length()==5) {
-	  TriggerGpo(cardnum-1,input-1,msecs,cmds.at(3));
-	}
-      }
-    }
-  }
-
-  if((cmds.at(0).toLower()=="snapshots")&&(cmds.size()==2)) {
-    cardnum=cmds.at(1).toUInt(&ok);
-    if(ok) {
-      SendSnapshotNames(cardnum-1);
-    }
-    else {
-      SendError(DRJParser::NoRouterError);
-    }
-  }
-
-  if((cmds.at(0).toLower()=="snapshotnames")&&(cmds.size()==3)) {
-    cardnum=cmds.at(1).toUInt(&ok);
-    if(ok) {
-      SendSnapshotRoutes(cardnum-1,cmds.at(2));
-    }
-    else {
-      SendError(DRJParser::NoRouterError);
-    }
-  }
-
-  if(((cmds.at(0).toLower()=="activatescene")||
-      (cmds.at(0).toLower()=="activatesnap"))&&(cmds.size()>=3)) {
-    cardnum=cmds.at(1).toUInt(&ok);
-    if(ok) {
-      QString snapshot="";
-      for(int i=2;i<cmds.size();i++) {
-	snapshot+=cmds.at(i)+" ";
-      }
-      ActivateSnapshot(cardnum-1,snapshot.trimmed());
-    }
-    else {
-      SendError(DRJParser::NoRouterError);
-    }
-  }
-
-  if((cmds.at(0).toLower()=="maskgpistat")&&(cmds.size()==2)) {
-    if((cmds.at(1).toLower()=="true")||(cmds.at(1).toLower()=="false")) {
-      MaskGpiStat(cmds.at(1).toLower()=="true");
-    }
-    else {
-      SendError(DRJParser::ParameterError,"maskgpistat true|false");
-    }
-  }
-
-  if((cmds.at(0).toLower()=="maskgpostat")&&(cmds.size()==2)) {
-    if((cmds.at(1).toLower()=="true")||(cmds.at(1).toLower()=="false")) {
-      MaskGpoStat(cmds.at(1).toLower()=="true");
-    }
-    else {
-      SendError(DRJParser::ParameterError,"maskgpostate true|false");
-    }
-  }
-
-  if((cmds.at(0).toLower()=="maskroutestat")&&(cmds.size()==2)) {
-    if((cmds.at(1).toLower()=="true")||(cmds.at(1).toLower()=="false")) {
-      MaskRouteStat(cmds.at(1).toLower()=="true");
-    }
-    else {
-      SendError(DRJParser::ParameterError,"maskroutestat true|false");
-    }
-  }
-
-  if((cmds.at(0).toLower()=="maskstat")&&(cmds.size()==2)) {
-    if((cmds.at(1).toLower()=="true")||(cmds.at(1).toLower()=="false")) {
-      MaskStat(cmds.at(1).toLower()=="true");
-    }
-    else {
-      SendError(DRJParser::ParameterError,"maskstat true|false");
-    }
-  }
-}
-*/
 
 void ProtocolJ::LoadMaps()
 {
@@ -1749,378 +1480,14 @@ void ProtocolJ::SendError(DRJParser::ErrorType etype,const QString &remarks)
 {
   QString json="{\r\n";
   json+="    \"error\": {\r\n";
-  json+=JsonField("type",(int)etype,8);
-  json+=JsonField("description",DRJParser::errorString(etype),8,
+  json+=DRJsonField("type",(int)etype,8);
+  json+=DRJsonField("description",DRJParser::errorString(etype),8,
 		  remarks.isEmpty());
   if(!remarks.isEmpty()) {
-    json+=JsonField("remarks",remarks,8,true);
+    json+=DRJsonField("remarks",remarks,8,true);
   }
   json+="    }\r\n";
   json+="}\r\n";
 
   proto_socket->write(json.toUtf8());
-}
-
-
-QString ProtocolJ::JsonPadding(int padding)
-{
-  QString ret="";
-
-  for(int i=0;i<padding;i++) {
-    ret+=" ";
-  }
-  return ret;
-}
-
-
-QString ProtocolJ::JsonEscape(const QString &str)
-{
-  QString ret;
-
-  for(int i=0;i<str.length();i++) {
-    QChar c=str.at(i);
-    switch(c.category()) {
-    case QChar::Other_Control:
-      ret+=QString::asprintf("\\u%04X",c.unicode());
-      break;
-
-    default:
-      switch(c.unicode()) {
-      case 0x22:   // Quote
-	ret+="\\\"";
-	break;
-
-      case 0x5C:   // Backslash
-	ret+="\\\\";
-	break;
-
-      default:
-	ret+=c;
-	break;
-      }
-      break;
-    }
-  }
-
-  return ret;
-}
-
-
-QString ProtocolJ::JsonNullField(const QString &name,int padding,bool final)
-{
-  QString comma=",";
-
-  if(final) {
-    comma="";
-  }
-
-  return ProtocolJ::JsonPadding(padding)+"\""+name+"\": null"+comma+"\r\n";
-}
-
-
-QString ProtocolJ::JsonField(const QString &name,bool value,int padding,bool final)
-{
-  QString comma=",";
-
-  if(final) {
-    comma="";
-  }
-
-  if(value) {
-    return ProtocolJ::JsonPadding(padding)+"\""+name+"\": true"+comma+"\r\n";
-  }
-  return ProtocolJ::JsonPadding(padding)+"\""+name+"\": false"+comma+"\r\n";
-}
-
-
-QString ProtocolJ::JsonField(const QString &name,int value,int padding,bool final)
-{
-  QString comma=",";
-
-  if(final) {
-    comma="";
-  }
-
-  return ProtocolJ::JsonPadding(padding)+"\""+name+"\": "+QString::asprintf("%d",value)+
-    comma+"\r\n";
-}
-
-
-QString ProtocolJ::JsonField(const QString &name,unsigned value,int padding,bool final)
-{
-  QString comma=",";
-
-  if(final) {
-    comma="";
-  }
-
-  return ProtocolJ::JsonPadding(padding)+"\""+name+"\": "+QString::asprintf("%u",value)+
-    comma+"\r\n";
-}
-
-
-QString ProtocolJ::JsonField(const QString &name,const QString &value,int padding,
-		    bool final)
-{
-  QString ret;
-  QString comma=",";
-
-  if(final) {
-    comma="";
-  }
-
-  ret=JsonEscape(value);
-
-  return JsonPadding(padding)+"\""+name+"\": \""+ret+"\""+comma+"\r\n";
-}
-
-
-QString ProtocolJ::JsonField(const QString &name,const QDateTime &value,int padding,
-		    bool final)
-{
-  QString comma=",";
-
-  if(final) {
-    comma="";
-  }
-
-  if(!value.isValid()) {
-    return JsonNullField(name,padding,final);
-  }
-  return JsonPadding(padding)+"\""+name+"\": \""+
-    WriteXmlDateTime(value)+"\""+
-    comma+"\r\n";
-}
-
-
-QString ProtocolJ::JsonField(const QString &name,const QTime &value,
-			     int utc_offset,int padding,bool final)
-{
-  QString comma=",";
-
-  if(final) {
-    comma="";
-  }
-
-  if(!value.isValid()) {
-    return JsonNullField(name,padding,final);
-  }
-  return JsonPadding(padding)+"\""+name+"\": \""+
-    WriteXmlTime(value,utc_offset)+"\""+
-    comma+"\r\n";
-}
-
-
-QString ProtocolJ::JsonCloseBlock(bool final)
-{
-  if(final) {
-    return QString("}\r\n");
-  }
-  return QString("},\r\n");
-}
-
-
-
-//
-// XML xs:date format
-//
-QDate ProtocolJ::ParseXmlDate(const QString &str,bool *ok)
-{
-  QDate ret=QDate::fromString(str,"yyyy-MM-dd");
-  if(ok!=NULL) {
-    *ok=ret.isValid();
-  }
-  return ret;
-}
-
-
-QString ProtocolJ::WriteXmlDate(const QDate &date)
-{
-  return date.toString("yyyy-MM-dd");
-}
-
-
-//
-// XML xs:time format
-//
-QTime ProtocolJ::ParseXmlTime(const QString &str,bool *ok,int *day_offset)
-{
-  QTime ret;
-  QStringList f0;
-  QStringList f1;
-  QStringList f2;
-  int tz=0;
-  QTime time;
-  QTime tztime;
-
-  if(ok!=NULL) {
-    *ok=false;
-  }
-  if(day_offset!=NULL) {
-    *day_offset=0;
-  }
-  f0=str.trimmed().split(" ");
-  if(f0.size()!=1) {
-    if(ok!=NULL) {
-      *ok=false;
-    }
-    return ret;
-  }
-
-  if(f0[0].right(1).toLower()=="z") {  // GMT
-    tz=-TimeZoneOffset();
-    f0[0]=f0[0].left(f0[0].length()-1);
-    f2=f0[0].split(":");
-  }
-  else {
-    f1=f0[0].split("+");
-    if(f1.size()==2) {   // GMT+
-      f2=f1[1].split(":");
-      if(f2.size()==2) {
-	tztime=QTime(f2[0].toInt(),f2[1].toInt(),0);
-	if(tztime.isValid()) {
-	  tz=-TimeZoneOffset()-QTime(0,0,0).secsTo(tztime);
-	}
-      }
-      else {
-	if(ok!=NULL) {
-	  *ok=false;
-	}
-	return QTime();
-      }
-    }
-    else {
-      f1=f0[0].split("-");
-      if(f1.size()==2) {   // GMT-
-	f2=f1[1].split(":");
-	if(f2.size()==2) {
-	  tztime=QTime(f2[0].toInt(),f2[1].toInt(),0);
-	  if(tztime.isValid()) {
-	    tz=-TimeZoneOffset()+QTime(0,0,0).secsTo(tztime);
-	  }
-	}
-	else {
-	  if(ok!=NULL) {
-	    *ok=false;
-	  }
-	  return QTime();
-	}
-      }
-    }
-    f2=f1[0].split(":");
-  }
-  if(f2.size()==3) {
-    QStringList f3=f2[2].split(".");
-    time=QTime(f2[0].toInt(),f2[1].toInt(),f2[2].toInt());
-    if(time.isValid()) {
-      ret=time.addSecs(tz);
-      if(day_offset!=NULL) {
-	if((tz<0)&&((3600*time.hour()+60*time.minute()+time.second())<(-tz))) {
-	  *day_offset=-1;
-	}
-	if((tz>0)&&(86400-((3600*time.hour()+60*time.minute()+time.second()))<tz)) {
-	  *day_offset=1;
-	}
-      }
-      if(ok!=NULL) {
-	*ok=true;
-      }
-    }
-  }
-  return ret;
-}
-
-
-QString ProtocolJ::WriteXmlTime(const QTime &time,int utc_offset)
-{
-  QString tz_str="-";
-  if(utc_offset<0) {
-    tz_str="+";
-  }
-  tz_str+=QString().
-    sprintf("%02d:%02d",utc_offset/3600,(utc_offset-3600*(utc_offset/3600))/60);
-
-  return time.toString("hh:mm:ss")+tz_str;
-}
-
-
-//
-// XML xs:dateTime format
-//
-QDateTime ProtocolJ::ParseXmlDateTime(const QString &str,bool *ok)
-{
-  QDateTime ret;
-  QStringList list;
-  QStringList f0;
-  QStringList f1;
-  QStringList f2;
-  int day;
-  int month;
-  int year;
-  QTime time;
-  bool lok=false;
-  int day_offset=0;
-
-  if(ok!=NULL) {
-    *ok=false;
-  }
-
-  f0=str.trimmed().split(" ");
-  if(f0.size()!=1) {
-    if(ok!=NULL) {
-      *ok=false;
-    }
-    return ret;
-  }
-  f1=f0[0].split("T");
-  if(f1.size()<=2) {
-    f2=f1[0].split("-");
-    if(f2.size()==3) {
-      year=f2[0].toInt(&lok);
-      if(lok&&(year>0)) {
-	month=f2[1].toInt(&lok);
-	if(lok&&(month>=1)&&(month<=12)) {
-	  day=f2[2].toInt(&lok);
-	  if(lok&&(day>=1)&&(day<=31)) {
-	    if(f1.size()==2) {
-	      time=ParseXmlTime(f1[1],&lok,&day_offset);
-	      if(lok) {
-		ret=QDateTime(QDate(year,month,day),time).addDays(day_offset);
-		if(ok!=NULL) {
-		  *ok=true;
-		}
-	      }
-	    }
-	  }
-	}
-      }
-    }
-  }
-  return ret;
-}
-
-
-QString ProtocolJ::WriteXmlDateTime(const QDateTime &dt)
-{
-  return WriteXmlDate(dt.date())+"T"+WriteXmlTime(dt.time(),dt.offsetFromUtc());
-}
-
-
-int ProtocolJ::TimeZoneOffset()
-{
-  time_t t=time(&t);
-  struct tm *tm=localtime(&t);
-  time_t local_time=3600*tm->tm_hour+60*tm->tm_min+tm->tm_sec;
-  tm=gmtime(&t);
-  time_t gmt_time=3600*tm->tm_hour+60*tm->tm_min+tm->tm_sec;
-
-  int offset=gmt_time-local_time;
-  if(offset>43200) {
-    offset=offset-86400;
-  }
-  if(offset<-43200) {
-    offset=offset+86400;
-  }
-
-  return offset;
 }

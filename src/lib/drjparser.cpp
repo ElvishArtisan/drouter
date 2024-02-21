@@ -24,6 +24,7 @@
 #include <QStringList>
 
 #include "drjparser.h"
+#include "drjson.h"
 
 DRJParser::DRJParser(bool use_long_names,QObject *parent)
   : QObject(parent)
@@ -151,7 +152,13 @@ int DRJParser::outputCrosspoint(int router,int output) const
 
 void DRJParser::setOutputCrosspoint(int router,int output,int input)
 {
-  SendCommand(QString::asprintf("ActivateRoute %d %d %d",router,output,input));
+  QMap<QString,QVariant> fields;
+
+  fields["router"]=router;
+  fields["destination"]=output;
+  fields["source"]=input;
+
+  SendCommand("activateroute",fields);
 }
 
 
@@ -163,14 +170,14 @@ QString DRJParser::gpiState(int router,int input) const
 
 void DRJParser::setGpiState(int router,int input,const QString &code,int msec)
 {
-  if(msec<0) {
-    SendCommand(QString::asprintf("TriggerGPI %d %d %s",router,input,
-				  code.toUtf8().constData()));
-  }
-  else {
-    SendCommand(QString::asprintf("TriggerGPI %d %d %s %d",router,input,
-				  code.toUtf8().constData(),msec));
-  }
+  QMap<QString,QVariant> fields;
+
+  fields["router"]=router;
+  fields["source"]=input;
+  fields["code"]=code;
+  fields["duration"]=msec;
+
+  SendCommand("triggergpi",fields);
 }
 
 
@@ -182,20 +189,25 @@ QString DRJParser::gpoState(int router,int output) const
 
 void DRJParser::setGpoState(int router,int output,const QString &code,int msec)
 {
-  if(msec<0) {
-    SendCommand(QString::asprintf("TriggerGPO %d %d %s",router,output,
-				  code.toUtf8().constData()));
-  }
-  else {
-    SendCommand(QString::asprintf("TriggerGPO %d %d %s %d",router,output,
-				  code.toUtf8().constData(),msec));
-  }
+  QMap<QString,QVariant> fields;
+
+  fields["router"]=router;
+  fields["destination"]=output;
+  fields["code"]=code;
+  fields["duration"]=msec;
+
+  SendCommand("triggergpo",fields);
 }
 
 
 void DRJParser::activateSnapshot(int router,const QString &snapshot)
 {
-  SendCommand(QString::asprintf("ActivateSnap %d ",router)+snapshot);
+  QMap<QString,QVariant> fields;
+
+  fields["router"]=router;
+  fields["snapshot"]=snapshot;
+
+  SendCommand("activatesnap",fields);
 }
 
 
@@ -287,7 +299,8 @@ void DRJParser::connectedData()
   j_accum.clear();
   j_accum_quoted=false;
   j_accum_level=0;
-  SendCommand("routernames");
+
+  SendCommand("routernames",QMap<QString,QVariant>());
 }
 
 
@@ -337,6 +350,7 @@ void DRJParser::readyReadData()
       j_accum+=data[i];
       if(!j_accum_quoted) {
 	if(--j_accum_level==0) {
+	  //	  printf("RECV: %s\n",j_accum.constData());
 	  QJsonDocument jdoc=QJsonDocument::fromJson(j_accum);
 	  if(jdoc.isNull()) {
 	    emit parserError(DRJParser::JsonError,QString::fromUtf8(j_accum));
@@ -375,8 +389,6 @@ void DRJParser::Clear()
 
 void DRJParser::DispatchMessage(const QJsonDocument &jdoc)
 {
-  QString cmd;
-
   if(jdoc.object().contains("routernames")) {
     QJsonObject jo0=jdoc.object().value("routernames").toObject();
 
@@ -414,29 +426,21 @@ void DRJParser::DispatchMessage(const QJsonDocument &jdoc)
 
 	  j_snapshot_names[router]=QStringList();
 	*/
-	cmd=QString::asprintf("sourcenames %d\r\n",router);
-	j_socket->write(cmd.toUtf8());
+	QMap<QString,QVariant> router_fields;
+	router_fields["router"]=router;
 
-	cmd=QString::asprintf("destnames %d\r\n",router);
-	j_socket->write(cmd.toUtf8());
-
-	cmd=QString::asprintf("snapshots %d\r\n",router);
-	j_socket->write(cmd.toUtf8());
-
-	cmd=QString::asprintf("actionlist %d\r\n",router);
-	j_socket->write(cmd.toUtf8());
+	SendCommand("sourcenames",router_fields);
+	SendCommand("destnames",router_fields);
+	SendCommand("snapshots",router_fields);
+	SendCommand("actionlist",router_fields);
 	/*
-	  cmd=QString::asprintf("gpistat %d\r\n",router);
-	  j_socket->write(cmd.toUtf8());
-	  
-	  cmd=QString::asprintf("gpostat %d\r\n",router);
-	  j_socket->write(cmd.toUtf8());
+	SendCommand("gpistat",router_fields);
+	SendCommand("gpostat",router_fields);
 	*/
-	cmd=QString::asprintf("routestat %d\r\n",router);
-	j_socket->write(cmd.toUtf8());
+	SendCommand("routestat",router_fields);
       }
     }
-    j_socket->write("ping\r\n");
+    SendCommand("ping",QMap<QString,QVariant>());
   }
 
   if(jdoc.object().contains("sourcenames")) {
@@ -560,204 +564,29 @@ void DRJParser::DispatchMessage(const QJsonDocument &jdoc)
   }
 }
 
-/*
-void DRJParser::DispatchCommand(QString cmd)
+
+void DRJParser::SendCommand(const QString &verb,
+			    const QMap<QString,QVariant> &args)
 {
-  //printf("RECV: %s\n",(const char *)cmd.toUtf8());
+  QString msg;
 
-  bool ok=false;
-
-  QStringList f0=cmd.replace(">>","").toLower().split(" ");
-
-  //
-  // Process Login
-  //
-  if(f0[0]=="login") {
-    if((f0.size()==2)&&(f0[1]=="successful")) {
-      SendCommand("RouterNames");
+  if(args.size()==0) {
+    msg="{"+DRJsonNullField(verb,0,true)+"}";
+  }
+  else {
+    msg="{\""+verb+"\":{";
+    for(QMap<QString,QVariant>::const_iterator it=args.begin();it!=args.end();
+	it++) {
+      msg+=DRJsonField(it.key(),it.value(),0,(it+1)==args.end());
     }
-    else {
-      j_socket->deleteLater();
-      j_socket=NULL;
-      j_connected=false;
-      Clear();
-      emit connected(false,DRJParser::InvalidLogin);
-    }
-    return;
+    msg+="}";
+    msg+="}";
   }
 
-  //
-  // Check for delimiters
-  //
-  if(f0[0]=="begin") {
-    if(f0.size()==2) {
-      if(f0[1]=="routernames") {
-	j_router_names.clear();
-	j_reading_routers=true;
-      }
-    }
-    if(f0.size()==4) {
-      j_current_router=f0[3].toInt(&ok);
-      if(ok) {
-	if(f0[1]=="sourcenames") {
-	  j_input_names[j_current_router].clear();
-	  j_input_long_names[j_current_router].clear();
-	  j_input_source_numbers[j_current_router].clear();
-	  j_input_stream_addresses[j_current_router].clear();
-	  j_prev_input=0;
-	  j_reading_sources=true;
-	}
-	if(f0[1]=="destnames") {
-	  j_output_names[j_current_router].clear();
-	  j_output_long_names[j_current_router].clear();
-	  j_prev_output=0;
-	  j_reading_dests=true;
-	}
-	if(f0[1]=="snapshotnames") {
-	  j_snapshot_names[j_current_router].clear();
-	  j_reading_snapshots=true;
-	}
-      }
-    }
-    return;
-  }
-  if(f0[0]=="end") {
-    if(f0.size()==2) {
-      if(f0[1]=="routernames") {
-	j_reading_routers=false;
-	emit routerListChanged();
-	for(QMap<int,QString>::const_iterator it=j_router_names.begin();
-	    it!=j_router_names.end();it++) {
-	  SendCommand(QString::asprintf("SourceNames %u",it.key()));
-	  j_last_router=it.key();
-	}
-      }
-    }
-    if(f0.size()==4) {
-      j_current_router=f0[3].toInt(&ok);
-      if(ok) {
-	if((f0[1]=="sourcenames")&&(j_current_router==j_last_router)) {
-	  j_reading_sources=false;
-	  emit inputListChanged();
-	  for(QMap<int,QString>::const_iterator it=j_router_names.begin();
-	      it!=j_router_names.end();it++) {
-	    SendCommand(QString::asprintf("DestNames %u",it.key()));
-	  }
-	}
-	if((f0[1]=="destnames")&&(j_current_router==j_last_router)) {
-	  j_reading_dests=false;
-	  emit outputListChanged();
-	  for(QMap<int,QString>::const_iterator it=j_router_names.begin();
-	      it!=j_router_names.end();it++) {
-	    SendCommand(QString::asprintf("Snapshots %u",it.key()));
-	  }
-	}
-	if((f0[1]=="snapshotnames")&&(j_current_router==j_last_router)) {
-	  for(QMap<int,QString>::const_iterator it=j_router_names.begin();
-	      it!=j_router_names.end();it++) {
-	    if(j_output_names[it.key()].size()>0) {
-	      SendCommand(QString::asprintf("RouteStat %u\r\n",it.key()));
-	      j_last_xpoint_router=it.key();
-	      QMap<int,QString>::const_iterator it2=
-		j_output_names[it.key()].end();
-	      it2--;
-	      j_last_xpoint_output=it2.key();
-	    }
-	  }
-	  j_reading_snapshots=false;
-	  j_reading_xpoints=true;
-	}
-      }
-    }
-    return;
-  }
+  //  printf("SENT: %s\n",msg.toUtf8().constData());
 
-  //
-  // Populate Endpoint Names
-  //
-  if(j_reading_routers) {
-    ReadRouterName(cmd);
-    return;
-  }
-  if(j_reading_sources) {
-    ReadSourceName(cmd);
-    return;
-  }
-  if(j_reading_dests) {
-    ReadDestName(cmd);
-    return;
-  }
-  if(j_reading_snapshots) {
-    ReadSnapshotName(cmd);
-    return;
-  }
-
-  //
-  // Process Crosspoint Changes
-  //
-  if((f0[0]=="routestat")&&(f0.size()==5)) {
-    int router=f0[1].toUInt(&ok);
-    if(ok) {
-      int output=f0[2].toInt(&ok);
-      if(ok) {
-	int input=f0[3].toInt(&ok);
-	if(ok) {
-	  j_output_xpoints[router][output]=input;
-	  emit outputCrosspointChanged(router,output,input);
-	  if((router==j_last_xpoint_router)&&(output==j_last_xpoint_output)) {
-	    j_last_xpoint_router=-1;
-	    j_last_xpoint_output=-1;
-
-	    for(QMap<int,QString>::const_iterator it=j_router_names.begin();
-		it!=j_router_names.end();it++) {
-	      SendCommand(QString::asprintf("GPIStat %d",it.key()));
-	      SendCommand(QString::asprintf("GPOStat %d",it.key()));
-	    }
-	    j_startup_timer->start(DRJPARSER_STARTUP_INTERVAL);
-	  }
-	}
-      }
-    }
-  }
-
-  //
-  // Process GPI State Changes
-  //
-  if((f0[0]=="gpistat")&&(f0.size()==4)) {
-    int router=f0[1].toUInt(&ok);
-    j_gpio_supporteds[router]=true;
-    if(ok) {
-      int input=f0[2].toInt(&ok);
-      if(ok) {
-	j_gpi_states[router][input]=f0[3];
-	emit gpiStateChanged(router,input,f0[3]);
-      }
-    }
-  }
-
-  //
-  // Process GPO State Changes
-  //
-  if((f0[0]=="gpostat")&&(f0.size()==4)) {
-    int router=f0[1].toUInt(&ok);
-    if(ok) {
-      int output=f0[2].toInt(&ok);
-      if(ok) {
-	j_gpo_states[router][output]=f0[3];
-	emit gpoStateChanged(router,output,f0[3]);
-      }
-    }
-  }
-
-  //  printf("CMD: %s\n",(const char *)cmd.toUtf8());
+  j_socket->write(msg.toUtf8());
 }
-*/
-
-void DRJParser::SendCommand(const QString &cmd)
-{
-  j_socket->write((cmd+"\r\n").toUtf8(),cmd.length()+2);
-}
-
 
 void DRJParser::MakeSocket()
 {

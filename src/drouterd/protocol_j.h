@@ -60,8 +60,10 @@ class ProtocolJ : public Protocol
  private:
   void DispatchMessage(const QJsonDocument &jdoc);
   void ActivateRoute(unsigned router,unsigned output,unsigned input);
-  void TriggerGpi(unsigned router,unsigned input,unsigned msecs,const QString &code);
-  void TriggerGpo(unsigned router,unsigned output,unsigned msecs,const QString &code);
+  void TriggerGpi(unsigned router,unsigned input,unsigned msecs,
+		  const QString &code);
+  void TriggerGpo(unsigned router,unsigned output,unsigned msecs,
+		  const QString &code);
   void SendSnapshotNames(unsigned router);
   void SendSnapshotRoutes(unsigned router,const QString &snap_name);
   void ActivateSnapshot(unsigned router,const QString &snapshot_name);
@@ -92,52 +94,11 @@ class ProtocolJ : public Protocol
   void MaskStat(bool state);
   void HelpMessage(const QString &keyword);
   void SendPingResponse();
-  //  void ProcessCommand(const QString &cmd);
   void LoadMaps();
   void LoadHelp();
   void AddRouteEvent(int router,int output,int input);
   void AddSnapEvent(int router,const QString &name);
-
   void SendError(DRJParser::ErrorType etype,const QString &remarks=QString());
-
-  QString JsonPadding(int padding);
-  QString JsonEscape(const QString &str);
-  QString JsonNullField(const QString &name,int padding=0,
-			bool final=false);
-  QString JsonField(const QString &name,bool value,int padding=0,
-		    bool final=false);
-  QString JsonField(const QString &name,int value,int padding=0,
-		    bool final=false);
-  QString JsonField(const QString &name,unsigned value,int padding=0,
-		    bool final=false);
-  QString JsonField(const QString &name,const QString &value,
-		    int padding=0,bool final=false);
-  QString JsonField(const QString &name,const QDateTime &value,
-		    int padding=0,bool final=false);
-  QString JsonField(const QString &name,const QTime &value,int utc_offset,
-		    int padding=0,bool final=false);
-  QString JsonCloseBlock(bool final);
-
-  //
-  // XML xs:date format
-  //
-  QDate ParseXmlDate(const QString &str,bool *ok);
-  QString WriteXmlDate(const QDate &date);
-
-  //
-  // XML xs:time format
-  //
-  QTime ParseXmlTime(const QString &str,bool *ok,int *day_offset=NULL);
-  QString WriteXmlTime(const QTime &time,int utc_offset);
-
-  //
-  // XML xs:dateTime format
-  //
-  QDateTime ParseXmlDateTime(const QString &str,bool *ok);
-  QString WriteXmlDateTime(const QDateTime &dt);
-
-  int TimeZoneOffset();
-
   QMap<QString,QString> proto_help_patterns;
   QMap<QString,QString> proto_help_comments;
   QTcpSocket *proto_socket;
@@ -149,7 +110,6 @@ class ProtocolJ : public Protocol
   QMap <int,int> proto_event_lookups;
   QString proto_username;
   QString proto_hostname;
-
   bool proto_destinations_subscribed;
   bool proto_gpis_subscribed;
   bool proto_gpos_subscribed;

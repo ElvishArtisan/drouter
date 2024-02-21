@@ -102,7 +102,7 @@ class DRJParser : public QObject
  private:
   void Clear();
   void DispatchMessage(const QJsonDocument &jdoc);
-  void SendCommand(const QString &cmd);
+  void SendCommand(const QString &verb,const QMap<QString,QVariant> &args);
   void MakeSocket();
 
   QList<int> j_router_filter;
