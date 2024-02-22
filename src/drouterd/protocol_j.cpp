@@ -967,9 +967,16 @@ QString ProtocolJ::ActionListSqlFields() const
     "`PERM_SA_ACTIONS`.`SAT`,"+                 // 08
     "`PERM_SA_ACTIONS`.`ROUTER_NUMBER`,"+       // 09
     "`PERM_SA_ACTIONS`.`DESTINATION_NUMBER`,"+  // 10
-    "`PERM_SA_ACTIONS`.`SOURCE_NUMBER`,"+       // 11
-    "`PERM_SA_ACTIONS`.`COMMENT` "+             // 12
-    "from `PERM_SA_ACTIONS` ";
+    "`SA_DESTINATIONS`.`NAME`,"+                // 11
+    "`PERM_SA_ACTIONS`.`SOURCE_NUMBER`,"+       // 12
+    "`SA_SOURCES`.`NAME`,"+                     // 13
+    "`PERM_SA_ACTIONS`.`COMMENT` "+             // 14
+    "from `PERM_SA_ACTIONS` left join `SA_DESTINATIONS` "+
+    "on `PERM_SA_ACTIONS`.`ROUTER_NUMBER`=`SA_DESTINATIONS`.`ROUTER_NUMBER` && "+
+    "`PERM_SA_ACTIONS`.`DESTINATION_NUMBER`=`SA_DESTINATIONS`.`SOURCE_NUMBER` "+
+    "left join `SA_SOURCES` on "+
+    "`PERM_SA_ACTIONS`.`ROUTER_NUMBER`=`SA_SOURCES`.`ROUTER_NUMBER` && "+
+    "`PERM_SA_ACTIONS`.`SOURCE_NUMBER`=`SA_SOURCES`.`SOURCE_NUMBER` ";
 }
 
 
@@ -987,8 +994,10 @@ QString ProtocolJ::ActionListMessage(DRSqlQuery *q,int padding,bool final)
   json+=DRJsonField("friday",q->value(7).toString()=="Y",4+padding);
   json+=DRJsonField("saturday",q->value(8).toString()=="Y",4+padding);
   json+=DRJsonField("destination",1+q->value(10).toInt(),4+padding);
-  json+=DRJsonField("source",1+q->value(11).toInt(),4+padding);
-  json+=DRJsonField("comment",q->value(12).toString(),4+padding,true);
+  json+=DRJsonField("destinationName",q->value(11).toString(),4+padding);
+  json+=DRJsonField("source",1+q->value(12).toInt(),4+padding);
+  json+=DRJsonField("sourceName",q->value(13).toString(),4+padding);
+  json+=DRJsonField("comment",q->value(14).toString(),4+padding,true);
   json+=DRJsonPadding(padding)+"}";
   if(!final) {
     json+=",";

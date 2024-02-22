@@ -135,6 +135,105 @@
   </para>
 
   <!-- *********************************** -->
+  <!-- *** START OF ActionEdit COMMAND *** -->
+  <!-- *********************************** -->
+  <sect2 xml:id="sect.commands.actionedit">
+    <title>ActionEdit</title>
+    <para>
+      Modify the parameters of an existing action.
+    </para>
+    <sect3 xml:id="sect.commands.actionedit.send_syntax">
+      <title>Send Syntax</title>
+      <literallayout class="monospaced">
+{
+    "actionedit": {
+        "router": <replaceable>router-num</replaceable>
+        "action": {
+            <replaceable>action-fields</replaceable>
+        }
+    }
+}
+      </literallayout>
+      <para>
+	See <xref linkend="table.commands.actionlist.send.parameters"/> for
+	the contents of <replaceable>action-fields</replaceable>.
+      </para>
+    </sect3>
+    <sect3 xml:id="sect.commands.actionedit.response_syntax">
+      <title>Response Syntax</title>
+      <literallayout class="monospaced">
+{
+    "actionedit": {
+        "router": <replaceable>router-num</replaceable>
+        "action": {
+            <replaceable>action-fields</replaceable>
+        }
+    }
+}
+      </literallayout>
+      <para>
+	See <xref linkend="table.commands.actionlist.send.parameters"/> for
+	the contents of <replaceable>action-fields</replaceable>.
+      </para>
+    </sect3>
+
+    <sect3 xml:id="sect.commands.actionedit.example">
+      <title>Example</title>
+      <sect4 xml:id="sect.commands.actionedit.example.send">
+	<title>Send</title>
+	<literallayout class="monospaced">
+{
+    "actionedit": {
+        "router": 2,
+        "action": {
+            "id": 1234,
+            "time": "16:00:00Z",
+            "sunday": false,
+            "monday": true,
+            "tuesday": false,
+            "wednesday": false,
+            "thursday": false,
+            "friday": false,
+            "saturday": false,
+            "destination": 2,
+            "source": 3,
+            "comment": "Take input 3 to output 2"
+        }
+    }
+}
+	</literallayout>
+      </sect4>
+      <sect4 xml:id="sect.commands.actionedit.example.response">
+	<title>Response</title>
+	<literallayout class="monospaced">
+{
+    "actionedit": {
+        "router": 2,
+        "action": {
+            "id": 1234,
+            "time": "16:00:00Z",
+            "sunday": false,
+            "monday": true,
+            "tuesday": false,
+            "wednesday": false,
+            "thursday": false,
+            "friday": false,
+            "saturday": false,
+            "destination": 2,
+            "source": 3,
+            "comment": "Take input 3 to output 2"
+        }
+    }
+}
+	</literallayout>
+      </sect4>
+    </sect3>
+  </sect2>
+  <!-- *********************************** -->
+  <!-- **** END OF ActionEdit COMMAND **** -->
+  <!-- *********************************** -->
+
+  <!-- *********************************** -->
   <!-- *** START OF ActionList COMMAND *** -->
   <!-- *********************************** -->
   <sect2 xml:id="sect.commands.actionlist">
@@ -206,7 +305,9 @@
             "friday":<replaceable>boolean</replaceable>,
             "saturday":<replaceable>boolean</replaceable>,
             "destination":<replaceable>dest-num</replaceable>,
+            "destinationName":<replaceable>dest-name</replaceable>,
             "source":<replaceable>src-num</replaceable>,
+            "sourceName":<replaceable>src-name</replaceable>,
             "comment"<replaceable>str</replaceable>
         }[,]
     [...]
@@ -221,7 +322,9 @@
             "friday":<replaceable>boolean</replaceable>,
             "saturday":<replaceable>boolean</replaceable>,
             "destination":<replaceable>dest-num</replaceable>,
+            "destinationName":<replaceable>dest-name</replaceable>,
             "source":<replaceable>src-num</replaceable>,
+            "sourceName":<replaceable>src-name</replaceable>,
             "comment"<replaceable>str</replaceable>
         }
     }
@@ -306,6 +409,17 @@
 	    </row>
 	    <row>
 	      <entry>
+		<replaceable>dest-name</replaceable>
+	      </entry>
+	      <entry>
+		Destination name
+	      </entry>
+	      <entry>
+		String
+	      </entry>
+	    </row>
+	    <row>
+	      <entry>
 		<replaceable>source-num</replaceable>
 	      </entry>
 	      <entry>
@@ -313,6 +427,17 @@
 	      </entry>
 	      <entry>
 		Number
+	      </entry>
+	    </row>
+	    <row>
+	      <entry>
+		<replaceable>source-name</replaceable>
+	      </entry>
+	      <entry>
+		Source name
+	      </entry>
+	      <entry>
+		String
 	      </entry>
 	    </row>
 	    <row>
@@ -359,9 +484,11 @@
             "thursday": false,
             "friday": false,
             "saturday": false,
-            "destination": 2,
-            "source": 3,
-            "comment": "Take input 3 to output 2"
+            "destination": 4,
+            "destinationName": "DST 4",
+            "source": 4,
+            "sourceName": "SRC 4",
+            "comment": "Take input 4 to output 4"
         },
         "action1": {
             "id": 2,
@@ -373,9 +500,11 @@
             "thursday": false,
             "friday": false,
             "saturday": false,
-            "destination": 2,
-            "source": 4,
-            "comment": "Take input 4 to output 2"
+            "destination": 4,
+            "destinationName": "DST 4",
+            "source": 5,
+            "sourceName": "RDProbe",
+            "comment": "Take input 5 to output 4"
         }
     }
 }
@@ -2408,7 +2537,7 @@
 	      <entry>
 		Code representing the states of the five lines of the
 		specified GPI, with &quot;h&quot; indicating OFF, and
-		&quot;h&quot; indicating ON.
+		&quot;l&quot; indicating ON.
 	      </entry>
 	      <entry>
 		String
@@ -2544,7 +2673,7 @@
 	      <entry>
 		Code representing the states of the five lines of the
 		specified GPO, with &quot;h&quot; indicating OFF, and
-		&quot;h&quot; indicating ON.
+		&quot;l&quot; indicating ON.
 	      </entry>
 	      <entry>
 		String

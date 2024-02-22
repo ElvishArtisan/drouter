@@ -1066,3 +1066,6 @@
 2024-02-21 Fred Gleason <fredg@paravelsystems.com>
 	* Implemented the 'duration' parameter in the 'TriggerGPI' and
 	'TriggerGPO' Protocol J commands.
+2024-02-22 Fred Gleason <fredg@paravelsystems.com>
+	* Added 'sourceName' and 'destinationName' fields to the
+	'ActionList' command response in Protocol J.
