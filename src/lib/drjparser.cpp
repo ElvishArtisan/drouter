@@ -24,7 +24,6 @@
 #include <QStringList>
 
 #include "drjparser.h"
-#include "drjson.h"
 
 DRJParser::DRJParser(bool use_long_names,QObject *parent)
   : QObject(parent)
@@ -152,7 +151,7 @@ int DRJParser::outputCrosspoint(int router,int output) const
 
 void DRJParser::setOutputCrosspoint(int router,int output,int input)
 {
-  QMap<QString,QVariant> fields;
+  QVariantMap fields;
 
   fields["router"]=router;
   fields["destination"]=output;
@@ -170,7 +169,7 @@ QString DRJParser::gpiState(int router,int input) const
 
 void DRJParser::setGpiState(int router,int input,const QString &code,int msec)
 {
-  QMap<QString,QVariant> fields;
+  QVariantMap fields;
 
   fields["router"]=router;
   fields["source"]=input;
@@ -189,7 +188,7 @@ QString DRJParser::gpoState(int router,int output) const
 
 void DRJParser::setGpoState(int router,int output,const QString &code,int msec)
 {
-  QMap<QString,QVariant> fields;
+  QVariantMap fields;
 
   fields["router"]=router;
   fields["destination"]=output;
@@ -202,12 +201,18 @@ void DRJParser::setGpoState(int router,int output,const QString &code,int msec)
 
 void DRJParser::activateSnapshot(int router,const QString &snapshot)
 {
-  QMap<QString,QVariant> fields;
+  QVariantMap fields;
 
   fields["router"]=router;
   fields["snapshot"]=snapshot;
 
   SendCommand("activatesnap",fields);
+}
+
+
+void DRJParser::saveAction(int router,int rownum)
+{
+  SendCommand("actionedit",actionModel(router)->rowMetadata(rownum));
 }
 
 
@@ -300,7 +305,7 @@ void DRJParser::connectedData()
   j_accum_quoted=false;
   j_accum_level=0;
 
-  SendCommand("routernames",QMap<QString,QVariant>());
+  SendCommand("routernames",QVariantMap());
 }
 
 
@@ -426,7 +431,7 @@ void DRJParser::DispatchMessage(const QJsonDocument &jdoc)
 
 	  j_snapshot_names[router]=QStringList();
 	*/
-	QMap<QString,QVariant> router_fields;
+	QVariantMap router_fields;
 	router_fields["router"]=router;
 
 	SendCommand("sourcenames",router_fields);
@@ -440,7 +445,8 @@ void DRJParser::DispatchMessage(const QJsonDocument &jdoc)
 	SendCommand("routestat",router_fields);
       }
     }
-    SendCommand("ping",QMap<QString,QVariant>());
+    j_router_model->finalize();
+    SendCommand("ping",QVariantMap());
   }
 
   if(jdoc.object().contains("sourcenames")) {
@@ -452,7 +458,7 @@ void DRJParser::DispatchMessage(const QJsonDocument &jdoc)
 	if(it.key().left(6)=="source") {
 	  QJsonObject jo1=it.value().toObject();
 	  QStringList keys=jo1.keys();
-	  QMap<QString,QVariant> fields;
+	  QVariantMap fields;
 	  for(int i=0;i<keys.size();i++) {
 	    fields[keys.at(i)]=jo1.value(keys.at(i)).toVariant();
 	  }
@@ -473,7 +479,7 @@ void DRJParser::DispatchMessage(const QJsonDocument &jdoc)
 	if(it.key().left(11)=="destination") {
 	  QJsonObject jo1=it.value().toObject();
 	  QStringList keys=jo1.keys();
-	  QMap<QString,QVariant> fields;
+	  QVariantMap fields;
 	  for(int i=0;i<keys.size();i++) {
 	    fields[keys.at(i)]=jo1.value(keys.at(i)).toVariant();
 	  }
@@ -510,7 +516,7 @@ void DRJParser::DispatchMessage(const QJsonDocument &jdoc)
 	if(it.key().left(6)=="action") {
 	  QJsonObject jo1=it.value().toObject();
 	  QStringList keys=jo1.keys();
-	  QMap<QString,QVariant> fields;
+	  QVariantMap fields;
 	  for(int i=0;i<keys.size();i++) {
 	    fields[keys.at(i)]=jo1.value(keys.at(i)).toVariant();
 	  }
@@ -565,28 +571,20 @@ void DRJParser::DispatchMessage(const QJsonDocument &jdoc)
 }
 
 
-void DRJParser::SendCommand(const QString &verb,
-			    const QMap<QString,QVariant> &args)
+void DRJParser::SendCommand(const QString &verb,const QVariantMap &args)
 {
-  QString msg;
+  QJsonObject jo0;
+  QJsonDocument jdoc;
 
-  if(args.size()==0) {
-    msg="{"+DRJsonNullField(verb,0,true)+"}";
-  }
-  else {
-    msg="{\""+verb+"\":{";
-    for(QMap<QString,QVariant>::const_iterator it=args.begin();it!=args.end();
-	it++) {
-      msg+=DRJsonField(it.key(),it.value(),0,(it+1)==args.end());
-    }
-    msg+="}";
-    msg+="}";
-  }
+  jo0.insert(verb,QJsonObject::fromVariantMap(args));
+  jdoc.setObject(jo0);
+  QString json=jdoc.toJson();
 
-  //  printf("SENT: %s\n",msg.toUtf8().constData());
+  //  printf("SENT: %s\n",json.toUtf8().constData());
 
-  j_socket->write(msg.toUtf8());
+  j_socket->write(json.toUtf8());
 }
+
 
 void DRJParser::MakeSocket()
 {
@@ -601,4 +599,3 @@ void DRJParser::MakeSocket()
   connect(j_socket,SIGNAL(error(QAbstractSocket::SocketError)),
 	  this,SLOT(errorData(QAbstractSocket::SocketError)));
 }
-

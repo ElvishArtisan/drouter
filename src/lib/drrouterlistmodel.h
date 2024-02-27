@@ -42,6 +42,7 @@ class DRRouterListModel : public QAbstractTableModel
   DREndPointMap::RouterType routerType(int rownum) const;
   int rowNumber(int router) const;
   void addRouter(int number,const QString &name,const QString &rtype);
+  void finalize();
 
  private:
   QFont d_font;
@@ -51,6 +52,7 @@ class DRRouterListModel : public QAbstractTableModel
   QList<int> d_numbers;
   QList<QVariant> d_icons;
   QList<DREndPointMap::RouterType> d_router_types;
+  QMap<int,QVariantMap> d_raw_metadatas;
 };
 
 

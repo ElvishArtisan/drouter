@@ -237,13 +237,15 @@ QSizePolicy MainWidget::sizePolicy() const
 
 void MainWidget::routerBoxActivatedData(int n)
 {
-  int router=panel_parser->routerModel()->routerNumber(n);
+  if(n>=0) {
+    int router=panel_parser->routerModel()->routerNumber(n);
 
-  panel_output_box->setModel(panel_parser->outputModel(router));
-  panel_output_box->setCurrentIndex(0);
-  outputBoxActivatedData(0);
+    panel_output_box->setModel(panel_parser->outputModel(router));
+    panel_output_box->setCurrentIndex(0);
+    outputBoxActivatedData(0);
 
-  SetArmedState(false);
+    SetArmedState(false);
+  }
 }
 
 
@@ -288,8 +290,19 @@ void MainWidget::connectedData(bool state,DRJParser::ConnectionState cstate)
 {
   if(state) {
     if(panel_initial_router>0) {
+      if(panel_parser->routerModel()->rowNumber(panel_initial_router)<0) {
+	QMessageBox::warning(this,"XYPanel - "+tr("Error"),tr("Output")+
+			     QString::asprintf(" %d ",panel_initial_router)+
+			     tr("does not exist."));
+	exit(1);
+      }
       panel_router_box->setCurrentIndex(panel_parser->routerModel()->
 					rowNumber(panel_initial_router));
+    }
+    else {
+      if(panel_router_box->count()>0) {
+	panel_router_box->setCurrentIndex(0);
+      }
     }
     routerBoxActivatedData(panel_router_box->currentIndex());
     panel_initial_connected=true;

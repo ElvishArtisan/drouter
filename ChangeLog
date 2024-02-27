@@ -1069,3 +1069,5 @@
 2024-02-22 Fred Gleason <fredg@paravelsystems.com>
 	* Added 'sourceName' and 'destinationName' fields to the
 	'ActionList' command response in Protocol J.
+2024-02-27 Fred Gleason <fredg@paravelsystems.com>
+	* Modified Protocol J components to use Qt-based Json methods.

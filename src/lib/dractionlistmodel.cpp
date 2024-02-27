@@ -44,62 +44,72 @@ DRActionListModel::DRActionListModel(int router,QObject *parent)
   unsigned center=Qt::AlignCenter;
   unsigned right=Qt::AlignRight|Qt::AlignVCenter;
 
-  d_headers.push_back(tr("Comment"));        // 00
+  d_headers.push_back(tr("Comment"));            // 00
   d_alignments.push_back(left);
   d_keys.push_back("comment");
   d_icons.push_back(QPixmap(xpoint_16x16_xpm));
 
-  d_headers.push_back(tr("Time"));           // 01
+  d_headers.push_back(tr("Time"));               // 01
   d_alignments.push_back(center);
   d_keys.push_back("time");
   d_icons.push_back(QVariant());
 
-  d_headers.push_back(tr("Sun"));            // 02
+  d_headers.push_back(tr("Sun"));                // 02
   d_alignments.push_back(center);
   d_keys.push_back("sunday");
   d_icons.push_back(QVariant());
 
-  d_headers.push_back(tr("Mon"));            // 03
+  d_headers.push_back(tr("Mon"));                // 03
   d_alignments.push_back(center);
   d_keys.push_back("monday");
   d_icons.push_back(QVariant());
 
-  d_headers.push_back(tr("Tue"));            // 04
+  d_headers.push_back(tr("Tue"));                // 04
   d_alignments.push_back(center);
   d_keys.push_back("tuesday");
   d_icons.push_back(QVariant());
 
-  d_headers.push_back(tr("Wed"));            // 05
+  d_headers.push_back(tr("Wed"));                // 05
   d_alignments.push_back(center);
   d_keys.push_back("wednesday");
   d_icons.push_back(QVariant());
 
-  d_headers.push_back(tr("Thu"));            // 06
+  d_headers.push_back(tr("Thu"));                // 06
   d_alignments.push_back(center);
   d_keys.push_back("thursday");
   d_icons.push_back(QVariant());
 
-  d_headers.push_back(tr("Fri"));            // 07
+  d_headers.push_back(tr("Fri"));                // 07
   d_alignments.push_back(center);
   d_keys.push_back("friday");
   d_icons.push_back(QVariant());
 
-  d_headers.push_back(tr("Sat"));            // 08
+  d_headers.push_back(tr("Sat"));                // 08
   d_alignments.push_back(center);
   d_keys.push_back("saturday");
   d_icons.push_back(QVariant());
 
-  d_headers.push_back(tr("Source"));         // 09
-  d_alignments.push_back(left);
+  d_headers.push_back(tr("Src"));                // 09
+  d_alignments.push_back(right);
   d_keys.push_back("source");
   d_icons.push_back(QPixmap(input_16x16_xpm));
 
-  d_headers.push_back(tr("Destination"));    // 10
+  d_headers.push_back(tr("Source Name"));        // 10
   d_alignments.push_back(left);
+  d_keys.push_back("sourceName");
+  d_icons.push_back(QVariant());
+
+  d_headers.push_back(tr("Dst"));                // 11
+  d_alignments.push_back(right);
   d_keys.push_back("destination");
   d_icons.push_back(QPixmap(output_16x16_xpm));
 
-  d_headers.push_back(tr("Id"));             // 11
+  d_headers.push_back(tr("Destination Name"));   // 12
+  d_alignments.push_back(left);
+  d_keys.push_back("destinationName");
+  d_icons.push_back(QVariant());
+
+  d_headers.push_back(tr("Id"));                 // 13
   d_alignments.push_back(right);
   d_keys.push_back("id");
   d_icons.push_back(QVariant());
@@ -210,9 +220,22 @@ int DRActionListModel::id(int rownum) const
 }
 
 
-QMap<QString,QVariant> DRActionListModel::rowMetadata(int rownum)
+QVariantMap DRActionListModel::rowMetadata(int rownum) const
 {
   return d_metadatas.at(rownum);
+}
+
+
+void DRActionListModel::setRowMetadata(const QVariantMap &fields)
+{
+  int id=fields.value("id").toInt();
+  int rownum=d_ids.indexOf(id);
+
+  if(rownum>=0) {
+    UpdateRow(rownum,fields);
+    emit dataChanged(index(rownum,0),index(rownum,10),
+		     QVector<int>(1,Qt::DisplayRole));
+  }
 }
 
 
@@ -222,7 +245,7 @@ int DRActionListModel::rowNumber(int id) const
 }
 
 
-void DRActionListModel::addAction(const QMap<QString,QVariant> &fields)
+void DRActionListModel::addAction(const QVariantMap &fields)
 {
   //
   // Sanity Checks
@@ -251,37 +274,43 @@ void DRActionListModel::finalize()
   //
   // Insert The Fields
   //
+  QList<QVariant> row;
+  for(int i=0;i<d_headers.size();i++) {
+    row.push_back(QString());
+  }
+  int rownum=0;
   beginInsertRows(QModelIndex(),0,d_raw_metadatas.size());
-  for(QMap<QTime,QMap<QString,QVariant> >::const_iterator it=d_raw_metadatas.begin();
+  for(QMap<QTime,QVariantMap >::const_iterator it=d_raw_metadatas.begin();
       it!=d_raw_metadatas.end();it++) {
-    QList<QVariant> row;
-    row.push_back(it.value().value("comment"));
-    row.push_back(it.value().value("time").toTime().toString("hh:mm:ss"));
-    row.push_back(DowMarker(it.value().value("sunday").toBool(),tr("Sun")));
-    row.push_back(DowMarker(it.value().value("monday").toBool(),tr("Mon")));
-    row.push_back(DowMarker(it.value().value("tuesday").toBool(),tr("Tue")));
-    row.push_back(DowMarker(it.value().value("wednesday").toBool(),tr("Wed")));
-    row.push_back(DowMarker(it.value().value("thursday").toBool(),tr("Thu")));
-    row.push_back(DowMarker(it.value().value("friday").toBool(),tr("Fri")));
-    row.push_back(DowMarker(it.value().value("saturday").toBool(),tr("Sat")));
-    int input=1+it.value().value("source").toInt();
-    row.push_back(QString::asprintf("%d - %s",
-			   input,
-			   d_inputs_model->endPointMetadata(input).
-			     value("name").toString().toUtf8().constData()));
-    int output=1+it.value().value("destination").toInt();
-    row.push_back(QString::asprintf("%d - %s",
-			   output,
-			   d_outputs_model->endPointMetadata(output).
-			     value("name").toString().toUtf8().constData()));
-    row.push_back(QString::asprintf("%d",it.value().value("id").toInt()));
     d_texts.push_back(row);
-
     d_ids.push_back(it.value().value("id").toInt());
     d_metadatas.push_back(it.value());
+    UpdateRow(rownum,it.value());
+    rownum++;
   }
   d_raw_metadatas.clear();
   endInsertRows();
+}
+
+
+void DRActionListModel::UpdateRow(int rownum,const QVariantMap &fields)
+{
+  d_texts[rownum][0]=fields.value("comment").toString();
+  d_texts[rownum][1]=fields.value("time").toTime().toString("hh:mm:ss");
+  d_texts[rownum][2]=DowMarker(fields.value("sunday").toBool(),tr("Sun"));
+  d_texts[rownum][3]=DowMarker(fields.value("monday").toBool(),tr("Mon"));
+  d_texts[rownum][4]=DowMarker(fields.value("tuesday").toBool(),tr("Tue"));
+  d_texts[rownum][5]=DowMarker(fields.value("wednesday").toBool(),tr("Wed"));
+  d_texts[rownum][6]=DowMarker(fields.value("thursday").toBool(),tr("Thu"));
+  d_texts[rownum][7]=DowMarker(fields.value("friday").toBool(),tr("Fri"));
+  d_texts[rownum][8]=DowMarker(fields.value("saturday").toBool(),tr("Sat"));
+  d_texts[rownum][9]=QString::asprintf("%d",fields.value("source").toInt());
+  d_texts[rownum][10]=fields.value("sourceName").toString();
+  d_texts[rownum][11]=
+    QString::asprintf("%d",fields.value("destination").toInt());
+  d_texts[rownum][12]=fields.value("destinationName").toString();
+  d_texts[rownum][13]=QString::asprintf("%d",fields.value("id").toInt());
+  d_metadatas[rownum]=fields;
 }
 
 

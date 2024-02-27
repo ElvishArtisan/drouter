@@ -35,7 +35,6 @@ dist_libdrouter_la_SOURCES = dractionlistmodel.cpp dractionlistmodel.h\
                              drendpointmap.cpp drendpointmap.h\
                              drendpointlistmodel.cpp drendpointlistmodel.h\
                              drjparser.cpp drjparser.h\
-                             drjson.cpp drjson.h\
                              drlogindialog.cpp drlogindialog.h\
                              drmultistatewidget.cpp drmultistatewidget.h\
                              drrouterlistmodel.cpp drrouterlistmodel.h\

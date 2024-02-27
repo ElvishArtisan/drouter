@@ -133,13 +133,13 @@ int DREndPointListModel::endPointNumber(int rownum) const
 }
 
 
-QMap<QString,QVariant> DREndPointListModel::endPointMetadata(int endpt)
+QVariantMap DREndPointListModel::endPointMetadata(int endpt)
 {
   return d_metadatas.at(rowNumber(endpt));
 }
 
 
-QMap<QString,QVariant> DREndPointListModel::rowMetadata(int rownum)
+QVariantMap DREndPointListModel::rowMetadata(int rownum)
 {
   return d_metadatas.at(rownum);
 }
@@ -151,7 +151,7 @@ int DREndPointListModel::rowNumber(int endpt) const
 }
 
 
-void DREndPointListModel::addEndPoint(const QMap<QString,QVariant> &fields)
+void DREndPointListModel::addEndPoint(const QVariantMap &fields)
 {
   //
   // Sanity Checks
@@ -193,7 +193,7 @@ void DREndPointListModel::finalize()
   // Insert The Fields
   //
   beginInsertRows(QModelIndex(),0,d_raw_metadatas.size());
-  for(QMap<int,QMap<QString,QVariant> >::const_iterator it=d_raw_metadatas.begin();
+  for(QMap<int,QVariantMap>::const_iterator it=d_raw_metadatas.begin();
       it!=d_raw_metadatas.end();it++) {
     QList<QVariant> row;
     row.push_back(QString::asprintf("%d - %s",it.key(),

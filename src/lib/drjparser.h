@@ -75,6 +75,7 @@ class DRJParser : public QObject
   QString gpoState(int router,int output) const;
   void setGpoState(int router,int output,const QString &code,int msec=-1);
   void activateSnapshot(int router,const QString &snapshot);
+  void saveAction(int router,int rownum);
   void connectToHost(const QString &hostname,uint16_t port,
 		     const QString &username,const QString &passwd);
   static QString connectionStateString(ConnectionState cstate);
@@ -102,7 +103,7 @@ class DRJParser : public QObject
  private:
   void Clear();
   void DispatchMessage(const QJsonDocument &jdoc);
-  void SendCommand(const QString &verb,const QMap<QString,QVariant> &args);
+  void SendCommand(const QString &verb,const QVariantMap &args);
   void MakeSocket();
 
   QList<int> j_router_filter;

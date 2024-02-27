@@ -68,6 +68,7 @@ class EditActionDialog : public QDialog
   QPushButton *d_ok_button;
   QPushButton *d_cancel_button;
   DRJParser *d_parser;
+  int d_id;
   int d_router;
   int d_rownum;
 };

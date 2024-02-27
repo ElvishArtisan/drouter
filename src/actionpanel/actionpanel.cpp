@@ -224,9 +224,10 @@ void MainWidget::editData()
   int row=SelectedRow();
 
   if(row>=0) {
-    if(d_edit_dialog->exec(d_parser->routerModel()->
-			   routerNumber(d_router_box->currentIndex()),row)) {
-
+    int router=
+      d_parser->routerModel()->routerNumber(d_router_box->currentIndex());
+    if(d_edit_dialog->exec(router,row)) {
+      d_parser->saveAction(router,row);
     }
   }
 }

@@ -69,15 +69,13 @@ class ProtocolJ : public Protocol
   void ActivateSnapshot(unsigned router,const QString &snapshot_name);
   void SendSourceInfo(unsigned router);
   QString SourceNamesSqlFields(DREndPointMap::RouterType type) const;
-  QString SourceNamesMessage(DREndPointMap::RouterType type,DRSqlQuery *q,
-			     int padding=0,bool final=false);
+  QJsonObject SourceNamesMessage(DREndPointMap::RouterType type,DRSqlQuery *q);
   void SendDestInfo(unsigned router);
   QString DestNamesSqlFields(DREndPointMap::RouterType type) const;
-  QString DestNamesMessage(DREndPointMap::RouterType type,DRSqlQuery *q,
-			   int padding=0,bool final=false);
+  QJsonObject DestNamesMessage(DREndPointMap::RouterType type,DRSqlQuery *q);
   void SendActionInfo(unsigned router);
   QString ActionListSqlFields() const;
-  QString ActionListMessage(DRSqlQuery *q,int padding=0,bool final=false);
+  QJsonObject ActionListMessage(DRSqlQuery *q);
   void SendGpiInfo(unsigned router,int input);
   QString GPIStatSqlFields() const;
   QString GPIStatMessage(DRSqlQuery *q);
@@ -92,7 +90,7 @@ class ProtocolJ : public Protocol
   void MaskGpoStat(bool state);
   void MaskRouteStat(bool state);
   void MaskStat(bool state);
-  void HelpMessage(const QString &keyword);
+  //  void HelpMessage(const QString &keyword);
   void SendPingResponse();
   void LoadMaps();
   void LoadHelp();

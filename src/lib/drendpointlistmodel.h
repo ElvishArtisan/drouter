@@ -40,10 +40,10 @@ class DREndPointListModel : public QAbstractTableModel
 		      int role=Qt::DisplayRole) const;
   QVariant data(const QModelIndex &index,int role=Qt::DisplayRole) const;
   int endPointNumber(int rownum) const;
-  QMap<QString,QVariant> endPointMetadata(int rownum);
-  QMap<QString,QVariant> rowMetadata(int rownum);
+  QVariantMap endPointMetadata(int rownum);
+  QVariantMap rowMetadata(int rownum);
   int rowNumber(int endpt) const;
-  void addEndPoint(const QMap<QString,QVariant> &fields);
+  void addEndPoint(const QVariantMap &fields);
   void finalize();
 
  private:
@@ -52,8 +52,8 @@ class DREndPointListModel : public QAbstractTableModel
   QList<QVariant> d_alignments;
   QList<QList<QVariant> > d_texts;
   QList<int> d_numbers;
-  QMap<int,QMap<QString,QVariant> > d_raw_metadatas;
-  QList<QMap<QString,QVariant> > d_metadatas;
+  QMap<int,QVariantMap> d_raw_metadatas;
+  QList<QVariantMap> d_metadatas;
   int d_router_number;
   bool d_use_long_names;
 };

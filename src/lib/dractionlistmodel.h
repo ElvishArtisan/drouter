@@ -47,12 +47,14 @@ class DRActionListModel : public QAbstractTableModel
 		      int role=Qt::DisplayRole) const;
   QVariant data(const QModelIndex &index,int role=Qt::DisplayRole) const;
   int id(int rownum) const;
-  QMap<QString,QVariant> rowMetadata(int rownum);
+  QVariantMap rowMetadata(int rownum) const;
+  void setRowMetadata(const QVariantMap &fields);
   int rowNumber(int id) const;
-  void addAction(const QMap<QString,QVariant> &fields);
+  void addAction(const QVariantMap &fields);
   void finalize();
 
  private:
+  void UpdateRow(int rownum,const QVariantMap &fields);
   QString DowMarker(bool state,const QString &marker) const;
   QFont d_font;
   QFontMetrics *d_font_metrics;
@@ -62,8 +64,8 @@ class DRActionListModel : public QAbstractTableModel
   QList<QVariant> d_alignments;
   QList<QList<QVariant> > d_texts;
   QList<int> d_ids;
-  QMap<QTime,QMap<QString,QVariant> > d_raw_metadatas;
-  QList<QMap<QString,QVariant> > d_metadatas;
+  QMap<QTime,QVariantMap > d_raw_metadatas;
+  QList<QVariantMap> d_metadatas;
   int d_router_number;
   DREndPointListModel *d_inputs_model;
   DREndPointListModel *d_outputs_model;

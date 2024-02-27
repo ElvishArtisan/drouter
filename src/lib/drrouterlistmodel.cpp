@@ -137,6 +137,13 @@ int DRRouterListModel::rowNumber(int router) const
 void DRRouterListModel::addRouter(int number,const QString &name,
 				  const QString &rtype)
 {
+  QVariantMap vmap;
+
+  vmap["number"]=number;
+  vmap["name"]=name;
+  vmap["type"]=rtype;
+  d_raw_metadatas[number]=vmap;
+  /*
   int index=0;
 
   //
@@ -173,4 +180,37 @@ void DRRouterListModel::addRouter(int number,const QString &name,
     }
   }
   endInsertRows();
+  */
 }
+
+
+void DRRouterListModel::finalize()
+{
+  beginInsertRows(QModelIndex(),0,0);
+  for(QMap<int,QVariantMap>::const_iterator it=d_raw_metadatas.begin();it!=d_raw_metadatas.end();it++) {
+    d_numbers.push_back(it.key());
+    QList<QVariant> row;
+    row.push_back(QString::asprintf("%d - %s",
+				    it.key(),
+				    it.value().value("name").toString().
+				    toUtf8().constData()));
+    row.push_back(it.value().value("type").toString());
+    d_texts.push_back(row);
+    if(it.value().value("type").toString().toLower()=="audio") {
+      d_router_types.push_back(DREndPointMap::AudioRouter);
+      d_icons.push_back(QPixmap(audio_16x16_xpm));
+    }
+    else {
+      if(it.value().value("type").toString().toLower()=="gpio") {
+	d_router_types.push_back(DREndPointMap::GpioRouter);
+	d_icons.push_back(QPixmap(gpio_16x16_xpm));
+      }
+      else {
+	d_router_types.push_back(DREndPointMap::LastRouter);
+	d_icons.push_back(QVariant());
+      }
+    }
+  }
+  endInsertRows();
+}
+

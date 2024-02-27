@@ -112,6 +112,7 @@ int EditActionDialog::exec(int router,int rownum)
 
   setWindowTitle("ActionPanel - "+tr("Edit Action")+
 		 QString::asprintf("[ID: %d]",fields.value("id").toInt()));
+  d_id=fields.value("id").toInt();
   d_time_edit->setTime(fields.value("time").toTime());
   d_comment_edit->setText(fields.value("comment").toString());
   d_source_box->setModel(imodel);
@@ -162,6 +163,25 @@ void EditActionDialog::resizeEvent(QResizeEvent *e)
 
 void EditActionDialog::okData()
 {
+  DRActionListModel *amodel=d_parser->actionModel(d_router);
+  DREndPointListModel *imodel=d_parser->inputModel(d_router);
+  DREndPointListModel *omodel=d_parser->outputModel(d_router);
+  QMap<QString,QVariant> fields;
+
+  fields["id"]=d_id;
+  fields["time"]=d_time_edit->time();
+  fields["comment"]=d_comment_edit->text();
+  fields["source"]=imodel->endPointNumber(d_source_box->currentIndex());
+  fields["sourceName"]=
+    imodel->rowMetadata(d_source_box->currentIndex()).value("name");
+  fields["destination"]=
+    omodel->endPointNumber(d_destination_box->currentIndex());
+  fields["destinationName"]=
+    omodel->rowMetadata(d_destination_box->currentIndex()).value("name");
+  d_dow_selector->toAction(fields);
+
+  amodel->setRowMetadata(fields);
+
   done(true);
 }
 
