@@ -928,8 +928,10 @@ void ProtocolJ::SendActionInfo(unsigned router)
   while(q->next()) {
     jo0.insert(QString::asprintf("action%d",q->at()),ActionListMessage(q));
   }
+  QJsonObject jo1;
+  jo1.insert("actionlist",jo0);
   QJsonDocument jdoc;
-  jdoc.setObject(jo0);
+  jdoc.setObject(jo1);
 
   proto_socket->write(jdoc.toJson());
 }

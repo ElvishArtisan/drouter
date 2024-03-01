@@ -1071,3 +1071,6 @@
 	'ActionList' command response in Protocol J.
 2024-02-27 Fred Gleason <fredg@paravelsystems.com>
 	* Modified Protocol J components to use Qt-based Json methods.
+2024-03-01 Fred Gleason <fredg@paravelsystems.com>
+	* Fixed a bug in 'src/drouterd/protocol_j.cpp that caused incorrect
+	JSON to be emitted for the 'ActionList' command.

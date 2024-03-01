@@ -168,10 +168,8 @@ MainWidget::MainWidget(QWidget *parent)
   // Fix the Window Size
   //
   /*
-  setMinimumWidth(sizeHint().width());
-  setMaximumWidth(sizeHint().width());
-  setMinimumHeight(sizeHint().height());
-  setMaximumHeight(sizeHint().height());
+  setMinimumSize(sizeHint());
+  setMaximumSize(sizeHint());
   */
   //
   // The Protocol J Connection
@@ -250,13 +248,15 @@ void MainWidget::closeData()
 
 void MainWidget::routerBoxActivatedData(int n)
 {
-  int router=d_parser->routerModel()->routerNumber(n);
+  if(n>=0) {
+    int router=d_parser->routerModel()->routerNumber(n);
 
-  d_action_view->setModel(d_parser->actionModel(router));
-  d_action_view->resizeColumnsToContents();
-  d_action_view->resizeRowsToContents();
-  d_action_view->horizontalHeader()->setStretchLastSection(true);
-  d_action_view->verticalHeader()->setVisible(false);
+    d_action_view->setModel(d_parser->actionModel(router));
+    d_action_view->resizeColumnsToContents();
+    d_action_view->resizeRowsToContents();
+    d_action_view->horizontalHeader()->setStretchLastSection(true);
+    d_action_view->verticalHeader()->setVisible(false);
+  }
 }
 
 
@@ -268,7 +268,10 @@ void MainWidget::connectedData(bool state,DRJParser::ConnectionState cstate)
 					rowNumber(d_initial_router));
     }
     d_initial_connected=true;
-    routerBoxActivatedData(d_router_box->currentIndex());
+    if(d_router_box->count()>0) {
+      d_router_box->setCurrentIndex(0);
+      routerBoxActivatedData(d_router_box->currentIndex());
+    }
     d_router_label->setEnabled(true);
     d_router_box->setEnabled(true);
   }
