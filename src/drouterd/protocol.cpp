@@ -172,6 +172,13 @@ void Protocol::setGpoState(const QHostAddress &gpo_node_addr,int gpo_slotnum,
 }
 
 
+void Protocol::refreshAction(int action_id)
+{
+  proto_ipc_socket->write(("RefreshAction "+
+			   QString::asprintf("%d\r\n",action_id)).toUtf8());
+}
+
+
 void Protocol::ipcReadyReadData()
 {
   char data[1501];
@@ -280,6 +287,11 @@ void Protocol::silenceChanged(const QHostAddress &host_addr,int slotnum,
 }
 
 
+void Protocol::actionChanged(int id)
+{
+}
+
+
 DRConfig *Protocol::config()
 {
   return proto_config;
@@ -384,4 +396,8 @@ void Protocol::ProcessIpcCommand(const QString &cmd)
     silenceChanged(QHostAddress(cmds.at(3)),cmds.at(4).toInt(),meter_type,table_name,cmds.at(2).toInt());
   }
 
+  if((cmds.at(0)=="ACTION")&&(cmds.size()==2)) {
+    int id=cmds.at(1).toInt();
+    actionChanged(id);
+  }
 }

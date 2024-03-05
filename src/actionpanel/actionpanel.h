@@ -47,11 +47,13 @@ class MainWidget : public QWidget
  private slots:
   void addData();
   void editData();
+  void doubleClickedData(const QModelIndex &index);
   void deleteData();
   void closeData();
   void routerBoxActivatedData(int n);
   void connectedData(bool state,DRJParser::ConnectionState cstate);
   void errorData(QAbstractSocket::SocketError err);
+  void parserErrorData(DRJParser::ErrorType type,const QString &remarks);
 
  protected:
   void closeEvent(QCloseEvent *e);

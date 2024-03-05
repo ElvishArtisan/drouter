@@ -210,9 +210,11 @@ void DRJParser::activateSnapshot(int router,const QString &snapshot)
 }
 
 
-void DRJParser::saveAction(int router,int rownum)
+void DRJParser::saveAction(int router,QVariantMap fields)
 {
-  SendCommand("actionedit",actionModel(router)->rowMetadata(rownum));
+  fields["router"]=router;
+  fields["time"]=fields.value("time").toString()+"Z";
+  SendCommand("actionedit",fields);
 }
 
 
@@ -289,6 +291,14 @@ QString DRJParser::errorString(ErrorType err)
 
   case DRJParser::NoCommandError:
     ret="no such command";
+    break;
+
+  case DRJParser::TimeError:
+    ret="invalid time value";
+    break;
+
+  case DRJParser::DatabaseError:
+    ret="database error";
     break;
 
   case DRJParser::LastError:
@@ -394,6 +404,12 @@ void DRJParser::Clear()
 
 void DRJParser::DispatchMessage(const QJsonDocument &jdoc)
 {
+  if(jdoc.object().contains("error")) {
+    QVariantMap map=jdoc.object().value("error").toObject().toVariantMap();
+    emit parserError((DRJParser::ErrorType)map.value("type").toUInt(),
+		     map.value("description").toString());
+  }
+
   if(jdoc.object().contains("routernames")) {
     QJsonObject jo0=jdoc.object().value("routernames").toObject();
 
@@ -524,7 +540,6 @@ void DRJParser::DispatchMessage(const QJsonDocument &jdoc)
 	}
       }
     }
-    amod->finalize();
     return;
   }
 
@@ -579,8 +594,6 @@ void DRJParser::SendCommand(const QString &verb,const QVariantMap &args)
   jo0.insert(verb,QJsonObject::fromVariantMap(args));
   jdoc.setObject(jo0);
   QString json=jdoc.toJson();
-
-  //  printf("SENT: %s\n",json.toUtf8().constData());
 
   j_socket->write(json.toUtf8());
 }

@@ -1037,6 +1037,18 @@ bool DRouter::ProcessIpcCommand(int sock,const QString &cmd)
     }
   }
 
+  if((cmds.at(0)=="RefreshAction")&&(cmds.size()==2)) {
+    bool ok=false;
+    int id=cmds.at(1).toInt(&ok);
+    if(ok&&(id>0)) {
+      //
+      // FIXME: Update the event engine here!
+      //
+
+      NotifyProtocols("ACTION",QString::asprintf("%d",id));
+    }
+  }
+
   return true;
 }
 

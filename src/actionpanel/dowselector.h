@@ -38,7 +38,8 @@ class DowSelector : public QWidget
   bool dayOfWeekEnabled(int dow);
   void toAction(QMap<QString,QVariant> &fields) const;
   void fromAction(const QMap<QString,QVariant> &fields);
-  
+  void clear();
+
  public slots:
   void enableDayOfWeek(int dow,bool state);
 

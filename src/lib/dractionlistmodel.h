@@ -51,7 +51,6 @@ class DRActionListModel : public QAbstractTableModel
   void setRowMetadata(const QVariantMap &fields);
   int rowNumber(int id) const;
   void addAction(const QVariantMap &fields);
-  void finalize();
 
  private:
   void UpdateRow(int rownum,const QVariantMap &fields);

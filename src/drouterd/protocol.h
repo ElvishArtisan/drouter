@@ -2,7 +2,7 @@
 //
 // Base class for drouterd(8) protocols
 //
-//   (C) Copyright 2018-2021 Fred Gleason <fredg@paravelsystems.com>
+//   (C) Copyright 2018-2024 Fred Gleason <fredg@paravelsystems.com>
 //
 //   This program is free software; you can redistribute it and/or modify
 //   it under the terms of the GNU General Public License version 2 as
@@ -46,6 +46,7 @@ class Protocol : public QObject
 		   const QString &code,int duration);
   void setGpoState(const QHostAddress &gpo_node_addr,int gpo_slotnum,
 		   const QString &code,int duration);
+  void refreshAction(int action_id);
 
  private slots:
   void ipcReadyReadData();
@@ -71,6 +72,7 @@ class Protocol : public QObject
   virtual void silenceChanged(const QHostAddress &host_addr,int slotnum,
 			      SyLwrpClient::MeterType meter_type,
 			      const QString &tbl_name,int chan);
+  virtual void actionChanged(int id);
   DRConfig *config();
   void logIpc(const QString &msg);
   virtual void quitting();

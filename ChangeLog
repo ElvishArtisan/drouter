@@ -1074,3 +1074,5 @@
 2024-03-01 Fred Gleason <fredg@paravelsystems.com>
 	* Fixed a bug in 'src/drouterd/protocol_j.cpp that caused incorrect
 	JSON to be emitted for the 'ActionList' command.
+2024-03-05 Fred Gleason <fredg@paravelsystems.com>
+	* Got action editing and addition working in actionpanel(1).

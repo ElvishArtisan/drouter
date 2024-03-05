@@ -55,6 +55,7 @@ class ProtocolJ : public Protocol
   void gpiCodeChanged(const QHostAddress &host_addr,int slotnum);
   void gpoCodeChanged(const QHostAddress &host_addr,int slotnum);
   void gpoCrosspointChanged(const QHostAddress &host_addr,int slotnum);
+  void actionChanged(int id);
   void quitting();
 
  private:
@@ -76,6 +77,10 @@ class ProtocolJ : public Protocol
   void SendActionInfo(unsigned router);
   QString ActionListSqlFields() const;
   QJsonObject ActionListMessage(DRSqlQuery *q);
+
+  QString ActionEditSqlFields(const QVariantMap &fields,
+			      const QTime &time) const;
+
   void SendGpiInfo(unsigned router,int input);
   QString GPIStatSqlFields() const;
   QString GPIStatMessage(DRSqlQuery *q);
@@ -97,6 +102,8 @@ class ProtocolJ : public Protocol
   void AddRouteEvent(int router,int output,int input);
   void AddSnapEvent(int router,const QString &name);
   void SendError(DRJParser::ErrorType etype,const QString &remarks=QString());
+  QTime FromJsonString(const QString &str) const;
+  QString ToYesNo(bool state) const;
   QMap<QString,QString> proto_help_patterns;
   QMap<QString,QString> proto_help_comments;
   QTcpSocket *proto_socket;

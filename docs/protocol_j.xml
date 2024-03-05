@@ -147,10 +147,7 @@
       <literallayout class="monospaced">
 {
     "actionedit": {
-        "router": <replaceable>router-num</replaceable>
-        "action": {
-            <replaceable>action-fields</replaceable>
-        }
+        <replaceable>action-fields</replaceable>
     }
 }
       </literallayout>

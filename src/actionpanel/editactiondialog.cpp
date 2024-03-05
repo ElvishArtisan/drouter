@@ -26,7 +26,7 @@ EditActionDialog::EditActionDialog(DRJParser *parser,QWidget *parent)
 {
   d_parser=parser;
   d_router=-1;
-  d_rownum=-1;
+  d_fields=NULL;
 
   setModal(true);
 
@@ -99,29 +99,43 @@ QSize EditActionDialog::sizeHint() const
 }
 
 
-int EditActionDialog::exec(int router,int rownum)
+int EditActionDialog::exec(int router,QVariantMap *fields)
 {
   d_router=router;
-  d_rownum=rownum;
+  d_fields=fields;
 
-  DRActionListModel *amodel=d_parser->actionModel(router);
   DREndPointListModel *imodel=d_parser->inputModel(router);
   DREndPointListModel *omodel=d_parser->outputModel(router);
 
-  QMap<QString,QVariant> fields=amodel->rowMetadata(rownum);
+  if(fields->size()==0) {  // New Action
+    setWindowTitle("ActionPanel - "+tr("Edit Action"));
+    d_id=-1;
+    d_time_edit->setTime(QTime(0,0,0));
+    d_comment_edit->setText(tr("[new action]"));
+    d_source_box->setModel(imodel);
+    d_source_box->
+      setCurrentIndex(imodel->rowNumber(1));
+    d_destination_box->setModel(omodel);
+    d_destination_box->
+      setCurrentIndex(omodel->rowNumber(1));
+    d_dow_selector->clear();
+  }
+  else {
+    setWindowTitle("ActionPanel - "+tr("Edit Action")+
+		   QString::asprintf("[ID: %d]",fields->value("id").toInt()));
+    d_id=fields->value("id").toInt();
+    d_time_edit->setTime(fields->value("time").toTime());
+    d_comment_edit->setText(fields->value("comment").toString());
+    d_source_box->setModel(imodel);
+    d_source_box->
+      setCurrentIndex(imodel->rowNumber(fields->value("source").toInt()));
+    d_destination_box->setModel(omodel);
+    d_destination_box->
+      setCurrentIndex(omodel->rowNumber(fields->value("destination").toInt()));
+    d_dow_selector->fromAction(*fields);
+  }
 
-  setWindowTitle("ActionPanel - "+tr("Edit Action")+
-		 QString::asprintf("[ID: %d]",fields.value("id").toInt()));
-  d_id=fields.value("id").toInt();
-  d_time_edit->setTime(fields.value("time").toTime());
-  d_comment_edit->setText(fields.value("comment").toString());
-  d_source_box->setModel(imodel);
-  d_source_box->
-    setCurrentIndex(imodel->rowNumber(fields.value("source").toInt()));
-  d_destination_box->setModel(omodel);
-  d_destination_box->
-    setCurrentIndex(omodel->rowNumber(fields.value("destination").toInt()));
-  d_dow_selector->fromAction(fields);
+  d_fields=fields;
 
   return QDialog::exec();
 }
@@ -163,24 +177,20 @@ void EditActionDialog::resizeEvent(QResizeEvent *e)
 
 void EditActionDialog::okData()
 {
-  DRActionListModel *amodel=d_parser->actionModel(d_router);
   DREndPointListModel *imodel=d_parser->inputModel(d_router);
   DREndPointListModel *omodel=d_parser->outputModel(d_router);
-  QMap<QString,QVariant> fields;
 
-  fields["id"]=d_id;
-  fields["time"]=d_time_edit->time();
-  fields["comment"]=d_comment_edit->text();
-  fields["source"]=imodel->endPointNumber(d_source_box->currentIndex());
-  fields["sourceName"]=
+  (*d_fields)["id"]=d_id;
+  (*d_fields)["time"]=d_time_edit->time();
+  (*d_fields)["comment"]=d_comment_edit->text();
+  (*d_fields)["source"]=imodel->endPointNumber(d_source_box->currentIndex());
+  (*d_fields)["sourceName"]=
     imodel->rowMetadata(d_source_box->currentIndex()).value("name");
-  fields["destination"]=
+  (*d_fields)["destination"]=
     omodel->endPointNumber(d_destination_box->currentIndex());
-  fields["destinationName"]=
+  (*d_fields)["destinationName"]=
     omodel->rowMetadata(d_destination_box->currentIndex()).value("name");
-  d_dow_selector->toAction(fields);
-
-  amodel->setRowMetadata(fields);
+  d_dow_selector->toAction(*d_fields);
 
   done(true);
 }

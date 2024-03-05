@@ -268,6 +268,31 @@ void ProtocolJ::gpoCrosspointChanged(const QHostAddress &host_addr,int slotnum)
 }
 
 
+void ProtocolJ::actionChanged(int id)
+{
+  QString sql;
+  DRSqlQuery *q;
+
+  sql=ActionListSqlFields()+"where "+
+    QString::asprintf("`PERM_SA_ACTIONS`.`ID`=%d ",id)+
+    "order by `PERM_SA_ACTIONS`.`DESTINATION_NUMBER`";
+  q=new DRSqlQuery(sql);
+  if(q->first()) {
+    if(proto_maps.value(q->value(9).toInt())!=NULL) {
+      QJsonObject jo0;
+      jo0.insert("router",QJsonValue((int)(1+q->value(9).toInt())));
+      jo0.insert(QString::asprintf("action%d",q->at()),ActionListMessage(q));
+
+      QJsonObject jo1;
+      jo1.insert("actionlist",jo0);
+      QJsonDocument jdoc;
+      jdoc.setObject(jo1);
+
+      proto_socket->write(jdoc.toJson());
+    }
+  }
+}
+
 void ProtocolJ::quitting()
 {
   shutdown(proto_socket->socketDescriptor(),SHUT_RDWR);
@@ -277,6 +302,7 @@ void ProtocolJ::quitting()
 void ProtocolJ::DispatchMessage(const QJsonDocument &jdoc)
 {
   QString cmd;
+  QString err_msg;
 
   if(jdoc.object().contains("actionlist")) {
     QJsonObject jo0=jdoc.object().value("actionlist").toObject();
@@ -404,6 +430,48 @@ void ProtocolJ::DispatchMessage(const QJsonDocument &jdoc)
   if(jdoc.object().contains("maskstat")) {
     QJsonObject jo0=jdoc.object().value("maskroutestat").toObject();
     MaskStat(jo0.value("state").toBool());
+    return;
+  }
+
+
+
+  if(jdoc.object().contains("actionedit")) {
+    QVariantMap map=jdoc.object().value("actionedit").toObject().toVariantMap();
+
+    //
+    // Validate Time
+    //
+    QTime time=FromJsonString(map.value("time").toString());
+    if(time.isNull()) {
+      SendError(DRJParser::TimeError);
+      return;
+    }
+
+    QString sql;
+    bool ok=false;
+    int id=map.value("id").toInt();
+    if(id<0) {  // Add New Action
+      sql=QString("insert into `PERM_SA_ACTIONS` set ")+
+	ActionEditSqlFields(map,time);
+      int new_id=DRSqlQuery::run(sql,&ok).toInt();
+      if(ok) {
+	refreshAction(new_id);
+      }
+      else {
+	SendError(DRJParser::DatabaseError,err_msg);
+      }
+    }
+    else {  // Modify Existing Action
+      sql=QString("update `PERM_SA_ACTIONS` set ")+
+	ActionEditSqlFields(map,time)+
+	QString::asprintf("where `ID`=%d ",map.value("id").toInt());
+      if(DRSqlQuery::apply(sql,&err_msg)) {
+	refreshAction(map.value("id").toInt());
+      }
+      else {
+	SendError(DRJParser::DatabaseError,err_msg);
+      }
+    }
     return;
   }
 
@@ -987,6 +1055,28 @@ QJsonObject ProtocolJ::ActionListMessage(DRSqlQuery *q)
 }
 
 
+QString ProtocolJ::ActionEditSqlFields(const QVariantMap &fields,
+				       const QTime &time) const
+{
+  QString sql=QString::asprintf("`ROUTER_NUMBER`=%d,",
+				fields.value("router").toInt()-1)+
+    QString::asprintf("`DESTINATION_NUMBER`=%d,",
+		      fields.value("destination").toInt()-1)+
+    QString::asprintf("`SOURCE_NUMBER`=%d,",
+		      fields.value("source").toInt()-1)+
+    "`TIME`='"+DRSqlQuery::escape(time.toString("hh:mm:ss"))+"',"+
+    "`COMMENT`='"+DRSqlQuery::escape(fields.value("comment").toString())+"',"+
+    "`SUN`='"+ToYesNo(fields.value("sunday").toBool())+"',"+
+    "`MON`='"+ToYesNo(fields.value("monday").toBool())+"',"+
+    "`TUE`='"+ToYesNo(fields.value("tuesday").toBool())+"',"+
+    "`WED`='"+ToYesNo(fields.value("wednesday").toBool())+"',"+
+    "`THU`='"+ToYesNo(fields.value("thursday").toBool())+"',"+
+    "`FRI`='"+ToYesNo(fields.value("friday").toBool())+"',"+
+    "`SAT`='"+ToYesNo(fields.value("saturday").toBool())+"' ";
+  return sql;
+}
+
+
 void ProtocolJ::SendGpiInfo(unsigned router,int input)
 {
   DREndPointMap *map;
@@ -1231,15 +1321,6 @@ void ProtocolJ::MaskGpiStat(bool state)
   jdoc.setObject(jo1);
 
   proto_socket->write(jdoc.toJson());
-
-  /*
-  QString json="{\r\n";
-  json+="    \"maskgpistat\": {\r\n";
-  json+=DRJsonField("state",state,8,true);
-  json+="    }\r\n";
-  json+="}\r\n";
-  proto_socket->write(json.toUtf8());
-  */
 }
 
 
@@ -1257,16 +1338,6 @@ void ProtocolJ::MaskGpoStat(bool state)
   jdoc.setObject(jo1);
 
   proto_socket->write(jdoc.toJson());
-
-  /*
-  QString json="{\r\n";
-  json+="    \"maskgpostat\": {\r\n";
-  json+=DRJsonField("state",state,8,true);
-  json+="    }\r\n";
-  json+="}\r\n";
-
-  proto_socket->write(json.toUtf8());
-  */
 }
 
 
@@ -1284,16 +1355,6 @@ void ProtocolJ::MaskRouteStat(bool state)
   jdoc.setObject(jo1);
 
   proto_socket->write(jdoc.toJson());
-
-  /*
-  QString json="{\r\n";
-  json+="    \"maskroutestat\": {\r\n";
-  json+=DRJsonField("state",state,8,true);
-  json+="    }\r\n";
-  json+="}\r\n";
-
-  proto_socket->write(json.toUtf8());
-  */
 }
 
 
@@ -1529,9 +1590,14 @@ void ProtocolJ::AddSnapEvent(int router,const QString &name)
 
 void ProtocolJ::SendError(DRJParser::ErrorType etype,const QString &remarks)
 {
+  QString desc=QJsonValue(DRJParser::errorString(etype)).toString();
+  if(!remarks.isEmpty()) {
+    desc+="\n\n"+remarks;
+  }
+
   QJsonObject jo0;
   jo0.insert("type",QJsonValue((int)etype));
-  jo0.insert("description",QJsonValue(DRJParser::errorString(etype)));
+  jo0.insert("description",desc);
 
   QJsonObject jo1;
   jo1.insert("error",jo0);
@@ -1540,19 +1606,26 @@ void ProtocolJ::SendError(DRJParser::ErrorType etype,const QString &remarks)
   jdoc.setObject(jo1);
 
   proto_socket->write(jdoc.toJson());
-
-  /*
-  QString json="{\r\n";
-  json+="    \"error\": {\r\n";
-  json+=DRJsonField("type",(int)etype,8);
-  json+=DRJsonField("description",DRJParser::errorString(etype),8,
-		  remarks.isEmpty());
-  if(!remarks.isEmpty()) {
-    json+=DRJsonField("remarks",remarks,8,true);
-  }
-  json+="    }\r\n";
-  json+="}\r\n";
-
-  proto_socket->write(json.toUtf8());
-  */
 }
+
+
+QTime ProtocolJ::FromJsonString(const QString &str) const
+{
+  //
+  // Ensure that a time value is in proper 'zulu time' format (HH:MM:SSZ).
+  //
+  if((str.length()!=9)||(str.right(1).toUpper()!="Z")) {
+    return QTime();
+  }
+  return QTime::fromString(str.left(8),"hh:mm:ss");
+}
+
+
+QString ProtocolJ::ToYesNo(bool state) const
+{
+  if(state) {
+    return "Y";
+  }
+  return "N";
+}
+  

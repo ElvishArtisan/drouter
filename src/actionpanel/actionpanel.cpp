@@ -135,6 +135,8 @@ MainWidget::MainWidget(QWidget *parent)
   d_action_view->setSelectionMode(QAbstractItemView::SingleSelection);
   d_action_view->setShowGrid(false);
   d_action_view->setWordWrap(true);
+  connect(d_action_view,SIGNAL(doubleClicked(const QModelIndex &)),
+	  this,SLOT(doubleClickedData(const QModelIndex &)));
 
   //
   // Add Button
@@ -181,6 +183,8 @@ MainWidget::MainWidget(QWidget *parent)
 	  this,SLOT(connectedData(bool,DRJParser::ConnectionState)));
   connect(d_parser,SIGNAL(error(QAbstractSocket::SocketError)),
 	  this,SLOT(errorData(QAbstractSocket::SocketError)));
+  connect(d_parser,SIGNAL(parserError(DRJParser::ErrorType,const QString &)),
+	  this,SLOT(parserErrorData(DRJParser::ErrorType,const QString &)));
 
   //
   // Dialogs
@@ -190,8 +194,7 @@ MainWidget::MainWidget(QWidget *parent)
   d_router_box->setModel(d_parser->routerModel());
   d_router_box->setModelColumn(0);
 
-  d_parser->
-    connectToHost(d_hostname,9600,"","");
+  d_parser->connectToHost(d_hostname,9600,"","");
 }
 
 
@@ -214,20 +217,34 @@ QSizePolicy MainWidget::sizePolicy() const
 
 void MainWidget::addData()
 {
+  int router=
+    d_parser->routerModel()->routerNumber(d_router_box->currentIndex());
+  QVariantMap fields;
+  if(d_edit_dialog->exec(router,&fields)) {
+    d_parser->saveAction(router,fields);
+  }
 }
 
 
 void MainWidget::editData()
 {
-  int row=SelectedRow();
+  int rownum=SelectedRow();
 
-  if(row>=0) {
+  if(rownum>=0) {
     int router=
       d_parser->routerModel()->routerNumber(d_router_box->currentIndex());
-    if(d_edit_dialog->exec(router,row)) {
-      d_parser->saveAction(router,row);
+    DRActionListModel *amodel=d_parser->actionModel(router);
+    QVariantMap fields=amodel->rowMetadata(rownum);
+    if(d_edit_dialog->exec(router,&fields)) {
+      d_parser->saveAction(router,fields);
     }
   }
+}
+
+
+void MainWidget::doubleClickedData(const QModelIndex &index)
+{
+  editData();
 }
 
 
@@ -296,6 +313,14 @@ void MainWidget::errorData(QAbstractSocket::SocketError err)
 			 SyMcastSocket::socketErrorText(err));
     exit(1);
   }
+}
+
+
+void MainWidget::parserErrorData(DRJParser::ErrorType type,
+				 const QString &remarks)
+{
+  QMessageBox::warning(this,"ActionPanel - "+tr("Error"),
+		       tr("Server error")+": "+remarks);
 }
 
 

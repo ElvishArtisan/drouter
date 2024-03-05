@@ -128,7 +128,7 @@ bool DRSqlQuery::apply(const QString &sql,QString *err_msg)
   DRSqlQuery *q=new DRSqlQuery(sql);
   ret=q->isActive();
   if((err_msg!=NULL)&&(!ret)) {
-    *err_msg="sql error: "+q->lastError().text()+" query: "+sql;
+    *err_msg=q->lastError().text()+"\n query: "+sql;
   }
   delete q;
 

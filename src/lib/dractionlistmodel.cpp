@@ -263,32 +263,31 @@ void DRActionListModel::addAction(const QVariantMap &fields)
   }
 
   //
-  // Insert It
+  // Do we have this loaded already?
   //
-  d_raw_metadatas[time]=fields;
-}
+  int id=fields.value("id").toInt();
+  int rownum=d_ids.indexOf(id);
+  if(rownum>=0) {
+    //
+    // Update existing line
+    //
+    UpdateRow(rownum,fields);
+    emit dataChanged(index(rownum,0),index(rownum,columnCount()));
+    return;
+  }
 
-
-void DRActionListModel::finalize()
-{
   //
-  // Insert The Fields
+  // Add new line
   //
   QList<QVariant> row;
   for(int i=0;i<d_headers.size();i++) {
     row.push_back(QString());
   }
-  int rownum=0;
-  beginInsertRows(QModelIndex(),0,d_raw_metadatas.size());
-  for(QMap<QTime,QVariantMap >::const_iterator it=d_raw_metadatas.begin();
-      it!=d_raw_metadatas.end();it++) {
-    d_texts.push_back(row);
-    d_ids.push_back(it.value().value("id").toInt());
-    d_metadatas.push_back(it.value());
-    UpdateRow(rownum,it.value());
-    rownum++;
-  }
-  d_raw_metadatas.clear();
+  beginInsertRows(QModelIndex(),d_texts.size(),d_texts.size());
+  d_texts.push_back(row);
+  d_ids.push_back(fields.value("id").toInt());
+  d_metadatas.push_back(fields);
+  UpdateRow(d_texts.size()-1,fields);
   endInsertRows();
 }
 

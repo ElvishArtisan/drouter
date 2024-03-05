@@ -86,6 +86,14 @@ void DowSelector::fromAction(const QMap<QString,QVariant> &fields)
 }
 
 
+void DowSelector::clear()
+{
+  for(int i=0;i<7;i++) {
+    d_checks[i]->setChecked(false);
+  }
+}
+
+
 void DowSelector::enableDayOfWeek(int dow,bool state)
 {
   d_checks[dow]->setChecked(state);

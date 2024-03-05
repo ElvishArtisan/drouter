@@ -50,7 +50,8 @@ class DRJParser : public QObject
   enum ConnectionState {Ok=0,InvalidLogin=1,WatchdogActive=2};
   enum ErrorType {OkError=0,JsonError=1,ParameterError=2,NoRouterError=3,
 		  NoSnapshotError=4,NoSourceError=5,NoDestinationError=6,
-		  NotGpioRouterError=7,NoCommandError=8,LastError=9};
+		  NotGpioRouterError=7,NoCommandError=8,TimeError=9,
+		  DatabaseError=10,LastError=11};
   DRJParser(bool use_long_names,QObject *parent=0);
   ~DRJParser();
   void setModelFont(const QFont &font);
@@ -75,7 +76,7 @@ class DRJParser : public QObject
   QString gpoState(int router,int output) const;
   void setGpoState(int router,int output,const QString &code,int msec=-1);
   void activateSnapshot(int router,const QString &snapshot);
-  void saveAction(int router,int rownum);
+  void saveAction(int router,QVariantMap fields);
   void connectToHost(const QString &hostname,uint16_t port,
 		     const QString &username,const QString &passwd);
   static QString connectionStateString(ConnectionState cstate);
@@ -105,7 +106,6 @@ class DRJParser : public QObject
   void DispatchMessage(const QJsonDocument &jdoc);
   void SendCommand(const QString &verb,const QVariantMap &args);
   void MakeSocket();
-
   QList<int> j_router_filter;
   DRRouterListModel *j_router_model;
   QMap<int,DREndPointListModel *> j_output_models;

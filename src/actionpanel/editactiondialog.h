@@ -43,7 +43,7 @@ class EditActionDialog : public QDialog
   QSize sizeHint() const;
 
  public slots:
-  int exec(int router,int rownum);
+  int exec(int router,QVariantMap *fields);
 
  protected:
   void closeEvent(QCloseEvent *e);
@@ -70,7 +70,7 @@ class EditActionDialog : public QDialog
   DRJParser *d_parser;
   int d_id;
   int d_router;
-  int d_rownum;
+  QVariantMap *d_fields;
 };
 
 
