@@ -80,7 +80,7 @@ class ProtocolJ : public Protocol
 
   QString ActionEditSqlFields(const QVariantMap &fields,
 			      const QTime &time) const;
-
+  void DeleteAction(int id);
   void SendGpiInfo(unsigned router,int input);
   QString GPIStatSqlFields() const;
   QString GPIStatMessage(DRSqlQuery *q);

@@ -1076,3 +1076,5 @@
 	JSON to be emitted for the 'ActionList' command.
 2024-03-05 Fred Gleason <fredg@paravelsystems.com>
 	* Got action editing and addition working in actionpanel(1).
+2024-03-06 Fred Gleason <fredg@paravelsystems.com>
+	* Got action deletion working in actionpanel(1).

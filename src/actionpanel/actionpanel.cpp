@@ -250,9 +250,21 @@ void MainWidget::doubleClickedData(const QModelIndex &index)
 
 void MainWidget::deleteData()
 {
-  int row=SelectedRow();
+  int rownum=SelectedRow();
 
-  if(row>=0) {
+  if(rownum>=0) {
+    int router=
+      d_parser->routerModel()->routerNumber(d_router_box->currentIndex());
+    DRActionListModel *amodel=d_parser->actionModel(router);
+    QVariantMap fields=amodel->rowMetadata(rownum);
+
+    if(QMessageBox::question(this,"ActionPanel - "+tr("Delete Action"),
+			     tr("Are you sure you want to delete the action")+
+			     " \""+fields.value("comment").toString()+"\"?",
+			     QMessageBox::Yes,QMessageBox::No)==
+       QMessageBox::Yes) {
+      d_parser->removeAction(fields.value("id").toInt());
+    }
   }
 }
 

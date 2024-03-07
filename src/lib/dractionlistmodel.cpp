@@ -292,6 +292,20 @@ void DRActionListModel::addAction(const QVariantMap &fields)
 }
 
 
+void DRActionListModel::removeAction(int id)
+{
+  int rownum=d_ids.indexOf(id);
+
+  if(rownum>=0) {
+    beginRemoveRows(QModelIndex(),rownum,rownum);
+    d_texts.removeAt(rownum);
+    d_metadatas.removeAt(rownum);
+    d_ids.removeAt(rownum);
+    endRemoveRows();
+  }
+}
+
+
 void DRActionListModel::UpdateRow(int rownum,const QVariantMap &fields)
 {
   d_texts[rownum][0]=fields.value("comment").toString();

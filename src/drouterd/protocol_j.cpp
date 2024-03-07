@@ -291,6 +291,17 @@ void ProtocolJ::actionChanged(int id)
       proto_socket->write(jdoc.toJson());
     }
   }
+  else {
+    QJsonObject jo0;
+    jo0.insert("id",id);
+
+    QJsonObject jo1;
+    jo1.insert("actiondelete",jo0);
+    QJsonDocument jdoc;
+    jdoc.setObject(jo1);
+
+    proto_socket->write(jdoc.toJson());
+  }
 }
 
 void ProtocolJ::quitting()
@@ -433,7 +444,15 @@ void ProtocolJ::DispatchMessage(const QJsonDocument &jdoc)
     return;
   }
 
-
+  if(jdoc.object().contains("actiondelete")) {
+    QVariantMap map=jdoc.object().value("actiondelete").toObject().
+      toVariantMap();
+    int id=map.value("id").toInt();
+    if(id>0) {
+      DeleteAction(id);
+    }
+    return;
+  }
 
   if(jdoc.object().contains("actionedit")) {
     QVariantMap map=jdoc.object().value("actionedit").toObject().toVariantMap();
@@ -1074,6 +1093,16 @@ QString ProtocolJ::ActionEditSqlFields(const QVariantMap &fields,
     "`FRI`='"+ToYesNo(fields.value("friday").toBool())+"',"+
     "`SAT`='"+ToYesNo(fields.value("saturday").toBool())+"' ";
   return sql;
+}
+
+
+void ProtocolJ::DeleteAction(int id)
+{
+  QString sql=QString("delete from `PERM_SA_ACTIONS` where ")+
+    QString::asprintf("`ID`=%d",id);
+  if(DRSqlQuery::apply(sql)) {
+    refreshAction(id);
+  }
 }
 
 

@@ -218,6 +218,14 @@ void DRJParser::saveAction(int router,QVariantMap fields)
 }
 
 
+void DRJParser::removeAction(int id)
+{
+  QVariantMap fields;
+  fields["id"]=id;
+  SendCommand("actiondelete",fields);
+}
+
+
 void DRJParser::connectToHost(const QString &hostname,uint16_t port,
 			     const QString &username,const QString &passwd)
 {
@@ -538,6 +546,18 @@ void DRJParser::DispatchMessage(const QJsonDocument &jdoc)
 	  }
 	  amod->addAction(fields);
 	}
+      }
+    }
+    return;
+  }
+
+  if(jdoc.object().contains("actiondelete")) {
+    QJsonObject jo0=jdoc.object().value("actiondelete").toObject();
+    int id=jo0.value("id").toInt();
+    if(id>0) {
+      for(QMap<int,DRActionListModel *>::const_iterator it=
+	    j_action_models.begin();it!=j_action_models.end();it++) {
+	it.value()->removeAction(id);
       }
     }
     return;

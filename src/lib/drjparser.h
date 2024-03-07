@@ -77,6 +77,7 @@ class DRJParser : public QObject
   void setGpoState(int router,int output,const QString &code,int msec=-1);
   void activateSnapshot(int router,const QString &snapshot);
   void saveAction(int router,QVariantMap fields);
+  void removeAction(int id);
   void connectToHost(const QString &hostname,uint16_t port,
 		     const QString &username,const QString &passwd);
   static QString connectionStateString(ConnectionState cstate);
