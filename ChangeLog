@@ -1078,3 +1078,5 @@
 	* Got action editing and addition working in actionpanel(1).
 2024-03-06 Fred Gleason <fredg@paravelsystems.com>
 	* Got action deletion working in actionpanel(1).
+2024-03-07 Fred Gleason <fredg@paravelsystems.com>
+	* Added support for sorting action entries in actionpanel(1).

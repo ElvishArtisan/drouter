@@ -52,23 +52,34 @@ class DRActionListModel : public QAbstractTableModel
   int rowNumber(int id) const;
   void addAction(const QVariantMap &fields);
   void removeAction(int id);
+  void sort(int col,Qt::SortOrder order=Qt::AscendingOrder);
 
  private:
   void UpdateRow(int rownum,const QVariantMap &fields);
   QString DowMarker(bool state,const QString &marker) const;
-  QFont d_font;
-  QFontMetrics *d_font_metrics;
+  //
+  // Column Fields
+  //
   QList<QVariant> d_headers;
   QList<QVariant> d_icons;
   QStringList d_keys;
   QList<QVariant> d_alignments;
+
+  //
+  // Row Fields
+  //
   QList<QList<QVariant> > d_texts;
   QList<int> d_ids;
-  QMap<QTime,QVariantMap > d_raw_metadatas;
   QList<QVariantMap> d_metadatas;
+  QList<int> d_sorts;
+
   int d_router_number;
+  QFont d_font;
+  QFontMetrics *d_font_metrics;
   DREndPointListModel *d_inputs_model;
   DREndPointListModel *d_outputs_model;
+  int d_sort_column;
+  Qt::SortOrder d_sort_order;
 };
 
 

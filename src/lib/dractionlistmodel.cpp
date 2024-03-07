@@ -36,6 +36,8 @@ DRActionListModel::DRActionListModel(int router,QObject *parent)
   : QAbstractTableModel(parent)
 {
   d_router_number=router;
+  d_sort_column=0;
+  d_sort_order=Qt::AscendingOrder;
 
   //
   // Column Attributes
@@ -154,7 +156,7 @@ int DRActionListModel::columnCount(const QModelIndex &parent) const
 
 int DRActionListModel::rowCount(const QModelIndex &parent) const
 {
-  return d_texts.size();
+  return d_sorts.size();
 }
 
 
@@ -172,9 +174,10 @@ QVariant DRActionListModel::data(const QModelIndex &index,int role) const
 {
   QString str;
   int col=index.column();
-  int row=index.row();
+  //  int row=index.row();
+  int row=d_sorts.at(index.row());
 
-  if(row<d_texts.size()) {
+  if(row<d_sorts.size()) {
     switch((Qt::ItemDataRole)role) {
     case Qt::DisplayRole:
       return d_texts.at(row).at(col);
@@ -190,7 +193,8 @@ QVariant DRActionListModel::data(const QModelIndex &index,int role) const
 
     case Qt::SizeHintRole:
       return QSize(DROUTER_LISTWIDGET_ITEM_WIDTH_PADDING+
-		   d_font_metrics->width(d_texts.at(row).at(col).toString()),
+		   d_font_metrics->
+		   width(d_texts.at(row).at(col).toString()),
 		   DROUTER_LISTWIDGET_ITEM_HEIGHT);
       break;
 
@@ -216,20 +220,20 @@ int DRActionListModel::id(int rownum) const
   if(rownum<0) {
     return -1;
   }
-  return d_ids.at(rownum);
+  return d_ids.at(d_sorts.at(rownum));
 }
 
 
 QVariantMap DRActionListModel::rowMetadata(int rownum) const
 {
-  return d_metadatas.at(rownum);
+  return d_metadatas.at(d_sorts.at(rownum));
 }
 
 
 void DRActionListModel::setRowMetadata(const QVariantMap &fields)
 {
   int id=fields.value("id").toInt();
-  int rownum=d_ids.indexOf(id);
+  int rownum=d_sorts.indexOf(d_ids.indexOf(id));
 
   if(rownum>=0) {
     UpdateRow(rownum,fields);
@@ -241,7 +245,7 @@ void DRActionListModel::setRowMetadata(const QVariantMap &fields)
 
 int DRActionListModel::rowNumber(int id) const
 {
-  return d_ids.indexOf(id);
+  return d_sorts.indexOf(d_ids.indexOf(id));
 }
 
 
@@ -266,13 +270,15 @@ void DRActionListModel::addAction(const QVariantMap &fields)
   // Do we have this loaded already?
   //
   int id=fields.value("id").toInt();
-  int rownum=d_ids.indexOf(id);
+  int rownum1=d_ids.indexOf(id);
+  int rownum=d_sorts.indexOf(rownum1);
   if(rownum>=0) {
     //
     // Update existing line
     //
-    UpdateRow(rownum,fields);
+    UpdateRow(rownum1,fields);
     emit dataChanged(index(rownum,0),index(rownum,columnCount()));
+    sort(d_sort_column,d_sort_order);
     return;
   }
 
@@ -283,26 +289,88 @@ void DRActionListModel::addAction(const QVariantMap &fields)
   for(int i=0;i<d_headers.size();i++) {
     row.push_back(QString());
   }
-  beginInsertRows(QModelIndex(),d_texts.size(),d_texts.size());
+  beginInsertRows(QModelIndex(),d_sorts.size(),d_sorts.size());
+  d_sorts.push_back(d_sorts.size());
   d_texts.push_back(row);
   d_ids.push_back(fields.value("id").toInt());
   d_metadatas.push_back(fields);
-  UpdateRow(d_texts.size()-1,fields);
+  UpdateRow(d_sorts.size()-1,fields);
   endInsertRows();
+
+  sort(d_sort_column,d_sort_order);
 }
 
 
 void DRActionListModel::removeAction(int id)
 {
-  int rownum=d_ids.indexOf(id);
+  //  int rownum=d_sorts.indexOf(d_ids.indexOf(id));
+
+  int rownum1=d_ids.indexOf(id);
+  //  printf("rownum1: %d\n",rownum1);
+  int rownum=d_sorts.indexOf(rownum1);
+  //  printf("rownum2: %d\n",rownum);
+
 
   if(rownum>=0) {
-    beginRemoveRows(QModelIndex(),rownum,rownum);
+    beginRemoveRows(QModelIndex(),rownum1,rownum1);
     d_texts.removeAt(rownum);
     d_metadatas.removeAt(rownum);
     d_ids.removeAt(rownum);
+    d_sorts.removeAt(rownum);
+
+    for(int i=0;i<d_sorts.size();i++) {
+      if(d_sorts.at(i)>=rownum) {
+	d_sorts[i]=d_sorts.at(i)-1;
+      }
+    }
+
     endRemoveRows();
   }
+}
+
+
+void DRActionListModel::sort(int col,Qt::SortOrder order)
+{
+  //  printf("DRActionListModel::sort(col: %d,order: %u)\n",col,order);
+  d_sort_column=col;
+  d_sort_order=order;
+
+  //
+  // FIXME: Use a more performant sort algorithm here!
+  //
+  bool changed=true;
+
+  if(order==Qt::DescendingOrder) {
+    while(changed) {
+      changed=false;
+      for(int i=1;i<d_sorts.size();i++) {
+	if(d_texts.at(d_sorts.at(i)).at(col)>
+	   d_texts.at(d_sorts.at(i-1)).at(col)) {
+	  int index=d_sorts.at(i);
+	  d_sorts[i]=d_sorts.at(i-1);
+	  d_sorts[i-1]=index;
+	  changed=true;
+	}
+      }
+    }
+  }
+
+  if(order==Qt::AscendingOrder) {
+    while(changed) {
+      changed=false;
+      for(int i=1;i<d_sorts.size();i++) {
+	if(d_texts.at(d_sorts.at(i)).at(col)<
+	   d_texts.at(d_sorts.at(i-1)).at(col)) {
+	  int index=d_sorts.at(i);
+	  d_sorts[i]=d_sorts.at(i-1);
+	  d_sorts[i-1]=index;
+	  changed=true;
+	}
+      }
+    }
+  }
+  emit dataChanged(index(0,0),index(rowCount()-1,columnCount()-1),
+  		   QVector<int>(1,Qt::DisplayRole));
 }
 
 

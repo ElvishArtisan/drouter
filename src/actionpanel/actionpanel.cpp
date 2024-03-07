@@ -135,6 +135,7 @@ MainWidget::MainWidget(QWidget *parent)
   d_action_view->setSelectionMode(QAbstractItemView::SingleSelection);
   d_action_view->setShowGrid(false);
   d_action_view->setWordWrap(true);
+  d_action_view->sortByColumn(1,Qt::AscendingOrder);  // Sort by time
   connect(d_action_view,SIGNAL(doubleClicked(const QModelIndex &)),
 	  this,SLOT(doubleClickedData(const QModelIndex &)));
 
@@ -169,10 +170,8 @@ MainWidget::MainWidget(QWidget *parent)
   //
   // Fix the Window Size
   //
-  /*
   setMinimumSize(sizeHint());
-  setMaximumSize(sizeHint());
-  */
+
   //
   // The Protocol J Connection
   //
@@ -285,6 +284,8 @@ void MainWidget::routerBoxActivatedData(int n)
     d_action_view->resizeRowsToContents();
     d_action_view->horizontalHeader()->setStretchLastSection(true);
     d_action_view->verticalHeader()->setVisible(false);
+
+    d_parser->actionModel(router)->sort(1,Qt::AscendingOrder);
   }
 }
 
@@ -292,6 +293,7 @@ void MainWidget::routerBoxActivatedData(int n)
 void MainWidget::connectedData(bool state,DRJParser::ConnectionState cstate)
 {
   if(state) {
+    d_action_view->setSortingEnabled(true);
     if(d_initial_router>0) {
       d_router_box->setCurrentIndex(d_parser->routerModel()->
 					rowNumber(d_initial_router));
@@ -305,6 +307,7 @@ void MainWidget::connectedData(bool state,DRJParser::ConnectionState cstate)
     d_router_box->setEnabled(true);
   }
   else {
+    d_action_view->setSortingEnabled(false);
     if(cstate!=DRJParser::WatchdogActive) {
       QMessageBox::warning(this,"Actionpanel - "+tr("Error"),
 			   tr("Login error")+": "+
