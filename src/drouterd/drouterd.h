@@ -30,6 +30,7 @@
 #include <drconfig.h>
 
 #include "drouter.h"
+#include "routeengine.h"
 #include "scriptengine.h"
 #include "tether.h"
 
@@ -50,6 +51,7 @@ class MainObject : public QObject
 
  private:
   DRouter *main_drouter;
+  RouteEngine *main_route_engine;
   QTimer *main_protocol_timer;
   QList<pid_t> main_protocol_pids;
   int main_protocol_socks[3];

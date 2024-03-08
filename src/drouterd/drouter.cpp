@@ -230,6 +230,40 @@ bool DRouter::isWriteable() const
 }
 
 
+void DRouter::setCrosspoint(int router,int output,int input)
+{
+  //  printf("DRouter::setCrosspoint(%d,%d,%d)\n",router,output,input);
+
+  DREndPointMap *map=drouter_maps.value(router);
+  if(map==NULL) {
+    syslog(LOG_WARNING,"router: %d - no such router",1+router);
+  }
+  else {
+    /*
+    printf("router name: %s\n",map->routerName().toUtf8().constData());
+    printf("output name: %s\n",map->name(DREndPointMap::Output,output).toUtf8().constData());
+    printf("input name: %s\n",map->name(DREndPointMap::Input,input).toUtf8().constData());
+    */
+    Matrix *dst_lwrp=drouter_nodes.
+      value(map->hostAddress(DREndPointMap::Output,output).toIPv4Address());
+    unsigned dst_slotnum=map->slot(DREndPointMap::Output,output);
+    if((dst_lwrp!=NULL)&&(dst_slotnum<dst_lwrp->dstSlots())) {
+      Matrix *src_lwrp=drouter_nodes.
+	value(map->hostAddress(DREndPointMap::Input,input).toIPv4Address());
+      unsigned src_slotnum=map->slot(DREndPointMap::Input,input);
+      if((src_lwrp!=NULL)&&(src_slotnum<src_lwrp->srcSlots())) {
+	/*
+	printf("dst: %s:%d\n",dst_lwrp->hostAddress().toString().toUtf8().constData(),dst_slotnum);
+	printf("src: %s:%d\n",src_lwrp->hostAddress().toString().toUtf8().constData(),src_slotnum);
+	printf("srcAddress: %s\n",src_lwrp->srcAddress(src_slotnum).toString().toUtf8().constData());
+	*/
+	dst_lwrp->setDstAddress(dst_slotnum,src_lwrp->srcAddress(src_slotnum));
+      }
+    }
+  }
+}
+
+
 void DRouter::setWriteable(bool state)
 {
   QString sql;
@@ -1041,10 +1075,7 @@ bool DRouter::ProcessIpcCommand(int sock,const QString &cmd)
     bool ok=false;
     int id=cmds.at(1).toInt(&ok);
     if(ok&&(id>0)) {
-      //
-      // FIXME: Update the event engine here!
-      //
-
+      emit routeEngineRefresh(id);
       NotifyProtocols("ACTION",QString::asprintf("%d",id));
     }
   }

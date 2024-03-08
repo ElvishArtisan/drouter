@@ -49,8 +49,10 @@ dist_drouterd_SOURCES = drouter.cpp drouter.h\
                         matrix_lwrp.cpp matrix_lwrp.h\
                         matrix_factory.cpp matrix_factory.h\
                         protoipc.h\
+                        routeengine.cpp routeengine.h\
                         scriptengine.cpp scriptengine.h\
                         tether.cpp tether.h\
+                        timeengine.cpp timeengine.h\
                         ttydevice.cpp ttydevice.h\
                         watchdog.cpp watchdog.h
 
@@ -61,8 +63,10 @@ nodist_drouterd_SOURCES = moc_drouter.cpp\
                           moc_matrix_bt-41mlr.cpp\
                           moc_matrix_gvg7000.cpp\
                           moc_matrix_lwrp.cpp\
+                          moc_routeengine.cpp\
                           moc_scriptengine.cpp\
                           moc_tether.cpp\
+                          moc_timeengine.cpp\
                           moc_ttydevice.cpp\
                           moc_watchdog.cpp
 
