@@ -37,9 +37,7 @@
   <refsect1 id='description'><title>Description</title>
   <para>
     <command>xypanel</command><manvolnum>1</manvolnum> is an X-Y control
-    applet that can be used to control signal routing with systems using the
-    Software Authority control protocol (such as PathFinder or Drouter's
-    <command>drouterd</command><manvolnum>8</manvolnum>).
+    applet that can be used to control signal routing with Drouter.
   </para>
   </refsect1>
 
@@ -79,59 +77,32 @@
       </term>
       <listitem>
 	<para>
-	  Display router number <replaceable>router-num</replaceable> after
-	  startup. Default is to display the first router listed by the
-	  <userinput>RouterNames</userinput> command.
+	  Select router number <replaceable>router-num</replaceable> in the
+	  <computeroutput>Router</computeroutput> dropdown after starting up.
 	</para>
       </listitem>
     </varlistentry>
   </variablelist>
 
-  <varlistentry>
-    <term>
-      <option>--no-creds</option>
-    </term>
-    <listitem>
-      <para>
-	This option does nothing, and exists solely for backwards
-	compatibility.
-      </para>
-    </listitem>
-  </varlistentry>
-
-  <varlistentry>
-    <term>
-      <option>--password=<arg choice="req"><replaceable>pwd</replaceable></arg></option>
-    </term>
-    <listitem>
-      <para>
-	Password to use when authenticating on the server.
-      </para>
-    </listitem>
-  </varlistentry>
-
-  <varlistentry>
-    <term>
-      <option>--prompt</option>
-    </term>
-    <listitem>
-      <para>
-	Prompt for Username and Password at startup.
-      </para>
-    </listitem>
-  </varlistentry>
-
-  <varlistentry>
-    <term>
-      <option>--username=<arg choice="req"><replaceable>user-name</replaceable></arg></option>
-    </term>
-    <listitem>
-      <para>
-	The username to use when authenticating on the server. Default
-	value is <userinput>xypanel</userinput>.
-      </para>
-    </listitem>
-  </varlistentry>
+  <variablelist remap='TP'>
+    <varlistentry>
+      <term>
+	<option>--router=<arg choice="req"><replaceable>router-num</replaceable></arg></option>
+      </term>
+      <listitem>
+	<para>
+	  Include router number <replaceable>router-num</replaceable> in the
+	  <computeroutput>Router</computeroutput> dropdown. This switch may
+	  be given multiple times.
+	</para>
+	<para>
+	  If no <userinput>--router=</userinput> options are provided, then
+	  <emphasis>all</emphasis> available routers will be added to the
+	  dropdown.
+	</para>
+      </listitem>
+    </varlistentry>
+  </variablelist>
 
   <variablelist remap='TP'>
     <varlistentry>
@@ -184,6 +155,9 @@
 
   <refsect1 id='see_also'><title>See Also</title>
   <para>
+    <citerefentry>
+      <refentrytitle>actionpanel</refentrytitle><manvolnum>1</manvolnum>
+    </citerefentry>,
     <citerefentry>
       <refentrytitle>buttonpanel</refentrytitle><manvolnum>1</manvolnum>
     </citerefentry>,

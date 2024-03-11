@@ -43,20 +43,18 @@ MainWidget::MainWidget(QWidget *parent)
   :QWidget(parent)
 {
   QString config_filename;
-  bool prompt=false;
   bool ok=false;
 
   panel_clock_state=false;
   panel_current_input_index=-1;
   panel_initial_connected=false;
   panel_initial_router=-1;
+  QList<int> router_filter;
 
   //
   // Initialize Variables
   //
   panel_hostname="";
-  panel_username="xypanel";
-  panel_password="";
 
   //
   // Read Command Options
@@ -77,19 +75,15 @@ MainWidget::MainWidget(QWidget *parent)
       }
       cmd->setProcessed(i,true);
     }
-    if(cmd->key(i)=="--username") {
-      panel_username=cmd->value(i);
-      cmd->setProcessed(i,true);
-    }
-    if(cmd->key(i)=="--password") {
-      panel_password=cmd->value(i);
-      cmd->setProcessed(i,true);
-    }
-    if(cmd->key(i)=="--no-creds") {
-      cmd->setProcessed(i,true);
-    }
-    if(cmd->key(i)=="--prompt") {
-      prompt=true;
+    if(cmd->key(i)=="--router") {
+      int router=cmd->value(i).toInt(&ok);
+      if(!ok) {
+	QMessageBox::warning(this,"XYPanel - "+tr("Error"),
+			     tr("Invalid --router value")+
+			     " \""+cmd->value(i)+"\".");
+	exit(1);
+      }
+      router_filter.push_back(router);
       cmd->setProcessed(i,true);
     }
     if(!cmd->processed(i)) {
@@ -187,15 +181,14 @@ MainWidget::MainWidget(QWidget *parent)
   //
   // Fix the Window Size
   //
-  setMinimumWidth(sizeHint().width());
-  setMaximumWidth(sizeHint().width());
-  setMinimumHeight(sizeHint().height());
-  setMaximumHeight(sizeHint().height());
+  setMinimumSize(sizeHint());
+  setMaximumSize(sizeHint());
 
   //
   // The Protocol J Connection
   //
   panel_parser=new DRJParser(this);
+  panel_parser->setRouterFilter(router_filter);
   connect(panel_parser,SIGNAL(connected(bool,DRJParser::ConnectionState)),
 	  this,SLOT(connectedData(bool,DRJParser::ConnectionState)));
   connect(panel_parser,SIGNAL(error(QAbstractSocket::SocketError)),
@@ -205,16 +198,10 @@ MainWidget::MainWidget(QWidget *parent)
 
   setWindowTitle(QString("Drouter - XYPanel [")+VERSION+"]");
 
-  if(prompt) {
-    if(!panel_login_dialog->exec(&panel_username,&panel_password)) {
-      exit(1);
-    }
-  }
   panel_router_box->setModel(panel_parser->routerModel());
   panel_router_box->setModelColumn(0);
 
-  panel_parser->
-    connectToHost(panel_hostname,9600,panel_username,panel_password);
+  panel_parser->connectToHost(panel_hostname,9600,"","");
 }
 
 

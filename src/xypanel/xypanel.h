@@ -64,8 +64,6 @@ class MainWidget : public QWidget
   int SelectedInput() const;
   DRLoginDialog *panel_login_dialog;
   QString panel_hostname;
-  QString panel_username;
-  QString panel_password;
   void SetArmedState(bool state);
   QLabel *panel_router_label;
   QComboBox *panel_router_box;

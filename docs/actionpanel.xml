@@ -79,8 +79,8 @@
       </term>
       <listitem>
 	<para>
-	  Select router number <replaceable>router-num</replaceable> after
-	  starting up.
+	  Select router number <replaceable>router-num</replaceable> in the
+	  <computeroutput>Router</computeroutput> dropdown after starting up.
 	</para>
       </listitem>
     </varlistentry>

@@ -1097,3 +1097,7 @@
 	* Added an actionpanel(1) man page.
 	* Fixed a bug in actionpanel(1) that broke the '--initial-router'
 	switch.
+2024-03-11 Fred Gleason <fredg@paravelsystems.com>
+	* Removed the '--username=', '--password=', '--no-creds' and
+	'--prompt' switches from xypanel(1).
+	* Added the '--router=' switch to xypanel(1).
