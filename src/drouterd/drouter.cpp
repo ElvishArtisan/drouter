@@ -694,9 +694,13 @@ void DRouter::gpoChangedData(unsigned id,int slotnum,const SyNode &node,
   }
   delete q;
 
+  QString gpo_name=gpo.name();
+  if(gpo_name.isEmpty()) {
+    gpo_name=QString::asprintf("GPO %d",1+slotnum);
+  }
   sql=QString("update `GPOS` set ")+
     "`CODE`='"+gpo.bundle()->code().toLower()+"',"+
-    "`NAME`='"+DRSqlQuery::escape(gpo.name())+"',"+
+    "`NAME`='"+DRSqlQuery::escape(gpo_name)+"',"+
     "`SOURCE_ADDRESS`='"+gpo.sourceAddress().toString()+"',"+
     QString::asprintf("`SOURCE_SLOT`=%d where ",gpo.sourceSlot())+
     "`HOST_ADDRESS`='"+QHostAddress(id).toString()+"' && "+
@@ -1039,8 +1043,7 @@ bool DRouter::ProcessIpcCommand(int sock,const QString &cmd)
       unsigned gpi_slotnum=cmds.at(4).toUInt(&ok);
       if((gpi_lwrp!=NULL)&&ok&&(gpi_slotnum<gpi_lwrp->gpis())) {
 	gpo_lwrp->
-	  setGpoSourceAddress(gpo_slotnum,gpi_lwrp->hostAddress(),
-			      gpi_slotnum);
+	  setGpoSourceAddress(gpo_slotnum,gpi_lwrp->hostAddress(),gpi_slotnum);
       }
     }
   }

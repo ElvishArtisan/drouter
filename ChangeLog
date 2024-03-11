@@ -1101,3 +1101,7 @@
 	* Removed the '--username=', '--password=', '--no-creds' and
 	'--prompt' switches from xypanel(1).
 	* Added the '--router=' switch to xypanel(1).
+2024-03-11 Fred Gleason <fredg@paravelsystems.com>
+	* Fixed a bug in drouterd(8) that caused the name of GPO endpoints
+	to be set to an empty string after taking a crosspoint to the
+	endpoint.
