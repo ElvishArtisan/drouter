@@ -37,7 +37,6 @@ dist_libdrouter_la_SOURCES = dractionlistmodel.cpp dractionlistmodel.h\
                              drlogindialog.cpp drlogindialog.h\
                              drmultistatewidget.cpp drmultistatewidget.h\
                              drrouterlistmodel.cpp drrouterlistmodel.h\
-                             drsaparser.cpp drsaparser.h\
                              drsendmail.cpp drsendmail.h\
                              drsnapshotlistmodel.cpp drsnapshotlistmodel.h\
                              drsqlquery.cpp drsqlquery.h
@@ -49,7 +48,6 @@ nodist_libdrouter_la_SOURCES = moc_dractionlistmodel.cpp\
                                moc_drlogindialog.cpp\
                                moc_drmultistatewidget.cpp\
                                moc_drrouterlistmodel.cpp\
-                               moc_drsaparser.cpp\
                                moc_drsnapshotlistmodel.cpp\
                                paths.h
 

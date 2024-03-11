@@ -26,8 +26,6 @@
 #include <QList>
 #include <QStringList>
 
-#include "drsaparser.h"
-
 class GpioParser
 {
  public:

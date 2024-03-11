@@ -46,7 +46,6 @@ nodist_buttonpanel_SOURCES = moc_autolabel.cpp\
                              moc_autopushbutton.cpp\
                              moc_buttonpanel.cpp\
                              moc_buttonwidget.cpp\
-                             moc_gpioparser.cpp\
                              moc_gpiowidget.cpp\
                              moc_multistatelabel.cpp\
                              moc_separator.cpp\

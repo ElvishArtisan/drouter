@@ -1084,3 +1084,5 @@
 	* Implemented route engine support in drouterd(8).
 2024-03-11 Fred Gleason <fredg@paravelsystems.com>
 	* Removed the 'DRComboBox' class.
+2024-03-11 Fred Gleason <fredg@paravelsystems.com>
+	* Removed the 'DRSaParser' class.
