@@ -25,7 +25,7 @@
 
 #include <sy5/syinterfaces.h>
 
-#include "drconfig.h"
+#include "config.h"
 #include "tether.h"
 
 Tether::Tether(QObject *parent)
@@ -70,7 +70,7 @@ bool Tether::instanceIsActive() const
 }
 
 
-bool Tether::start(DRConfig *config,QString *err_msg)
+bool Tether::start(Config *config,QString *err_msg)
 {
   tether_config=config;
 
@@ -84,7 +84,7 @@ bool Tether::start(DRConfig *config,QString *err_msg)
 			       DROUTER_TETHER_UDP_PORT);
     return false;
   }
-  tether_tty_device->setName(tether_config->tetherSerialDevice(DRConfig::This));
+  tether_tty_device->setName(tether_config->tetherSerialDevice(Config::This));
   if(!tether_tty_device->open(QIODevice::ReadWrite)) {
     *err_msg="unable to open tether tty port \""+tether_tty_device->name()+"\"";
     return false;
@@ -112,7 +112,7 @@ void Tether::udpReadyReadData()
   int n;
 
   while((n=tether_udp_socket->readDatagram(data,1,&addr))>0) {
-    if(addr.isEqual(tether_config->tetherIpAddress(DRConfig::That),
+    if(addr.isEqual(tether_config->tetherIpAddress(Config::That),
 		    QHostAddress::ConvertV4MappedToIPv4|
 		    QHostAddress::ConvertV4CompatToIPv4)) {
       if(tether_window_timer->isActive()) {
@@ -127,12 +127,12 @@ void Tether::udpReadyReadData()
 	if(data[0]=='?') {
 	  if(tether_active_state) {
 	    tether_udp_socket->
-	      writeDatagram("+",1,tether_config->tetherIpAddress(DRConfig::That),
+	      writeDatagram("+",1,tether_config->tetherIpAddress(Config::That),
 			    DROUTER_TETHER_UDP_PORT);
 	  }
 	  else {
 	    tether_udp_socket->
-	      writeDatagram("-",1,tether_config->tetherIpAddress(DRConfig::That),
+	      writeDatagram("-",1,tether_config->tetherIpAddress(Config::That),
 			    DROUTER_TETHER_UDP_PORT);
 	  }
 	}	
@@ -175,7 +175,7 @@ void Tether::intervalTimeoutData()
   tether_udp_state='-';
   tether_udp_replied=false;
   tether_udp_socket->
-    writeDatagram("?",1,tether_config->tetherIpAddress(DRConfig::That),
+    writeDatagram("?",1,tether_config->tetherIpAddress(Config::That),
 		  DROUTER_TETHER_UDP_PORT);
 
   tether_tty_state='-';
@@ -233,7 +233,7 @@ bool Tether::ModifySharedAddress(const QString &keyword)
 
   ifaces->update();
   for(int i=0;i<ifaces->quantity();i++) {
-    if(ifaces->ipv4Address(i)==tether_config->tetherIpAddress(DRConfig::This)) {
+    if(ifaces->ipv4Address(i)==tether_config->tetherIpAddress(Config::This)) {
       iface_name=ifaces->name(i);
       iface_mask=SyInterfaces::toCidrMask(ifaces->ipv4Netmask(i));
 

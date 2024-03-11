@@ -27,8 +27,7 @@
 
 #include <sy5/sysignalnotifier.h>
 
-#include <drconfig.h>
-
+#include "config.h"
 #include "drouter.h"
 #include "routeengine.h"
 #include "scriptengine.h"
@@ -62,7 +61,7 @@ class MainObject : public QObject
   ScriptEngine *main_script_engine;
   SySignalNotifier *main_exit_notifier;
   Tether *main_tether;
-  DRConfig *main_config;
+  Config *main_config;
 };
 
 

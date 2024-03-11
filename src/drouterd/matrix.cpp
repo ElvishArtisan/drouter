@@ -1,8 +1,8 @@
 // matrix.cpp
 //
-// Abstract router matrix implementation
+// Abstract base class for router matrices
 //
-// (C) 2023 Fred Gleason <fredg@paravelsystems.com>
+// (C) 2023-2024 Fred Gleason <fredg@paravelsystems.com>
 //
 //    This program is free software; you can redistribute it and/or modify
 //    it under the terms of version 2.1 of the GNU Lesser General Public
@@ -21,7 +21,7 @@
 
 #include "matrix.h"
 
-Matrix::Matrix(DRConfig::MatrixType matrix_type,unsigned id,DRConfig *conf,
+Matrix::Matrix(Config::MatrixType matrix_type,unsigned id,Config *conf,
 	       QObject *parent)
   : QObject(parent)
 {
@@ -42,7 +42,7 @@ Matrix::~Matrix()
 }
 
 
-DRConfig::MatrixType Matrix::matrixType() const
+Config::MatrixType Matrix::matrixType() const
 {
   return d_matrix_type;
 }
@@ -202,7 +202,7 @@ void Matrix::setSilenceMonitor(int slot,SyLwrpClient::MeterType type,int lvl,
 }
 
 
-DRConfig *Matrix::config() const
+Config *Matrix::config() const
 {
   return d_config;
 }

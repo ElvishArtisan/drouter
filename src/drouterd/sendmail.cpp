@@ -1,8 +1,8 @@
-// drsendmail.cpp
+// sendmail.cpp
 //
 // Send an e-mail message using sendmail(1)
 //
-//   (C) Copyright 2020-2022 Fred Gleason <fredg@paravelsystems.com>
+//   (C) Copyright 2020-2024 Fred Gleason <fredg@paravelsystems.com>
 //
 //   This program is free software; you can redistribute it and/or modify
 //   it under the terms of the GNU General Public License version 2 as
@@ -20,12 +20,12 @@
 
 #include <QObject>
 
-#include "drconfig.h"
-#include "drsendmail.h"
+#include "config.h"
+#include "sendmail.h"
 
 #include <QProcess>
 
-bool __DRSendMail_IsAscii(const QString &str)
+bool __SendMail_IsAscii(const QString &str)
 {
   for(int i=0;i<str.length();i++) {
     QChar ch=str.at(i);
@@ -38,14 +38,14 @@ bool __DRSendMail_IsAscii(const QString &str)
 }
 
 
-QByteArray __DRSendMail_EncodeBody(QString *charset,QString *encoding,
+QByteArray __SendMail_EncodeBody(QString *charset,QString *encoding,
 				   const QString &str)
 {
   QByteArray raw;
   int index=0;
   QByteArray ret;
 
-  if(__DRSendMail_IsAscii(str)) {
+  if(__SendMail_IsAscii(str)) {
     //
     // All 7 Bit Characters
     //
@@ -97,16 +97,16 @@ QByteArray __DRSendMail_EncodeBody(QString *charset,QString *encoding,
 }
 
 
-QByteArray __DRSendMail_EncodeHeader(const QString &str)
+QByteArray __SendMail_EncodeHeader(const QString &str)
 {
-  if(__DRSendMail_IsAscii(str)) {
+  if(__SendMail_IsAscii(str)) {
     return str.toUtf8();
   }
   return QByteArray("=?utf-8?B?")+str.toUtf8().toBase64()+"?=";
 }
 
 
-QByteArray __DRSendMail_EncodeAddress(const QString &str,bool *ok)
+QByteArray __SendMail_EncodeAddress(const QString &str,bool *ok)
 {
   //
   // See RFC5322 Section 3.4 for these formats
@@ -134,7 +134,7 @@ QByteArray __DRSendMail_EncodeAddress(const QString &str,bool *ok)
        addr=addr.remove("("+name+")").trimmed();
      }
   }
-  if(!DRConfig::emailIsValid(addr)) {
+  if(!Config::emailIsValid(addr)) {
     *ok=false;
     return QByteArray();
   }
@@ -148,7 +148,7 @@ QByteArray __DRSendMail_EncodeAddress(const QString &str,bool *ok)
   if(name.isEmpty()) {
     return addr.toUtf8();
   }
-  return __DRSendMail_EncodeHeader(name)+" <"+addr.toUtf8()+">";
+  return __SendMail_EncodeHeader(name)+" <"+addr.toUtf8()+">";
 }
 
 
@@ -156,7 +156,7 @@ QByteArray __DRSendMail_EncodeAddress(const QString &str,bool *ok)
 // This implements a basic email sending capability using the system's
 // sendmail(1) interface.
 //
-bool DRSendMail(QString *err_msg,const QString &subject,const QString &body,
+bool SendMail(QString *err_msg,const QString &subject,const QString &body,
 	      const QString &from_addr,const QStringList &to_addrs,
 	      const QStringList &cc_addrs,const QStringList &bcc_addrs,
 	      bool dry_run)
@@ -179,28 +179,28 @@ bool DRSendMail(QString *err_msg,const QString &subject,const QString &body,
     *err_msg+=QObject::tr("You must supply a \"from\" address")+"\n";
   }
   else {
-    from_addr_enc=__DRSendMail_EncodeAddress(from_addr,&ok);
+    from_addr_enc=__SendMail_EncodeAddress(from_addr,&ok);
     if(!ok) {
       *err_msg+=QObject::tr("address")+" \""+from_addr+"\" "+
 	QObject::tr("is invalid")+"\n";
     }
   }
   for(int i=0;i<to_addrs.size();i++) {
-    to_addrs_enc.push_back(__DRSendMail_EncodeAddress(to_addrs.at(i),&ok));
+    to_addrs_enc.push_back(__SendMail_EncodeAddress(to_addrs.at(i),&ok));
     if(!ok) {
       *err_msg+=QObject::tr("address")+" \""+to_addrs.at(i)+"\" "+
 	QObject::tr("is invalid")+"\n";
     }
   }
   for(int i=0;i<cc_addrs.size();i++) {
-    cc_addrs_enc.push_back(__DRSendMail_EncodeAddress(cc_addrs.at(i),&ok));
+    cc_addrs_enc.push_back(__SendMail_EncodeAddress(cc_addrs.at(i),&ok));
     if(!ok) {
       *err_msg+=QObject::tr("address")+" \""+cc_addrs.at(i)+"\" "+
 	QObject::tr("is invalid")+"\n";
     }
   }
   for(int i=0;i<bcc_addrs.size();i++) {
-    bcc_addrs_enc.push_back(__DRSendMail_EncodeAddress(bcc_addrs.at(i),&ok));
+    bcc_addrs_enc.push_back(__SendMail_EncodeAddress(bcc_addrs.at(i),&ok));
     if(!ok) {
       *err_msg+=QObject::tr("address")+" \""+bcc_addrs.at(i)+"\" "+
 	QObject::tr("is invalid")+"\n";
@@ -216,7 +216,7 @@ bool DRSendMail(QString *err_msg,const QString &subject,const QString &body,
   //
   QString charset;
   QString encoding;
-  QByteArray raw=__DRSendMail_EncodeBody(&charset,&encoding,body);
+  QByteArray raw=__SendMail_EncodeBody(&charset,&encoding,body);
 
   msg+="From: "+from_addr_enc+"\r\n";
 
@@ -247,7 +247,7 @@ bool DRSendMail(QString *err_msg,const QString &subject,const QString &body,
     msg=msg.left(msg.length()-2);
     msg+="\r\n";
   }
-  msg+="Subject: "+__DRSendMail_EncodeHeader(subject)+"\r\n";
+  msg+="Subject: "+__SendMail_EncodeHeader(subject)+"\r\n";
 
   msg+="\r\n";
   msg+=raw;
@@ -295,11 +295,11 @@ bool DRSendMail(QString *err_msg,const QString &subject,const QString &body,
 }
 
 
-bool DRSendMail(QString *err_msg,const QString &subject,const QString &body,
+bool SendMail(QString *err_msg,const QString &subject,const QString &body,
 	      const QString &from_addr,const QString &to_addrs,
 	      const QString &cc_addrs,const QString &bcc_addrs,bool dry_run)
 {
-  return DRSendMail(err_msg,subject,body,from_addr,
+  return SendMail(err_msg,subject,body,from_addr,
 		  to_addrs.split(",",QString::SkipEmptyParts),
 		  cc_addrs.split(",",QString::SkipEmptyParts),
 		  bcc_addrs.split(",",QString::SkipEmptyParts),

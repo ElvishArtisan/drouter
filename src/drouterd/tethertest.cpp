@@ -23,14 +23,14 @@
 
 #include <QCoreApplication>
 
-#include "drconfig.h"
+#include "config.h"
 #include "tethertest.h"
 
 MainObject::MainObject(QObject *parent)
   : QObject(parent)
 {
   QString err_msg;
-  DRConfig *config=new DRConfig();
+  Config *config=new Config();
   config->load();
 
   if(!config->tetherIsActivated()) {

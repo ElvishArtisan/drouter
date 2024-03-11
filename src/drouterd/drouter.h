@@ -30,9 +30,9 @@
 
 #include <sy5/symcastsocket.h>
 
-#include <drconfig.h>
 #include <drendpointmap.h>
 
+#include "config.h"
 #include "gpioflasher.h"
 #include "matrix.h"
 
@@ -93,7 +93,7 @@ class DRouter : public QObject
   void SetSchemaVersion(int ver) const;
   bool StartStaticMatrices(QString *err_msg);
   bool StartLivewire(QString *err_msg);
-  Matrix *StartMatrix(DRConfig::MatrixType type,unsigned id);
+  Matrix *StartMatrix(Config::MatrixType type,unsigned id);
   void LockTables() const;
   void UnlockTables() const;
   void LoadMaps();
@@ -115,7 +115,7 @@ class DRouter : public QObject
   GpioFlasher *drouter_flasher;
   QTimer *drouter_finalize_timer;
   QTimer *drouter_purge_events_timer;
-  DRConfig *drouter_config;
+  Config *drouter_config;
 };
 
 

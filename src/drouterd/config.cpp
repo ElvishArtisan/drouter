@@ -26,39 +26,39 @@
 
 #include <sy5/syprofile.h>
 
-#include "drconfig.h"
+#include "config.h"
 
-DRConfig::DRConfig()
+Config::Config()
 {
   conf_tether_is_sane=false;
 }
 
 
-int DRConfig::clipAlarmThreshold() const
+int Config::clipAlarmThreshold() const
 {
   return conf_clip_alarm_threshold;
 }
 
 
-int DRConfig::clipAlarmTimeout() const
+int Config::clipAlarmTimeout() const
 {
   return conf_clip_alarm_timeout;
 }
 
 
-int DRConfig::silenceAlarmThreshold() const
+int Config::silenceAlarmThreshold() const
 {
   return conf_silence_alarm_threshold;
 }
 
 
-int DRConfig::silenceAlarmTimeout() const
+int Config::silenceAlarmTimeout() const
 {
   return conf_silence_alarm_timeout;
 }
 
 
-bool DRConfig::configureAudioAlarms(const QString &dev_name) const
+bool Config::configureAudioAlarms(const QString &dev_name) const
 {
   for(int i=0;i<conf_no_audio_alarm_devices.size();i++) {
     if(dev_name.toLower()==conf_no_audio_alarm_devices.at(i)) {
@@ -69,157 +69,157 @@ bool DRConfig::configureAudioAlarms(const QString &dev_name) const
 }
 
 
-int DRConfig::retainEventRecordsDuration() const
+int Config::retainEventRecordsDuration() const
 {
   return conf_retain_event_records_duration;
 }
 
 
-QString DRConfig::alertAddress() const
+QString Config::alertAddress() const
 {
   return conf_alert_address;
 }
 
 
-QString DRConfig::fromAddress() const
+QString Config::fromAddress() const
 {
   return conf_from_address;
 }
 
 
-int DRConfig::ipcLogPriority() const
+int Config::ipcLogPriority() const
 {
   return conf_ipc_log_priority;
 }
 
 
-int DRConfig::nodeLogPriority() const
+int Config::nodeLogPriority() const
 {
   return conf_node_log_priority;
 }
 
 
-QString DRConfig::lwrpPassword() const
+QString Config::lwrpPassword() const
 {
   return conf_lwrp_password;
 }
 
 
-int DRConfig::maxHeapTableSize() const
+int Config::maxHeapTableSize() const
 {
   return conf_max_heap_table_size;
 }
 
 
-int DRConfig::fileDescriptorLimit() const
+int Config::fileDescriptorLimit() const
 {
   return conf_file_descriptor_limit;
 }
 
 
-QStringList DRConfig::nodesStartupLwrp(const QHostAddress &addr) const
+QStringList Config::nodesStartupLwrp(const QHostAddress &addr) const
 {
   return conf_nodes_startup_lwrps.value(addr.toIPv4Address(),QStringList());
 }
 
 
-int DRConfig::matrixQuantity() const
+int Config::matrixQuantity() const
 {
   return conf_matrix_types.size();
 }
 
 
-DRConfig::MatrixType DRConfig::matrixType(int n) const
+Config::MatrixType Config::matrixType(int n) const
 {
   return conf_matrix_types.at(n);
 }
 
 
-QHostAddress DRConfig::matrixHostAddress(int n) const
+QHostAddress Config::matrixHostAddress(int n) const
 {
   return conf_matrix_host_addresses.at(n);
 }
 
 
-uint16_t DRConfig::matrixPort(int n) const
+uint16_t Config::matrixPort(int n) const
 {
   return conf_matrix_ports.at(n);
 }
 
 
-bool DRConfig::livewireIsEnabled() const
+bool Config::livewireIsEnabled() const
 {
-  return conf_matrix_types.contains(DRConfig::LwrpMatrix);
+  return conf_matrix_types.contains(Config::LwrpMatrix);
 }
 
 
-bool DRConfig::tetherIsActivated() const
+bool Config::tetherIsActivated() const
 {
   return conf_tether_is_activated;
 }
 
 
-QHostAddress DRConfig::tetherSharedIpAddress() const
+QHostAddress Config::tetherSharedIpAddress() const
 {
   return conf_tether_shared_ip_address;
 }
 
 
-QString DRConfig::tetherHostId(TetherRole role) const
+QString Config::tetherHostId(TetherRole role) const
 {
   return conf_tether_host_ids[role];
 }
 
 
-QString DRConfig::tetherHostname(DRConfig::TetherRole role) const
+QString Config::tetherHostname(Config::TetherRole role) const
 {
   return conf_tether_hostnames[role];
 }
 
 
-QHostAddress DRConfig::tetherIpAddress(DRConfig::TetherRole role) const
+QHostAddress Config::tetherIpAddress(Config::TetherRole role) const
 {
   return conf_tether_ip_addresses[role];
 }
 
 
-QString DRConfig::tetherSerialDevice(DRConfig::TetherRole role) const
+QString Config::tetherSerialDevice(Config::TetherRole role) const
 {
   return conf_tether_serial_devices[role];
 }
 
 
-QHostAddress DRConfig::tetherGpioIpAddress(DRConfig::TetherRole role) const
+QHostAddress Config::tetherGpioIpAddress(Config::TetherRole role) const
 {
   return conf_tether_gpio_ip_addresses[role];
 }
 
 
-int DRConfig::tetherGpioSlot(DRConfig::TetherRole role) const
+int Config::tetherGpioSlot(Config::TetherRole role) const
 {
   return conf_tether_gpio_slots[role];
 }
 
 
-SyGpioBundleEvent::Type DRConfig::tetherGpioType(TetherRole role) const
+SyGpioBundleEvent::Type Config::tetherGpioType(TetherRole role) const
 {
   return conf_tether_gpio_types[role];
 }
 
 
-QString DRConfig::tetherGpioCode(DRConfig::TetherRole role) const
+QString Config::tetherGpioCode(Config::TetherRole role) const
 {
   return conf_tether_gpio_codes[role];
 }
 
 
-bool DRConfig::tetherIsSane() const
+bool Config::tetherIsSane() const
 {
   return conf_tether_is_sane;
 }
 
 
-void DRConfig::load()
+void Config::load()
 {
   char hostname[HOST_NAME_MAX];
   SyProfile *p=new SyProfile();
@@ -287,8 +287,8 @@ void DRConfig::load()
   //
   n=0;
   QString section=QString::asprintf("Matrix%d",n+1);
-  DRConfig::MatrixType mtype=
-    DRConfig::matrixType(p->stringValue(section,"Type","",&ok));
+  Config::MatrixType mtype=
+    Config::matrixType(p->stringValue(section,"Type","",&ok));
   while(ok) {
     conf_matrix_types.push_back(mtype);
     conf_matrix_host_addresses.
@@ -296,7 +296,7 @@ void DRConfig::load()
     conf_matrix_ports.push_back(p->intValue(section,"HostPort"));
     n++;
     section=QString::asprintf("Matrix%d",n+1);
-    mtype=DRConfig::matrixType(p->stringValue(section,"Type","",&ok));
+    mtype=Config::matrixType(p->stringValue(section,"Type","",&ok));
   }
 
   //
@@ -308,14 +308,14 @@ void DRConfig::load()
     if(gethostname(hostname,HOST_NAME_MAX)==0) {
       QStringList f0=QString(hostname).split(".");
       if(p->stringValue("Tether","SystemAHostname").toLower()==f0.first().toLower()) {
-	conf_tether_host_ids[DRConfig::This]="A";
-	conf_tether_host_ids[DRConfig::That]="B";
+	conf_tether_host_ids[Config::This]="A";
+	conf_tether_host_ids[Config::That]="B";
       }
       if(p->stringValue("Tether","SystemBHostname").toLower()==f0.first().toLower()) {
-	conf_tether_host_ids[DRConfig::This]="B";
-	conf_tether_host_ids[DRConfig::That]="A";
+	conf_tether_host_ids[Config::This]="B";
+	conf_tether_host_ids[Config::That]="A";
       }
-      if(conf_tether_host_ids[DRConfig::This].isEmpty()) {
+      if(conf_tether_host_ids[Config::This].isEmpty()) {
 	syslog(LOG_WARNING,
 	       "system name matches no configured tethered hostnames");
 	conf_tether_is_sane=false;
@@ -323,7 +323,7 @@ void DRConfig::load()
 	return;
       }
       syslog(LOG_DEBUG,"we are System%s",
-	     (const char *)conf_tether_host_ids[DRConfig::This].toUtf8());
+	     (const char *)conf_tether_host_ids[Config::This].toUtf8());
       conf_tether_is_sane=!conf_tether_shared_ip_address.toString().isEmpty();
       for(int i=0;i<2;i++) {
 	conf_tether_hostnames[i]=
@@ -375,7 +375,7 @@ void DRConfig::load()
 }
 
 
-QHostAddress DRConfig::normalizedStreamAddress(const QHostAddress &addr)
+QHostAddress Config::normalizedStreamAddress(const QHostAddress &addr)
 {
   QHostAddress ret=addr;
 
@@ -387,13 +387,13 @@ QHostAddress DRConfig::normalizedStreamAddress(const QHostAddress &addr)
 }
 
 
-QHostAddress DRConfig::normalizedStreamAddress(const QString &addr)
+QHostAddress Config::normalizedStreamAddress(const QString &addr)
 {
-  return DRConfig::normalizedStreamAddress(QHostAddress(addr));
+  return Config::normalizedStreamAddress(QHostAddress(addr));
 }
 
 
-bool DRConfig::emailIsValid(const QString &addr)
+bool Config::emailIsValid(const QString &addr)
 {
   QStringList f0=addr.split("@",QString::KeepEmptyParts);
 
@@ -408,24 +408,24 @@ bool DRConfig::emailIsValid(const QString &addr)
 }
 
 
-QString DRConfig::matrixTypeString(MatrixType type)
+QString Config::matrixTypeString(MatrixType type)
 {
   QString ret="unknown";
 
   switch(type) {
-  case DRConfig::LwrpMatrix:
+  case Config::LwrpMatrix:
     ret="LWRP";
     break;
 
-  case DRConfig::Bt41MlrMatrix:
+  case Config::Bt41MlrMatrix:
     ret="BT-41MLR";
     break;
 
-  case DRConfig::Gvg7000Matrix:
+  case Config::Gvg7000Matrix:
     ret="GVG7000";
     break;
 
-  case DRConfig::LastMatrix:
+  case Config::LastMatrix:
     break;
   }
 
@@ -433,13 +433,13 @@ QString DRConfig::matrixTypeString(MatrixType type)
 }
 
 
-DRConfig::MatrixType DRConfig::matrixType(const QString &str)
+Config::MatrixType Config::matrixType(const QString &str)
 {
-  for(int i=0;i<DRConfig::LastMatrix;i++) {
-    if(str.toUpper()==DRConfig::matrixTypeString((DRConfig::MatrixType)i)) {
-      return (DRConfig::MatrixType)i;
+  for(int i=0;i<Config::LastMatrix;i++) {
+    if(str.toUpper()==Config::matrixTypeString((Config::MatrixType)i)) {
+      return (Config::MatrixType)i;
     }
   }
 
-  return DRConfig::LastMatrix;
+  return Config::LastMatrix;
 }

@@ -22,8 +22,7 @@
 
 #include <sy5/sycmdswitch.h>
 
-#include <drsendmail.h>
-
+#include "sendmail.h"
 #include "sendmailtest.h"
 
 MainObject::MainObject(QObject *parent)
@@ -111,7 +110,7 @@ MainObject::MainObject(QObject *parent)
     body=QString::fromUtf8(raw);
   }
 
-  if(!DRSendMail(&err_msg,subject,body,
+  if(!SendMail(&err_msg,subject,body,
 	       from_addr,to_addrs,cc_addrs,bcc_addrs,dry_run)) {
     fprintf(stderr,"%s\n",err_msg.toUtf8().constData());
     exit(256);

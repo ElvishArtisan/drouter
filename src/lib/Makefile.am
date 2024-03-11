@@ -29,7 +29,6 @@ moc_%.cpp:	%.h
 
 lib_LTLIBRARIES = libdrouter.la
 dist_libdrouter_la_SOURCES = dractionlistmodel.cpp dractionlistmodel.h\
-                             drconfig.cpp drconfig.h\
                              drdparser.cpp drdparser.h\
                              drendpointmap.cpp drendpointmap.h\
                              drendpointlistmodel.cpp drendpointlistmodel.h\
@@ -37,7 +36,6 @@ dist_libdrouter_la_SOURCES = dractionlistmodel.cpp dractionlistmodel.h\
                              drlogindialog.cpp drlogindialog.h\
                              drmultistatewidget.cpp drmultistatewidget.h\
                              drrouterlistmodel.cpp drrouterlistmodel.h\
-                             drsendmail.cpp drsendmail.h\
                              drsnapshotlistmodel.cpp drsnapshotlistmodel.h\
                              drsqlquery.cpp drsqlquery.h
 

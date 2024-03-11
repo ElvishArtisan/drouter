@@ -23,7 +23,6 @@
 #include <QPixmap>
 
 #include "dractionlistmodel.h"
-#include "drconfig.h"
 
 //
 // Icons
@@ -192,10 +191,9 @@ QVariant DRActionListModel::data(const QModelIndex &index,int role) const
       return d_font;
 
     case Qt::SizeHintRole:
-      return QSize(DROUTER_LISTWIDGET_ITEM_WIDTH_PADDING+
-		   d_font_metrics->
-		   width(d_texts.at(row).at(col).toString()),
-		   DROUTER_LISTWIDGET_ITEM_HEIGHT);
+      return QSize(ITEM_WIDTH_PADDING+
+		   d_font_metrics->width(d_texts.at(row).at(col).toString()),
+		   ITEM_HEIGHT);
       break;
 
     case Qt::TextColorRole:

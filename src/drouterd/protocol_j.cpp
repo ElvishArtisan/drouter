@@ -877,7 +877,7 @@ QJsonObject ProtocolJ::SourceNamesMessage(DREndPointMap::RouterType type,
     jo0.insert("number",(int)(1+q->value(0).toInt()));
     jo0.insert("name",name);
     jo0.insert("hostDescription",q->value(8).toString());
-    if(q->value(7).toUInt()==DRConfig::LwrpMatrix) {
+    if(q->value(7).toUInt()==Config::LwrpMatrix) {
       jo0.insert("hostAddress",q->value(2).toString());
       jo0.insert("hostName",q->value(3).toString());
       jo0.insert("slot",1+q->value(4).toInt());
@@ -895,7 +895,7 @@ QJsonObject ProtocolJ::SourceNamesMessage(DREndPointMap::RouterType type,
     jo0.insert("number",(int)(1+q->value(0).toInt()));
     jo0.insert("name",name);
     jo0.insert("hostDescription",q->value(6).toString());
-    if(q->value(5).toUInt()==DRConfig::LwrpMatrix) {
+    if(q->value(5).toUInt()==Config::LwrpMatrix) {
       jo0.insert("hostAddress",q->value(1).toString());
       jo0.insert("hostName",q->value(2).toString());
       jo0.insert("slot",1+q->value(3).toInt());
@@ -986,7 +986,7 @@ QJsonObject ProtocolJ::DestNamesMessage(DREndPointMap::RouterType type,
   jo0.insert("number",(int)(1+q->value(0).toInt()));
   jo0.insert("name",name);
   jo0.insert("hostDescription",q->value(7).toString());
-  if(q->value(6).toUInt()==DRConfig::LwrpMatrix) {
+  if(q->value(6).toUInt()==Config::LwrpMatrix) {
     jo0.insert("hostAddress",q->value(2).toString());
     jo0.insert("hostName",q->value(3).toString());
     jo0.insert("slot",1+q->value(4).toInt());

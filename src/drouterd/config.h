@@ -1,4 +1,4 @@
-// drconfig.h
+// config.h
 //
 // Global configuration for DRouter
 //
@@ -18,8 +18,8 @@
 //   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
 //
 
-#ifndef DRCONFIG_H
-#define DRCONFIG_H
+#ifndef CONFIG_H
+#define CONFIG_H
 
 #include <QHostAddress>
 #include <QMap>
@@ -46,15 +46,13 @@
 #define DROUTER_TETHER_TTY_FLOW_CONTROL TTYDevice::FlowNone
 #define DROUTER_TETHER_BASE_INTERVAL 10000
 #define DROUTER_TETHER_WINDOW_INTERVAL 1000
-#define DROUTER_LISTWIDGET_ITEM_WIDTH_PADDING 30
-#define DROUTER_LISTWIDGET_ITEM_HEIGHT 30
 
-class DRConfig
+class Config
 {
  public:
   enum TetherRole {This=0,That=1};
   enum MatrixType {LwrpMatrix=0,Bt41MlrMatrix=1,Gvg7000Matrix=2,LastMatrix=3};
-  DRConfig();
+  Config();
   int clipAlarmThreshold() const;
   int clipAlarmTimeout() const;
   int silenceAlarmThreshold() const;
@@ -109,7 +107,7 @@ class DRConfig
   int conf_max_heap_table_size;
   int conf_file_descriptor_limit;
   QMap<uint32_t,QStringList> conf_nodes_startup_lwrps;
-  QList<DRConfig::MatrixType> conf_matrix_types;
+  QList<Config::MatrixType> conf_matrix_types;
   QList<QHostAddress> conf_matrix_host_addresses;
   QList<uint16_t> conf_matrix_ports;
   bool conf_tether_is_activated;
@@ -126,4 +124,4 @@ class DRConfig
 };
 
 
-#endif  // DRCONFIG_H
+#endif  // CONFIG_H

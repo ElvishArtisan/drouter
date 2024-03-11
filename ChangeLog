@@ -1086,3 +1086,8 @@
 	* Removed the 'DRComboBox' class.
 2024-03-11 Fred Gleason <fredg@paravelsystems.com>
 	* Removed the 'DRSaParser' class.
+2024-03-11 Fred Gleason <fredg@paravelsystems.com>
+	* Moved the 'DRSendmail' class out of the library.
+	* Moved the 'DRConfig' class out of the library.
+	* Moved the 'sendmailtest' program from 'src/tests/' to
+	'src/drouterd/'.

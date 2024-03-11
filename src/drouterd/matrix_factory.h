@@ -2,7 +2,7 @@
 //
 // Instantiate a matrix instance
 //
-// (C) 2023 Fred Gleason <fredg@paravelsystems.com>
+// (C) 2023-2024 Fred Gleason <fredg@paravelsystems.com>
 //
 //    This program is free software; you can redistribute it and/or modify
 //    it under the terms of version 2.1 of the GNU Lesser General Public
@@ -24,7 +24,7 @@
 
 #include "matrix.h"
 
-Matrix *MatrixFactory(DRConfig::MatrixType type,unsigned id,DRConfig *conf,
+Matrix *MatrixFactory(Config::MatrixType type,unsigned id,Config *conf,
 		      QObject *parent);
 
 

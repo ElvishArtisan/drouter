@@ -2,7 +2,7 @@
 //
 //  State Manager for twin Drouter instances
 //
-//   (C) Copyright 2019 Fred Gleason <fredg@paravelsystems.com>
+//   (C) Copyright 2019-2024 Fred Gleason <fredg@paravelsystems.com>
 //
 //   This program is free software; you can redistribute it and/or modify
 //   it under the terms of the GNU Library General Public License 
@@ -27,7 +27,7 @@
 #include <QTimer>
 #include <QUdpSocket>
 
-#include "drconfig.h"
+#include "config.h"
 #include "ttydevice.h"
 
 class Tether : public QObject
@@ -36,7 +36,7 @@ class Tether : public QObject
  public:
   Tether(QObject *parent=0);
   bool instanceIsActive() const;
-  bool start(DRConfig *config,QString *err_msg);
+  bool start(Config *config,QString *err_msg);
 
  public slots:
   void cleanup();
@@ -63,7 +63,7 @@ class Tether : public QObject
   QTimer *tether_interval_timer;
   QTimer *tether_window_timer;
   bool tether_active_state;
-  DRConfig *tether_config;
+  Config *tether_config;
   QStringList tether_exit_args;
 };
 

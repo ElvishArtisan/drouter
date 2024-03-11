@@ -29,18 +29,12 @@ moc_%.cpp:	%.h
 	$(MOC) $< -o $@
 
 
-noinst_PROGRAMS = dparsertest\
-                  sendmailtest
+noinst_PROGRAMS = dparsertest
 
 dist_dparsertest_SOURCES = dparsertest.cpp dparsertest.h
 nodist_dparsertest_SOURCES = moc_dparsertest.cpp
 dparsertest_LDADD = -ldrouter @QT5CLI_LIBS@ @SWITCHYARD5_LIBS@
 dparsertest_LDFLAGS = -rdynamic
-
-dist_sendmailtest_SOURCES = sendmailtest.cpp sendmailtest.h
-nodist_sendmailtest_SOURCES = moc_sendmailtest.cpp
-sendmailtest_LDADD = -ldrouter @QT5CLI_LIBS@ @SWITCHYARD5_LIBS@
-sendmailtest_LDFLAGS = -rdynamic
 
 CLEANFILES = *~\
              moc_*\

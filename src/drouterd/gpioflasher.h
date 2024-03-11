@@ -2,7 +2,7 @@
 //
 // Component for flashing GPIO devices via LWRP
 //
-//   (C) Copyright 2021 Fred Gleason <fredg@paravelsystems.com>
+//   (C) Copyright 2021-2024 Fred Gleason <fredg@paravelsystems.com>
 //
 //   This program is free software; you can redistribute it and/or modify
 //   it under the terms of the GNU General Public License version 2 as
@@ -28,7 +28,7 @@
 #include <sy5/sygpio_server.h>
 #include <sy5/sylwrp_client.h>
 
-#include <drconfig.h>
+#include "config.h"
 
 class GpioFlasher : public QObject
 {
@@ -36,7 +36,7 @@ class GpioFlasher : public QObject
  public:
   GpioFlasher(QObject *parent=0);
   ~GpioFlasher();
-  void addGpio(DRConfig::TetherRole role,SyLwrpClient *lwrp,
+  void addGpio(Config::TetherRole role,SyLwrpClient *lwrp,
 	       SyGpioBundleEvent::Type type,int slot,const QString &code);
   bool isActive() const;
   void setActive(bool state);

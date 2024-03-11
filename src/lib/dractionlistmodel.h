@@ -31,6 +31,9 @@
 
 #include <drendpointlistmodel.h>
 
+#define ITEM_WIDTH_PADDING 30
+#define ITEM_HEIGHT 30
+
 class DRActionListModel : public QAbstractTableModel
 {
  Q_OBJECT;

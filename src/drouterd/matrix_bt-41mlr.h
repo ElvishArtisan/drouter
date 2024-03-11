@@ -2,7 +2,7 @@
 //
 // Router matrix implementation for Broadcast Tools Universal 4.1 MLR>>Web
 //
-// (C) 2023 Fred Gleason <fredg@paravelsystems.com>
+// (C) 2023-2024 Fred Gleason <fredg@paravelsystems.com>
 //
 //    This program is free software; you can redistribute it and/or modify
 //    it under the terms of version 2.1 of the GNU Lesser General Public
@@ -42,7 +42,7 @@ class MatrixBt41Mlr :public Matrix
 {
   Q_OBJECT;
  public:
-  MatrixBt41Mlr(unsigned id,DRConfig *conf,QObject *parent=0);
+  MatrixBt41Mlr(unsigned id,Config *conf,QObject *parent=0);
   ~MatrixBt41Mlr();
   bool isConnected() const;
   QHostAddress hostAddress() const;

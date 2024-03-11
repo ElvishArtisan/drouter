@@ -47,14 +47,14 @@ GpioFlasher::~GpioFlasher()
 }
 
 
-void GpioFlasher::addGpio(DRConfig::TetherRole role,SyLwrpClient *lwrp,
+void GpioFlasher::addGpio(Config::TetherRole role,SyLwrpClient *lwrp,
 			  SyGpioBundleEvent::Type type,int slot,
 			  const QString &code)
 {
   d_lwrps[role]=lwrp;
   d_types[role]=type;
   d_slots[role]=slot;
-  if(role==DRConfig::This) {
+  if(role==Config::This) {
     d_codes[role]=code;
   }
   else {
@@ -78,16 +78,16 @@ void GpioFlasher::setActive(bool state)
     }
     else {
       d_timer->stop();
-      if(d_lwrps[DRConfig::This]!=NULL) {
-	if(d_types[DRConfig::This]==SyGpioBundleEvent::TypeGpi) {
-	  d_lwrps[DRConfig::This]->
-	    setGpiCode(d_slots[DRConfig::This],
-		       SyGpioBundle::invertCode(d_codes[DRConfig::This]),0);
+      if(d_lwrps[Config::This]!=NULL) {
+	if(d_types[Config::This]==SyGpioBundleEvent::TypeGpi) {
+	  d_lwrps[Config::This]->
+	    setGpiCode(d_slots[Config::This],
+		       SyGpioBundle::invertCode(d_codes[Config::This]),0);
 	}
 	else {
-	  d_lwrps[DRConfig::This]->
-	    setGpoCode(d_slots[DRConfig::This],
-		       SyGpioBundle::invertCode(d_codes[DRConfig::This]),0);
+	  d_lwrps[Config::This]->
+	    setGpoCode(d_slots[Config::This],
+		       SyGpioBundle::invertCode(d_codes[Config::This]),0);
 	}
       }
     }
@@ -98,22 +98,22 @@ void GpioFlasher::setActive(bool state)
 void GpioFlasher::timeoutData()
 {
   if(d_state) {
-    if(d_lwrps[DRConfig::This]!=NULL) {
-      if(d_types[DRConfig::This]==SyGpioBundleEvent::TypeGpi) {
-	d_lwrps[DRConfig::This]->
-	  setGpiCode(d_slots[DRConfig::This],
-		     SyGpioBundle::invertCode(d_codes[DRConfig::This]),0);
+    if(d_lwrps[Config::This]!=NULL) {
+      if(d_types[Config::This]==SyGpioBundleEvent::TypeGpi) {
+	d_lwrps[Config::This]->
+	  setGpiCode(d_slots[Config::This],
+		     SyGpioBundle::invertCode(d_codes[Config::This]),0);
       }
       else {
-	d_lwrps[DRConfig::This]->
-	  setGpoCode(d_slots[DRConfig::This],
-		     SyGpioBundle::invertCode(d_codes[DRConfig::This]),0);
+	d_lwrps[Config::This]->
+	  setGpoCode(d_slots[Config::This],
+		     SyGpioBundle::invertCode(d_codes[Config::This]),0);
       }
     }
     d_timer->start(100);
   }
   else {
-    for(int i=0;i<2;i++) {  // Clear the DRConfig::That instance as well
+    for(int i=0;i<2;i++) {  // Clear the Config::That instance as well
       if(d_lwrps[i]!=NULL) {
 	if(d_types[i]==SyGpioBundleEvent::TypeGpi) {
 	  d_lwrps[i]->setGpiCode(d_slots[i],d_codes[i],0);

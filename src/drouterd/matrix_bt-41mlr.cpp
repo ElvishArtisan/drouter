@@ -2,7 +2,7 @@
 //
 // Router matrix implementation for Broadcast Tools Universal 4.1 MLR>>Web
 //
-// (C) 2023 Fred Gleason <fredg@paravelsystems.com>
+// (C) 2023-2024 Fred Gleason <fredg@paravelsystems.com>
 //
 //    This program is free software; you can redistribute it and/or modify
 //    it under the terms of version 2.1 of the GNU Lesser General Public
@@ -23,8 +23,8 @@
 
 #include "matrix_bt-41mlr.h"
 
-MatrixBt41Mlr::MatrixBt41Mlr(unsigned id,DRConfig *conf,QObject *parent)
-  : Matrix(DRConfig::Bt41MlrMatrix,id,conf,parent)
+MatrixBt41Mlr::MatrixBt41Mlr(unsigned id,Config *conf,QObject *parent)
+  : Matrix(Config::Bt41MlrMatrix,id,conf,parent)
 {
   d_host_port=0;
   d_connected=false;
@@ -114,7 +114,7 @@ QString MatrixBt41Mlr::hostName() const
 
 QString MatrixBt41Mlr::deviceName() const
 {
-  return DRConfig::matrixTypeString(matrixType());
+  return Config::matrixTypeString(matrixType());
 }
 
 
@@ -247,7 +247,7 @@ void MatrixBt41Mlr::connectToHost(const QHostAddress &addr,uint16_t port,
 void MatrixBt41Mlr::connectedData()
 {
   d_node.setHostAddress(d_host_address);
-  d_node.setDeviceName(DRConfig::matrixTypeString(DRConfig::Bt41MlrMatrix));
+  d_node.setDeviceName(Config::matrixTypeString(Config::Bt41MlrMatrix));
   d_node.setProductName("Broadcast Tools Universal 4.1 MLR>>Web");
   d_node.setSrcSlotQuantity(MATRIX_BT41MLR_SOURCE_QUAN);
   d_node.setDstSlotQuantity(MATRIX_BT41MLR_DEST_QUAN);

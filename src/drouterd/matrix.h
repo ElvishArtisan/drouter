@@ -1,6 +1,6 @@
 // matrix.h
 //
-// Abstract router matrix implementation
+// Abstract base class for router matrices
 //
 // (C) 2023-2024 Fred Gleason <fredg@paravelsystems.com>
 //
@@ -32,15 +32,15 @@
 
 #include <sy5/sylwrp_client.h>
 
-#include "drconfig.h"
+#include "config.h"
 
 class Matrix :public QObject
 {
   Q_OBJECT;
  public:
-  Matrix(DRConfig::MatrixType type,unsigned id,DRConfig *conf,QObject *parent=0);
+  Matrix(Config::MatrixType type,unsigned id,Config *conf,QObject *parent=0);
   ~Matrix();
-  DRConfig::MatrixType matrixType() const;
+  Config::MatrixType matrixType() const;
   unsigned id() const;
   virtual bool isConnected() const=0;
   virtual QHostAddress hostAddress() const=0;
@@ -98,12 +98,12 @@ class Matrix :public QObject
 			 unsigned slotnum,int chan,bool state);
 
  protected:
-  DRConfig *config() const;
+  Config *config() const;
 
  private:
-  DRConfig::MatrixType d_matrix_type;
+  Config::MatrixType d_matrix_type;
   unsigned d_id;
-  DRConfig *d_config;
+  Config *d_config;
 };
 
 

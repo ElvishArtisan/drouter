@@ -105,6 +105,7 @@ src/drouterd/saparser.cpp
 src/drouterd/saparser.h
 src/drouterd/sendmail.cpp
 src/drouterd/sendmail.h
+src/drouterd/sendmailtest
 src/drouterd/sqlquery.cpp
 src/drouterd/sqlquery.h
 src/eventlogpanel/combobox.cpp
@@ -189,7 +190,6 @@ src/tests/saparser.cpp
 src/tests/saparser.h
 src/tests/sendmail.cpp
 src/tests/sendmail.h
-src/tests/sendmailtest
 src/tests/sqlquery.cpp
 src/tests/sqlquery.h
 src/xpointpanel/combobox.cpp

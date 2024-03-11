@@ -2,7 +2,7 @@
 //
 // LWRP matrix implementation
 //
-// (C) 2023 Fred Gleason <fredg@paravelsystems.com>
+// (C) 2023-2024 Fred Gleason <fredg@paravelsystems.com>
 //
 //    This program is free software; you can redistribute it and/or modify
 //    it under the terms of version 2.1 of the GNU Lesser General Public
@@ -21,8 +21,8 @@
 
 #include "matrix_lwrp.h"
 
-MatrixLwrp::MatrixLwrp(unsigned id,DRConfig *conf,QObject *parent)
-  : Matrix(DRConfig::LwrpMatrix,id,conf,parent)
+MatrixLwrp::MatrixLwrp(unsigned id,Config *conf,QObject *parent)
+  : Matrix(Config::LwrpMatrix,id,conf,parent)
 {
   d_lwrp_client=new SyLwrpClient(id,this);
   connect(d_lwrp_client,SIGNAL(connected(unsigned,bool)),

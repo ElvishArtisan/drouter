@@ -49,7 +49,7 @@ DRouter::DRouter(int *proto_socks,QObject *parent)
   drouter_proto_socks=proto_socks;
   drouter_writeable=false;
 
-  drouter_config=new DRConfig();
+  drouter_config=new Config();
   drouter_config->load();
 
   drouter_flasher=new GpioFlasher(this);
@@ -364,7 +364,7 @@ void DRouter::nodeConnectedData(unsigned id,bool state)
 	QString::asprintf("`SLOT`=%u,",i)+
 	"`HOST_NAME`='"+DRSqlQuery::escape(mtx->hostName())+"',"+
 	"`STREAM_ADDRESS`='"+
-	DRConfig::normalizedStreamAddress(mtx->srcAddress(i)).toString()+"',"+
+	Config::normalizedStreamAddress(mtx->srcAddress(i)).toString()+"',"+
 	"`NAME`='"+DRSqlQuery::escape(mtx->srcName(i))+"',"+
 	QString::asprintf("`STREAM_ENABLED`=%u,",mtx->srcEnabled(i))+
 	QString::asprintf("`CHANNELS`=%u,",mtx->srcChannels(i))+
@@ -378,7 +378,7 @@ void DRouter::nodeConnectedData(unsigned id,bool state)
 	      QString::asprintf("`SOURCE_NUMBER`=%d,",endpt)+
 	      QString::asprintf("`SOURCE_ID`=%d,",last_id)+
 	      "`STREAM_ADDRESS`='"+
-	      DRConfig::normalizedStreamAddress(mtx->srcAddress(i)).toString()+"',"+
+	      Config::normalizedStreamAddress(mtx->srcAddress(i)).toString()+"',"+
 	      "`HOST_ADDRESS`='"+QHostAddress(id).toString()+"',"+
 	      QString::asprintf("SLOT=%d",i);
 	    // *************************
@@ -399,7 +399,7 @@ void DRouter::nodeConnectedData(unsigned id,bool state)
 	QString::asprintf("`SLOT`=%u,",i)+
 	"`HOST_NAME`='"+DRSqlQuery::escape(mtx->hostName())+"',"+
 	"`STREAM_ADDRESS`='"+
-	DRConfig::normalizedStreamAddress(mtx->dstAddress(i)).toString()+"',"+
+	Config::normalizedStreamAddress(mtx->dstAddress(i)).toString()+"',"+
 	"`NAME`='"+DRSqlQuery::escape(mtx->dstName(i))+"',"+
 	QString::asprintf("`CHANNELS`=%u",mtx->dstChannels(i));
       last_id=DRSqlQuery::run(sql).toInt();
@@ -411,7 +411,7 @@ void DRouter::nodeConnectedData(unsigned id,bool state)
 	      QString::asprintf("`SOURCE_NUMBER`=%d,",endpt)+
 	      QString::asprintf("`DESTINATION_ID`=%d,",last_id)+
 	      "`STREAM_ADDRESS`='"+
-	      DRConfig::normalizedStreamAddress(mtx->dstAddress(i)).toString()+"',"+
+	      Config::normalizedStreamAddress(mtx->dstAddress(i)).toString()+"',"+
 	      "`HOST_ADDRESS`='"+QHostAddress(id).toString()+"',"+
 	      QString::asprintf("`SLOT`=%d",i);
 	    if(!it.value()->nameIsCustom(DREndPointMap::Output,endpt)) {
@@ -488,7 +488,7 @@ void DRouter::nodeConnectedData(unsigned id,bool state)
     }
 
     for(int i=0;i<2;i++) {
-      DRConfig::TetherRole role=(DRConfig::TetherRole)i;
+      Config::TetherRole role=(Config::TetherRole)i;
       if(mtx->hostAddress()==drouter_config->tetherGpioIpAddress(role)) {
 	/*  FIXME!
 	drouter_flasher->
@@ -579,7 +579,7 @@ void DRouter::sourceChangedData(unsigned id,int slotnum,const SyNode &node,
   sql=QString("update `SOURCES` set ")+
     "`HOST_NAME`='"+DRSqlQuery::escape(node.hostName())+"',"+
     "`STREAM_ADDRESS`='"+
-    DRConfig::normalizedStreamAddress(src.streamAddress()).toString()+"',"+
+    Config::normalizedStreamAddress(src.streamAddress()).toString()+"',"+
     "`NAME`='"+DRSqlQuery::escape(src.name())+"',"+
     QString::asprintf("`STREAM_ENABLED`=%u,",src.enabled())+
     QString::asprintf("`CHANNELS`=%u,",src.channels())+
@@ -589,7 +589,7 @@ void DRouter::sourceChangedData(unsigned id,int slotnum,const SyNode &node,
   DRSqlQuery::apply(sql);
   sql=QString("update `SA_SOURCES` set ")+
     "`STREAM_ADDRESS`='"+
-    DRConfig::normalizedStreamAddress(src.streamAddress()).toString()+"' where "+
+    Config::normalizedStreamAddress(src.streamAddress()).toString()+"' where "+
     "`HOST_ADDRESS`='"+QHostAddress(id).toString()+"' && "+
     QString::asprintf("`SLOT`=%u",slotnum);
   DRSqlQuery::apply(sql);
@@ -618,7 +618,7 @@ void DRouter::destinationChangedData(unsigned id,int slotnum,const SyNode &node,
   sql=QString("update `DESTINATIONS` set ")+
     "`HOST_NAME`='"+DRSqlQuery::escape(node.hostName())+"',"+
     "`STREAM_ADDRESS`='"+
-    DRConfig::normalizedStreamAddress(dst.streamAddress()).toString()+"',"+
+    Config::normalizedStreamAddress(dst.streamAddress()).toString()+"',"+
     "`NAME`='"+DRSqlQuery::escape(dst.name())+"',"+
     QString::asprintf("`CHANNELS`=%u where ",dst.channels())+
     "`HOST_ADDRESS`='"+QHostAddress(id).toString()+"' && "+
@@ -626,7 +626,7 @@ void DRouter::destinationChangedData(unsigned id,int slotnum,const SyNode &node,
   DRSqlQuery::apply(sql);
   sql=QString("update `SA_DESTINATIONS` set ")+
     "`STREAM_ADDRESS`='"+
-    DRConfig::normalizedStreamAddress(dst.streamAddress()).toString()+"' where "+
+    Config::normalizedStreamAddress(dst.streamAddress()).toString()+"' where "+
     "`HOST_ADDRESS`='"+QHostAddress(id).toString()+"' && "+
     QString::asprintf("`SLOT`=%u",slotnum);
   DRSqlQuery::apply(sql);
@@ -781,7 +781,7 @@ void DRouter::advtReadyReadData(int ifnum)
 
   while((n=drouter_advt_sockets.at(ifnum)->readDatagram(data,1500,&addr))>0) {
     if(node(addr)==NULL) {
-      Matrix *mtx=StartMatrix(DRConfig::LwrpMatrix,addr.toIPv4Address());
+      Matrix *mtx=StartMatrix(Config::LwrpMatrix,addr.toIPv4Address());
       if(mtx==NULL) {
 	syslog(LOG_WARNING,
 	       "failed to initialize matrix client for LWRP node at %s",
@@ -1506,7 +1506,7 @@ bool DRouter::StartLivewire(QString *err_msg)
 }
 
 
-Matrix *DRouter::StartMatrix(DRConfig::MatrixType type,unsigned id)
+Matrix *DRouter::StartMatrix(Config::MatrixType type,unsigned id)
 {
   Matrix *mtx=MatrixFactory(type,id,drouter_config,this);
   connect(mtx,SIGNAL(connected(unsigned,bool)),

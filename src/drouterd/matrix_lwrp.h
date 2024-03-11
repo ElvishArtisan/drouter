@@ -2,7 +2,7 @@
 //
 // LWRP matrix implementation
 //
-// (C) 2023 Fred Gleason <fredg@paravelsystems.com>
+// (C) 2023-2024 Fred Gleason <fredg@paravelsystems.com>
 //
 //    This program is free software; you can redistribute it and/or modify
 //    it under the terms of version 2.1 of the GNU Lesser General Public
@@ -30,7 +30,7 @@ class MatrixLwrp :public Matrix
 {
   Q_OBJECT;
  public:
-  MatrixLwrp(unsigned id,DRConfig *conf,QObject *parent=0);
+  MatrixLwrp(unsigned id,Config *conf,QObject *parent=0);
   ~MatrixLwrp();
   bool isConnected() const;
   QHostAddress hostAddress() const;

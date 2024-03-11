@@ -38,9 +38,11 @@ uninstall-local:
 sbin_PROGRAMS = dprotod\
                 drouterd
 
-noinst_PROGRAMS = tethertest
+noinst_PROGRAMS = sendmailtest\
+                  tethertest
 
-dist_drouterd_SOURCES = drouter.cpp drouter.h\
+dist_drouterd_SOURCES = config.cpp config.h\
+                        drouter.cpp drouter.h\
                         drouterd.cpp drouterd.h\
                         gpioflasher.cpp gpioflasher.h\
                         matrix.cpp matrix.h\
@@ -51,6 +53,7 @@ dist_drouterd_SOURCES = drouter.cpp drouter.h\
                         protoipc.h\
                         routeengine.cpp routeengine.h\
                         scriptengine.cpp scriptengine.h\
+                        sendmail.cpp sendmail.h\
                         tether.cpp tether.h\
                         timeengine.cpp timeengine.h\
                         ttydevice.cpp ttydevice.h\
@@ -73,7 +76,8 @@ nodist_drouterd_SOURCES = moc_drouter.cpp\
 drouterd_LDADD = -ldrouter @QT5CLI_LIBS@ @SWITCHYARD5_LIBS@ @LIBSYSTEMD_LIBS@
 drouterd_LDFLAGS = -rdynamic
 
-dist_dprotod_SOURCES = dprotod.cpp dprotod.h\
+dist_dprotod_SOURCES = config.cpp config.h\
+                       dprotod.cpp dprotod.h\
                        protocol.cpp protocol.h\
                        protocol_d.cpp protocol_d.h\
                        protocol_j.cpp protocol_j.h\
@@ -89,7 +93,8 @@ nodist_dprotod_SOURCES = moc_dprotod.cpp\
 dprotod_LDADD = -ldrouter @QT5CLI_LIBS@ @SWITCHYARD5_LIBS@ @LIBSYSTEMD_LIBS@
 dprotod_LDFLAGS = -rdynamic
 
-dist_tethertest_SOURCES = tether.cpp tether.h\
+dist_tethertest_SOURCES = config.cpp config.h\
+                          tether.cpp tether.h\
                           tethertest.cpp tethertest.h\
                           ttydevice.cpp ttydevice.h
 
@@ -99,6 +104,16 @@ nodist_tethertest_SOURCES = moc_tether.cpp\
 
 tethertest_LDADD = -ldrouter @QT5CLI_LIBS@ @SWITCHYARD5_LIBS@ @LIBSYSTEMD_LIBS@
 tethertest_LDFLAGS = -rdynamic
+
+dist_sendmailtest_SOURCES = config.cpp config.h\
+                            sendmail.cpp sendmail.h\
+                            sendmailtest.cpp sendmailtest.h
+
+nodist_sendmailtest_SOURCES = moc_sendmail.cpp\
+                              moc_sendmailtest.cpp
+
+sendmailtest_LDADD = -ldrouter @QT5CLI_LIBS@ @SWITCHYARD5_LIBS@ @LIBSYSTEMD_LIBS@
+sendmailtest_LDFLAGS = -rdynamic
 
 CLEANFILES = *~\
              moc_*\

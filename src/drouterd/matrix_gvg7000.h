@@ -37,7 +37,7 @@ class MatrixGvg7000 :public Matrix
 {
   Q_OBJECT;
  public:
-  MatrixGvg7000(unsigned id,DRConfig *conf,QObject *parent=0);
+  MatrixGvg7000(unsigned id,Config *conf,QObject *parent=0);
   ~MatrixGvg7000();
   bool isConnected() const;
   QHostAddress hostAddress() const;
