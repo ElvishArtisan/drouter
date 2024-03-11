@@ -1082,3 +1082,5 @@
 	* Added support for sorting action entries in actionpanel(1).
 2024-03-08 Fred Gleason <fredg@paravelsystems.com>
 	* Implemented route engine support in drouterd(8).
+2024-03-11 Fred Gleason <fredg@paravelsystems.com>
+	* Removed the 'DRComboBox' class.

@@ -24,12 +24,12 @@
 
 #include <vector>
 
+#include <QComboBox>
 #include <QLabel>
 #include <QPushButton>
 #include <QTimer>
 #include <QWidget>
 
-#include <drcombobox.h>
 #include <drlogindialog.h>
 #include <drjparser.h>
 
@@ -68,14 +68,14 @@ class MainWidget : public QWidget
   QString panel_password;
   void SetArmedState(bool state);
   QLabel *panel_router_label;
-  DRComboBox *panel_router_box;
+  QComboBox *panel_router_box;
   int panel_current_input_index;
   QLabel *panel_output_label;
-  DRComboBox *panel_input_box;
+  QComboBox *panel_input_box;
   QLabel *panel_input_label;
   QPushButton *panel_take_button;
   QPushButton *panel_cancel_button;
-  DRComboBox *panel_output_box;
+  QComboBox *panel_output_box;
   DRJParser *panel_parser;
   QTimer *panel_clock_timer;
   bool panel_clock_state;

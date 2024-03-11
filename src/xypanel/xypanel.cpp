@@ -143,7 +143,7 @@ MainWidget::MainWidget(QWidget *parent)
   panel_router_label->setAlignment(Qt::AlignRight|Qt::AlignVCenter);
   panel_router_label->setFont(button_font);
   panel_router_label->setDisabled(true);
-  panel_router_box=new DRComboBox(this);
+  panel_router_box=new QComboBox(this);
   panel_router_box->setDisabled(true);
   connect(panel_router_box,SIGNAL(activated(int)),
 	  this,SLOT(routerBoxActivatedData(int)));
@@ -154,7 +154,7 @@ MainWidget::MainWidget(QWidget *parent)
   panel_output_label=new QLabel(tr("Output (Destination)"),this);
   panel_output_label->setFont(button_font);
   panel_output_label->setDisabled(true);
-  panel_output_box=new DRComboBox(this);
+  panel_output_box=new QComboBox(this);
   panel_output_box->setDisabled(true);
   connect(panel_output_box,SIGNAL(activated(int)),
 	  this,SLOT(outputBoxActivatedData(int)));
@@ -165,7 +165,7 @@ MainWidget::MainWidget(QWidget *parent)
   panel_input_label=new QLabel(tr("Input (Source)"),this);
   panel_input_label->setFont(button_font);
   panel_input_label->setDisabled(true);
-  panel_input_box=new DRComboBox(this);
+  panel_input_box=new QComboBox(this);
   panel_input_box->setDisabled(true);
   connect(panel_input_box,SIGNAL(activated(int)),
 	  this,SLOT(inputBoxActivatedData(int)));
