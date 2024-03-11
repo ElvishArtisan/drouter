@@ -1093,3 +1093,7 @@
 	'src/drouterd/'.
 2024-03-11 Fred Gleason <fredg@paravelsystems.com>
 	* Converted the convenience library into a public library.
+2024-03-11 Fred Gleason <fredg@paravelsystems.com>
+	* Added an actionpanel(1) man page.
+	* Fixed a bug in actionpanel(1) that broke the '--initial-router'
+	switch.

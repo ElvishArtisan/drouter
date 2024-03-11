@@ -294,14 +294,25 @@ void MainWidget::connectedData(bool state,DRJParser::ConnectionState cstate)
 {
   if(state) {
     d_action_view->setSortingEnabled(true);
-    if(d_initial_router>0) {
-      d_router_box->setCurrentIndex(d_parser->routerModel()->
-					rowNumber(d_initial_router));
-    }
     d_initial_connected=true;
-    if(d_router_box->count()>0) {
-      d_router_box->setCurrentIndex(0);
+    if(d_initial_router>0) {
+      DRActionListModel *amodel=d_parser->actionModel(d_initial_router);
+      if(amodel==NULL) {
+	QMessageBox::warning(this,"ActionPanel - "+tr("Error"),
+			     tr("Router number")+
+			     QString::asprintf(" %d ",d_initial_router)+
+			     tr("does not exist."));
+	exit(1);
+      }
+      d_router_box->setCurrentIndex(d_parser->routerModel()->
+				    rowNumber(d_initial_router));
       routerBoxActivatedData(d_router_box->currentIndex());
+    }
+    else {
+      if(d_router_box->count()>0) {
+	d_router_box->setCurrentIndex(0);
+	routerBoxActivatedData(d_router_box->currentIndex());
+      }
     }
     d_router_label->setEnabled(true);
     d_router_box->setEnabled(true);

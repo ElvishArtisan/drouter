@@ -33,7 +33,9 @@
 %.8:	%.xml
 	xsltproc $(DOCBOOK_STYLESHEETS)/manpages/docbook.xsl $<
 
-all-local:	buttonpanel.1\
+all-local:	actionpanel.1\
+                actionpanel.xml\
+                buttonpanel.1\
                 buttonpanel.xml\
                 dlist.1\
                 dlist.xml\
@@ -64,7 +66,9 @@ all-local:	buttonpanel.1\
                 protocol_sa.html\
                 protocol_sa.pdf
 
-EXTRA_DIST = buttonpanel.1\
+EXTRA_DIST = actionpanel.1\
+             actionpanel.xml\
+             buttonpanel.1\
              buttonpanel.xml\
              dlist.1\
              dlist.xml\
@@ -98,7 +102,8 @@ EXTRA_DIST = buttonpanel.1\
              protocol_sa.pdf\
              protocol_sa.xml
 
-man_MANS = buttonpanel.1\
+man_MANS = actionpanel.1\
+           buttonpanel.1\
            dlist.1\
            dmap.1\
            drouter.conf.5\
