@@ -2,7 +2,7 @@
 //
 // Set state of a single GPIO bit.
 //
-//   (C) Copyright 2020 Fred Gleason <fredg@paravelsystems.com>
+//   (C) Copyright 2020-2024 Fred Gleason <fredg@paravelsystems.com>
 //
 //   This program is free software; you can redistribute it and/or modify
 //   it under the terms of the GNU General Public License as
@@ -22,8 +22,9 @@
 #ifndef STATEBUTTON_H
 #define STATEBUTTON_H
 
+#include <drouter/drjparser.h>
+
 #include "autopushbutton.h"
-#include "drjparser.h"
 
 class StateButton : public AutoPushButton
 {

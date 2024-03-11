@@ -38,7 +38,7 @@
 #include <sy5/symcastsocket.h>
 #include <sy5/synode.h>
 
-#include <drendpointlistmodel.h>
+#include <drouter/drendpointlistmodel.h>
 
 #include "xpointpanel.h"
 

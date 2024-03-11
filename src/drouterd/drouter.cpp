@@ -37,7 +37,7 @@
 #include <sy5/syconfig.h>
 #include <sy5/syinterfaces.h>
 
-#include <drsqlquery.h>
+#include <drouter/drsqlquery.h>
 
 #include "matrix_factory.h"
 #include "drouter.h"

@@ -30,7 +30,7 @@
 
 #include <sy5/symcastsocket.h>
 
-#include <drendpointmap.h>
+#include <drouter/drendpointmap.h>
 
 #include "config.h"
 #include "gpioflasher.h"

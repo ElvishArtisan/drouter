@@ -35,7 +35,7 @@
 #endif  // LIBSYSTEMD
 
 #include "drouterd.h"
-#include "paths.h"
+#include "../drouter/paths.h"
 #include "sendmail.h"
 
 MainObject::MainObject(QObject *parent)

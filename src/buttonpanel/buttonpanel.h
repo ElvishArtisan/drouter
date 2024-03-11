@@ -2,7 +2,7 @@
 //
 // Button applet for controlling an SA output.
 //
-//   (C) Copyright 2002-2020 Fred Gleason <fredg@paravelsystems.com>
+//   (C) Copyright 2002-2024 Fred Gleason <fredg@paravelsystems.com>
 //
 //   This program is free software; you can redistribute it and/or modify
 //   it under the terms of the GNU General Public License as
@@ -30,12 +30,13 @@
 #include <QTimer>
 #include <QWidget>
 
+#include <drouter/drendpointmap.h>
+#include <drouter/drjparser.h>
+#include <drouter/drlogindialog.h>
+
 #include "autopushbutton.h"
 #include "buttonwidget.h"
-#include "drendpointmap.h"
 #include "gpioparser.h"
-#include "drjparser.h"
-#include "drlogindialog.h"
 
 #define BUTTONPANEL_USAGE "[options]\n"
 #define LWPANELBUTTON_ACTIVE_STYLESHEET "color: #FFFFFF; background-color: #0000FF;"

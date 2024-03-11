@@ -31,9 +31,9 @@
 #include <QTimer>
 #include <QWidget>
 
-#include <drdparser.h>
-#include <drlogindialog.h>
-#include <drjparser.h>
+#include <drouter/drdparser.h>
+#include <drouter/drlogindialog.h>
+#include <drouter/drjparser.h>
 
 #include "endpointlist.h"
 #include "sidelabel.h"

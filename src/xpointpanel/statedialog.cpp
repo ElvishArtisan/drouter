@@ -23,7 +23,7 @@
 
 #include <sy5/syconfig.h>
 
-#include <drendpointmap.h>
+#include <drouter/drendpointmap.h>
 
 #include "statedialog.h"
 

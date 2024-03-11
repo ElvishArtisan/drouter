@@ -29,7 +29,7 @@
 #include <QTimer>
 #include <QWidget>
 
-#include <drjparser.h>
+#include <drouter/drjparser.h>
 
 #include "editactiondialog.h"
 

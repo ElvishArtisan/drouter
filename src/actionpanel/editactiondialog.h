@@ -30,8 +30,8 @@
 #include <QPushButton>
 #include <QTimeEdit>
 
-#include <dractionlistmodel.h>
-#include <drjparser.h>
+#include <drouter/dractionlistmodel.h>
+#include <drouter/drjparser.h>
 
 #include "dowselector.h"
 

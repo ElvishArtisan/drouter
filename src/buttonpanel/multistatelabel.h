@@ -2,7 +2,7 @@
 //
 // MultiStateWidget with a text label
 //
-//   (C) Copyright 2020 Fred Gleason <fredg@paravelsystems.com>
+//   (C) Copyright 2020-2024 Fred Gleason <fredg@paravelsystems.com>
 //
 //   This program is free software; you can redistribute it and/or modify
 //   it under the terms of the GNU General Public License as
@@ -22,8 +22,9 @@
 #ifndef MULTISTATELABEL_H
 #define MULTISTATELABEL_H
 
+#include <drouter/drmultistatewidget.h>
+
 #include "autolabel.h"
-#include "drmultistatewidget.h"
 
 class MultiStateLabel : public QWidget
 {

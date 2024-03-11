@@ -20,7 +20,7 @@
 ##
 ## Use automake to process this into a Makefile.in
 
-SUBDIRS = lib\
+SUBDIRS = drouter\
           actionpanel\
           buttonpanel\
           dmap\

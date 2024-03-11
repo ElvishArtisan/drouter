@@ -30,8 +30,8 @@
 #include <QTimer>
 #include <QWidget>
 
-#include <drlogindialog.h>
-#include <drjparser.h>
+#include <drouter/drlogindialog.h>
+#include <drouter/drjparser.h>
 
 #define SHOTPANEL_USAGE "[options]\n"
 

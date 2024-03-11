@@ -26,7 +26,7 @@
 #include <QList>
 #include <QPalette>
 
-#include <drsqlquery.h>
+#include <drouter/drsqlquery.h>
 
 class EventLogModel : public QAbstractTableModel
 {

@@ -22,7 +22,7 @@
 #ifndef DRMULTISTATEWIDGET_H
 #define DRMULTISTATEWIDGET_H
 
-#include <qwidget.h>
+#include <QWidget>
 
 #include <sy5/syconfig.h>
 

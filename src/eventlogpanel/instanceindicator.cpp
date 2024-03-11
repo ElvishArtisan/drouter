@@ -2,7 +2,7 @@
 //
 // InstanceIndicator widget
 //
-//   (C) Copyright 2022 Fred Gleason <fredg@paravelsystems.com>
+//   (C) Copyright 2022-2024 Fred Gleason <fredg@paravelsystems.com>
 //
 //   This program is free software; you can redistribute it and/or modify
 //   it under the terms of the GNU General Public License version 2 as
@@ -19,7 +19,7 @@
 //
 
 #include "instanceindicator.h"
-#include <drsqlquery.h>
+#include <drouter/drsqlquery.h>
 
 InstanceIndicator::InstanceIndicator(QWidget *parent)
   : QLabel(parent)

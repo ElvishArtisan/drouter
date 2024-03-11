@@ -2,7 +2,7 @@
 //
 // Strip container for GPIO controls.
 //
-//   (C) Copyright 2020 Fred Gleason <fredg@paravelsystems.com>
+//   (C) Copyright 2020-2024 Fred Gleason <fredg@paravelsystems.com>
 //
 //   This program is free software; you can redistribute it and/or modify
 //   it under the terms of the GNU General Public License as
@@ -26,8 +26,9 @@
 #include <QList>
 #include <QStringList>
 
+#include <drouter/drjparser.h>
+
 #include "gpioparser.h"
-#include "drjparser.h"
 
 #define GPIOWIDGET_CELL_WIDTH 90
 #define GPIOWIDGET_CELL_HEIGHT 60

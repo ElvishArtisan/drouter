@@ -1,6 +1,6 @@
 ## Makefile.am
 ##
-## Makefile for 'src/lib/'
+## Makefile for 'src/drouter/'
 ##
 ## (C) Copyright 2017-2024 Fred Gleason <fredg@paravelsystems.com>
 ##
@@ -20,7 +20,7 @@
 ##
 ## Use automake to process this into a Makefile.in
 
-AM_CPPFLAGS = -Wall -DPREFIX=\"$(prefix)\" -Wno-strict-aliasing -std=c++11 -fPIC @QT5GUI_CFLAGS@ @SWITCHYARD5_CFLAGS@
+AM_CPPFLAGS = -Wall -DPREFIX=\"$(prefix)\" -Wno-strict-aliasing -I$(top_srcdir)/src -std=c++11 -fPIC @QT5GUI_CFLAGS@ @SWITCHYARD5_CFLAGS@
 MOC = @QT_MOC@
 
 # The dependency for qt's Meta Object Compiler (moc)
@@ -49,7 +49,19 @@ nodist_libdrouter_la_SOURCES = moc_dractionlistmodel.cpp\
                                moc_drsnapshotlistmodel.cpp\
                                paths.h
 
-libdrouter_la_LDFLAGS = -release $(VERSION)
+includedir = $(prefix)/include/drouter
+include_HEADERS = dractionlistmodel.h\
+                  drdparser.h\
+                  drendpointlistmodel.h\
+                  drendpointmap.h\
+                  drjparser.h\
+                  drlogindialog.h\
+                  drmultistatewidget.h\
+                  drrouterlistmodel.h\
+                  drsnapshotlistmodel.h\
+                  drsqlquery.h
+
+libdrouter_la_LDFLAGS = -version-info $(INTERFACE_CURRENT):$(INTERFACE_REVISION):$(INTERFACE_AGE)
 
 EXTRA_DISTS = paths.h.in
 

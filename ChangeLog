@@ -1091,3 +1091,5 @@
 	* Moved the 'DRConfig' class out of the library.
 	* Moved the 'sendmailtest' program from 'src/tests/' to
 	'src/drouterd/'.
+2024-03-11 Fred Gleason <fredg@paravelsystems.com>
+	* Converted the convenience library into a public library.

@@ -30,8 +30,8 @@
 #include <sy5/symcastsocket.h>
 #include <sy5/sylwrp_client.h>
 
-#include <drdparser.h>
-#include <drendpointmap.h>
+#include <drouter/drdparser.h>
+#include <drouter/drendpointmap.h>
 
 #define DPARSERTEST_USAGE "--hostname=<host-name>\n"
 

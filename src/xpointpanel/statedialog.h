@@ -27,8 +27,8 @@
 #include <QLineEdit>
 #include <QPushButton>
 
-#include <drendpointmap.h>
-#include <drjparser.h>
+#include <drouter/drendpointmap.h>
+#include <drouter/drjparser.h>
 
 class StateDialog : public QDialog
 {

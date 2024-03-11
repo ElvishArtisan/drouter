@@ -27,35 +27,43 @@ License: GPLv2
 Source: %{name}-@VERSION@.tar.gz
 BuildRequires: qt5-qtbase-devel, systemd-devel, python36
 BuildRoot: /var/tmp/%{name}-@VERSION@
-Requires: drouter-python = @VERSION@, mariadb-server, qt5-qtbase-mysql
-
 
 %package panels
 Summary: GUI control panels for DRouter
 Requires: qt5-qtbase-mysql firefox lwmon
 
-
 %package python
 Summary: Python API for using state scripts with Drouter
 Requires: python36
 
+%package server
+Summary: Core server components for Drouter.
+Requires: drouter = @VERSION@, drouter-python = @VERSION@, mariadb-server, qt5-qtbase-mysql
+
+%package devel
+Summary: Development components for Drouter
+Requires: drouter = @VERSION@
 
 %description
-DRouter is a dynamic router framework for controling a Livewire audio network.
-In addition to its own native ProtocolD, it also provides support for
-legacy PathFinder control clients by means of Software Authority protocol.
-
+Drouter is a dynamic router framework for controling a crosspoint media
+routers. It includes a server core, deployable control applets (known
+as "panels" as well as a Python API that allows automatic monitoring.
 
 %description panels
 GUI control panels for DRouter. Most of these actually use Software
 Authority protocol and so should work fine with the various PathFinder
 versions as well.
 
+%description server
+The core server components for Drouter.
 
 %description python
 Python API for the Drouter framework. This allows creation of "state scripts"
 that can be used to provide automated responses to changes in the state
 of the Livewire network.
+
+%description devel
+Files for developing Qt applications for use with Drouter.
 
 
 %prep
@@ -72,8 +80,6 @@ make -j @CPUS_AVAIL@
 %install
 rm -rf $RPM_BUILD_ROOT
 make install DESTDIR=$RPM_BUILD_ROOT
-rm -f $RPM_BUILD_ROOT%{_libdir}/libdrouter.a
-rm -f $RPM_BUILD_ROOT%{_libdir}/libdrouter.la
 mkdir -p $RPM_BUILD_ROOT/etc/drouter/maps.d
 mkdir -p $RPM_BUILD_ROOT/etc/drouter/scripts.d
 mkdir -p $RPM_BUILD_ROOT/%{_datadir}/doc/drouter-%{version}
@@ -141,41 +147,25 @@ rm -rf $RPM_BUILD_ROOT
 
 %files
 %defattr(-,root,root)
-%{_bindir}/dmap
-%{_bindir}/drouter_init_db.sh
-%{_bindir}/pf_import.py
-%{_sbindir}/drouterd
-%{_sbindir}/dprotod
-%{_libdir}/libdrouter-@VERSION@.so
-%{_libdir}/libdrouter.so
-%{_datadir}/man/man1/dmap.1.gz
-%{_datadir}/man/man5/drouter.conf.5.gz
-%{_datadir}/man/man5/drouter.map.5.gz
-%{_datadir}/man/man8/drouterd.8.gz
-%dir /var/cache/drouter
-/lib/systemd/system/drouter.service
-/lib/systemd/system/drouter.socket
-%dir /etc/drouter/maps.d
-%dir /etc/drouter/scripts.d
+%{_libdir}/libdrouter.so.@INTERFACE_MAJOR@.@INTERFACE_MINOR@.@INTERFACE_POINT@
+%{_libdir}/libdrouter.so.@INTERFACE_MAJOR@
 %{_datadir}/doc/drouter-%{version}/protocols/*
 %{_datadir}/doc/drouter-%{version}/AUTHORS
 %{_datadir}/doc/drouter-%{version}/ChangeLog
 %{_datadir}/doc/drouter-%{version}/COPYING
 %{_datadir}/doc/drouter-%{version}/NEWS
 %{_datadir}/doc/drouter-%{version}/README
-%{_datadir}/doc/drouter-%{version}/drouter.conf-sample
 
 
 %files panels
 %defattr(-,root,root)
+%{_bindir}/actionpanel
 %{_bindir}/buttonpanel
 %{_bindir}/eventlogpanel
 %{_bindir}/outputpanel
 %{_bindir}/shotpanel
 %{_bindir}/xpointpanel
 %{_bindir}/xypanel
-%{_libdir}/libdrouter-@VERSION@.so
-%{_libdir}/libdrouter.so
 %{_datadir}/man/man1/buttonpanel.1.gz
 %{_datadir}/man/man1/eventlogpanel.1.gz
 %{_datadir}/man/man1/outputpanel.1.gz
@@ -186,7 +176,27 @@ rm -rf $RPM_BUILD_ROOT
 %{_datadir}/icons/hicolor/48x48/apps/drouter.png
 
 
+%files server
+%defattr(-,root,root)
+%{_bindir}/dmap
+%{_bindir}/drouter_init_db.sh
+%{_bindir}/pf_import.py
+%{_sbindir}/drouterd
+%{_sbindir}/dprotod
+%{_datadir}/man/man1/dmap.1.gz
+%{_datadir}/man/man5/drouter.conf.5.gz
+%{_datadir}/man/man5/drouter.map.5.gz
+%{_datadir}/man/man8/drouterd.8.gz
+%dir /var/cache/drouter
+/lib/systemd/system/drouter.service
+/lib/systemd/system/drouter.socket
+%dir /etc/drouter/maps.d
+%dir /etc/drouter/scripts.d
+%{_datadir}/doc/drouter-%{version}/drouter.conf-sample
+
+
 %files python
+%defattr(-,root,root)
 %{_bindir}/dlist
 %{_bindir}/dstate
 %{_libdir}/python@PYTHON_VERSION@/site-packages/Drouter
@@ -195,8 +205,18 @@ rm -rf $RPM_BUILD_ROOT
 %{_datadir}/doc/drouter-%{version}/examples/*
 
 
+%files devel
+%defattr(-,root,root)
+%{_includedir}/drouter/*
+%{_libdir}/libdrouter.so
+%{_libdir}/libdrouter.a
+%{_libdir}/libdrouter.la
+
+
 %changelog
-* Thu Jan 24 2024 Fred Gleason <fredg@paravelsystems.com>
+* Mon Mar 11 2024 Fred Gleason <fredg@paravelsystems.com>
+-- Add 'server' and 'devel' subpackages.
+* Wed Jan 24 2024 Fred Gleason <fredg@paravelsystems.com>
 -- Refactored file layout for dynamic linking.
 * Sat Jul 30 2022 Fred Gleason <fredg@paravelsystems.com>
 -- Removed the 32x32 version of the 'drouter' icon.

@@ -30,8 +30,8 @@
 #include <sy5/symcastsocket.h>
 #include <sy5/sylwrp_client.h>
 
-#include <drdparser.h>
-#include <drendpointmap.h>
+#include <drouter/drdparser.h>
+#include <drouter/drendpointmap.h>
 
 #define DMAP_USAGE "[options]\n"
 #define DMAP_DEFAULT_SCAN_DURATION 25000

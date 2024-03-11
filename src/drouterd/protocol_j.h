@@ -28,9 +28,9 @@
 
 #include <sy5/sylwrp_client.h>
 
-#include <drendpointmap.h>
-#include <drjparser.h>
-#include <drsqlquery.h>
+#include <drouter/drendpointmap.h>
+#include <drouter/drjparser.h>
+#include <drouter/drsqlquery.h>
 
 #include "protocol.h"
 

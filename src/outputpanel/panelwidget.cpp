@@ -22,7 +22,7 @@
 #include <QtAlgorithms>
 #include <QMessageBox>
 
-#include <drendpointlistmodel.h>
+#include <drouter/drendpointlistmodel.h>
 
 #include "panelwidget.h"
 

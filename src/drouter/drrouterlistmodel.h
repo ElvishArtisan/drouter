@@ -24,7 +24,7 @@
 #include <QAbstractTableModel>
 #include <QFont>
 
-#include "drendpointmap.h"
+#include <drouter/drendpointmap.h>
 
 class DRRouterListModel : public QAbstractTableModel
 {

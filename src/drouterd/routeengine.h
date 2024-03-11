@@ -24,7 +24,7 @@
 #include <QMap>
 #include <QObject>
 
-#include <drsqlquery.h>
+#include <drouter/drsqlquery.h>
 
 #include "timeengine.h"
 

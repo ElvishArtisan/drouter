@@ -20,7 +20,7 @@
 
 #include <syslog.h>
 
-#include <drsqlquery.h>
+#include <drouter/drsqlquery.h>
 
 #include "routeengine.h"
 

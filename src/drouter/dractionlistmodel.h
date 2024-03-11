@@ -29,7 +29,7 @@
 #include <QStringList>
 #include <QTime>
 
-#include <drendpointlistmodel.h>
+#include <drouter/drendpointlistmodel.h>
 
 #define ITEM_WIDTH_PADDING 30
 #define ITEM_HEIGHT 30

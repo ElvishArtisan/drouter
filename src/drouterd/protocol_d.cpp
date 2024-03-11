@@ -25,8 +25,9 @@
 
 #include <QStringList>
 
+#include <drouter/drsqlquery.h>
+
 #include "protocol_d.h"
-#include "drsqlquery.h"
 
 ProtocolD::ProtocolD(int sock,QObject *parent)
   : Protocol(parent)

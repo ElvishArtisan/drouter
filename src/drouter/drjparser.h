@@ -35,10 +35,10 @@
 #include <QTcpSocket>
 #include <QTimer>
 
-#include "dractionlistmodel.h"
-#include "drendpointlistmodel.h"
-#include "drrouterlistmodel.h"
-#include "drsnapshotlistmodel.h"
+#include <drouter/dractionlistmodel.h>
+#include <drouter/drendpointlistmodel.h>
+#include <drouter/drrouterlistmodel.h>
+#include <drouter/drsnapshotlistmodel.h>
 
 #define DRJPARSER_STARTUP_INTERVAL 1000
 #define DRJPARSER_HOLDOFF_INTERVAL 5000

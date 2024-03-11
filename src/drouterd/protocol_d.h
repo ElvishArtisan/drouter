@@ -27,7 +27,7 @@
 
 #include <sy5/sylwrp_client.h>
 
-#include <drsqlquery.h>
+#include <drouter/drsqlquery.h>
 
 #include "protocol.h"
 

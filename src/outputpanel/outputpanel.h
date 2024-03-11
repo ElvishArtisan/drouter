@@ -26,8 +26,8 @@
 #include <QPixmap>
 #include <QWidget>
 
-#include <drjparser.h>
-#include <drlogindialog.h>
+#include <drouter/drjparser.h>
+#include <drouter/drlogindialog.h>
 
 #include "panelwidget.h"
 

@@ -27,8 +27,8 @@
 #include <QMenu>
 #include <QWidget>
 
-#include <drmultistatewidget.h>
-#include <drjparser.h>
+#include <drouter/drmultistatewidget.h>
+#include <drouter/drjparser.h>
 
 #include "statedialog.h"
 

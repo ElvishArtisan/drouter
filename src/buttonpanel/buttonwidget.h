@@ -2,7 +2,7 @@
 //
 // Button container for a single output.
 //
-//   (C) Copyright 2002-2020 Fred Gleason <fredg@paravelsystems.com>
+//   (C) Copyright 2002-2024 Fred Gleason <fredg@paravelsystems.com>
 //
 //   This program is free software; you can redistribute it and/or modify
 //   it under the terms of the GNU General Public License as
@@ -29,10 +29,11 @@
 #include <QSignalMapper>
 #include <QWidget>
 
+#include <drouter/drjparser.h>
+#include <drouter/drlogindialog.h>
+
 #include "autopushbutton.h"
 #include "gpioparser.h"
-#include "drlogindialog.h"
-#include "drjparser.h"
 
 #define BUTTONWIDGET_ACTIVE_STYLESHEET "color: #FFFFFF; background-color: #0000FF;"
 #define BUTTONWIDGET_CELL_WIDTH 90

@@ -29,7 +29,7 @@
 #include <QStringList>
 #include <QWidget>
 
-#include <drjparser.h>
+#include <drouter/drjparser.h>
 
 #define PANELWIDGET_FLASH_INTERVAL 300
 #define PANELWIDGET_WIDTH 140
