@@ -89,7 +89,7 @@ void TimeEngine::StartEvent(int id)
   int interval=0;
 
   if(start_time<now) {
-    interval=86400+now.msecsTo(start_time);
+    interval=86400000+now.msecsTo(start_time);
   }
   else {
     interval=now.msecsTo(start_time);

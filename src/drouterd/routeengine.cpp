@@ -44,7 +44,7 @@ QTime RouteAction::time() const
 
 bool RouteAction::dayOfWeek(int dow) const
 {
-  return d_day_of_week[dow];
+  return d_day_of_week[dow-1];
 }
 
 
@@ -163,15 +163,13 @@ void RouteEngine::refresh(int action_id)
 
 void RouteEngine::actionData(int action_id)
 {
-  printf("actionData(%d)\n",action_id);
-
   QDateTime now=QDateTime::currentDateTimeUtc();
   RouteAction *raction=d_route_actions.value(action_id);
 
   if(raction!=NULL) {
     if(raction->dayOfWeek(now.date().dayOfWeek())) {
-      setCrosspoint(raction->routerNumber(),raction->destinationNumber(),
-		    raction->sourceNumber());
+      emit setCrosspoint(raction->routerNumber(),raction->destinationNumber(),
+			 raction->sourceNumber());
       syslog(LOG_DEBUG,"route engine: ran action, id: %d",action_id);
     }
   }

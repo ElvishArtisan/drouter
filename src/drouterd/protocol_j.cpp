@@ -268,13 +268,31 @@ void ProtocolJ::gpoCrosspointChanged(const QHostAddress &host_addr,int slotnum)
 }
 
 
-void ProtocolJ::actionChanged(int id)
+void ProtocolJ::actionChanged(int action_id)
 {
   QString sql;
   DRSqlQuery *q;
+  int router=-1;
 
-  sql=ActionListSqlFields()+"where "+
-    QString::asprintf("`PERM_SA_ACTIONS`.`ID`=%d ",id)+
+  //
+  // FIXME: Get rid of this kludgy double lookup!
+  //
+  sql=QString("select ")+
+    "`ROUTER_NUMBER` "+  // 00
+    "from `PERM_SA_ACTIONS` where "+
+    QString::asprintf("`ID`=%d",action_id);
+  q=new DRSqlQuery(sql);
+  if(q->first()) {
+    router=q->value(0).toInt();
+  }
+  else {
+    syslog(LOG_WARNING,"attempted to refresh non-existent action, id: %d",
+	   action_id);
+    return;
+  }
+
+  sql=ActionListSqlFields(proto_maps.value(router)->routerType())+"where "+
+    QString::asprintf("`PERM_SA_ACTIONS`.`ID`=%d ",action_id)+
     "order by `PERM_SA_ACTIONS`.`DESTINATION_NUMBER`";
   q=new DRSqlQuery(sql);
   if(q->first()) {
@@ -293,7 +311,7 @@ void ProtocolJ::actionChanged(int id)
   }
   else {
     QJsonObject jo0;
-    jo0.insert("id",id);
+    jo0.insert("id",action_id);
 
     QJsonObject jo1;
     jo1.insert("actiondelete",jo0);
@@ -1006,7 +1024,7 @@ void ProtocolJ::SendActionInfo(unsigned router)
     SendError(DRJParser::NoRouterError);
     return;
   }
-  sql=ActionListSqlFields()+"where "+
+  sql=ActionListSqlFields(map->routerType())+"where "+
     QString::asprintf("`PERM_SA_ACTIONS`.`ROUTER_NUMBER`=%u ",router)+
     "order by `PERM_SA_ACTIONS`.`DESTINATION_NUMBER`";
   q=new DRSqlQuery(sql);
@@ -1024,31 +1042,59 @@ void ProtocolJ::SendActionInfo(unsigned router)
 }
 
 
-QString ProtocolJ::ActionListSqlFields() const
+QString ProtocolJ::ActionListSqlFields(DREndPointMap::RouterType type) const
 {
-  return QString("select ")+
-    "`PERM_SA_ACTIONS`.`ID`,"+                  // 00
-    "`PERM_SA_ACTIONS`.`TIME`,"+                // 01
-    "`PERM_SA_ACTIONS`.`SUN`,"+                 // 02
-    "`PERM_SA_ACTIONS`.`MON`,"+                 // 03
-    "`PERM_SA_ACTIONS`.`TUE`,"+                 // 04
-    "`PERM_SA_ACTIONS`.`WED`,"+                 // 05
-    "`PERM_SA_ACTIONS`.`THU`,"+                 // 06
-    "`PERM_SA_ACTIONS`.`FRI`,"+                 // 07
-    "`PERM_SA_ACTIONS`.`SAT`,"+                 // 08
-    "`PERM_SA_ACTIONS`.`ROUTER_NUMBER`,"+       // 09
-    "`PERM_SA_ACTIONS`.`DESTINATION_NUMBER`,"+  // 10
-    "`SA_DESTINATIONS`.`NAME`,"+                // 11
-    "`PERM_SA_ACTIONS`.`SOURCE_NUMBER`,"+       // 12
-    "`SA_SOURCES`.`NAME`,"+                     // 13
-    "`PERM_SA_ACTIONS`.`COMMENT` "+             // 14
-    "from `PERM_SA_ACTIONS` left join `SA_DESTINATIONS` "+
-    "on `PERM_SA_ACTIONS`.`ROUTER_NUMBER`=`SA_DESTINATIONS`.`ROUTER_NUMBER` && "+
-    "`PERM_SA_ACTIONS`.`DESTINATION_NUMBER`=`SA_DESTINATIONS`.`SOURCE_NUMBER` "+
-    "left join `SA_SOURCES` on "+
-    "`PERM_SA_ACTIONS`.`ROUTER_NUMBER`=`SA_SOURCES`.`ROUTER_NUMBER` && "+
-    "`PERM_SA_ACTIONS`.`SOURCE_NUMBER`=`SA_SOURCES`.`SOURCE_NUMBER` ";
+  if(type==DREndPointMap::AudioRouter) {
+    return QString("select ")+
+      "`PERM_SA_ACTIONS`.`ID`,"+                  // 00
+      "`PERM_SA_ACTIONS`.`TIME`,"+                // 01
+      "`PERM_SA_ACTIONS`.`SUN`,"+                 // 02
+      "`PERM_SA_ACTIONS`.`MON`,"+                 // 03
+      "`PERM_SA_ACTIONS`.`TUE`,"+                 // 04
+      "`PERM_SA_ACTIONS`.`WED`,"+                 // 05
+      "`PERM_SA_ACTIONS`.`THU`,"+                 // 06
+      "`PERM_SA_ACTIONS`.`FRI`,"+                 // 07
+      "`PERM_SA_ACTIONS`.`SAT`,"+                 // 08
+      "`PERM_SA_ACTIONS`.`ROUTER_NUMBER`,"+       // 09
+      "`PERM_SA_ACTIONS`.`DESTINATION_NUMBER`,"+  // 10
+      "`SA_DESTINATIONS`.`NAME`,"+                // 11
+      "`PERM_SA_ACTIONS`.`SOURCE_NUMBER`,"+       // 12
+      "`SA_SOURCES`.`NAME`,"+                     // 13
+      "`PERM_SA_ACTIONS`.`COMMENT` "+             // 14
+      "from `PERM_SA_ACTIONS` left join `SA_DESTINATIONS` "+
+      "on `PERM_SA_ACTIONS`.`ROUTER_NUMBER`=`SA_DESTINATIONS`.`ROUTER_NUMBER` && "+
+      "`PERM_SA_ACTIONS`.`DESTINATION_NUMBER`=`SA_DESTINATIONS`.`SOURCE_NUMBER` "+
+      "left join `SA_SOURCES` on "+
+      "`PERM_SA_ACTIONS`.`ROUTER_NUMBER`=`SA_SOURCES`.`ROUTER_NUMBER` && "+
+      "`PERM_SA_ACTIONS`.`SOURCE_NUMBER`=`SA_SOURCES`.`SOURCE_NUMBER` ";
+  }
+  else {
+    return QString("select ")+
+      "`PERM_SA_ACTIONS`.`ID`,"+                  // 00
+      "`PERM_SA_ACTIONS`.`TIME`,"+                // 01
+      "`PERM_SA_ACTIONS`.`SUN`,"+                 // 02
+      "`PERM_SA_ACTIONS`.`MON`,"+                 // 03
+      "`PERM_SA_ACTIONS`.`TUE`,"+                 // 04
+      "`PERM_SA_ACTIONS`.`WED`,"+                 // 05
+      "`PERM_SA_ACTIONS`.`THU`,"+                 // 06
+      "`PERM_SA_ACTIONS`.`FRI`,"+                 // 07
+      "`PERM_SA_ACTIONS`.`SAT`,"+                 // 08
+      "`PERM_SA_ACTIONS`.`ROUTER_NUMBER`,"+       // 09
+      "`PERM_SA_ACTIONS`.`DESTINATION_NUMBER`,"+  // 10
+      "`SA_GPOS`.`NAME`,"+                        // 11
+      "`PERM_SA_ACTIONS`.`SOURCE_NUMBER`,"+       // 12
+      "`SA_GPIS`.`NAME`,"+                        // 13
+      "`PERM_SA_ACTIONS`.`COMMENT` "+             // 14
+      "from `PERM_SA_ACTIONS` "+
+      "left join `SA_GPOS` "+
+      "on `PERM_SA_ACTIONS`.`ROUTER_NUMBER`=`SA_GPOS`.`ROUTER_NUMBER` && "+
+      "`PERM_SA_ACTIONS`.`DESTINATION_NUMBER`=`SA_GPOS`.`SOURCE_NUMBER` "+
+      "left join `SA_GPIS` on "+
+      "`PERM_SA_ACTIONS`.`ROUTER_NUMBER`=`SA_GPIS`.`ROUTER_NUMBER` && "+
+      "`PERM_SA_ACTIONS`.`SOURCE_NUMBER`=`SA_GPIS`.`SOURCE_NUMBER` ";
+  }
 }
+
 
 
 QJsonObject ProtocolJ::ActionListMessage(DRSqlQuery *q)

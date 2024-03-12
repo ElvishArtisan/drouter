@@ -75,7 +75,7 @@ class ProtocolJ : public Protocol
   QString DestNamesSqlFields(DREndPointMap::RouterType type) const;
   QJsonObject DestNamesMessage(DREndPointMap::RouterType type,DRSqlQuery *q);
   void SendActionInfo(unsigned router);
-  QString ActionListSqlFields() const;
+  QString ActionListSqlFields(DREndPointMap::RouterType type) const;
   QJsonObject ActionListMessage(DRSqlQuery *q);
 
   QString ActionEditSqlFields(const QVariantMap &fields,

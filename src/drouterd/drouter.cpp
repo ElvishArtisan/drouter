@@ -239,25 +239,32 @@ void DRouter::setCrosspoint(int router,int output,int input)
     syslog(LOG_WARNING,"router: %d - no such router",1+router);
   }
   else {
-    /*
-    printf("router name: %s\n",map->routerName().toUtf8().constData());
-    printf("output name: %s\n",map->name(DREndPointMap::Output,output).toUtf8().constData());
-    printf("input name: %s\n",map->name(DREndPointMap::Input,input).toUtf8().constData());
-    */
-    Matrix *dst_lwrp=drouter_nodes.
-      value(map->hostAddress(DREndPointMap::Output,output).toIPv4Address());
-    unsigned dst_slotnum=map->slot(DREndPointMap::Output,output);
-    if((dst_lwrp!=NULL)&&(dst_slotnum<dst_lwrp->dstSlots())) {
-      Matrix *src_lwrp=drouter_nodes.
-	value(map->hostAddress(DREndPointMap::Input,input).toIPv4Address());
-      unsigned src_slotnum=map->slot(DREndPointMap::Input,input);
-      if((src_lwrp!=NULL)&&(src_slotnum<src_lwrp->srcSlots())) {
-	/*
-	printf("dst: %s:%d\n",dst_lwrp->hostAddress().toString().toUtf8().constData(),dst_slotnum);
-	printf("src: %s:%d\n",src_lwrp->hostAddress().toString().toUtf8().constData(),src_slotnum);
-	printf("srcAddress: %s\n",src_lwrp->srcAddress(src_slotnum).toString().toUtf8().constData());
-	*/
-	dst_lwrp->setDstAddress(dst_slotnum,src_lwrp->srcAddress(src_slotnum));
+    if(map->routerType()==DREndPointMap::AudioRouter) {
+      Matrix *dst_lwrp=drouter_nodes.
+	value(map->hostAddress(DREndPointMap::Output,output).toIPv4Address());
+      unsigned dst_slotnum=map->slot(DREndPointMap::Output,output);
+      if((dst_lwrp!=NULL)&&(dst_slotnum<dst_lwrp->dstSlots())) {
+	Matrix *src_lwrp=drouter_nodes.
+	  value(map->hostAddress(DREndPointMap::Input,input).toIPv4Address());
+	unsigned src_slotnum=map->slot(DREndPointMap::Input,input);
+	if((src_lwrp!=NULL)&&(src_slotnum<src_lwrp->srcSlots())) {
+	  dst_lwrp->
+	    setDstAddress(dst_slotnum,src_lwrp->srcAddress(src_slotnum));
+	}
+      }
+    }
+    else {
+      Matrix *gpo_lwrp=drouter_nodes.
+	value(map->hostAddress(DREndPointMap::Output,output).toIPv4Address());
+      unsigned gpo_slotnum=map->slot(DREndPointMap::Output,output);
+      if((gpo_lwrp!=NULL)&&(gpo_slotnum<gpo_lwrp->gpos())) {
+	Matrix *gpi_lwrp=drouter_nodes.
+	  value(map->hostAddress(DREndPointMap::Input,input).toIPv4Address());
+	unsigned gpi_slotnum=map->slot(DREndPointMap::Input,input);
+	if((gpi_lwrp!=NULL)&&(gpi_slotnum<gpi_lwrp->gpis())) {
+	  gpo_lwrp->setGpoSourceAddress(gpo_slotnum,gpi_lwrp->hostAddress(),
+					gpi_slotnum);
+	}
       }
     }
   }
