@@ -385,9 +385,25 @@ void DRActionListModel::UpdateRow(int rownum,const QVariantMap &fields)
   d_texts[rownum][8]=DowMarker(fields.value("saturday").toBool(),tr("Sat"));
   d_texts[rownum][9]=QString::asprintf("%d",fields.value("source").toInt());
   d_texts[rownum][10]=fields.value("sourceName").toString();
+  if(fields.value("sourceHostName").toString().isEmpty()) {
+    d_texts[rownum][10]=d_texts.at(rownum).at(10).toString()+
+      " "+tr("ON")+" "+fields.value("sourceHostAddress").toString();
+  }
+  else {
+    d_texts[rownum][10]=d_texts.at(rownum).at(10).toString()+
+      " "+tr("ON")+" "+fields.value("sourceHostName").toString();
+  }
   d_texts[rownum][11]=
     QString::asprintf("%d",fields.value("destination").toInt());
   d_texts[rownum][12]=fields.value("destinationName").toString();
+  if(fields.value("destinationHostName").toString().isEmpty()) {
+    d_texts[rownum][12]=d_texts.at(rownum).at(10).toString()+
+      " "+tr("ON")+" "+fields.value("destinationHostAddress").toString();
+  }
+  else {
+    d_texts[rownum][12]=d_texts.at(rownum).at(10).toString()+
+      " "+tr("ON")+" "+fields.value("destinationHostName").toString();
+  }
   d_texts[rownum][13]=QString::asprintf("%d",fields.value("id").toInt());
   d_metadatas[rownum]=fields;
 }

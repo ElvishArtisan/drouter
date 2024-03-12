@@ -144,8 +144,12 @@
     "saturday":<replaceable>boolean</replaceable>,
     "destination":<replaceable>dest-num</replaceable>,
     "destinationName":<replaceable>dest-name</replaceable>,
+    "destinationHostAddress":<replaceable>dest-host-addr</replaceable>,
+    "destinationHostName":<replaceable>dest-host-name</replaceable>,
     "source":<replaceable>src-num</replaceable>,
     "sourceName":<replaceable>src-name</replaceable>,
+    "sourceHostAddress":<replaceable>src-host-addr</replaceable>,
+    "sourceHostName":<replaceable>src-host-name</replaceable>,
     "comment"<replaceable>str</replaceable>
 }
       </literallayout>
@@ -186,7 +190,7 @@
 		<replaceable>time</replaceable>
 	      </entry>
 	      <entry>
-		Scheduled time of action, in xs.time format. See
+		Scheduled UTC time of action, in xs.time format. See
 		<xref linkend="sect.overview.message_command_syntax.specifying_time"/> for details. [Required]
 	      </entry>
 	      <entry>
@@ -229,6 +233,28 @@
 	    </row>
 	    <row>
 	      <entry>
+		<replaceable>dest-host-addr</replaceable>
+	      </entry>
+	      <entry>
+		Destination node address. [Optional]
+	      </entry>
+	      <entry>
+		String
+	      </entry>
+	    </row>
+	    <row>
+	      <entry>
+		<replaceable>dest-host-name</replaceable>
+	      </entry>
+	      <entry>
+		Destination node name. [Optional]
+	      </entry>
+	      <entry>
+		String
+	      </entry>
+	    </row>
+	    <row>
+	      <entry>
 		<replaceable>source-num</replaceable>
 	      </entry>
 	      <entry>
@@ -244,6 +270,28 @@
 	      </entry>
 	      <entry>
 		Source name. [Optional]
+	      </entry>
+	      <entry>
+		String
+	      </entry>
+	    </row>
+	    <row>
+	      <entry>
+		<replaceable>source-host-addr</replaceable>
+	      </entry>
+	      <entry>
+		Source node address. [Optional]
+	      </entry>
+	      <entry>
+		String
+	      </entry>
+	    </row>
+	    <row>
+	      <entry>
+		<replaceable>source-host-name</replaceable>
+	      </entry>
+	      <entry>
+		Source node name. [Optional]
 	      </entry>
 	      <entry>
 		String

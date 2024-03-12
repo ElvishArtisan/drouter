@@ -1111,3 +1111,9 @@
 2024-03-12 Fred Gleason <fredg@paravelsystems.com>
 	* Fixed bugs in drouterd(8) that kept action events from executing
 	properly.
+2024-03-12 Fred Gleason <fredg@paravelsystems.com>
+	* Added 'destinationHostAddress', 'destinationHostName',
+	'sourceHostAddress' and `sourceHostName` parameters to the
+	Action Parameters in Protocol J.
+	* Modified the 'Source Name' and 'Destination Name' columns in
+	actionpanel(1) to use long-form names.

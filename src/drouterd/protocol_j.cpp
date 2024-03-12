@@ -1058,15 +1058,24 @@ QString ProtocolJ::ActionListSqlFields(DREndPointMap::RouterType type) const
       "`PERM_SA_ACTIONS`.`ROUTER_NUMBER`,"+       // 09
       "`PERM_SA_ACTIONS`.`DESTINATION_NUMBER`,"+  // 10
       "`SA_DESTINATIONS`.`NAME`,"+                // 11
-      "`PERM_SA_ACTIONS`.`SOURCE_NUMBER`,"+       // 12
-      "`SA_SOURCES`.`NAME`,"+                     // 13
-      "`PERM_SA_ACTIONS`.`COMMENT` "+             // 14
-      "from `PERM_SA_ACTIONS` left join `SA_DESTINATIONS` "+
+      "`SA_DESTINATIONS`.`HOST_ADDRESS`,"+        // 12
+      "`DST_NODES`.`HOST_NAME`,"+                 // 13
+      "`PERM_SA_ACTIONS`.`SOURCE_NUMBER`,"+       // 14
+      "`SA_SOURCES`.`NAME`,"+                     // 15
+      "`SA_SOURCES`.`HOST_ADDRESS`,"+             // 16
+      "`SRC_NODES`.`HOST_NAME`,"+                 // 17
+      "`PERM_SA_ACTIONS`.`COMMENT` "+             // 18
+      "from `PERM_SA_ACTIONS` "+
+      "left join `SA_SOURCES` "+
+      "on `PERM_SA_ACTIONS`.`ROUTER_NUMBER`=`SA_SOURCES`.`ROUTER_NUMBER` && "+
+      "`PERM_SA_ACTIONS`.`SOURCE_NUMBER`=`SA_SOURCES`.`SOURCE_NUMBER` "+
+      "left join `SA_DESTINATIONS` "+
       "on `PERM_SA_ACTIONS`.`ROUTER_NUMBER`=`SA_DESTINATIONS`.`ROUTER_NUMBER` && "+
       "`PERM_SA_ACTIONS`.`DESTINATION_NUMBER`=`SA_DESTINATIONS`.`SOURCE_NUMBER` "+
-      "left join `SA_SOURCES` on "+
-      "`PERM_SA_ACTIONS`.`ROUTER_NUMBER`=`SA_SOURCES`.`ROUTER_NUMBER` && "+
-      "`PERM_SA_ACTIONS`.`SOURCE_NUMBER`=`SA_SOURCES`.`SOURCE_NUMBER` ";
+      "left join `NODES` as `SRC_NODES` "+
+      "on `SA_SOURCES`.`HOST_ADDRESS`=`SRC_NODES`.`HOST_ADDRESS` "+
+      "left join `NODES` as `DST_NODES` "+
+      "on `SA_DESTINATIONS`.`HOST_ADDRESS`=`DST_NODES`.`HOST_ADDRESS` ";
   }
   else {
     return QString("select ")+
@@ -1082,16 +1091,24 @@ QString ProtocolJ::ActionListSqlFields(DREndPointMap::RouterType type) const
       "`PERM_SA_ACTIONS`.`ROUTER_NUMBER`,"+       // 09
       "`PERM_SA_ACTIONS`.`DESTINATION_NUMBER`,"+  // 10
       "`SA_GPOS`.`NAME`,"+                        // 11
-      "`PERM_SA_ACTIONS`.`SOURCE_NUMBER`,"+       // 12
-      "`SA_GPIS`.`NAME`,"+                        // 13
-      "`PERM_SA_ACTIONS`.`COMMENT` "+             // 14
+      "`SA_GPOS`.`HOST_ADDRESS`,"+                // 12
+      "`DST_NODES`.`HOST_NAME`,"+                 // 13
+      "`PERM_SA_ACTIONS`.`SOURCE_NUMBER`,"+       // 14
+      "`SA_GPIS`.`NAME`,"+                        // 15
+      "`SA_GPIS`.`HOST_ADDRESS`,"+                // 16
+      "`SRC_NODES`.`HOST_NAME`,"+                 // 17
+      "`PERM_SA_ACTIONS`.`COMMENT` "+             // 18
       "from `PERM_SA_ACTIONS` "+
+      "left join `SA_GPIS` "+
+      "on `PERM_SA_ACTIONS`.`ROUTER_NUMBER`=`SA_GPIS`.`ROUTER_NUMBER` && "+
+      "`PERM_SA_ACTIONS`.`SOURCE_NUMBER`=`SA_GPIS`.`SOURCE_NUMBER` "+
       "left join `SA_GPOS` "+
       "on `PERM_SA_ACTIONS`.`ROUTER_NUMBER`=`SA_GPOS`.`ROUTER_NUMBER` && "+
       "`PERM_SA_ACTIONS`.`DESTINATION_NUMBER`=`SA_GPOS`.`SOURCE_NUMBER` "+
-      "left join `SA_GPIS` on "+
-      "`PERM_SA_ACTIONS`.`ROUTER_NUMBER`=`SA_GPIS`.`ROUTER_NUMBER` && "+
-      "`PERM_SA_ACTIONS`.`SOURCE_NUMBER`=`SA_GPIS`.`SOURCE_NUMBER` ";
+      "left join `NODES` as `SRC_NODES` "+
+      "on `SA_GPIS`.`HOST_ADDRESS`=`SRC_NODES`.`HOST_ADDRESS` "+
+      "left join `NODES` as `DST_NODES` "+
+      "on `SA_GPOS`.`HOST_ADDRESS`=`DST_NODES`.`HOST_ADDRESS` ";
   }
 }
 
@@ -1112,9 +1129,13 @@ QJsonObject ProtocolJ::ActionListMessage(DRSqlQuery *q)
   jo0.insert("saturday",q->value(8).toString()=="Y");
   jo0.insert("destination",1+q->value(10).toInt());
   jo0.insert("destinationName",q->value(11).toString());
-  jo0.insert("source",1+q->value(12).toInt());
-  jo0.insert("sourceName",q->value(13).toString());
-  jo0.insert("comment",q->value(14).toString());
+  jo0.insert("destinationHostAddress",q->value(12).toString());
+  jo0.insert("destinationHostName",q->value(13).toString());
+  jo0.insert("source",1+q->value(14).toInt());
+  jo0.insert("sourceName",q->value(15).toString());
+  jo0.insert("sourceHostAddress",q->value(16).toString());
+  jo0.insert("sourceHostName",q->value(17).toString());
+  jo0.insert("comment",q->value(18).toString());
 
   return jo0;
 }
