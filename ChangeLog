@@ -1105,3 +1105,6 @@
 	* Fixed a bug in drouterd(8) that caused the name of GPO endpoints
 	to be set to an empty string after taking a crosspoint to the
 	endpoint.
+2024-03-12 Fred Gleason <fredg@paravelsystems.com>
+	* Fixed a bug in drouterd(8) that caused the name of GPO endpoints
+	to be improperly initialized at startup.

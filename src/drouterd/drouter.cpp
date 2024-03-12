@@ -476,8 +476,14 @@ void DRouter::nodeConnectedData(unsigned id,bool state)
 	      "`HOST_ADDRESS`='"+QHostAddress(id).toString()+"',"+
 	      QString::asprintf("`SLOT`=%d",i);
 	    if(!it.value()->nameIsCustom(DREndPointMap::Output,endpt)) {
-	      it.value()->
-		setName(DREndPointMap::Output,endpt,mtx->gpo(i)->name());
+	      if(mtx->gpo(i)->name().isEmpty()) {
+		it.value()->setName(DREndPointMap::Output,endpt,
+				    QString::asprintf("GPO %d",1+i));
+	      }
+	      else {
+		it.value()->
+		  setName(DREndPointMap::Output,endpt,mtx->gpo(i)->name());
+	      }
 	    }
 	    sql+=",`NAME`='"+
 	      DRSqlQuery::escape(it.value()->name(DREndPointMap::Output,endpt))+"'";
@@ -694,13 +700,9 @@ void DRouter::gpoChangedData(unsigned id,int slotnum,const SyNode &node,
   }
   delete q;
 
-  QString gpo_name=gpo.name();
-  if(gpo_name.isEmpty()) {
-    gpo_name=QString::asprintf("GPO %d",1+slotnum);
-  }
   sql=QString("update `GPOS` set ")+
     "`CODE`='"+gpo.bundle()->code().toLower()+"',"+
-    "`NAME`='"+DRSqlQuery::escape(gpo_name)+"',"+
+    "`NAME`='"+DRSqlQuery::escape(gpo.name())+"',"+
     "`SOURCE_ADDRESS`='"+gpo.sourceAddress().toString()+"',"+
     QString::asprintf("`SOURCE_SLOT`=%d where ",gpo.sourceSlot())+
     "`HOST_ADDRESS`='"+QHostAddress(id).toString()+"' && "+
