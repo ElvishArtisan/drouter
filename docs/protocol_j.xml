@@ -767,6 +767,161 @@
   <!-- **** END OF ActionList COMMAND **** -->
   <!-- *********************************** -->
 
+  <!-- *********************************** -->
+  <!-- *** START OF ActionStat COMMAND *** -->
+  <!-- *********************************** -->
+  <sect2 xml:id="sect.commands.actionstat">
+    <title>ActionStat</title>
+    <para>
+      Returns information on the current state of actions.
+    </para>
+    <sect3 xml:id="sect.commands.actionstat.send_syntax">
+      <title>Send Syntax</title>
+      <literallayout class="monospaced">
+{
+    "actionstat": {
+        "router": <replaceable>router-num</replaceable>
+    }
+}
+      </literallayout>
+      <para>
+      <table xml:id="table.commands.actionstat_send_parameters" frame="all" pgwide="0">
+	<title>ActionStat Send Parameters</title>
+	<tgroup cols="3" align="left" colstep="1" rowstep="1">
+	  <colspec colname="Parameter" colwidth="1.5*"/>
+	  <colspec colname="Value" colwidth="5.0*"/>
+	  <colspec colname="Type" colwidth="1.5*"/>
+	  <thead>
+	    <row>
+	      <entry>
+		Parameter
+	      </entry>
+	      <entry>
+		Meaning
+	      </entry>
+	      <entry>
+		JSON Value
+	      </entry>
+	    </row>
+	  </thead>
+	  <tbody>
+	    <row>
+	      <entry>
+		<replaceable>router-num</replaceable>
+	      </entry>
+	      <entry>
+		Router number.
+	      </entry>
+	      <entry>
+		Number
+	      </entry>
+	    </row>
+	  </tbody>
+	</tgroup>
+      </table>
+      </para>
+    </sect3>
+    <sect3 xml:id="sect.commands.actionstat.response_syntax">
+      <title>Response Syntax</title>
+      <literallayout class="monospaced">
+{
+    "actionstat": {
+        "router": <replaceable>router-num</replaceable>,
+        "nowId": <replaceable>now-id</replaceable>,
+        "nextId": <replaceable>next-id</replaceable>
+    }
+}
+      </literallayout>
+      <para>
+	<table xml:id="table.commands.actionstat_response_parameters" frame="all" pgwide="0">
+	  <title>ActionStat Response Parameters</title>
+	  <tgroup cols="3" align="left" colstep="1" rowstep="1">
+	    <colspec colname="Parameter" colwidth="1.5*"/>
+	    <colspec colname="Value" colwidth="5.0*"/>
+	    <colspec colname="Type" colwidth="1.5*"/>
+	    <thead>
+	      <row>
+		<entry>
+		  Parameter
+		</entry>
+		<entry>
+		  Meaning
+		</entry>
+		<entry>
+		  JSON Value
+		</entry>
+	      </row>
+	    </thead>
+	    <tbody>
+	      <row>
+		<entry>
+		  <replaceable>router-num</replaceable>
+		</entry>
+		<entry>
+		  Router number.
+		</entry>
+		<entry>
+		  Number
+		</entry>
+	      </row>
+	      <row>
+		<entry>
+		  <replaceable>now-id</replaceable>
+		</entry>
+		<entry>
+		  ID of currently executing action.
+		</entry>
+		<entry>
+		  Number
+		</entry>
+	      </row>
+	      <row>
+		<entry>
+		  <replaceable>next-id</replaceable>
+		</entry>
+		<entry>
+		  ID of next scheduled action.
+		</entry>
+		<entry>
+		  Number
+		</entry>
+	      </row>
+	    </tbody>
+	  </tgroup>
+	</table>
+      </para>
+    </sect3>
+
+    <sect3 xml:id="sect.commands.actionstat.example">
+      <title>Example</title>
+      <sect4 xml:id="sect.commands.actionstat.example.send">
+	<title>Send</title>
+	<literallayout class="monospaced">
+{
+    "actionstat": {
+        "router": 2,
+    }
+}
+	</literallayout>
+      </sect4>
+      <sect4 xml:id="sect.commands.actionstat.example.response">
+	<title>Response</title>
+	<literallayout class="monospaced">
+{
+    "actionstat": {
+        "router": 2,
+        "nowId": null,
+        "nextId": 1234
+    }
+}
+	</literallayout>
+      </sect4>
+    </sect3>
+  </sect2>
+  <!-- *********************************** -->
+  <!-- **** END OF ActionStat COMMAND **** -->
+  <!-- *********************************** -->
+
   <!-- ************************************** -->
   <!-- *** START OF ActivateRoute COMMAND *** -->
   <!-- ************************************** -->

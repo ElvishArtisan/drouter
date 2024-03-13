@@ -1126,3 +1126,5 @@
 	* Added an 'PERM_SA_ACTIONS.IS_ACTIVE_IDX' index to the database.
 	* Incremented the database version to 10.
 	* Added support for the 'Event Active' flag in drouterd(8).
+2024-03-13 Fred Gleason <fredg@paravelsystems.com>
+	* Documented the 'ActionStat' ProtocolJ command.
