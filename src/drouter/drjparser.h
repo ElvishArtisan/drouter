@@ -55,6 +55,7 @@ class DRJParser : public QObject
   DRJParser(bool use_long_names,QObject *parent=0);
   ~DRJParser();
   void setModelFont(const QFont &font);
+  void setModelPalette(const QPalette &pal);
   QList<int> routerFilter() const;
   void setRouterFilter(const QList<int> routers);
   QMap<int,QString> routers() const;

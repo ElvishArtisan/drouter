@@ -80,6 +80,27 @@ void DRJParser::setModelFont(const QFont &font)
 {
   j_model_font=font;
   j_router_model->setFont(font);
+  for(QMap<int,DRActionListModel *>::const_iterator it=j_action_models.begin();
+      it!=j_action_models.end();it++) {
+    it.value()->setFont(font);
+  }
+  for(QMap<int,DREndPointListModel *>::const_iterator it=j_input_models.begin();
+      it!=j_input_models.end();it++) {
+    it.value()->setFont(font);
+  }
+  for(QMap<int,DREndPointListModel *>::const_iterator it=
+	j_output_models.begin();it!=j_output_models.end();it++) {
+    it.value()->setFont(font);
+  }
+}
+
+
+void DRJParser::setModelPalette(const QPalette &pal)
+{
+  for(QMap<int,DRActionListModel *>::const_iterator it=j_action_models.begin();
+      it!=j_action_models.end();it++) {
+    it.value()->setPalette(pal);
+  }
 }
 
 

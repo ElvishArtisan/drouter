@@ -26,8 +26,10 @@
 #include <QFontMetrics>
 #include <QHostAddress>
 #include <QMap>
+#include <QPalette>
 #include <QStringList>
 #include <QTime>
+#include <QVector>
 
 #include <drouter/drendpointlistmodel.h>
 
@@ -42,6 +44,7 @@ class DRActionListModel : public QAbstractTableModel
   ~DRActionListModel();
   int routerNumber() const;
   void setFont(const QFont &font);
+  void setPalette(const QPalette &pal);
   void setInputsModel(DREndPointListModel *model);
   void setOutputsModel(DREndPointListModel *model);
   int columnCount(const QModelIndex &parent=QModelIndex()) const;
@@ -51,14 +54,14 @@ class DRActionListModel : public QAbstractTableModel
   QVariant data(const QModelIndex &index,int role=Qt::DisplayRole) const;
   int id(int rownum) const;
   QVariantMap rowMetadata(int rownum) const;
-  void setRowMetadata(const QVariantMap &fields);
   int rowNumber(int id) const;
   void addAction(const QVariantMap &fields);
   void removeAction(int id);
   void sort(int col,Qt::SortOrder order=Qt::AscendingOrder);
 
  private:
-  void UpdateRow(int rownum,const QVariantMap &fields);
+  void UpdateRowMetadata(const QVariantMap &fields);
+  void UpdateRow(int linenum,const QVariantMap &fields);
   QString DowMarker(bool state,const QString &marker) const;
   //
   // Column Fields
@@ -74,10 +77,13 @@ class DRActionListModel : public QAbstractTableModel
   QList<QList<QVariant> > d_texts;
   QList<int> d_ids;
   QList<QVariantMap> d_metadatas;
+  QList<bool> d_actives;
   QList<int> d_sorts;
 
   int d_router_number;
   QFont d_font;
+  QPalette d_palette;
+  QVector<int> d_active_roles;
   QFontMetrics *d_font_metrics;
   DREndPointListModel *d_inputs_model;
   DREndPointListModel *d_outputs_model;

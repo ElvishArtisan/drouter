@@ -110,6 +110,7 @@ int EditActionDialog::exec(int router,QVariantMap *fields)
   if(fields->size()==0) {  // New Action
     setWindowTitle("ActionPanel - "+tr("Edit Action"));
     d_id=-1;
+    d_active_check->setChecked(true);
     d_time_edit->setTime(QTime(0,0,0));
     d_comment_edit->setText(tr("[new action]"));
     d_source_box->setModel(imodel);
@@ -122,8 +123,9 @@ int EditActionDialog::exec(int router,QVariantMap *fields)
   }
   else {
     setWindowTitle("ActionPanel - "+tr("Edit Action")+
-		   QString::asprintf("[ID: %d]",fields->value("id").toInt()));
+		   QString::asprintf(" [ID: %d]",fields->value("id").toInt()));
     d_id=fields->value("id").toInt();
+    d_active_check->setChecked(fields->value("isActive").toBool());
     d_time_edit->setTime(fields->value("time").toTime());
     d_comment_edit->setText(fields->value("comment").toString());
     d_source_box->setModel(imodel);
@@ -181,6 +183,7 @@ void EditActionDialog::okData()
   DREndPointListModel *omodel=d_parser->outputModel(d_router);
 
   (*d_fields)["id"]=d_id;
+  (*d_fields)["isActive"]=d_active_check->isChecked();
   (*d_fields)["time"]=d_time_edit->time();
   (*d_fields)["comment"]=d_comment_edit->text();
   (*d_fields)["source"]=imodel->endPointNumber(d_source_box->currentIndex());

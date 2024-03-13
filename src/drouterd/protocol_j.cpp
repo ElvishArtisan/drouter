@@ -270,6 +270,8 @@ void ProtocolJ::gpoCrosspointChanged(const QHostAddress &host_addr,int slotnum)
 
 void ProtocolJ::actionChanged(int action_id)
 {
+  //  printf("ProtocolJ:actionChanged(id: %d)\n",action_id);
+
   QString sql;
   DRSqlQuery *q;
   int router=-1;
@@ -286,30 +288,6 @@ void ProtocolJ::actionChanged(int action_id)
     router=q->value(0).toInt();
   }
   else {
-    syslog(LOG_WARNING,"attempted to refresh non-existent action, id: %d",
-	   action_id);
-    return;
-  }
-
-  sql=ActionListSqlFields(proto_maps.value(router)->routerType())+"where "+
-    QString::asprintf("`PERM_SA_ACTIONS`.`ID`=%d ",action_id)+
-    "order by `PERM_SA_ACTIONS`.`DESTINATION_NUMBER`";
-  q=new DRSqlQuery(sql);
-  if(q->first()) {
-    if(proto_maps.value(q->value(9).toInt())!=NULL) {
-      QJsonObject jo0;
-      jo0.insert("router",QJsonValue((int)(1+q->value(9).toInt())));
-      jo0.insert(QString::asprintf("action%d",q->at()),ActionListMessage(q));
-
-      QJsonObject jo1;
-      jo1.insert("actionlist",jo0);
-      QJsonDocument jdoc;
-      jdoc.setObject(jo1);
-
-      proto_socket->write(jdoc.toJson());
-    }
-  }
-  else {
     QJsonObject jo0;
     jo0.insert("id",action_id);
 
@@ -319,6 +297,26 @@ void ProtocolJ::actionChanged(int action_id)
     jdoc.setObject(jo1);
 
     proto_socket->write(jdoc.toJson());
+    return;
+  }
+
+  sql=ActionListSqlFields(proto_maps.value(router)->routerType())+"where "+
+    QString::asprintf("`PERM_SA_ACTIONS`.`ID`=%d ",action_id)+
+    "order by `PERM_SA_ACTIONS`.`DESTINATION_NUMBER`";
+  q=new DRSqlQuery(sql);
+  if(q->first()) {
+    if(proto_maps.value(q->value(10).toInt())!=NULL) {
+      QJsonObject jo0;
+      jo0.insert("router",QJsonValue((int)(1+router)));
+      jo0.insert(QString::asprintf("action%d",q->at()),ActionListMessage(q));
+
+      QJsonObject jo1;
+      jo1.insert("actionlist",jo0);
+      QJsonDocument jdoc;
+      jdoc.setObject(jo1);
+
+      proto_socket->write(jdoc.toJson());
+    }
   }
 }
 
@@ -1047,24 +1045,25 @@ QString ProtocolJ::ActionListSqlFields(DREndPointMap::RouterType type) const
   if(type==DREndPointMap::AudioRouter) {
     return QString("select ")+
       "`PERM_SA_ACTIONS`.`ID`,"+                  // 00
-      "`PERM_SA_ACTIONS`.`TIME`,"+                // 01
-      "`PERM_SA_ACTIONS`.`SUN`,"+                 // 02
-      "`PERM_SA_ACTIONS`.`MON`,"+                 // 03
-      "`PERM_SA_ACTIONS`.`TUE`,"+                 // 04
-      "`PERM_SA_ACTIONS`.`WED`,"+                 // 05
-      "`PERM_SA_ACTIONS`.`THU`,"+                 // 06
-      "`PERM_SA_ACTIONS`.`FRI`,"+                 // 07
-      "`PERM_SA_ACTIONS`.`SAT`,"+                 // 08
-      "`PERM_SA_ACTIONS`.`ROUTER_NUMBER`,"+       // 09
-      "`PERM_SA_ACTIONS`.`DESTINATION_NUMBER`,"+  // 10
-      "`SA_DESTINATIONS`.`NAME`,"+                // 11
-      "`SA_DESTINATIONS`.`HOST_ADDRESS`,"+        // 12
-      "`DST_NODES`.`HOST_NAME`,"+                 // 13
-      "`PERM_SA_ACTIONS`.`SOURCE_NUMBER`,"+       // 14
-      "`SA_SOURCES`.`NAME`,"+                     // 15
-      "`SA_SOURCES`.`HOST_ADDRESS`,"+             // 16
-      "`SRC_NODES`.`HOST_NAME`,"+                 // 17
-      "`PERM_SA_ACTIONS`.`COMMENT` "+             // 18
+      "`PERM_SA_ACTIONS`.`IS_ACTIVE`,"+           // 01
+      "`PERM_SA_ACTIONS`.`TIME`,"+                // 02
+      "`PERM_SA_ACTIONS`.`SUN`,"+                 // 03
+      "`PERM_SA_ACTIONS`.`MON`,"+                 // 04
+      "`PERM_SA_ACTIONS`.`TUE`,"+                 // 05
+      "`PERM_SA_ACTIONS`.`WED`,"+                 // 06
+      "`PERM_SA_ACTIONS`.`THU`,"+                 // 07
+      "`PERM_SA_ACTIONS`.`FRI`,"+                 // 08
+      "`PERM_SA_ACTIONS`.`SAT`,"+                 // 09
+      "`PERM_SA_ACTIONS`.`ROUTER_NUMBER`,"+       // 10
+      "`PERM_SA_ACTIONS`.`DESTINATION_NUMBER`,"+  // 11
+      "`SA_DESTINATIONS`.`NAME`,"+                // 12
+      "`SA_DESTINATIONS`.`HOST_ADDRESS`,"+        // 13
+      "`DST_NODES`.`HOST_NAME`,"+                 // 14
+      "`PERM_SA_ACTIONS`.`SOURCE_NUMBER`,"+       // 15
+      "`SA_SOURCES`.`NAME`,"+                     // 16
+      "`SA_SOURCES`.`HOST_ADDRESS`,"+             // 17
+      "`SRC_NODES`.`HOST_NAME`,"+                 // 18
+      "`PERM_SA_ACTIONS`.`COMMENT` "+             // 19
       "from `PERM_SA_ACTIONS` "+
       "left join `SA_SOURCES` "+
       "on `PERM_SA_ACTIONS`.`ROUTER_NUMBER`=`SA_SOURCES`.`ROUTER_NUMBER` && "+
@@ -1080,24 +1079,25 @@ QString ProtocolJ::ActionListSqlFields(DREndPointMap::RouterType type) const
   else {
     return QString("select ")+
       "`PERM_SA_ACTIONS`.`ID`,"+                  // 00
-      "`PERM_SA_ACTIONS`.`TIME`,"+                // 01
-      "`PERM_SA_ACTIONS`.`SUN`,"+                 // 02
-      "`PERM_SA_ACTIONS`.`MON`,"+                 // 03
-      "`PERM_SA_ACTIONS`.`TUE`,"+                 // 04
-      "`PERM_SA_ACTIONS`.`WED`,"+                 // 05
-      "`PERM_SA_ACTIONS`.`THU`,"+                 // 06
-      "`PERM_SA_ACTIONS`.`FRI`,"+                 // 07
-      "`PERM_SA_ACTIONS`.`SAT`,"+                 // 08
-      "`PERM_SA_ACTIONS`.`ROUTER_NUMBER`,"+       // 09
-      "`PERM_SA_ACTIONS`.`DESTINATION_NUMBER`,"+  // 10
-      "`SA_GPOS`.`NAME`,"+                        // 11
-      "`SA_GPOS`.`HOST_ADDRESS`,"+                // 12
-      "`DST_NODES`.`HOST_NAME`,"+                 // 13
-      "`PERM_SA_ACTIONS`.`SOURCE_NUMBER`,"+       // 14
-      "`SA_GPIS`.`NAME`,"+                        // 15
-      "`SA_GPIS`.`HOST_ADDRESS`,"+                // 16
-      "`SRC_NODES`.`HOST_NAME`,"+                 // 17
-      "`PERM_SA_ACTIONS`.`COMMENT` "+             // 18
+      "`PERM_SA_ACTIONS`.`IS_ACTIVE`,"+           // 01
+      "`PERM_SA_ACTIONS`.`TIME`,"+                // 02
+      "`PERM_SA_ACTIONS`.`SUN`,"+                 // 03
+      "`PERM_SA_ACTIONS`.`MON`,"+                 // 04
+      "`PERM_SA_ACTIONS`.`TUE`,"+                 // 05
+      "`PERM_SA_ACTIONS`.`WED`,"+                 // 06
+      "`PERM_SA_ACTIONS`.`THU`,"+                 // 07
+      "`PERM_SA_ACTIONS`.`FRI`,"+                 // 08
+      "`PERM_SA_ACTIONS`.`SAT`,"+                 // 09
+      "`PERM_SA_ACTIONS`.`ROUTER_NUMBER`,"+       // 10
+      "`PERM_SA_ACTIONS`.`DESTINATION_NUMBER`,"+  // 11
+      "`SA_GPOS`.`NAME`,"+                        // 12
+      "`SA_GPOS`.`HOST_ADDRESS`,"+                // 13
+      "`DST_NODES`.`HOST_NAME`,"+                 // 14
+      "`PERM_SA_ACTIONS`.`SOURCE_NUMBER`,"+       // 15
+      "`SA_GPIS`.`NAME`,"+                        // 16
+      "`SA_GPIS`.`HOST_ADDRESS`,"+                // 17
+      "`SRC_NODES`.`HOST_NAME`,"+                 // 18
+      "`PERM_SA_ACTIONS`.`COMMENT` "+             // 19
       "from `PERM_SA_ACTIONS` "+
       "left join `SA_GPIS` "+
       "on `PERM_SA_ACTIONS`.`ROUTER_NUMBER`=`SA_GPIS`.`ROUTER_NUMBER` && "+
@@ -1119,23 +1119,24 @@ QJsonObject ProtocolJ::ActionListMessage(DRSqlQuery *q)
   QString json;
   QJsonObject jo0;
   jo0.insert("id",q->value(0).toInt());
-  jo0.insert("time",q->value(1).toTime().toString("hh:mm:ss")+"Z");
-  jo0.insert("sunday",q->value(2).toString()=="Y");
-  jo0.insert("monday",q->value(3).toString()=="Y");
-  jo0.insert("tuesday",q->value(4).toString()=="Y");
-  jo0.insert("wednesday",q->value(5).toString()=="Y");
-  jo0.insert("thursday",q->value(6).toString()=="Y");
-  jo0.insert("friday",q->value(7).toString()=="Y");
-  jo0.insert("saturday",q->value(8).toString()=="Y");
-  jo0.insert("destination",1+q->value(10).toInt());
-  jo0.insert("destinationName",q->value(11).toString());
-  jo0.insert("destinationHostAddress",q->value(12).toString());
-  jo0.insert("destinationHostName",q->value(13).toString());
-  jo0.insert("source",1+q->value(14).toInt());
-  jo0.insert("sourceName",q->value(15).toString());
-  jo0.insert("sourceHostAddress",q->value(16).toString());
-  jo0.insert("sourceHostName",q->value(17).toString());
-  jo0.insert("comment",q->value(18).toString());
+  jo0.insert("isActive",q->value(1).toString()=="Y");
+  jo0.insert("time",q->value(2).toTime().toString("hh:mm:ss")+"Z");
+  jo0.insert("sunday",q->value(3).toString()=="Y");
+  jo0.insert("monday",q->value(4).toString()=="Y");
+  jo0.insert("tuesday",q->value(5).toString()=="Y");
+  jo0.insert("wednesday",q->value(6).toString()=="Y");
+  jo0.insert("thursday",q->value(7).toString()=="Y");
+  jo0.insert("friday",q->value(8).toString()=="Y");
+  jo0.insert("saturday",q->value(9).toString()=="Y");
+  jo0.insert("destination",1+q->value(11).toInt());
+  jo0.insert("destinationName",q->value(12).toString());
+  jo0.insert("destinationHostAddress",q->value(13).toString());
+  jo0.insert("destinationHostName",q->value(14).toString());
+  jo0.insert("source",1+q->value(15).toInt());
+  jo0.insert("sourceName",q->value(16).toString());
+  jo0.insert("sourceHostAddress",q->value(17).toString());
+  jo0.insert("sourceHostName",q->value(18).toString());
+  jo0.insert("comment",q->value(19).toString());
 
   return jo0;
 }
@@ -1144,12 +1145,11 @@ QJsonObject ProtocolJ::ActionListMessage(DRSqlQuery *q)
 QString ProtocolJ::ActionEditSqlFields(const QVariantMap &fields,
 				       const QTime &time) const
 {
-  QString sql=QString::asprintf("`ROUTER_NUMBER`=%d,",
-				fields.value("router").toInt()-1)+
+  QString sql="`IS_ACTIVE`='"+ToYesNo(fields.value("isActive").toBool())+"',"+
+    QString::asprintf("`ROUTER_NUMBER`=%d,",fields.value("router").toInt()-1)+
     QString::asprintf("`DESTINATION_NUMBER`=%d,",
 		      fields.value("destination").toInt()-1)+
-    QString::asprintf("`SOURCE_NUMBER`=%d,",
-		      fields.value("source").toInt()-1)+
+    QString::asprintf("`SOURCE_NUMBER`=%d,",fields.value("source").toInt()-1)+
     "`TIME`='"+DRSqlQuery::escape(time.toString("hh:mm:ss"))+"',"+
     "`COMMENT`='"+DRSqlQuery::escape(fields.value("comment").toString())+"',"+
     "`SUN`='"+ToYesNo(fields.value("sunday").toBool())+"',"+

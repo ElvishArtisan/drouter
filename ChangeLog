@@ -1117,3 +1117,8 @@
 	Action Parameters in Protocol J.
 	* Modified the 'Source Name' and 'Destination Name' columns in
 	actionpanel(1) to use long-form names.
+2024-03-13 Fred Gleason <fredg@paravelsystems.com>
+	* Added a 'IS_ACTIVE' field to the 'PERM_SA_ACTIONS' table;
+	* Incremented the database version to 9.
+	* Added an 'Event Active' checkbox to the 'Edit Action' dialog in
+	actionpanel(1).

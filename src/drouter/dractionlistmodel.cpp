@@ -114,6 +114,20 @@ DRActionListModel::DRActionListModel(int router,QObject *parent)
   d_alignments.push_back(right);
   d_keys.push_back("id");
   d_icons.push_back(QVariant());
+
+  //
+  // Active Roles
+  //
+  d_active_roles.push_back(Qt::DisplayRole);
+  d_active_roles.push_back(Qt::SizeHintRole);
+  d_active_roles.push_back(Qt::TextColorRole);
+  /*
+   * We return these, but they should never change
+   *
+  d_active_roles.push_back(Qt::DecorationRole);
+  d_active_roles.push_back(Qt::AlignmentRole);
+  d_active_roles.push_back(Qt::FontRole);
+  */
 }
 
 
@@ -132,6 +146,12 @@ void DRActionListModel::setFont(const QFont &font)
 {
   d_font=font;
   d_font_metrics=new QFontMetrics(d_font);
+}
+
+
+void DRActionListModel::setPalette(const QPalette &pal)
+{
+  d_palette=pal;
 }
 
 
@@ -197,7 +217,9 @@ QVariant DRActionListModel::data(const QModelIndex &index,int role) const
       break;
 
     case Qt::TextColorRole:
-      // Nothing to do!
+      if(!d_actives.at(row)) {
+	return d_palette.color(QPalette::Disabled,QPalette::WindowText);
+      }
       break;
 
     case Qt::BackgroundRole:
@@ -228,19 +250,6 @@ QVariantMap DRActionListModel::rowMetadata(int rownum) const
 }
 
 
-void DRActionListModel::setRowMetadata(const QVariantMap &fields)
-{
-  int id=fields.value("id").toInt();
-  int rownum=d_sorts.indexOf(d_ids.indexOf(id));
-
-  if(rownum>=0) {
-    UpdateRow(rownum,fields);
-    emit dataChanged(index(rownum,0),index(rownum,10),
-		     QVector<int>(1,Qt::DisplayRole));
-  }
-}
-
-
 int DRActionListModel::rowNumber(int id) const
 {
   return d_sorts.indexOf(d_ids.indexOf(id));
@@ -249,6 +258,8 @@ int DRActionListModel::rowNumber(int id) const
 
 void DRActionListModel::addAction(const QVariantMap &fields)
 {
+  //  printf("%p: DRActionListMode::addAction(id=%d)\n",this,fields.value("id").toInt());
+
   //
   // Sanity Checks
   //
@@ -268,15 +279,8 @@ void DRActionListModel::addAction(const QVariantMap &fields)
   // Do we have this loaded already?
   //
   int id=fields.value("id").toInt();
-  int rownum1=d_ids.indexOf(id);
-  int rownum=d_sorts.indexOf(rownum1);
-  if(rownum>=0) {
-    //
-    // Update existing line
-    //
-    UpdateRow(rownum1,fields);
-    emit dataChanged(index(rownum,0),index(rownum,columnCount()));
-    sort(d_sort_column,d_sort_order);
+  if(d_ids.contains(id)) {
+    UpdateRowMetadata(fields);
     return;
   }
 
@@ -290,8 +294,9 @@ void DRActionListModel::addAction(const QVariantMap &fields)
   beginInsertRows(QModelIndex(),d_sorts.size(),d_sorts.size());
   d_sorts.push_back(d_sorts.size());
   d_texts.push_back(row);
-  d_ids.push_back(fields.value("id").toInt());
+  d_ids.push_back(id);
   d_metadatas.push_back(fields);
+  d_actives.push_back(true);
   UpdateRow(d_sorts.size()-1,fields);
   endInsertRows();
 
@@ -301,27 +306,21 @@ void DRActionListModel::addAction(const QVariantMap &fields)
 
 void DRActionListModel::removeAction(int id)
 {
-  //  int rownum=d_sorts.indexOf(d_ids.indexOf(id));
-
-  int rownum1=d_ids.indexOf(id);
-  //  printf("rownum1: %d\n",rownum1);
-  int rownum=d_sorts.indexOf(rownum1);
-  //  printf("rownum2: %d\n",rownum);
-
+  int linenum=d_ids.indexOf(id);
+  int rownum=d_sorts.indexOf(linenum);
 
   if(rownum>=0) {
-    beginRemoveRows(QModelIndex(),rownum1,rownum1);
-    d_texts.removeAt(rownum);
-    d_metadatas.removeAt(rownum);
-    d_ids.removeAt(rownum);
+    beginRemoveRows(QModelIndex(),rownum,rownum);
+    d_texts.removeAt(linenum);
+    d_metadatas.removeAt(linenum);
+    d_ids.removeAt(linenum);
+    d_actives.removeAt(linenum);
     d_sorts.removeAt(rownum);
-
     for(int i=0;i<d_sorts.size();i++) {
-      if(d_sorts.at(i)>=rownum) {
+      if(d_sorts.at(i)>=linenum) {
 	d_sorts[i]=d_sorts.at(i)-1;
       }
     }
-
     endRemoveRows();
   }
 }
@@ -334,7 +333,7 @@ void DRActionListModel::sort(int col,Qt::SortOrder order)
   d_sort_order=order;
 
   //
-  // FIXME: Use a more performant sort algorithm here!
+  // FIXME: Bubble sort. Seriously?
   //
   bool changed=true;
 
@@ -372,40 +371,65 @@ void DRActionListModel::sort(int col,Qt::SortOrder order)
 }
 
 
-void DRActionListModel::UpdateRow(int rownum,const QVariantMap &fields)
+void DRActionListModel::UpdateRowMetadata(const QVariantMap &fields)
 {
-  d_texts[rownum][0]=fields.value("comment").toString();
-  d_texts[rownum][1]=fields.value("time").toTime().toString("hh:mm:ss");
-  d_texts[rownum][2]=DowMarker(fields.value("sunday").toBool(),tr("Sun"));
-  d_texts[rownum][3]=DowMarker(fields.value("monday").toBool(),tr("Mon"));
-  d_texts[rownum][4]=DowMarker(fields.value("tuesday").toBool(),tr("Tue"));
-  d_texts[rownum][5]=DowMarker(fields.value("wednesday").toBool(),tr("Wed"));
-  d_texts[rownum][6]=DowMarker(fields.value("thursday").toBool(),tr("Thu"));
-  d_texts[rownum][7]=DowMarker(fields.value("friday").toBool(),tr("Fri"));
-  d_texts[rownum][8]=DowMarker(fields.value("saturday").toBool(),tr("Sat"));
-  d_texts[rownum][9]=QString::asprintf("%d",fields.value("source").toInt());
-  d_texts[rownum][10]=fields.value("sourceName").toString();
+  printf("DRActionListMode::UpdateRowMetadata(id=%d)\n",fields.value("id").toInt());
+  int linenum=-1;
+  int id=fields.value("id").toInt();
+
+  for(int i=0;i<d_metadatas.size();i++) {
+    if(d_metadatas.at(i).value("id").toInt()==id) {
+      linenum=i;
+      break;
+    }
+  }
+  if(linenum<0) {
+    syslog(LOG_WARNING,"attempted to update non-existing action id %d",id);
+    return;
+  }
+  int rownum=d_sorts.indexOf(linenum);
+  d_metadatas[linenum]=fields;
+  UpdateRow(linenum,fields);
+  emit dataChanged(index(rownum,0),index(rownum,d_headers.size()-1),
+		   d_active_roles);
+}
+
+
+void DRActionListModel::UpdateRow(int linenum,const QVariantMap &fields)
+{
+  d_texts[linenum][0]=fields.value("comment").toString();
+  d_texts[linenum][1]=fields.value("time").toTime().toString("hh:mm:ss");
+  d_texts[linenum][2]=DowMarker(fields.value("sunday").toBool(),tr("Sun"));
+  d_texts[linenum][3]=DowMarker(fields.value("monday").toBool(),tr("Mon"));
+  d_texts[linenum][4]=DowMarker(fields.value("tuesday").toBool(),tr("Tue"));
+  d_texts[linenum][5]=DowMarker(fields.value("wednesday").toBool(),tr("Wed"));
+  d_texts[linenum][6]=DowMarker(fields.value("thursday").toBool(),tr("Thu"));
+  d_texts[linenum][7]=DowMarker(fields.value("friday").toBool(),tr("Fri"));
+  d_texts[linenum][8]=DowMarker(fields.value("saturday").toBool(),tr("Sat"));
+  d_texts[linenum][9]=QString::asprintf("%d",fields.value("source").toInt());
+  d_texts[linenum][10]=fields.value("sourceName").toString();
   if(fields.value("sourceHostName").toString().isEmpty()) {
-    d_texts[rownum][10]=d_texts.at(rownum).at(10).toString()+
+    d_texts[linenum][10]=d_texts.at(linenum).at(10).toString()+
       " "+tr("ON")+" "+fields.value("sourceHostAddress").toString();
   }
   else {
-    d_texts[rownum][10]=d_texts.at(rownum).at(10).toString()+
+    d_texts[linenum][10]=d_texts.at(linenum).at(10).toString()+
       " "+tr("ON")+" "+fields.value("sourceHostName").toString();
   }
-  d_texts[rownum][11]=
+  d_texts[linenum][11]=
     QString::asprintf("%d",fields.value("destination").toInt());
-  d_texts[rownum][12]=fields.value("destinationName").toString();
+  d_texts[linenum][12]=fields.value("destinationName").toString();
   if(fields.value("destinationHostName").toString().isEmpty()) {
-    d_texts[rownum][12]=d_texts.at(rownum).at(10).toString()+
+    d_texts[linenum][12]=d_texts.at(linenum).at(10).toString()+
       " "+tr("ON")+" "+fields.value("destinationHostAddress").toString();
   }
   else {
-    d_texts[rownum][12]=d_texts.at(rownum).at(10).toString()+
+    d_texts[linenum][12]=d_texts.at(linenum).at(10).toString()+
       " "+tr("ON")+" "+fields.value("destinationHostName").toString();
   }
-  d_texts[rownum][13]=QString::asprintf("%d",fields.value("id").toInt());
-  d_metadatas[rownum]=fields;
+  d_texts[linenum][13]=QString::asprintf("%d",fields.value("id").toInt());
+  d_actives[linenum]=fields.value("isActive").toBool();
+  d_metadatas[linenum]=fields;
 }
 
 
