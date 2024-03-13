@@ -75,13 +75,13 @@ QString RouteAction::comment() const
 void RouteAction::update(DRSqlQuery *q)
 {
   d_id=q->value(0).toInt();
-  d_time=q->value(1).toTime();
-  d_router_number=q->value(2).toInt();
-  d_destination_number=q->value(3).toInt();
-  d_source_number=q->value(4).toInt();
-  d_comment=q->value(5).toString();
+  d_time=q->value(2).toTime();
+  d_router_number=q->value(3).toInt();
+  d_destination_number=q->value(4).toInt();
+  d_source_number=q->value(5).toInt();
+  d_comment=q->value(6).toString();
   for(int i=0;i<7;i++) {
-    d_day_of_week[i]=q->value(i+6).toString()=="Y";
+    d_day_of_week[i]=q->value(i+7).toString()=="Y";
   }
 }
 
@@ -90,18 +90,19 @@ QString RouteAction::sqlFields()
 {
   return QString("select ")+
     "`PERM_SA_ACTIONS`.`ID`,"+                  // 00
-    "`PERM_SA_ACTIONS`.`TIME`,"+                // 01
-    "`PERM_SA_ACTIONS`.`ROUTER_NUMBER`,"+       // 02
-    "`PERM_SA_ACTIONS`.`DESTINATION_NUMBER`,"+  // 03
-    "`PERM_SA_ACTIONS`.`SOURCE_NUMBER`,"+       // 04
-    "`PERM_SA_ACTIONS`.`COMMENT`,"+             // 05
-    "`PERM_SA_ACTIONS`.`MON`,"+                 // 06
-    "`PERM_SA_ACTIONS`.`TUE`,"+                 // 07
-    "`PERM_SA_ACTIONS`.`WED`,"+                 // 08
-    "`PERM_SA_ACTIONS`.`THU`,"+                 // 09
-    "`PERM_SA_ACTIONS`.`FRI`,"+                 // 10
-    "`PERM_SA_ACTIONS`.`SAT`,"+                 // 11
-    "`PERM_SA_ACTIONS`.`SUN` "+                 // 12
+    "`PERM_SA_ACTIONS`.`IS_ACTIVE`,"+           // 01
+    "`PERM_SA_ACTIONS`.`TIME`,"+                // 02
+    "`PERM_SA_ACTIONS`.`ROUTER_NUMBER`,"+       // 03
+    "`PERM_SA_ACTIONS`.`DESTINATION_NUMBER`,"+  // 04
+    "`PERM_SA_ACTIONS`.`SOURCE_NUMBER`,"+       // 05
+    "`PERM_SA_ACTIONS`.`COMMENT`,"+             // 06
+    "`PERM_SA_ACTIONS`.`MON`,"+                 // 07
+    "`PERM_SA_ACTIONS`.`TUE`,"+                 // 08
+    "`PERM_SA_ACTIONS`.`WED`,"+                 // 09
+    "`PERM_SA_ACTIONS`.`THU`,"+                 // 10
+    "`PERM_SA_ACTIONS`.`FRI`,"+                 // 11
+    "`PERM_SA_ACTIONS`.`SAT`,"+                 // 12
+    "`PERM_SA_ACTIONS`.`SUN` "+                 // 13
     "from `PERM_SA_ACTIONS` ";
 }
 
@@ -118,11 +119,13 @@ RouteEngine::RouteEngine(QObject *parent)
 
 bool RouteEngine::load()
 {
-  QString sql=RouteAction::sqlFields();
-  DRSqlQuery *q=new DRSqlQuery(sql);
+  QString sql=RouteAction::sqlFields()+
+    "where "+
+    "`PERM_SA_ACTIONS`.`IS_ACTIVE`='Y' ";
+    DRSqlQuery *q=new DRSqlQuery(sql);
   while(q->next()) {
     d_route_actions[q->value(0).toInt()]=new RouteAction(q);
-    d_time_engine->addEvent(q->value(0).toInt(),q->value(1).toTime());
+    d_time_engine->addEvent(q->value(0).toInt(),q->value(2).toTime());
   }
   syslog(LOG_DEBUG,"route engine: loaded %d actions",q->size());
   delete q;
@@ -135,7 +138,8 @@ void RouteEngine::refresh(int action_id)
 {
   RouteAction *raction=NULL; 
   QString sql=RouteAction::sqlFields()+"where "+
-    QString::asprintf("`ID`=%d ",action_id);
+    QString::asprintf("`ID`=%d && ",action_id)+
+    "`PERM_SA_ACTIONS`.`IS_ACTIVE`='Y' ";
   DRSqlQuery *q=new DRSqlQuery(sql);
   if(q->first()) {
     if((raction=d_route_actions.value(action_id))==NULL) {
@@ -152,7 +156,7 @@ void RouteEngine::refresh(int action_id)
     }
   }
   else {
-    d_time_engine->removeEvent(action_id);  // Remove deleted action
+    d_time_engine->removeEvent(action_id);  // Remove inactive/deleted action
     delete raction;
     d_route_actions.remove(action_id);
     syslog(LOG_DEBUG,"route engine: removed action, id: %d",action_id);

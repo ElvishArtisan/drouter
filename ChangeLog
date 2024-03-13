@@ -1122,3 +1122,7 @@
 	* Incremented the database version to 9.
 	* Added an 'Event Active' checkbox to the 'Edit Action' dialog in
 	actionpanel(1).
+2024-03-13 Fred Gleason <fredg@paravelsystems.com>
+	* Added an 'PERM_SA_ACTIONS.IS_ACTIVE_IDX' index to the database.
+	* Incremented the database version to 10.
+	* Added support for the 'Event Active' flag in drouterd(8).

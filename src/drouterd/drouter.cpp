@@ -1303,6 +1303,15 @@ bool DRouter::StartDb(QString *err_msg)
     SetSchemaVersion(schema_ver);
   }
 
+  if(schema_ver<10) {
+    sql=QString("alter table `PERM_SA_ACTIONS` ")+
+      "add index `IS_ACTIVE_IDX` (`IS_ACTIVE`)";
+    DRSqlQuery::apply(sql);
+
+    schema_ver=10;
+    SetSchemaVersion(schema_ver);
+  }
+
 
   // New schema updates go here
 
