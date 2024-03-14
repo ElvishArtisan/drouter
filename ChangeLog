@@ -1128,3 +1128,6 @@
 	* Added support for the 'Event Active' flag in drouterd(8).
 2024-03-13 Fred Gleason <fredg@paravelsystems.com>
 	* Documented the 'ActionStat' ProtocolJ command.
+2024-03-13 Fred Gleason <fredg@paravelsystems.com>
+	* Implemented the 'ActionStat' ProtocolJ command.
+	* Added next action indications in actionpanel(1).

@@ -160,6 +160,8 @@ MainObject::MainObject(QObject *parent)
 	  main_drouter,SLOT(setWriteable(bool)));
   connect(main_route_engine,SIGNAL(setCrosspoint(int,int,int)),
 	  main_drouter,SLOT(setCrosspoint(int,int,int)));
+  connect(main_route_engine,SIGNAL(nextActionsChanged(int,const QList<int> &)),
+	  main_drouter,SLOT(updateActions(int,const QList<int> &)));
   connect(main_drouter,SIGNAL(routeEngineRefresh(int)),
 	  main_route_engine,SLOT(refresh(int)));
   if(!main_drouter->start(&err_msg)) {

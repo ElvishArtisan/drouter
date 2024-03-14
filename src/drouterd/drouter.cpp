@@ -271,6 +271,25 @@ void DRouter::setCrosspoint(int router,int output,int input)
 }
 
 
+void DRouter::updateActions(int router,const QList<int> &action_ids)
+{
+  QString sql=QString("delete from `SA_NEXT_ACTIONS` where ")+
+    QString::asprintf("`ROUTER_NUMBER`=%d ",router);
+  DRSqlQuery::apply(sql);
+
+  QString action_list=QString::asprintf("%d",router);
+  for(int i=0;i<action_ids.size();i++) {
+    sql=QString("insert into `SA_NEXT_ACTIONS` set ")+
+      QString::asprintf("`ROUTER_NUMBER`=%d,",router)+
+      QString::asprintf("`ACTION_ID`=%d ",action_ids.at(i));
+    DRSqlQuery::apply(sql);
+
+    action_list+=QString::asprintf(":%d",action_ids.at(i));
+  }
+  NotifyProtocols("ACTION_ACTIVATED",action_list);
+}
+
+
 void DRouter::setWriteable(bool state)
 {
   QString sql;
@@ -1449,6 +1468,14 @@ bool DRouter::StartDb(QString *err_msg)
     "index HOST_ADDRESS_IDX(`HOST_ADDRESS`,`SLOT`),"+
     "index ROUTER_IDX(`ROUTER_NUMBER`),"+
     "index ROUTER_SOURCE_IDX(`ROUTER_NUMBER`,`SOURCE_NUMBER`))"+
+    "engine MEMORY character set utf8 collate utf8_general_ci";
+  DRSqlQuery::apply(sql);
+
+  sql=QString("create table if not exists `SA_NEXT_ACTIONS` (")+
+    "`ID` int auto_increment not null primary key,"+
+    "`ROUTER_NUMBER` int not null,"+
+    "`ACTION_ID` int not null,"+
+    "index ROUTER_NUMBER_IDX(`ROUTER_NUMBER`)) "+
     "engine MEMORY character set utf8 collate utf8_general_ci";
   DRSqlQuery::apply(sql);
 

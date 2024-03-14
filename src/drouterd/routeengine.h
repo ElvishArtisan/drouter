@@ -39,6 +39,7 @@ class RouteAction
   int destinationNumber() const;
   int sourceNumber() const;
   QString comment() const;
+  QDateTime nextRunsAt(const QDateTime &now) const;
   void update(DRSqlQuery *q);
   static QString sqlFields();
 
@@ -60,6 +61,7 @@ class RouteEngine : public QObject
  Q_OBJECT;
  public:
   RouteEngine(QObject *parent=0);
+  QList<int> nextActions(int router) const;
   bool load();
 
  public slots:
@@ -67,11 +69,14 @@ class RouteEngine : public QObject
 
  signals:
   void setCrosspoint(int router,int output,int input);
+  void nextActionsChanged(int router,const QList<int> &action_ids);
 
  private slots:
   void actionData(int action_id);
 
  private:
+  QList<int> GetNextActionIds(int router) const;
+  QMap<int,QList<int> > d_next_action_ids;
   QMap<int,RouteAction *> d_route_actions;
   TimeEngine *d_time_engine;
 };

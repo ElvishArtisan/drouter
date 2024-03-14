@@ -292,6 +292,11 @@ void Protocol::actionChanged(int id)
 }
 
 
+void Protocol::nextActionsChanged(int router,const QList<int> &action_ids)
+{
+}
+
+
 Config *Protocol::config()
 {
   return proto_config;
@@ -399,5 +404,14 @@ void Protocol::ProcessIpcCommand(const QString &cmd)
   if((cmds.at(0)=="ACTION")&&(cmds.size()==2)) {
     int id=cmds.at(1).toInt();
     actionChanged(id);
+  }
+
+  if((cmds.at(0)=="ACTION_ACTIVATED")&&(cmds.size()>=2)) {
+    int router=cmds.at(1).toInt();
+    QList<int> ids;
+    for(int i=2;i<cmds.size();i++) {
+      ids.push_back(cmds.at(i).toInt());
+      nextActionsChanged(router,ids);
+    }
   }
 }

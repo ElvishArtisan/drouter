@@ -94,6 +94,7 @@ class DRJParser : public QObject
   void outputCrosspointChanged(int router,int output,int input);
   void gpiStateChanged(int router,int input,const QString &code);
   void gpoStateChanged(int router,int output,const QString &code);
+  void actionActivated(int router,int now_action_id,int next_action_id);
 
  private slots:
   void connectedData();

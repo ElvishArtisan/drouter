@@ -61,6 +61,7 @@ class DRouter : public QObject
   void routeEngineRefresh(int action_id);
 
  public slots:
+  void updateActions(int router,const QList<int> &action_ids);
   void setCrosspoint(int router,int output,int input);
   void setWriteable(bool state);
 

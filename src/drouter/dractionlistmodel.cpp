@@ -121,6 +121,7 @@ DRActionListModel::DRActionListModel(int router,QObject *parent)
   d_active_roles.push_back(Qt::DisplayRole);
   d_active_roles.push_back(Qt::SizeHintRole);
   d_active_roles.push_back(Qt::TextColorRole);
+  d_active_roles.push_back(Qt::BackgroundRole);
   /*
    * We return these, but they should never change
    *
@@ -223,7 +224,9 @@ QVariant DRActionListModel::data(const QModelIndex &index,int role) const
       break;
 
     case Qt::BackgroundRole:
-      // Nothing to do!
+      if(d_next_ids.contains(d_ids.at(row))) {
+	return QColor(Qt::yellow);
+      }
       break;
 
     default:
@@ -368,6 +371,31 @@ void DRActionListModel::sort(int col,Qt::SortOrder order)
   }
   emit dataChanged(index(0,0),index(rowCount()-1,columnCount()-1),
   		   QVector<int>(1,Qt::DisplayRole));
+}
+
+
+void DRActionListModel::updateNextActions(int router,
+					  const QList<int> &action_ids)
+{
+  //
+  // Invalidate Old IDs
+  //
+  while(d_next_ids.size()>0) {
+    int rownum=d_sorts.indexOf(d_ids.indexOf(d_next_ids.first()));
+    d_next_ids.removeFirst();
+    emit dataChanged(index(rownum,0),index(rownum,columnCount()-1),
+		     QVector<int>(1,Qt::BackgroundRole));
+  }
+
+  //
+  // Assert New IDs
+  //
+  for(int i=0;i<action_ids.size();i++) {
+    d_next_ids.push_back(action_ids.at(i));
+    int rownum=d_sorts.indexOf(d_ids.indexOf(action_ids.at(i)));
+    emit dataChanged(index(rownum,0),index(rownum,columnCount()-1),
+		     QVector<int>(1,Qt::BackgroundRole));
+  }
 }
 
 

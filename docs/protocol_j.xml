@@ -780,7 +780,8 @@
       <literallayout class="monospaced">
 {
     "actionstat": {
-        "router": <replaceable>router-num</replaceable>
+        "router": <replaceable>router-num</replaceable>.
+        "sendUpdates": <replaceable>update</replaceable>
     }
 }
       </literallayout>
@@ -816,6 +817,20 @@
 		Number
 	      </entry>
 	    </row>
+	    <row>
+	      <entry>
+		<replaceable>update</replaceable>
+	      </entry>
+	      <entry>
+		Update flag. If <userinput>true</userinput>, an
+		<computeroutput>ActionStat</computeroutput> message will also
+		be sent each time one of the ID parameters changes for the
+		specified router.
+	      </entry>
+	      <entry>
+		Boolean
+	      </entry>
+	    </row>
 	  </tbody>
 	</tgroup>
       </table>
@@ -827,8 +842,8 @@
 {
     "actionstat": {
         "router": <replaceable>router-num</replaceable>,
-        "nowId": <replaceable>now-id</replaceable>,
-        "nextId": <replaceable>next-id</replaceable>
+        "sendUpdates": <replaceable>update</replaceable>
+        "nextId": <replaceable>id-array</replaceable>
     }
 }
       </literallayout>
@@ -866,24 +881,26 @@
 	      </row>
 	      <row>
 		<entry>
-		  <replaceable>now-id</replaceable>
+		  <replaceable>update</replaceable>
 		</entry>
 		<entry>
-		  ID of currently executing action.
+		  The current state of the update flag. See
+		  <xref linkend="table.commands.actionstat_send_parameters"/>
+		  for details.
 		</entry>
 		<entry>
-		  Number
+		  Boolean
 		</entry>
 	      </row>
 	      <row>
 		<entry>
-		  <replaceable>next-id</replaceable>
+		  <replaceable>id-array</replaceable>
 		</entry>
 		<entry>
-		  ID of next scheduled action.
+		  List of zero or more action ids.
 		</entry>
 		<entry>
-		  Number
+		  Array
 		</entry>
 	      </row>
 	    </tbody>
@@ -910,8 +927,7 @@
 {
     "actionstat": {
         "router": 2,
-        "nowId": null,
-        "nextId": 1234
+        "nextId": [1234,4321]
     }
 }
 	</literallayout>

@@ -56,6 +56,7 @@ class ProtocolJ : public Protocol
   void gpoCodeChanged(const QHostAddress &host_addr,int slotnum);
   void gpoCrosspointChanged(const QHostAddress &host_addr,int slotnum);
   void actionChanged(int id);
+  void nextActionsChanged(int router,const QList<int> &action_ids);
   void quitting();
 
  private:
@@ -77,9 +78,11 @@ class ProtocolJ : public Protocol
   void SendActionInfo(unsigned router);
   QString ActionListSqlFields(DREndPointMap::RouterType type) const;
   QJsonObject ActionListMessage(DRSqlQuery *q);
-
   QString ActionEditSqlFields(const QVariantMap &fields,
 			      const QTime &time) const;
+  void SendActionStatInfo(int router);
+  QString ActionStatSqlFields() const;
+  void SendActionStat(int router,const QList<int> &action_ids);
   void DeleteAction(int id);
   void SendGpiInfo(unsigned router,int input);
   QString GPIStatSqlFields() const;
@@ -95,6 +98,8 @@ class ProtocolJ : public Protocol
   void MaskGpoStat(bool state);
   void MaskRouteStat(bool state);
   void MaskStat(bool state);
+
+
   //  void HelpMessage(const QString &keyword);
   void SendPingResponse();
   void LoadMaps();
@@ -122,6 +127,7 @@ class ProtocolJ : public Protocol
   bool proto_sources_subscribed;
   bool proto_clips_subscribed;
   bool proto_silences_subscribed;
+  QMap<int,bool> proto_actionstat_subscribeds;
   bool proto_gpistat_masked;
   bool proto_gpostat_masked;
   bool proto_routestat_masked;

@@ -19,6 +19,7 @@
 //   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
 //
 
+#include <QJsonArray>
 #include <QJsonDocument>
 #include <QJsonObject>
 #include <QStringList>
@@ -488,6 +489,10 @@ void DRJParser::DispatchMessage(const QJsonDocument &jdoc)
 	SendCommand("gpostat",router_fields);
 	*/
 	SendCommand("routestat",router_fields);
+
+	router_fields["sendUpdates"]=true;
+	SendCommand("actionstat",router_fields);
+
       }
     }
     j_router_model->finalize();
@@ -580,6 +585,21 @@ void DRJParser::DispatchMessage(const QJsonDocument &jdoc)
 	    j_action_models.begin();it!=j_action_models.end();it++) {
 	it.value()->removeAction(id);
       }
+    }
+    return;
+  }
+
+  if(jdoc.object().contains("actionstat")) {
+    QJsonObject jo0=jdoc.object().value("actionstat").toObject();
+    int router=jo0.value("router").toInt();
+    DRActionListModel *amodel=actionModel(router);
+    if(amodel!=NULL) {
+      QJsonArray ja=jo0.value("nextId").toArray();
+      QList<int> ids;
+      for(int i=0;i<ja.size();i++) {
+	ids.push_back(ja.at(i).toInt());
+      }
+      amodel->updateNextActions(router,ids);
     }
     return;
   }

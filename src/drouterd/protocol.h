@@ -73,6 +73,7 @@ class Protocol : public QObject
 			      SyLwrpClient::MeterType meter_type,
 			      const QString &tbl_name,int chan);
   virtual void actionChanged(int id);
+  virtual void nextActionsChanged(int router,const QList<int> &action_ids);
   Config *config();
   void logIpc(const QString &msg);
   virtual void quitting();

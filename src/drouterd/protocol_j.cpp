@@ -23,6 +23,7 @@
 #include <syslog.h>
 #include <unistd.h>
 
+#include <QJsonArray>
 #include <QJsonDocument>
 #include <QJsonObject>
 #include <QSqlError>
@@ -320,6 +321,15 @@ void ProtocolJ::actionChanged(int action_id)
   }
 }
 
+
+void ProtocolJ::nextActionsChanged(int router,const QList<int> &action_ids)
+{
+  if(proto_actionstat_subscribeds.value(router)) {
+    SendActionStat(router,action_ids);
+  }
+}
+
+
 void ProtocolJ::quitting()
 {
   shutdown(proto_socket->socketDescriptor(),SHUT_RDWR);
@@ -507,6 +517,15 @@ void ProtocolJ::DispatchMessage(const QJsonDocument &jdoc)
 	SendError(DRJParser::DatabaseError,err_msg);
       }
     }
+    return;
+  }
+
+  if(jdoc.object().contains("actionstat")) {
+    QVariantMap map=jdoc.object().value("actionstat").toObject().
+      toVariantMap();
+    int router=map.value("router").toInt();
+    proto_actionstat_subscribeds[router-1]=map.value("sendUpdates").toBool();
+    SendActionStatInfo(router-1);
     return;
   }
 
@@ -1160,6 +1179,48 @@ QString ProtocolJ::ActionEditSqlFields(const QVariantMap &fields,
     "`FRI`='"+ToYesNo(fields.value("friday").toBool())+"',"+
     "`SAT`='"+ToYesNo(fields.value("saturday").toBool())+"' ";
   return sql;
+}
+
+
+void ProtocolJ::SendActionStatInfo(int router)
+{
+  QList<int> ids;
+  QString sql=ActionStatSqlFields()+
+    "where "+
+    QString::asprintf("`SA_NEXT_ACTIONS`.`ROUTER_NUMBER`=%d ",router);
+  DRSqlQuery *q=new DRSqlQuery(sql);
+  while(q->next()) {
+    ids.push_back(q->value(0).toInt());
+  }
+  delete q;
+  SendActionStat(router,ids);
+}
+
+QString ProtocolJ::ActionStatSqlFields() const
+{
+  return QString("select ")+
+    "`SA_NEXT_ACTIONS`.`ACTION_ID` "+  // 00
+    "from `SA_NEXT_ACTIONS` ";
+}
+
+
+void ProtocolJ::SendActionStat(int router,const QList<int> &action_ids)
+{
+  QJsonObject jo0;
+  jo0.insert("router",1+router);
+  jo0.insert("sendUpdates",proto_actionstat_subscribeds.value(router));
+  QJsonArray ids;
+  for(int i=0;i<action_ids.size();i++) {
+    ids.append(action_ids.at(i));
+  }
+  jo0.insert("nextId",ids);
+
+  QJsonObject jo1;
+  jo1.insert("actionstat",jo0);
+
+  QJsonDocument jdoc;
+  jdoc.setObject(jo1);
+  proto_socket->write(jdoc.toJson());
 }
 
 

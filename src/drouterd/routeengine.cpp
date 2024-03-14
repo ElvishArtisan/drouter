@@ -72,6 +72,34 @@ QString RouteAction::comment() const
 }
 
 
+QDateTime RouteAction::nextRunsAt(const QDateTime &now) const
+{
+  QDateTime datetime(now.date(),d_time);
+
+  //
+  // Rest of Today
+  //
+  //  printf("DOW: %d  ACTIVE: %d\n",datetime.date().dayOfWeek(),
+  //	 d_day_of_week[datetime.date().dayOfWeek()-1]);
+  if(d_day_of_week[datetime.date().dayOfWeek()-1]) {
+    if(now.time()<d_time) {
+      return QDateTime(datetime.date(),d_time);
+    }
+  }
+
+  //
+  // Rest of the Week
+  for(int i=0;i<7;i++) {
+    datetime=datetime.addDays(1);
+    if(d_day_of_week[datetime.date().dayOfWeek()-1]) {
+      return QDateTime(datetime.date(),d_time);
+    }
+  }
+
+  return QDateTime();
+}
+
+
 void RouteAction::update(DRSqlQuery *q)
 {
   d_id=q->value(0).toInt();
@@ -117,8 +145,15 @@ RouteEngine::RouteEngine(QObject *parent)
 }
 
 
+QList<int> RouteEngine::nextActions(int router) const
+{
+  return d_next_action_ids.value(router);
+}
+
+
 bool RouteEngine::load()
 {
+  QList<int> routers;
   QString sql=RouteAction::sqlFields()+
     "where "+
     "`PERM_SA_ACTIONS`.`IS_ACTIVE`='Y' ";
@@ -126,7 +161,20 @@ bool RouteEngine::load()
   while(q->next()) {
     d_route_actions[q->value(0).toInt()]=new RouteAction(q);
     d_time_engine->addEvent(q->value(0).toInt(),q->value(2).toTime());
+    if(!routers.contains(q->value(3).toInt())) {
+      routers.push_back(q->value(3).toInt());
+    }
   }
+
+  //
+  // Calculate Next Events
+  //
+  for(int i=0;i<routers.size();i++) {
+    d_next_action_ids[routers.at(i)]=GetNextActionIds(routers.at(i));
+    emit nextActionsChanged(routers.at(i),
+			    d_next_action_ids.value(routers.at(i)));
+  }
+
   syslog(LOG_DEBUG,"route engine: loaded %d actions",q->size());
   delete q;
 
@@ -136,6 +184,7 @@ bool RouteEngine::load()
 
 void RouteEngine::refresh(int action_id)
 {
+  int router=-1;
   RouteAction *raction=NULL; 
   QString sql=RouteAction::sqlFields()+"where "+
     QString::asprintf("`ID`=%d && ",action_id)+
@@ -143,25 +192,43 @@ void RouteEngine::refresh(int action_id)
   DRSqlQuery *q=new DRSqlQuery(sql);
   if(q->first()) {
     if((raction=d_route_actions.value(action_id))==NULL) {
-      raction=new RouteAction(q);  // Add new action
+      //
+      // Add New Action
+      //
+      raction=new RouteAction(q);
+      router=raction->routerNumber();
       d_route_actions[action_id]=raction;
       d_time_engine->addEvent(action_id,raction->time());
       syslog(LOG_DEBUG,"route engine: added new action, id: %d",action_id);
     }
     else {
-      d_time_engine->removeEvent(action_id);  // Update existing action
+      //
+      // Update Existing Action
+      //
+      d_time_engine->removeEvent(action_id);
       raction->update(q);
+      router=raction->routerNumber();
       d_time_engine->addEvent(action_id,raction->time());
       syslog(LOG_DEBUG,"route engine: updated action, id: %d",action_id);
     }
   }
   else {
-    d_time_engine->removeEvent(action_id);  // Remove inactive/deleted action
-    delete raction;
-    d_route_actions.remove(action_id);
-    syslog(LOG_DEBUG,"route engine: removed action, id: %d",action_id);
+    //
+    // Remove Inactive/Deleted Action
+    //
+    if((raction=d_route_actions.value(action_id))!=NULL) {
+      router=raction->routerNumber();
+      d_time_engine->removeEvent(action_id);
+      d_next_action_ids.remove(router);
+      delete raction;
+      d_route_actions.remove(action_id);
+      syslog(LOG_DEBUG,"route engine: removed action, id: %d",action_id);
+    }
   }
   delete q;
+
+  d_next_action_ids[router]=GetNextActionIds(router);
+  emit nextActionsChanged(router,d_next_action_ids.value(router));
 }
 
 
@@ -172,9 +239,45 @@ void RouteEngine::actionData(int action_id)
 
   if(raction!=NULL) {
     if(raction->dayOfWeek(now.date().dayOfWeek())) {
+      d_next_action_ids[raction->routerNumber()]=
+	GetNextActionIds(raction->routerNumber());
       emit setCrosspoint(raction->routerNumber(),raction->destinationNumber(),
 			 raction->sourceNumber());
+      emit nextActionsChanged(raction->routerNumber(),
+			      d_next_action_ids.value(raction->routerNumber()));
       syslog(LOG_DEBUG,"route engine: ran action, id: %d",action_id);
     }
   }
+}
+
+
+QList<int> RouteEngine::GetNextActionIds(int router) const
+{
+  int64_t interval=0x0FFFFFFFFFFFFFFF;
+  QDateTime now=QDateTime::currentDateTimeUtc();
+  QList<int> ids;
+
+  for(QMap<int,RouteAction *>::const_iterator it=d_route_actions.begin();
+      it!=d_route_actions.end();it++) {
+    if(it.value()->routerNumber()==router) {
+      /*
+      printf("ID: %d  Time: %s  Next Run: %s\n",
+	     it.value()->id(),
+	     it.value()->time().toString("hh:mm:ss").toUtf8().constData(),
+	     it.value()->nextRunsAt(now).toString("ddd @ hh:mm:ss").toUtf8().constData());
+      */
+      int64_t new_interval=now.msecsTo(it.value()->nextRunsAt(now));
+      if(new_interval<interval) {
+	interval=new_interval;
+	ids.clear();
+	ids.push_back(it.key());
+      }
+      else {
+	if(new_interval==interval) {
+	  ids.push_back(it.key());
+	}
+      }
+    }
+  }
+  return ids;
 }

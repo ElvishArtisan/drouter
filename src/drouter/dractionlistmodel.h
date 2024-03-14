@@ -59,6 +59,9 @@ class DRActionListModel : public QAbstractTableModel
   void removeAction(int id);
   void sort(int col,Qt::SortOrder order=Qt::AscendingOrder);
 
+ public slots:
+  void updateNextActions(int router,const QList<int> &action_ids);
+
  private:
   void UpdateRowMetadata(const QVariantMap &fields);
   void UpdateRow(int linenum,const QVariantMap &fields);
@@ -81,6 +84,7 @@ class DRActionListModel : public QAbstractTableModel
   QList<int> d_sorts;
 
   int d_router_number;
+  QList<int> d_next_ids;
   QFont d_font;
   QPalette d_palette;
   QVector<int> d_active_roles;
