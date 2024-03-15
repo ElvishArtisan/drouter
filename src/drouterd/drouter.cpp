@@ -41,6 +41,7 @@
 
 #include "matrix_factory.h"
 #include "drouter.h"
+#include "logger_front.h"
 #include "protoipc.h"
 
 DRouter::DRouter(int *proto_socks,QObject *parent)
@@ -71,7 +72,7 @@ DRouter::DRouter(int *proto_socks,QObject *parent)
 
 DRouter::~DRouter()
 {
-  WriteCommentEvent(tr("Stopping Drouter service"));
+  LoggerFront::writeCommentEvent(tr("Stopping Drouter service"));
 }
 
 
@@ -218,7 +219,7 @@ bool DRouter::start(QString *err_msg)
   if(!StartLivewire(err_msg)) {
     return false;
   }
-  WriteCommentEvent(tr("Started drouter service"));
+  LoggerFront::writeCommentEvent(tr("Started drouter service"));
 
   return true;
 }
@@ -317,7 +318,7 @@ void DRouter::setWriteable(bool state)
     drouter_writeable=state;
     NotifyProtocols("TETHER",letter);
 
-    WriteCommentEvent(comment);
+    LoggerFront::writeCommentEvent(comment);
   }
 }
 
@@ -1798,17 +1799,3 @@ void DRouter::FinalizeSARouteEvent(int event_id,bool status) const
   }
   DRSqlQuery::apply(sql);
 }
-
-
-void DRouter::WriteCommentEvent(const QString &str) const
-{
-  QString sql;
-
-  sql=QString("insert into `PERM_SA_EVENTS` set ")+
-    "`TYPE`='C',"+
-    "`DATETIME`=now(),"+
-    "`STATUS`='Y',"+
-    "`COMMENT`='"+DRSqlQuery::escape(str)+"'";
-  DRSqlQuery::apply(sql);
-}
-

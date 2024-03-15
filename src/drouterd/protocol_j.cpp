@@ -60,6 +60,11 @@ ProtocolJ::ProtocolJ(int sock,QObject *parent)
   openlog("dprotod(J)",LOG_PID,LOG_DAEMON);
 
   //
+  // Event Logger
+  //
+  proto_logger=new LoggerFront(this);
+
+  //
   // The ProtocolJ Server
   //
   proto_server=new QTcpServer(this);
@@ -173,25 +178,6 @@ void ProtocolJ::readyReadData()
 void ProtocolJ::disconnectedData()
 {
   quit();
-}
-
-
-void ProtocolJ::snapshotHostLookupFinishedData(const QHostInfo &info)
-{
-  QString sql=QString("update `PERM_SA_EVENTS` set ")+
-    "`HOSTNAME`='"+DRSqlQuery::escape(info.hostName())+"',"+
-    "`STATUS`='Y' where "+
-    QString::asprintf("`ID`=%d",proto_event_lookups.value(info.lookupId()));
-  DRSqlQuery::apply(sql);
-}
-
-
-void ProtocolJ::routeHostLookupFinishedData(const QHostInfo &info)
-{
-  QString sql=QString("update `PERM_SA_EVENTS` set ")+
-    "`HOSTNAME`='"+DRSqlQuery::escape(info.hostName())+"' where "+
-    QString::asprintf("`ID`=%d",proto_event_lookups.value(info.lookupId()));
-  DRSqlQuery::apply(sql);
 }
 
 
@@ -658,7 +644,9 @@ void ProtocolJ::ActivateRoute(unsigned router,unsigned output,unsigned input)
 {
   DREndPointMap *map;
 
-  AddRouteEvent(router,output,input-1);
+  //  AddRouteEvent(router,output,input-1);
+  proto_logger->addRouteEvent(proto_socket->peerAddress(),proto_username,
+			      router,output,input-1);
   if((map=proto_maps.value(router))!=NULL) {
     QHostAddress dst_addr=map->hostAddress(DREndPointMap::Output,output);
     int dst_slotnum=map->slot(DREndPointMap::Output,output);
@@ -817,7 +805,8 @@ void ProtocolJ::ActivateSnapshot(unsigned router,const QString &snapshot_name)
   }
   proto_socket->write(QString("Snapshot Initiated\r\n").toUtf8());
   if((ss=map->snapshot(snapshot_name))!=NULL) {
-    AddSnapEvent(router,snapshot_name);
+    proto_logger->addSnapEvent(proto_socket->peerAddress(),proto_username,
+			       router,snapshot_name);
     for(int i=0;i<ss->routeQuantity();i++) {
       ActivateRoute(router,ss->routeOutput(i)-1,ss->routeInput(i));
     }
@@ -1696,52 +1685,6 @@ void ProtocolJ::LoadHelp()
   proto_help_patterns["snapshotroutes"]="SnapShotRoutes <router> <snap-name>";
   proto_help_comments["snapshotroutes"]=
     "Return list of routes on the specified snapshot.";
-}
-
-
-void ProtocolJ::AddRouteEvent(int router,int output,int input)
-{
-  QString sql=QString("insert into `PERM_SA_EVENTS` set ")+
-    "`DATETIME`=now(),"+
-    "`TYPE`='R',"+
-    "`ORIGINATING_ADDRESS`='"+proto_socket->peerAddress().toString()+"',"+
-    QString::asprintf("`ROUTER_NUMBER`=%d,",router)+
-    QString::asprintf("`DESTINATION_NUMBER`=%d,",output)+
-    QString::asprintf("`SOURCE_NUMBER`=%d,",input);
-  if(proto_username.isEmpty()) {
-    sql+="`USERNAME`=NULL";
-  }
-  else {
-    sql+="`USERNAME`='"+DRSqlQuery::escape(proto_username)+"'";
-  }
-  proto_event_lookups
-    [QHostInfo::lookupHost(proto_socket->peerAddress().toString(),
-     this,SLOT(routeHostLookupFinishedData(const QHostInfo &)))]=
-    DRSqlQuery::run(sql).toInt();
-}
-
-
-void ProtocolJ::AddSnapEvent(int router,const QString &name)
-{
-  QString sql=QString("insert into `PERM_SA_EVENTS` set ")+
-    "`DATETIME`=now(),"+
-    "`STATUS`='Y',"+
-    "`TYPE`='S',"+
-    "`ORIGINATING_ADDRESS`='"+proto_socket->peerAddress().toString()+"',"+
-    QString::asprintf("`ROUTER_NUMBER`=%d,",router)+
-    "`COMMENT`='"+tr("Executing snapshot")+" "+
-    DRSqlQuery::escape("<strong>"+name+"</strong>")+" - "+
-    tr("Router")+": "+QString::asprintf("<strong>%d</strong>",1+router)+"',";
-  if(proto_username.isEmpty()) {
-    sql+="`USERNAME`=NULL";
-  }
-  else {
-    sql+="`USERNAME`='"+DRSqlQuery::escape(proto_username)+"'";
-  }
-  proto_event_lookups
-    [QHostInfo::lookupHost(proto_socket->peerAddress().toString(),
-     this,SLOT(snapshotHostLookupFinishedData(const QHostInfo &)))]=
-    DRSqlQuery::run(sql).toInt();
 }
 
 

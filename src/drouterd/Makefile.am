@@ -45,6 +45,7 @@ dist_drouterd_SOURCES = config.cpp config.h\
                         drouter.cpp drouter.h\
                         drouterd.cpp drouterd.h\
                         gpioflasher.cpp gpioflasher.h\
+                        logger_front.cpp logger_front.h\
                         matrix.cpp matrix.h\
                         matrix_bt-41mlr.cpp matrix_bt-41mlr.h\
                         matrix_gvg7000.cpp matrix_gvg7000.h\
@@ -62,6 +63,7 @@ dist_drouterd_SOURCES = config.cpp config.h\
 nodist_drouterd_SOURCES = moc_drouter.cpp\
                           moc_drouterd.cpp\
                           moc_gpioflasher.cpp\
+                          moc_logger_front.cpp\
                           moc_matrix.cpp\
                           moc_matrix_bt-41mlr.cpp\
                           moc_matrix_gvg7000.cpp\
@@ -78,6 +80,7 @@ drouterd_LDFLAGS = -rdynamic
 
 dist_dprotod_SOURCES = config.cpp config.h\
                        dprotod.cpp dprotod.h\
+                       logger_front.cpp logger_front.h\
                        protocol.cpp protocol.h\
                        protocol_d.cpp protocol_d.h\
                        protocol_j.cpp protocol_j.h\
@@ -85,6 +88,7 @@ dist_dprotod_SOURCES = config.cpp config.h\
                        protoipc.h
 
 nodist_dprotod_SOURCES = moc_dprotod.cpp\
+                         moc_logger_front.cpp\
                          moc_protocol.cpp\
                          moc_protocol_d.cpp\
                          moc_protocol_j.cpp\

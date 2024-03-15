@@ -1131,3 +1131,6 @@
 2024-03-14 Fred Gleason <fredg@paravelsystems.com>
 	* Implemented the 'ActionStat' ProtocolJ command.
 	* Added next action indications in actionpanel(1).
+2024-03-15 Fred Gleason <fredg@paravelsystems.com>
+	* Consolidated methods for adding event log entries in drouterd(8)
+	into a 'LoggerFront' class.

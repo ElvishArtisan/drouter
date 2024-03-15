@@ -32,6 +32,7 @@
 #include <drouter/drjparser.h>
 #include <drouter/drsqlquery.h>
 
+#include "logger_front.h"
 #include "protocol.h"
 
 class ProtocolJ : public Protocol
@@ -47,8 +48,8 @@ class ProtocolJ : public Protocol
   void newConnectionData();
   void readyReadData();
   void disconnectedData();
-  void snapshotHostLookupFinishedData(const QHostInfo &info);
-  void routeHostLookupFinishedData(const QHostInfo &info);
+  //  void snapshotHostLookupFinishedData(const QHostInfo &info);
+  //  void routeHostLookupFinishedData(const QHostInfo &info);
 
  protected:
   void destinationCrosspointChanged(const QHostAddress &host_addr,int slotnum);
@@ -104,8 +105,8 @@ class ProtocolJ : public Protocol
   void SendPingResponse();
   void LoadMaps();
   void LoadHelp();
-  void AddRouteEvent(int router,int output,int input);
-  void AddSnapEvent(int router,const QString &name);
+  //  void AddRouteEvent(int router,int output,int input);
+  //  void AddSnapEvent(int router,const QString &name);
   void SendError(DRJParser::ErrorType etype,const QString &remarks=QString());
   QTime FromJsonString(const QString &str) const;
   QString ToYesNo(bool state) const;
@@ -117,7 +118,8 @@ class ProtocolJ : public Protocol
   bool proto_accum_quoted;
   int proto_accum_level;
   QMap<int,DREndPointMap *> proto_maps;
-  QMap <int,int> proto_event_lookups;
+  //  QMap <int,int> proto_event_lookups;
+  LoggerFront *proto_logger;
   QString proto_username;
   QString proto_hostname;
   bool proto_destinations_subscribed;
