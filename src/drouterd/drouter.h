@@ -34,6 +34,7 @@
 
 #include "config.h"
 #include "gpioflasher.h"
+#include "logger_back.h"
 #include "matrix.h"
 
 class DRouter : public QObject
@@ -82,7 +83,6 @@ class DRouter : public QObject
   void advtReadyReadData(int ifnum);
   void newIpcConnectionData(int listen_sock);
   void ipcReadyReadData(int sock);
-  void finalizeEventsData();
   void purgeEventsData();
 
  private:
@@ -100,10 +100,6 @@ class DRouter : public QObject
   void LoadMaps();
   void SendProtoSocket(int dest_sock,int proto_sock);
   void Log(int prio,const QString &msg) const;
-  void FinalizeSAAudioRoute(int event_id,int router,int output,int input);
-  void FinalizeSAGpioRoute(int event_id,int router,int output,int input);
-  void FinalizeSARouteEvent(int event_id,bool status) const;
-  //  void WriteCommentEvent(const QString &str) const;
   QMap<unsigned,Matrix *> drouter_nodes;
   QList<SyMcastSocket *> drouter_advt_sockets;
   QMap<int,QTcpSocket *> drouter_ipc_sockets;
@@ -114,8 +110,8 @@ class DRouter : public QObject
   int *drouter_proto_socks;
   bool drouter_writeable;
   GpioFlasher *drouter_flasher;
-  QTimer *drouter_finalize_timer;
   QTimer *drouter_purge_events_timer;
+  LoggerBack *drouter_logger_back;
   Config *drouter_config;
 };
 

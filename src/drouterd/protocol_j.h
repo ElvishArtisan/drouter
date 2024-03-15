@@ -48,8 +48,6 @@ class ProtocolJ : public Protocol
   void newConnectionData();
   void readyReadData();
   void disconnectedData();
-  //  void snapshotHostLookupFinishedData(const QHostInfo &info);
-  //  void routeHostLookupFinishedData(const QHostInfo &info);
 
  protected:
   void destinationCrosspointChanged(const QHostAddress &host_addr,int slotnum);
@@ -118,7 +116,6 @@ class ProtocolJ : public Protocol
   bool proto_accum_quoted;
   int proto_accum_level;
   QMap<int,DREndPointMap *> proto_maps;
-  //  QMap <int,int> proto_event_lookups;
   LoggerFront *proto_logger;
   QString proto_username;
   QString proto_hostname;

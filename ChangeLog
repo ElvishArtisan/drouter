@@ -1134,3 +1134,6 @@
 2024-03-15 Fred Gleason <fredg@paravelsystems.com>
 	* Consolidated methods for adding event log entries in drouterd(8)
 	into a 'LoggerFront' class.
+2024-03-15 Fred Gleason <fredg@paravelsystems.com>
+	* Consolidated methods for finalizing provisional event log entries
+	in drouterd(8) into a 'LoggerBack' class.

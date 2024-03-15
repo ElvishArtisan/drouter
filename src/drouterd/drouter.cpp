@@ -55,11 +55,6 @@ DRouter::DRouter(int *proto_socks,QObject *parent)
 
   drouter_flasher=new GpioFlasher(this);
 
-  drouter_finalize_timer=new QTimer(this);
-  drouter_finalize_timer->setSingleShot(false);
-  connect(drouter_finalize_timer,SIGNAL(timeout()),
-	  this,SLOT(finalizeEventsData()));
-
   drouter_purge_events_timer=new QTimer(this);
   connect(drouter_purge_events_timer,SIGNAL(timeout()),
 	  this,SLOT(purgeEventsData()));
@@ -219,6 +214,9 @@ bool DRouter::start(QString *err_msg)
   if(!StartLivewire(err_msg)) {
     return false;
   }
+
+  drouter_logger_back=new LoggerBack(&drouter_maps,this);
+
   LoggerFront::writeCommentEvent(tr("Started drouter service"));
 
   return true;
@@ -305,12 +303,12 @@ void DRouter::setWriteable(bool state)
     QString letter;
     if(state) {
       letter="Y";
-      drouter_finalize_timer->start(1000);
+      drouter_logger_back->setWriteable(true);
       comment=tr("This instance is now active.");
     }
     else {
       letter="N";
-      drouter_finalize_timer->stop();
+      drouter_logger_back->setWriteable(false);
       comment=tr("This instance is no longer active.");
     }
     sql=QString("update `TETHER` set `IS_ACTIVE`='"+letter+"'");
@@ -774,8 +772,8 @@ void DRouter::audioClipAlarmData(unsigned id,SyLwrpClient::MeterType type,
       "`HOST_ADDRESS`='"+QHostAddress(id).toString()+"' && "+
       QString::asprintf("`SLOT`=%d",slotnum);
     DRSqlQuery::apply(sql);
-    NotifyProtocols("CLIP",QString::asprintf("%d:%d:",type,chan)+QHostAddress(id).toString()+QString::asprintf(":%d",slotnum));
-    //    emit clipAlarmChanged(*(lwrp->node()),(int)slotnum,type,chan,state);
+    NotifyProtocols("CLIP",QString::asprintf("%d:%d:",type,chan)+
+	       QHostAddress(id).toString()+QString::asprintf(":%d",slotnum));
   }
 }
 
@@ -801,7 +799,8 @@ void DRouter::audioSilenceAlarmData(unsigned id,SyLwrpClient::MeterType type,
       "`HOST_ADDRESS`='"+QHostAddress(id).toString()+"' && "+
       QString::asprintf("`SLOT`=%d",slotnum);
     DRSqlQuery::apply(sql);
-    NotifyProtocols("SILENCE",QString::asprintf("%d:%d:",type,chan)+QHostAddress(id).toString()+QString::asprintf(":%d",slotnum));
+    NotifyProtocols("SILENCE",QString::asprintf("%d:%d:",type,chan)+
+		QHostAddress(id).toString()+QString::asprintf(":%d",slotnum));
   }
 }
 
@@ -873,47 +872,6 @@ void DRouter::ipcReadyReadData(int sock)
       }
     }
   }
-}
-
-
-void DRouter::finalizeEventsData()
-{
-  QString sql;
-  DRSqlQuery *q;
-  DREndPointMap *map=NULL;
-
-  sql=QString("select ")+
-    "`ID`,"+                  // 00
-    "`ROUTER_NUMBER`,"+       // 01
-    "`DESTINATION_NUMBER`,"+  // 02
-    "`SOURCE_NUMBER` "+       // 03
-    "from `PERM_SA_EVENTS` where "+
-    "`STATUS`='O' && "+
-    "`DATETIME`<'"+QDateTime::currentDateTime().addSecs(-1).
-    toString("yyyy-MM-dd hh:mm:ss")+"'";
-  q=new DRSqlQuery(sql);
-  while(q->next()) {
-    if((map=drouter_maps.value(q->value(1).toInt()))==NULL) {
-      FinalizeSARouteEvent(q->value(0).toInt(),false);
-    }
-    else {
-      switch(drouter_maps.value(q->value(1).toInt())->routerType()) {
-      case DREndPointMap::AudioRouter:
-	FinalizeSAAudioRoute(q->value(0).toInt(),q->value(1).toInt(),
-			     q->value(2).toInt(),q->value(3).toInt());
-	break;
-
-      case DREndPointMap::GpioRouter:
-	FinalizeSAGpioRoute(q->value(0).toInt(),q->value(1).toInt(),
-			    q->value(2).toInt(),q->value(3).toInt());
-	break;
-
-      case DREndPointMap::LastRouter:
-	break;
-      }
-    }
-  }
-  delete q;
 }
 
 
@@ -1669,133 +1627,4 @@ void DRouter::Log(int prio,const QString &msg) const
   if(prio>=0) {
     syslog(prio,"%s",msg.toUtf8().constData());
   }
-}
-
-
-void DRouter::FinalizeSAAudioRoute(int event_id,int router,int output,int input)
-{
-  QString sql;
-  DRSqlQuery *q;
-
-  if(input<0) {  // No route --i.e. destination is "OFF"
-    sql=QString("select ")+
-      "`STREAM_ADDRESS` "+  // 00
-      "from `SA_DESTINATIONS` where "+
-      QString::asprintf("`ROUTER_NUMBER`=%d && ",router)+
-      QString::asprintf("`SOURCE_NUMBER`=%d",output);
-    q=new DRSqlQuery(sql);
-    if(q->first()) {
-      FinalizeSARouteEvent(event_id,
-			   q->value(0).toString()==DROUTER_NULL_STREAM_ADDRESS);
-    }
-    else {
-      FinalizeSARouteEvent(event_id,false);
-    }
-    delete q;
-  }
-  else {
-    sql=QString("select ")+
-      "`SA_DESTINATIONS`.`ID` "+  // 00
-      "from `SA_DESTINATIONS` left join `SA_SOURCES` "+
-      "on `SA_DESTINATIONS`.`STREAM_ADDRESS`=`SA_SOURCES`.`STREAM_ADDRESS` && "+
-      "`SA_SOURCES`.`ROUTER_NUMBER`=`SA_DESTINATIONS`.`ROUTER_NUMBER` "+
-      "where "+
-      QString::asprintf("`SA_DESTINATIONS`.`ROUTER_NUMBER`=%d && ",
-			router)+
-      QString::asprintf("`SA_SOURCES`.`SOURCE_NUMBER`=%d && ",
-			input)+
-      QString::asprintf("`SA_DESTINATIONS`.`SOURCE_NUMBER`=%d",
-			output);
-    //printf("finalize SQL: %s\n",sql.toUtf8().constData());
-    q=new DRSqlQuery(sql);
-    FinalizeSARouteEvent(event_id,q->first());
-    delete q;
-  }
-}
-
-
-void DRouter::FinalizeSAGpioRoute(int event_id,int router,int output,int input)
-{
-  QString sql;
-  DRSqlQuery *q;
-
-  if(input<0) {  // No route --i.e. destination is "OFF"
-    sql=QString("select ")+
-      "`SOURCE_SLOT` "+  // 00
-      "from `SA_GPOS` where "+
-      QString::asprintf("`ROUTER_NUMBER`=%d && ",router)+
-      QString::asprintf("`SOURCE_NUMBER`=%d && ",output)+
-      "`SOURCE_SLOT`<0";
-    q=new DRSqlQuery(sql);
-    FinalizeSARouteEvent(event_id,q->first());
-    delete q;
-  }
-  else {
-    sql=QString("select ")+
-      "`SA_GPOS`.`ID` "+  // 00
-      "from `SA_GPOS` left join `SA_GPIS` "+
-      "on `SA_GPOS`.`SOURCE_ADDRESS`=`SA_GPIS`.`HOST_ADDRESS` && "+
-      "`SA_GPOS`.`SOURCE_SLOT`=`SA_GPIS`.`SLOT` && "+
-      "`SA_GPIS`.`ROUTER_NUMBER`=`SA_GPOS`.`ROUTER_NUMBER` "+
-      "where "+
-      QString::asprintf("`SA_GPOS`.`ROUTER_NUMBER`=%d && ",
-			router)+
-      QString::asprintf("`SA_GPIS`.`SOURCE_NUMBER`=%d && ",
-			input)+
-      QString::asprintf("`SA_GPOS`.`SOURCE_NUMBER`=%d",
-			output);
-    q=new DRSqlQuery(sql);
-    FinalizeSARouteEvent(event_id,q->first());
-    delete q;
-  }
-}
-
-
-void DRouter::FinalizeSARouteEvent(int event_id,bool status) const
-{
-  QString comment="";
-  QString sql;
-  DRSqlQuery *q=NULL;
-  QString router_name;
-  QString input_name;
-  QString output_name;
-
-  sql=QString("select ")+
-    "`STATUS`,"+              // 00
-    "`ROUTER_NUMBER`,"+       // 01
-    "`DESTINATION_NUMBER`,"+  // 02
-    "`SOURCE_NUMBER`,"+       // 03
-    "`USERNAME`,"+            // 04
-    "`HOSTNAME`,"+            // 05
-    "`ORIGINATING_ADDRESS` "+ // 06
-    "from `PERM_SA_EVENTS` where "+
-    QString::asprintf("`ID`=%d",event_id);
-  q=new DRSqlQuery(sql);
-  if(q->first()) {
-    DREndPointMap *map=drouter_maps.value(q->value(1).toInt());
-    if(map!=NULL) {
-      router_name=map->routerName();
-      output_name=map->name(DREndPointMap::Output,q->value(2).toInt());
-      input_name=map->name(DREndPointMap::Input,q->value(3).toInt());
-    }
-  }
-  delete q;
-
-  if(status) {
-    sql=QString("update `PERM_SA_EVENTS` set ")+
-      "`STATUS`='Y',"+
-      "`ROUTER_NAME`='"+DRSqlQuery::escape(router_name)+"',"+
-      "`DESTINATION_NAME`='"+DRSqlQuery::escape(output_name)+"',"+
-      "`SOURCE_NAME`='"+DRSqlQuery::escape(input_name)+"' "+
-      QString::asprintf("where `ID`=%d",event_id);
-  }
-  else {
-    sql=QString("update `PERM_SA_EVENTS` set ")+
-      "`STATUS`='N',"+
-      "`ROUTER_NAME`='"+DRSqlQuery::escape(router_name)+"',"+
-      "`DESTINATION_NAME`='"+DRSqlQuery::escape(output_name)+"',"+
-      "`SOURCE_NAME`='"+DRSqlQuery::escape(input_name)+"' "+
-      QString::asprintf("where `ID`=%d",event_id);
-  }
-  DRSqlQuery::apply(sql);
 }

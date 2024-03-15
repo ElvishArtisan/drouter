@@ -45,6 +45,7 @@ dist_drouterd_SOURCES = config.cpp config.h\
                         drouter.cpp drouter.h\
                         drouterd.cpp drouterd.h\
                         gpioflasher.cpp gpioflasher.h\
+                        logger_back.cpp logger_back.h\
                         logger_front.cpp logger_front.h\
                         matrix.cpp matrix.h\
                         matrix_bt-41mlr.cpp matrix_bt-41mlr.h\
@@ -63,6 +64,7 @@ dist_drouterd_SOURCES = config.cpp config.h\
 nodist_drouterd_SOURCES = moc_drouter.cpp\
                           moc_drouterd.cpp\
                           moc_gpioflasher.cpp\
+                          moc_logger_back.cpp\
                           moc_logger_front.cpp\
                           moc_matrix.cpp\
                           moc_matrix_bt-41mlr.cpp\
