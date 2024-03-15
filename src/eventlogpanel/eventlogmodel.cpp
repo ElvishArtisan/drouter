@@ -311,7 +311,11 @@ void EventLogModel::updateRow(int row,DRSqlQuery *q)
   case 'S':  // Snapshot
     str=q->value(7).toString()+" "+tr("by")+" ";
     if(!q->value(4).isNull()) {
-      str+=Fmt(q->value(4).toString(),Qt::blue,true)+"@";
+      str+=Fmt(q->value(4).toString(),Qt::blue,true);
+    }
+    if((!q->value(4).toString().isEmpty())&&
+       (!q->value(5).toString().isEmpty())) {
+      str+="@";
     }
     str+=Fmt(q->value(5).toString(),Qt::blue,true);
     texts.push_back(str);
@@ -390,7 +394,10 @@ QString EventLogModel::RouteString(DRSqlQuery *q) const
   //
   ret+=" "+tr("by")+" ";
   if(!q->value(4).isNull()) {
-    ret+=Fmt(q->value(4).toString(),Qt::blue,true)+"@";
+    ret+=Fmt(q->value(4).toString(),Qt::blue,true);
+  }
+  if((!q->value(4).toString().isEmpty())&&(!q->value(5).toString().isEmpty())) {
+    ret+="@";
   }
   ret+=Fmt(q->value(5).toString(),Qt::blue,true);
 

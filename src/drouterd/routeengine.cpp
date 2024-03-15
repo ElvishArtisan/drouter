@@ -140,6 +140,8 @@ QString RouteAction::sqlFields()
 RouteEngine::RouteEngine(QObject *parent)
   : QObject(parent)
 {
+  d_logger=new LoggerFront(this);
+
   d_time_engine=new TimeEngine(this);
   connect(d_time_engine,SIGNAL(timeout(int)),this,SLOT(actionData(int)));
 }
@@ -245,6 +247,10 @@ void RouteEngine::actionData(int action_id)
 			 raction->sourceNumber());
       emit nextActionsChanged(raction->routerNumber(),
 			      d_next_action_ids.value(raction->routerNumber()));
+      d_logger->addRouteEvent(QHostAddress(),"Action Engine",
+			      raction->routerNumber(),
+			      raction->destinationNumber(),
+			      raction->sourceNumber());
       syslog(LOG_DEBUG,"route engine: ran action, id: %d",action_id);
     }
   }

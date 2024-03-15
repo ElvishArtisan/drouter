@@ -26,6 +26,7 @@
 
 #include <drouter/drsqlquery.h>
 
+#include "logger_front.h"
 #include "timeengine.h"
 
 class RouteAction
@@ -79,6 +80,7 @@ class RouteEngine : public QObject
   QMap<int,QList<int> > d_next_action_ids;
   QMap<int,RouteAction *> d_route_actions;
   TimeEngine *d_time_engine;
+  LoggerFront *d_logger;
 };
 
 
