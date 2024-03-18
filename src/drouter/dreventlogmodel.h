@@ -1,4 +1,4 @@
-// eventlogmodel.h
+// dreventlogmodel.h
 //
 // Data model for Drouter event log lines
 //
@@ -18,8 +18,8 @@
 //   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
 //
 
-#ifndef EVENTLOGMODEL_H
-#define EVENTLOGMODEL_H
+#ifndef DREVENTLOGMODEL_H
+#define DREVENTLOGMODEL_H
 
 #include <QAbstractTableModel>
 #include <QFont>
@@ -28,13 +28,13 @@
 
 #include <drouter/drsqlquery.h>
 
-class EventLogModel : public QAbstractTableModel
+class DREventLogModel : public QAbstractTableModel
 {
   Q_OBJECT
  public:
   enum EndpointAttributes {NumberAttribute=1,NameAttribute=2};
-  EventLogModel(QObject *parent=0);
-  ~EventLogModel();
+  DREventLogModel(QObject *parent=0);
+  ~DREventLogModel();
   QPalette palette();
   void setPalette(const QPalette &pal);
   void setFont(const QFont &font);
@@ -80,4 +80,4 @@ class EventLogModel : public QAbstractTableModel
 };
 
 
-#endif  // EVENTLOGMODEL_H
+#endif  // DREVENTLOGMODEL_H

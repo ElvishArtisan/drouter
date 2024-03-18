@@ -31,13 +31,11 @@ moc_%.cpp:	%.h
 
 bin_PROGRAMS = eventlogpanel
 
-dist_eventlogpanel_SOURCES = eventlogmodel.cpp eventlogmodel.h\
-                             eventlogpanel.cpp eventlogpanel.h\
+dist_eventlogpanel_SOURCES = eventlogpanel.cpp eventlogpanel.h\
                              instanceindicator.cpp instanceindicator.h\
                              richtextdelegate.cpp richtextdelegate.h
 
-nodist_eventlogpanel_SOURCES = moc_eventlogmodel.cpp\
-                               moc_eventlogpanel.cpp\
+nodist_eventlogpanel_SOURCES = moc_eventlogpanel.cpp\
                                moc_instanceindicator.cpp\
                                moc_richtextdelegate.cpp
 

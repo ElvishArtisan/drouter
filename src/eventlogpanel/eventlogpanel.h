@@ -29,7 +29,8 @@
 #include <QTimer>
 #include <QWidget>
 
-#include "eventlogmodel.h"
+#include <drouter/dreventlogmodel.h>
+
 #include "instanceindicator.h"
 
 #define EVENTLOGPANEL_USAGE "[options]\n"
@@ -56,7 +57,7 @@ class MainWidget : public QWidget
   QPushButton *d_scroll_button;
   InstanceIndicator *d_instance_indicator;
   QTableView *d_table_view;
-  EventLogModel *d_log_model;
+  DREventLogModel *d_log_model;
   bool d_scrolling;
   QTimer *d_refresh_timer;
 };

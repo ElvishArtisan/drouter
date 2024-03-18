@@ -114,12 +114,12 @@ MainWidget::MainWidget(QWidget *parent)
   connect(d_show_attributes_box,SIGNAL(activated(int)),
 	  this,SLOT(showAttributesData(int)));
   d_show_attributes_box->insertItem(0,tr("Show Names and Numbers"),
-				    EventLogModel::NumberAttribute|
-				    EventLogModel::NameAttribute);
+				    DREventLogModel::NumberAttribute|
+				    DREventLogModel::NameAttribute);
   d_show_attributes_box->insertItem(1,tr("Show Numbers"),
-				    EventLogModel::NumberAttribute);
+				    DREventLogModel::NumberAttribute);
   d_show_attributes_box->insertItem(1,tr("Show Names"),
-				    EventLogModel::NameAttribute);
+				    DREventLogModel::NameAttribute);
 
   //
   // Scroll Button
@@ -137,7 +137,7 @@ MainWidget::MainWidget(QWidget *parent)
   //
   d_table_view=new QTableView(this);
   d_table_view->setItemDelegate(new RichTextDelegate());
-  d_log_model=new EventLogModel(this);
+  d_log_model=new DREventLogModel(this);
   d_table_view->setModel(d_log_model);
   d_table_view->setSelectionBehavior(QAbstractItemView::SelectRows);
   d_table_view->setSelectionMode(QAbstractItemView::SingleSelection);

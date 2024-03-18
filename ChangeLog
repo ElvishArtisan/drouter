@@ -1141,3 +1141,5 @@
 	* Added event logging to the Action Engine.
 2024-03-18 Fred Gleason <fredg@paravelsystems.com>
 	* Implemented the 'EventStat' ProtocolJ command.
+2024-03-18 Fred Gleason <fredg@paravelsystems.com>
+	* Moved the 'EventLogModel' class to 'DREventLogModel'.

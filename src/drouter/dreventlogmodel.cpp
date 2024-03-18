@@ -1,4 +1,4 @@
-// eventlogmodel.cpp
+// dreventlogmodel.cpp
 //
 // Data model for Drouter event log lines
 //
@@ -21,7 +21,7 @@
 #include <QDateTime>
 #include <QPixmap>
 
-#include "eventlogmodel.h"
+#include "dreventlogmodel.h"
 
 //
 // Icons
@@ -31,11 +31,11 @@
 #include "../../icons/event-route-16x16.xpm"
 #include "../../icons/event-snapshot-16x16.xpm"
 
-EventLogModel::EventLogModel(QObject *parent)
+DREventLogModel::DREventLogModel(QObject *parent)
   : QAbstractTableModel(parent)
 {
   d_max_id=0;
-  d_show_attributes=EventLogModel::NumberAttribute|EventLogModel::NameAttribute;
+  d_show_attributes=DREventLogModel::NumberAttribute|DREventLogModel::NameAttribute;
 
   //
   // Load Icons
@@ -62,24 +62,24 @@ EventLogModel::EventLogModel(QObject *parent)
 }
 
 
-EventLogModel::~EventLogModel()
+DREventLogModel::~DREventLogModel()
 {
 }
 
 
-QPalette EventLogModel::palette()
+QPalette DREventLogModel::palette()
 {
   return d_palette;
 }
 
 
-void EventLogModel::setPalette(const QPalette &pal)
+void DREventLogModel::setPalette(const QPalette &pal)
 {
   d_palette=pal;
 }
 
 
-void EventLogModel::setFont(const QFont &font)
+void DREventLogModel::setFont(const QFont &font)
 {
   d_font=font;
   d_bold_font=font;
@@ -87,19 +87,19 @@ void EventLogModel::setFont(const QFont &font)
 }
 
 
-int EventLogModel::columnCount(const QModelIndex &parent) const
+int DREventLogModel::columnCount(const QModelIndex &parent) const
 {
   return d_headers.size();
 }
 
 
-int EventLogModel::rowCount(const QModelIndex &parent) const
+int DREventLogModel::rowCount(const QModelIndex &parent) const
 {
   return d_texts.size();
 }
 
 
-QVariant EventLogModel::headerData(int section,Qt::Orientation orient,
+QVariant DREventLogModel::headerData(int section,Qt::Orientation orient,
 				    int role) const
 {
   if((orient==Qt::Horizontal)&&(role==Qt::DisplayRole)) {
@@ -109,7 +109,7 @@ QVariant EventLogModel::headerData(int section,Qt::Orientation orient,
 }
 
 
-QVariant EventLogModel::data(const QModelIndex &index,int role) const
+QVariant DREventLogModel::data(const QModelIndex &index,int role) const
 {
   QString str;
   int col=index.column();
@@ -149,7 +149,7 @@ QVariant EventLogModel::data(const QModelIndex &index,int role) const
 }
 
 
-QModelIndex EventLogModel::refresh()
+QModelIndex DREventLogModel::refresh()
 {
   QModelIndex ret;
   QList<QVariant> texts; 
@@ -173,7 +173,7 @@ QModelIndex EventLogModel::refresh()
 }
 
 
-void EventLogModel::refresh(const QModelIndex &row)
+void DREventLogModel::refresh(const QModelIndex &row)
 {
   if(row.row()<d_texts.size()) {
     QString sql=sqlFields()+
@@ -190,7 +190,7 @@ void EventLogModel::refresh(const QModelIndex &row)
 }
 
 
-void EventLogModel::refresh(int line_id)
+void DREventLogModel::refresh(int line_id)
 {
   for(int i=0;i<d_texts.size();i++) {
     if(d_line_ids.at(i)==line_id) {
@@ -201,13 +201,13 @@ void EventLogModel::refresh(int line_id)
 }
 
 
-int EventLogModel::showAttributes() const
+int DREventLogModel::showAttributes() const
 {
   return d_show_attributes;
 }
 
 
-void EventLogModel::setShowAttributes(int attrs)
+void DREventLogModel::setShowAttributes(int attrs)
 {
   if(attrs!=d_show_attributes) {
     d_show_attributes=attrs;
@@ -217,7 +217,7 @@ void EventLogModel::setShowAttributes(int attrs)
 }
 
 
-void EventLogModel::updateModel()
+void DREventLogModel::updateModel()
 {
   QList<QVariant> texts; 
   DRSqlQuery *q=NULL;
@@ -241,7 +241,7 @@ void EventLogModel::updateModel()
 }
 
 
-void EventLogModel::updateRowLine(int line)
+void DREventLogModel::updateRowLine(int line)
 {
   if(line<d_texts.size()) {
     QString sql=sqlFields()+
@@ -256,7 +256,7 @@ void EventLogModel::updateRowLine(int line)
 }
 
 
-void EventLogModel::updateRow(int row,DRSqlQuery *q)
+void DREventLogModel::updateRow(int row,DRSqlQuery *q)
 {
   QString str;
   QList<QVariant> texts;
@@ -331,7 +331,7 @@ void EventLogModel::updateRow(int row,DRSqlQuery *q)
 }
 
 
-QString EventLogModel::sqlFields() const
+QString DREventLogModel::sqlFields() const
 {
   QString sql=QString("select ")+
     "`ID`,"+                   // 00
@@ -354,7 +354,7 @@ QString EventLogModel::sqlFields() const
 }
 
 
-QString EventLogModel::RouteString(DRSqlQuery *q) const
+QString DREventLogModel::RouteString(DRSqlQuery *q) const
 {
   QString ret;
   QColor router_color;
@@ -370,19 +370,19 @@ QString EventLogModel::RouteString(DRSqlQuery *q) const
   // Route attributes
   //
   switch(d_show_attributes) {
-  case EventLogModel::NumberAttribute:
+  case DREventLogModel::NumberAttribute:
     ret=tr("Router")+": "+Fmt(1+q->value(8).toInt(),router_color,true)+" "+
       tr("Dest")+": "+Fmt(1+q->value(12).toInt(),output_color,true)+" "+
       tr("Source")+": "+Fmt(1+q->value(10).toInt(),input_color,true);
     break;
 
-  case EventLogModel::NameAttribute:
+  case DREventLogModel::NameAttribute:
     ret=tr("Router")+": "+Fmt(router_name,router_color,true)+" "+
       tr("Dest")+": "+Fmt(output_name,output_color,true)+" "+
       tr("Source")+": "+Fmt(input_name,input_color,true);
     break;
 
-    case EventLogModel::NumberAttribute|EventLogModel::NameAttribute:
+    case DREventLogModel::NumberAttribute|DREventLogModel::NameAttribute:
       ret=tr("Router")+": "+Fmt(router_name,router_color,true)+"["+Fmt(1+q->value(8).toInt(),router_color,true)+"] "+
 	tr("Dest")+": "+Fmt(output_name,output_color,true)+"["+Fmt(1+q->value(12).toInt(),output_color,true)+"] "+
 	tr("Source")+": "+Fmt(input_name,input_color,true)+"["+Fmt(1+q->value(10).toInt(),input_color,true)+"]";
@@ -405,7 +405,7 @@ QString EventLogModel::RouteString(DRSqlQuery *q) const
 }
 
 
-QString EventLogModel::RouteParameter(const QVariant &name,QColor *color) const
+QString DREventLogModel::RouteParameter(const QVariant &name,QColor *color) const
 {
   QString ret=tr("NOT FOUND");
   *color=Qt::red;
@@ -419,7 +419,7 @@ QString EventLogModel::RouteParameter(const QVariant &name,QColor *color) const
 }
 
 
-QString EventLogModel::Fmt(const QString &str,const QColor &col,bool bold) const
+QString DREventLogModel::Fmt(const QString &str,const QColor &col,bool bold) const
 {
   QString ret=str;
 
@@ -436,7 +436,7 @@ QString EventLogModel::Fmt(const QString &str,const QColor &col,bool bold) const
 }
 
 
-QString EventLogModel::Fmt(int num,const QColor &col,bool bold) const
+QString DREventLogModel::Fmt(int num,const QColor &col,bool bold) const
 {
   return Fmt(QString::asprintf("%d",num),col,bold);
 }

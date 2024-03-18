@@ -32,6 +32,7 @@ dist_libdrouter_la_SOURCES = dractionlistmodel.cpp dractionlistmodel.h\
                              drdparser.cpp drdparser.h\
                              drendpointmap.cpp drendpointmap.h\
                              drendpointlistmodel.cpp drendpointlistmodel.h\
+                             dreventlogmodel.cpp dreventlogmodel.h\
                              drjparser.cpp drjparser.h\
                              drlogindialog.cpp drlogindialog.h\
                              drmultistatewidget.cpp drmultistatewidget.h\
@@ -42,6 +43,7 @@ dist_libdrouter_la_SOURCES = dractionlistmodel.cpp dractionlistmodel.h\
 nodist_libdrouter_la_SOURCES = moc_dractionlistmodel.cpp\
                                moc_drdparser.cpp\
                                moc_drendpointlistmodel.cpp\
+                               moc_dreventlogmodel.cpp\
                                moc_drjparser.cpp\
                                moc_drlogindialog.cpp\
                                moc_drmultistatewidget.cpp\
@@ -54,6 +56,7 @@ include_HEADERS = dractionlistmodel.h\
                   drdparser.h\
                   drendpointlistmodel.h\
                   drendpointmap.h\
+                  dreventlogmodel.h\
                   drjparser.h\
                   drlogindialog.h\
                   drmultistatewidget.h\
