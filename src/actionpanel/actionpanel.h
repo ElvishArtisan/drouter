@@ -32,6 +32,7 @@
 #include <drouter/drjparser.h>
 
 #include "editactiondialog.h"
+#include "wallclock.h"
 
 #define ACTIONPANEL_USAGE "[options]\n"
 
@@ -67,6 +68,7 @@ class MainWidget : public QWidget
   QPushButton *d_edit_button;
   QPushButton *d_delete_button;
   QPushButton *d_close_button;
+  WallClock *d_wall_clock;
   EditActionDialog *d_edit_dialog;
   DRJParser *d_parser;
   QTableView *d_action_view;

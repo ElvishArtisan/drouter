@@ -1148,3 +1148,5 @@
 2024-03-18 Fred Gleason <fredg@paravelsystems.com>
 	* Removed code from drouterd(8) to force internal timekeeping in UTC
 	for Actions.
+2024-03-18 Fred Gleason <fredg@paravelsystems.com>
+	* Added a walltime clock readout to the main window of actionpanel(1).

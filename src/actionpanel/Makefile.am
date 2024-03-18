@@ -33,11 +33,13 @@ bin_PROGRAMS = actionpanel
 
 dist_actionpanel_SOURCES = actionpanel.cpp actionpanel.h\
                            dowselector.cpp dowselector.h\
-                           editactiondialog.cpp editactiondialog.h
+                           editactiondialog.cpp editactiondialog.h\
+                           wallclock.cpp wallclock.h
 
 nodist_actionpanel_SOURCES = moc_actionpanel.cpp\
                              moc_dowselector.cpp\
-                             moc_editactiondialog.cpp
+                             moc_editactiondialog.cpp\
+                             moc_wallclock.cpp
 
 actionpanel_LDADD = -ldrouter @QT5GUI_LIBS@ @SWITCHYARD5_LIBS@
 actionpanel_LDFLAGS = -rdynamic

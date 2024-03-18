@@ -45,7 +45,21 @@
 
   <refsect1 id='options'><title>Options</title>
   <variablelist remap='TP'>
-  <variablelist remap='TP'>
+    <varlistentry>
+      <term>
+	<option>--date-format=<replaceable>date-fmt</replaceable></option>
+      </term>
+      <listitem>
+	<para>
+	  Specify the format in which to display the current date. See
+	  <xref linkend="specifying_date_and_time_formats"/> for details.
+	</para>
+	<para>
+	  The default format is <userinput>dddd, MMMM dd yyyy</userinput>.
+	</para>
+      </listitem>
+    </varlistentry>
+
     <varlistentry>
       <term>
 	<option>--help</option>
@@ -56,9 +70,7 @@
 	</para>
       </listitem>
     </varlistentry>
-  </variablelist>
 
-  <variablelist remap='TP'>
     <varlistentry>
       <term>
 	<option>--hostname=<replaceable>host-name</replaceable></option>
@@ -71,7 +83,6 @@
 	</para>
       </listitem>
     </varlistentry>
-  </variablelist>
 
     <varlistentry>
       <term>
@@ -106,6 +117,21 @@
     </varlistentry>
   </variablelist>
 
+    <varlistentry>
+      <term>
+	<option>--time-format=<replaceable>time-fmt</replaceable></option>
+      </term>
+      <listitem>
+	<para>
+	  Specify the format in which to display times. See
+	  <xref linkend="specifying_date_and_time_formats"/> for details.
+	</para>
+	<para>
+	  The default format is <userinput>hh:mm:ss</userinput>.
+	</para>
+      </listitem>
+    </varlistentry>
+
   <variablelist remap='TP'>
     <varlistentry>
       <term>
@@ -118,6 +144,110 @@
       </listitem>
     </varlistentry>
   </variablelist>
+
+  </refsect1>
+
+  <refsect1 id="specifying_date_and_time_formats">
+    <title>Specifying Date and Time Formats</title>
+    <para>
+      The formats of the date and time elements of the wall clock display
+      can be customized by means of the <option>--date-format</option> and
+      <option>--time-format</option> switches.
+    </para>
+    <para>
+      Some commonly used format strings are listed below.
+    </para>
+    <table xml:id="specifying_date_and_time_formats.date_examples" frame="all" pgwide="0">
+      <title>Date Examples</title>
+      <tgroup cols="2" align="left" colsep="1" rowsep="1">
+	<colspec colname="String" colwidth="2.0*"/>
+	<colspec colname="Sample Output" colwidth="20.0*"/>
+	<tbody>
+	  <row><entry>String</entry><entry>Sample Output</entry></row>
+	  <row>
+	    <entry><userinput>dddd, MMMM d yyyy</userinput></entry>
+	    <entry>Monday, March 18 2024</entry>
+	  </row>
+	  <row>
+	    <entry><userinput>d MMM yyyy</userinput></entry>
+	    <entry>18 Mar 2024</entry>
+	  </row>
+	  <row>
+	    <entry><userinput>MM/dd/yy</userinput></entry>
+	    <entry>03/18/24</entry>
+	  </row>
+	  <row>
+	    <entry><userinput>dd/MM/yy</userinput></entry>
+	    <entry>18/03/24</entry>
+	  </row>
+	</tbody>
+      </tgroup>
+    </table>
+    <table xml:id="specifying_date_and_time_formats.time_examples" frame="all" pgwide="0">
+      <title>Time Examples</title>
+      <tgroup cols="2" align="left" colsep="1" rowsep="1">
+	<colspec colname="String" colwidth="2.0*"/>
+	<colspec colname="Sample Output" colwidth="20.0*"/>
+	<tbody>
+	  <row><entry>String</entry><entry>Sample Output</entry></row>
+	  <row>
+	    <entry><userinput>hh:mm:ss</userinput></entry>
+	    <entry>18:34:40</entry>
+	  </row>
+	  <row>
+	    <entry><userinput>h:mm:ss AP</userinput></entry>
+	    <entry>6:34:40 PM</entry>
+	  </row>
+	</tbody>
+      </tgroup>
+    </table>
+    <para>
+      The full set of supported wildcards are given below.
+    </para>
+    <table xml:id="specifying_date_and_time_formats.formatting_wildcards" frame="all" pgwide="0">
+      <title>DateTime Formatting Wildcards</title>
+      <tgroup cols="2" align="left" colsep="1" rowsep="1">
+	<colspec colname="Wildcard" colwidth="2.0*"/>
+	<colspec colname="Meaning" colwidth="20.0*"/>
+	<tbody>
+	  <row><entry>Wildcard</entry><entry>Meaning</entry></row>
+	  <row><entry><userinput>d</userinput></entry><entry>The day as a number without a leading zero (1 to 31)</entry></row>
+	  <row><entry><userinput>dd</userinput></entry><entry>The day as a number with a leading zero (01 to 31)</entry></row>
+	  <row><entry><userinput>ddd</userinput></entry><entry>The abbreviated localized day name ('Mon' or 'Sun')</entry></row>
+	  <row><entry><userinput>dddd</userinput></entry><entry>The long localized day name ('Monday' or 'Sunday')</entry></row>
+	  <row><entry><userinput>M</userinput></entry><entry>The month as a number without a leading zero (1 to 12)</entry></row>
+	  <row><entry><userinput>MM</userinput></entry><entry>The month as a number with a leading zero (01 to 12)</entry></row>
+	  <row><entry><userinput>MMM</userinput></entry><entry>The abbreviated localized month name ('Jan' or 'Dec')</entry></row>
+	  <row><entry><userinput>MMMM</userinput></entry><entry> The long localized month name ('January' or 'December')</entry></row>
+	  <row><entry><userinput>yy</userinput></entry><entry>The last two digits of the year</entry></row>
+	  <row><entry><userinput>yyyy</userinput></entry><entry>The full four digits of the year</entry></row>
+	  <row><entry><userinput>h</userinput></entry><entry>The hour without a leading zero (0 - 23, or 1 - 12 if using AM/PM display)</entry></row>
+	  <row><entry><userinput>hh</userinput></entry><entry>The hour with a leading zero (00 - 23, or 01 -12 if using AM/PM display)</entry></row>
+	  <row><entry><userinput>m</userinput></entry><entry>The minute without a leading zero (0 - 59)</entry></row>
+	  <row><entry><userinput>mm</userinput></entry><entry>The minute with a leading zero (00 - 59)</entry></row>
+	  <row><entry><userinput>s</userinput></entry><entry>The second without a leading zero (00 - 60)</entry></row>
+	  <row><entry><userinput>ss</userinput></entry><entry>The second with a leading zero (00 - 60)</entry></row>
+	  <row><entry><userinput>z</userinput></entry><entry>The milliseconds without a leading zero (0 - 999)</entry></row>
+	  <row><entry><userinput>zzz</userinput></entry><entry>The milliseconds with leading zeros (000 - 999)</entry></row>
+	  <row><entry><userinput>AP</userinput></entry><entry>Use AM/PM display.  The 'AP' will be replaced by 'AM' or 'PM' as appropriate</entry></row>
+	  <row><entry><userinput>ap</userinput></entry><entry>Use AM/PM display.  The 'ap' will be replaced by 'am' or 'pm' as appropriate</entry></row>
+	</tbody>
+      </tgroup>
+    </table>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
   </refsect1>
 

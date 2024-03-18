@@ -45,6 +45,8 @@ MainWidget::MainWidget(QWidget *parent)
 {
   bool ok=false;
   QList<int> router_filter;
+  QString time_format="hh:mm:ss";
+  QString date_format="dddd, MMMM dd yyyy";
 
   //
   // Initialize Variables
@@ -58,6 +60,10 @@ MainWidget::MainWidget(QWidget *parent)
   //
   SyCmdSwitch *cmd=new SyCmdSwitch("actionpanel",VERSION,ACTIONPANEL_USAGE);
   for(int i=0;i<cmd->keys();i++) {
+    if(cmd->key(i)=="--date-format") {
+      date_format=cmd->value(i);
+      cmd->setProcessed(i,true);
+    }
     if(cmd->key(i)=="--hostname") {
       d_hostname=cmd->value(i);
       cmd->setProcessed(i,true);
@@ -81,6 +87,10 @@ MainWidget::MainWidget(QWidget *parent)
 	exit(1);
       }
       router_filter.push_back(router);
+      cmd->setProcessed(i,true);
+    }
+    if(cmd->key(i)=="--time-format") {
+      time_format=cmd->value(i);
       cmd->setProcessed(i,true);
     }
     if(!cmd->processed(i)) {
@@ -159,6 +169,13 @@ MainWidget::MainWidget(QWidget *parent)
   d_delete_button=new QPushButton(tr("Delete"),this);
   d_delete_button->setFont(button_font);
   connect(d_delete_button,SIGNAL(clicked()),this,SLOT(deleteData()));
+
+  //
+  // Wall Clock
+  //
+  d_wall_clock=new WallClock(this);
+  d_wall_clock->setTimeFormat(time_format);
+  d_wall_clock->setDateFormat(date_format);
 
   //
   // Close Button
@@ -369,6 +386,8 @@ void MainWidget::resizeEvent(QResizeEvent *e)
   d_add_button->setGeometry(10,h-60,80,50);
   d_edit_button->setGeometry(100,h-60,80,50);
   d_delete_button->setGeometry(190,h-60,80,50);
+
+  d_wall_clock->setGeometry((w-360)/2,h-70,360,70);
 
   d_close_button->setGeometry(w-90,h-60,80,50);
 }
