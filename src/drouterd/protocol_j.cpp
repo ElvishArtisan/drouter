@@ -1156,7 +1156,7 @@ QJsonObject ProtocolJ::ActionListMessage(DRSqlQuery *q)
   QJsonObject jo0;
   jo0.insert("id",q->value(0).toInt());
   jo0.insert("isActive",q->value(1).toString()=="Y");
-  jo0.insert("time",q->value(2).toTime().toString("hh:mm:ss")+"Z");
+  jo0.insert("time",q->value(2).toTime().toString("hh:mm:ss"));
   jo0.insert("sunday",q->value(3).toString()=="Y");
   jo0.insert("monday",q->value(4).toString()=="Y");
   jo0.insert("tuesday",q->value(5).toString()=="Y");
@@ -1283,7 +1283,7 @@ void ProtocolJ::SendEventStat(DRSqlQuery *q)
   jo0.insert("sendUpdates",proto_eventstat_subscribeds);
   jo0.insert("id",q->value(0).toInt());
   jo0.insert("datetime",
-	     q->value(3).toDateTime().toString("yyyy-MM-ddThh:mm:ssZ"));
+	     q->value(3).toDateTime().toString("yyyy-MM-ddThh:mm:ss"));
   jo0.insert("type",DRJParser::eventTypeString(type));
   jo0.insert("status",q->value(1).toString()=="Y");
   jo0.insert("comment",q->value(7).toString());
@@ -1616,8 +1616,8 @@ void ProtocolJ::MaskStat(bool state)
 void ProtocolJ::SendPingResponse()
 {
   QJsonObject jo0;
-  jo0.insert("datetime",QJsonValue(QDateTime::currentDateTimeUtc().
-				   toString("yyyy-MM-ddThh:mm:ssZ")));
+  jo0.insert("datetime",QJsonValue(QDateTime::currentDateTime().
+				   toString("yyyy-MM-ddThh:mm:ss")));
 
   QJsonObject jo1;
   jo1.insert("pong",jo0);
@@ -1666,12 +1666,6 @@ void ProtocolJ::SendError(DRJParser::ErrorType etype,const QString &remarks)
 
 QTime ProtocolJ::FromJsonString(const QString &str) const
 {
-  //
-  // Ensure that a time value is in proper 'zulu time' format (HH:MM:SSZ).
-  //
-  if((str.length()!=9)||(str.right(1).toUpper()!="Z")) {
-    return QTime();
-  }
   return QTime::fromString(str.left(8),"hh:mm:ss");
 }
 

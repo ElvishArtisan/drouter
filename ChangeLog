@@ -1145,3 +1145,6 @@
 	* Moved the 'EventLogModel' class to 'DREventLogModel'.
 2024-03-18 Fred Gleason <fredg@paravelsystems.com>
 	* Removed dead code from the 'ProtocolJ' class.
+2024-03-18 Fred Gleason <fredg@paravelsystems.com>
+	* Removed code from drouterd(8) to force internal timekeeping in UTC
+	for Actions.

@@ -236,7 +236,7 @@ void RouteEngine::refresh(int action_id)
 
 void RouteEngine::actionData(int action_id)
 {
-  QDateTime now=QDateTime::currentDateTimeUtc();
+  QDateTime now=QDateTime::currentDateTime();
   RouteAction *raction=d_route_actions.value(action_id);
 
   if(raction!=NULL) {
@@ -260,7 +260,7 @@ void RouteEngine::actionData(int action_id)
 QList<int> RouteEngine::GetNextActionIds(int router) const
 {
   int64_t interval=0x0FFFFFFFFFFFFFFF;
-  QDateTime now=QDateTime::currentDateTimeUtc();
+  QDateTime now=QDateTime::currentDateTime();
   QList<int> ids;
 
   for(QMap<int,RouteAction *>::const_iterator it=d_route_actions.begin();

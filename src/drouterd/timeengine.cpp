@@ -85,7 +85,7 @@ void TimeEngine::timerData(int id)
 void TimeEngine::StartEvent(int id)
 {
   QTime start_time=d_times.value(id);
-  QTime now=QDateTime::currentDateTimeUtc().time();
+  QTime now=QDateTime::currentDateTime().time();
   int interval=0;
 
   if(start_time<now) {
