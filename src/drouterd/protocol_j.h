@@ -104,12 +104,8 @@ class ProtocolJ : public Protocol
   void MaskGpoStat(bool state);
   void MaskRouteStat(bool state);
   void MaskStat(bool state);
-
-
-  //  void HelpMessage(const QString &keyword);
   void SendPingResponse();
   void LoadMaps();
-  void LoadHelp();
   //  void AddRouteEvent(int router,int output,int input);
   //  void AddSnapEvent(int router,const QString &name);
   void SendError(DRJParser::ErrorType etype,const QString &remarks=QString());

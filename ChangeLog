@@ -1143,3 +1143,5 @@
 	* Implemented the 'EventStat' ProtocolJ command.
 2024-03-18 Fred Gleason <fredg@paravelsystems.com>
 	* Moved the 'EventLogModel' class to 'DREventLogModel'.
+2024-03-18 Fred Gleason <fredg@paravelsystems.com>
+	* Removed dead code from the 'ProtocolJ' class.

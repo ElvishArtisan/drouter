@@ -83,7 +83,6 @@ ProtocolJ::ProtocolJ(int sock,QObject *parent)
   }
 
   LoadMaps();
-  LoadHelp();
 }
 
 
@@ -1613,41 +1612,6 @@ void ProtocolJ::MaskStat(bool state)
   MaskRouteStat(state);
 }
 
-/*
-void ProtocolJ::HelpMessage(const QString &keyword)
-{
-  if((!keyword.isEmpty())&&(!proto_help_comments.contains(keyword))) {
-    SendError(DRJParser::NoCommandError,proto_help_patterns.value(""));
-  }
-  else {
-    QString json="{\r\n";
-    json+="    \"help\": {\r\n";
-    if(keyword.isEmpty()) {
-      json+=DRJsonNullField("keyword",8);
-      json+=DRJsonField("pattern",proto_help_patterns.value(""),8,true);
-      json+=DRJsonField("comment",proto_help_comments.value(""),8,true);
-    }
-    else {
-      if(proto_help_patterns.value(keyword).isEmpty()) {
-	json+=DRJsonNullField("pattern",8);
-      }
-      else {
-	json+=DRJsonField("pattern",proto_help_patterns.value(keyword),8);
-      }
-      if(proto_help_comments.value(keyword).isEmpty()) {
-	json+=DRJsonNullField("comment",8);
-      }
-      else {
-	json+=DRJsonField("comment",proto_help_comments.value(keyword),8,true);
-      }
-    }
-    json+="    }\r\n";
-    json+="}\r\n";
-
-    proto_socket->write(json.toUtf8());
-  }
-}
-*/
 
 void ProtocolJ::SendPingResponse()
 {
@@ -1662,16 +1626,6 @@ void ProtocolJ::SendPingResponse()
   jdoc.setObject(jo1);
 
   proto_socket->write(jdoc.toJson());
-
-	     /*
-  QString json="{\r\n";
-  json+="    \"pong\": {\r\n";
-  json+=DRJsonField("datetime",QDateTime::currentDateTime(),8,true);
-  json+="    }\r\n";
-  json+="}\r\n";
-
-  proto_socket->write(json.toUtf8());
-	     */
 }
 
 
@@ -1686,107 +1640,6 @@ void ProtocolJ::LoadMaps()
 	   msgs.join("\n").toUtf8().constData());
     exit(1);
   }
-}
-
-
-void ProtocolJ::LoadHelp()
-{
-  proto_help_patterns[""]=QString("ActionList")+
-    ", ActivateRoute"+
-    ", ActivateSnap"+
-    ", DestNames"+
-    ", MaskGPIStat"+
-    ", MaskGPOStat"+
-    ", MaskRouteStat"+
-    ", MaskStat"+
-    ", Exit"+
-    ", GPIStat"+
-    ", GPOStat"+
-    ", RouteStat"+
-    ", RouterNames"+
-    ", RouteStat"+
-    ", SnapShots"+
-    ", SnapShotRoutes"+
-    ", SourceNames"+
-    ", TriggerGPI"+
-    ", TriggerGPO";
-  proto_help_comments[""]=
-    "Enter 'help' or '?' followed by the name of the command. Command keywords are case insensitive.";
-
-  proto_help_patterns["actionlist"]="ActionList <router>";
-  proto_help_comments["actionlist"]=
-    "Return a list of scheduled crosspoint changes for the specified router.";
-
-  proto_help_patterns["activateroute"]=
-    "ActivateRoute <router> <output> <input>";
-  proto_help_comments["activateroute"]="Route <input> to <output> on <router>.";
-
-  proto_help_patterns["activatesnap"]="ActivateSnap <router> <snapshot>";
-  proto_help_comments["activatesnap"]="Activate the specified snapshot.";
-
-  proto_help_patterns["destnames"]="DestNames <router>";
-  proto_help_comments["destnames"]=
-    "Return names of all outputs on the specified router.";
-
-  proto_help_patterns["maskgpistat"]="MaskGPIStat True | False";
-  proto_help_comments["maskgpistat"]=
-    "Suppress generation of GPIStat update messages on this connection.";
-
-  proto_help_patterns["maskgpostat"]="MaskGPOStat True | False";
-  proto_help_comments["maskgpostat"]=
-    "Suppress generation of GPOStat update messages on this connection.";
-
-  proto_help_patterns["maskroutestat"]="MaskRouteStat True | False";
-  proto_help_comments["maskroutestat"]=
-    "Suppress generation of RouteStat update messages on this connection.";
-
-  proto_help_patterns["maskstat"]="MaskStat True | False";
-  proto_help_comments["maskstat"]=
-    "Suppress generation of all state update messages on this connection.";
-
-  proto_help_patterns["maskroutestat"]="MaskRouteStat True | False";
-  proto_help_comments["maskroutestat"]=
-    "Suppress generation of RouteStat update messages on this connection.";
-
-  proto_help_patterns["exit"]="Exit";
-  proto_help_comments["exit"]="Close TCP/IP connection.";
-
-  proto_help_patterns["gpistat"]="GPIStat <router> [<gpi-num>]";
-  proto_help_comments["gpistat"]=
-    "Query the state of one or more GPIs. If <gpi-num> is not given, the entire set of GPIs for the specified <router> will be returned.";
-
-  proto_help_patterns["gpostat"]="GPOStat <router> [<gpo-num>]";
-  proto_help_comments["gpostat"]=
-    "Query the state of one or more GPOs. If <gpo-num> is not given, the entire set of GPOs for the specified <router> will be returned.";
-
-  proto_help_patterns["routernames"]="RouterNames";
-  proto_help_comments["routernames"]="Return a list of configured routers.";
-
-  proto_help_patterns["routestat"]="RouteStat <router> [<output>]";
-  proto_help_comments["routestat"]=
-    "Return the <output> crosspoint's input assignment. If no <output> is given, the crosspoint states for all outputs on <router> will be returned.";
-
-  proto_help_patterns["sourcenames"]="SourceNames <router>";
-  proto_help_comments["sourcenames"]=
-    "Return names of all inputs on the specified router.";
-
-  proto_help_patterns["triggergpi"]=
-    "TriggerGPI <router> <gpi-num> <state> [<duration>]";
-  proto_help_comments["triggergpi"]=
-    "Set the specified GPI to <state> for <duration> milliseconds. (Supported only by virtual GPI devices.)";
-
-  proto_help_patterns["triggergpo"]=
-    "TriggerGPO <router> <gpo-num> <state> [<duration>]";
-  proto_help_comments["triggergpo"]=
-    "Set the specified GPO to <state> for <duration> milliseconds.";
-
-  proto_help_patterns["snapshots"]="SnapShots <router>";
-  proto_help_comments["snapshots"]=
-    "Return list of available snapshots on the specified router.";
-
-  proto_help_patterns["snapshotroutes"]="SnapShotRoutes <router> <snap-name>";
-  proto_help_comments["snapshotroutes"]=
-    "Return list of routes on the specified snapshot.";
 }
 
 
