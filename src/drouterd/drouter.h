@@ -34,6 +34,7 @@
 
 #include "config.h"
 #include "gpioflasher.h"
+#include "logger_front.h"
 #include "logger_back.h"
 #include "matrix.h"
 
@@ -84,6 +85,7 @@ class DRouter : public QObject
   void newIpcConnectionData(int listen_sock);
   void ipcReadyReadData(int sock);
   void purgeEventsData();
+  void eventAddedData(int evt_id);
 
  private:
   void NotifyProtocols(const QString &type,const QString &id,
@@ -111,6 +113,7 @@ class DRouter : public QObject
   bool drouter_writeable;
   GpioFlasher *drouter_flasher;
   QTimer *drouter_purge_events_timer;
+  LoggerFront *drouter_logger_front;
   LoggerBack *drouter_logger_back;
   Config *drouter_config;
 };

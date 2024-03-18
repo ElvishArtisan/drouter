@@ -47,6 +47,7 @@ class Protocol : public QObject
   void setGpoState(const QHostAddress &gpo_node_addr,int gpo_slotnum,
 		   const QString &code,int duration);
   void refreshAction(int action_id);
+  void addEvent(int evt_id);
 
  private slots:
   void ipcReadyReadData();
@@ -74,6 +75,7 @@ class Protocol : public QObject
 			      const QString &tbl_name,int chan);
   virtual void actionChanged(int id);
   virtual void nextActionsChanged(int router,const QList<int> &action_ids);
+  virtual void eventAdded(int evt_id);
   Config *config();
   void logIpc(const QString &msg);
   virtual void quitting();

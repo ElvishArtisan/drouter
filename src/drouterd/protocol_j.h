@@ -47,6 +47,7 @@ class ProtocolJ : public Protocol
  private slots:
   void newConnectionData();
   void readyReadData();
+  void eventAddedData(int evt_id);
   void disconnectedData();
 
  protected:
@@ -56,6 +57,7 @@ class ProtocolJ : public Protocol
   void gpoCrosspointChanged(const QHostAddress &host_addr,int slotnum);
   void actionChanged(int id);
   void nextActionsChanged(int router,const QList<int> &action_ids);
+  void eventAdded(int evt_id);
   void quitting();
 
  private:
@@ -82,6 +84,11 @@ class ProtocolJ : public Protocol
   void SendActionStatInfo(int router);
   QString ActionStatSqlFields() const;
   void SendActionStat(int router,const QList<int> &action_ids);
+
+  void SendEventStatInfo();
+  QString EventStatSqlFields() const;
+  void SendEventStat(DRSqlQuery *q);
+
   void DeleteAction(int id);
   void SendGpiInfo(unsigned router,int input);
   QString GPIStatSqlFields() const;
@@ -127,6 +134,7 @@ class ProtocolJ : public Protocol
   bool proto_clips_subscribed;
   bool proto_silences_subscribed;
   QMap<int,bool> proto_actionstat_subscribeds;
+  bool proto_eventstat_subscribeds;
   bool proto_gpistat_masked;
   bool proto_gpostat_masked;
   bool proto_routestat_masked;

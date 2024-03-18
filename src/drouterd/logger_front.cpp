@@ -52,7 +52,7 @@ void LoggerFront::addRouteEvent(const QHostAddress &addr,
   }
   d_event_lookups
     [QHostInfo::lookupHost(addr.toString(),
-     this,SLOT(hostLookupFinishedData(const QHostInfo &)))]=
+     this,SLOT(routeHostLookupFinishedData(const QHostInfo &)))]=
     DRSqlQuery::run(sql).toInt();
 }
 
@@ -78,7 +78,7 @@ void LoggerFront::addSnapEvent(const QHostAddress &addr,
   }
   d_event_lookups
     [QHostInfo::lookupHost(addr.toString(),
-     this,SLOT(hostLookupFinishedData(const QHostInfo &)))]=
+     this,SLOT(snapHostLookupFinishedData(const QHostInfo &)))]=
     DRSqlQuery::run(sql).toInt();
 }
 
@@ -92,15 +92,27 @@ void LoggerFront::writeCommentEvent(const QString &str)
     "`DATETIME`=now(),"+
     "`STATUS`='Y',"+
     "`COMMENT`='"+DRSqlQuery::escape(str)+"'";
-  DRSqlQuery::apply(sql);
+  int evt_id=DRSqlQuery::run(sql).toInt();
+  emit eventAdded(evt_id);
 }
 
 
-void LoggerFront::hostLookupFinishedData(const QHostInfo &info)
+void LoggerFront::routeHostLookupFinishedData(const QHostInfo &info)
 {
   QString sql=QString("update `PERM_SA_EVENTS` set ")+
     "`HOSTNAME`='"+DRSqlQuery::escape(info.hostName())+"' where "+
     QString::asprintf("`ID`=%d",d_event_lookups.value(info.lookupId()));
   DRSqlQuery::apply(sql);
+  d_event_lookups.remove(info.lookupId());
+}
+
+
+void LoggerFront::snapHostLookupFinishedData(const QHostInfo &info)
+{
+  QString sql=QString("update `PERM_SA_EVENTS` set ")+
+    "`HOSTNAME`='"+DRSqlQuery::escape(info.hostName())+"' where "+
+    QString::asprintf("`ID`=%d",d_event_lookups.value(info.lookupId()));
+  DRSqlQuery::apply(sql);
+  emit eventAdded(info.lookupId());
   d_event_lookups.remove(info.lookupId());
 }

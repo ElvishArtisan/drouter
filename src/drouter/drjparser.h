@@ -47,6 +47,8 @@ class DRJParser : public QObject
 {
  Q_OBJECT
  public:
+ enum EventType {CommentEvent='C',RouteEvent='R',SnapshotEvent='S',
+		 UnknownEvent='X'};
   enum ConnectionState {Ok=0,InvalidLogin=1,WatchdogActive=2};
   enum ErrorType {OkError=0,JsonError=1,ParameterError=2,NoRouterError=3,
 		  NoSnapshotError=4,NoSourceError=5,NoDestinationError=6,
@@ -83,6 +85,8 @@ class DRJParser : public QObject
 		     const QString &username,const QString &passwd);
   static QString connectionStateString(ConnectionState cstate);
   static QString errorString(ErrorType err);
+  static QString eventTypeString(EventType type);
+  static EventType typeFromString(const QString &str);
 
  signals:
   void connected(bool state,DRJParser::ConnectionState code);

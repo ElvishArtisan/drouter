@@ -35,10 +35,14 @@ class LoggerFront : public QObject
 		     int router,int output,int input);
   void addSnapEvent(const QHostAddress &addr,const QString &username,
 		    int router,const QString &name);
-  static void writeCommentEvent(const QString &str);
+  void writeCommentEvent(const QString &str);
+
+ signals:
+  void eventAdded(int evt_id);
 
  private slots:
-  void hostLookupFinishedData(const QHostInfo &info);
+  void routeHostLookupFinishedData(const QHostInfo &info);
+  void snapHostLookupFinishedData(const QHostInfo &info);
 
  private:
   QMap <int,int> d_event_lookups;

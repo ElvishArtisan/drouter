@@ -175,7 +175,7 @@ void LoggerBack::FinalizeSAGpioRoute(int event_id,int router,int output,
 }
 
 
-void LoggerBack::FinalizeSARouteEvent(int event_id,bool status) const
+void LoggerBack::FinalizeSARouteEvent(int event_id,bool status)
 {
   QString comment="";
   QString sql;
@@ -222,4 +222,5 @@ void LoggerBack::FinalizeSARouteEvent(int event_id,bool status) const
       QString::asprintf("where `ID`=%d",event_id);
   }
   DRSqlQuery::apply(sql);
+  emit eventAdded(event_id);
 }

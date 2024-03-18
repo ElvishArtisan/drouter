@@ -1385,6 +1385,318 @@
   <!-- **** END OF DestNames COMMAND **** -->
   <!-- ********************************** -->
 
+
+
+
+
+  <!-- *********************************** -->
+  <!-- *** START OF EventStat COMMAND *** -->
+  <!-- *********************************** -->
+  <sect2 xml:id="sect.commands.eventstat">
+    <title>EventStat</title>
+    <para>
+      Return the list of logged system events.
+    </para>
+    <sect3 xml:id="sect.commands.eventstat.send_syntax">
+      <title>Send Syntax</title>
+      <literallayout class="monospaced">
+{
+    "eventstat": {
+        "sendUpdates": <replaceable>update</replaceable>
+    }
+}
+      </literallayout>
+      <para>
+	Where:
+      </para>
+      <table xml:id="table.commands.eventstat.send.parameters" frame="all" pgwide="0">
+	<title>Send Parameters</title>
+	<tgroup cols="3" align="left" colstep="1" rowstep="1">
+	  <colspec colname="Parameter" colwidth="1.5*"/>
+	  <colspec colname="Value" colwidth="5.0*"/>
+	  <colspec colname="Type" colwidth="1.5*"/>
+	  <thead>
+	    <row>
+	      <entry>
+		Parameter
+	      </entry>
+	      <entry>
+		Meaning
+	      </entry>
+	      <entry>
+		JSON Value
+	      </entry>
+	    </row>
+	  </thead>
+	  <tbody>
+	    <row>
+	      <entry>
+		<replaceable>update</replaceable>
+	      </entry>
+	      <entry>
+		Update flag. If <userinput>true</userinput>, an
+		<computeroutput>EventStat</computeroutput> will also
+		be sent each time a new event is logged.
+	      </entry>
+	      <entry>
+		Number
+	      </entry>
+	    </row>
+	  </tbody>
+	</tgroup>
+      </table>
+    </sect3>
+    <sect3 xml:id="sect.commands.eventstat.response_syntax">
+      <title>Response Syntax</title>
+      <literallayout class="monospaced">
+{
+    "eventstat": {
+        "sendUpdates": <replaceable>update</replaceable>,
+        "id": <replaceable>evt-id</replaceable>,
+        "datetime": <replaceable>date-time</replaceable>,
+        "type": <replaceable>type-str</replaceable>,
+        "status": <replaceable>status</replaceable>,
+        "originName": <replaceable>origin-name</replaceable>,
+        "originAddress": <replaceable>origin-addr</replaceable>,
+        "router": <replaceable>router-num</replaceable>,
+        "routerName": <replaceable>router-name</replaceable>,
+        "source": <replaceable>source-num</replaceable>,
+        "sourceName": <replaceable>source-name</replaceable>,
+        "destination": <replaceable>destination-num</replaceable>,
+        "destinationName": <replaceable>destination-name</replaceable>,
+        "comment": <replaceable>comment-str</replaceable>
+    }
+}
+      </literallayout>
+      <table xml:id="table.commands.eventstat.response.parameters" frame="all" pgwide="0">
+	<title>Response Parameters</title>
+	<tgroup cols="3" align="left" colstep="1" rowstep="1">
+	  <colspec colname="Parameter" colwidth="1.5*"/>
+	  <colspec colname="Value" colwidth="5.0*"/>
+	  <colspec colname="Type" colwidth="1.5*"/>
+	  <thead>
+	    <row>
+	      <entry>
+		Parameter
+	      </entry>
+	      <entry>
+		Meaning
+	      </entry>
+	      <entry>
+		JSON Value
+	      </entry>
+	    </row>
+	  </thead>
+	  <tbody>
+	    <row>
+	      <entry>
+		<replaceable>update</replaceable>
+	      </entry>
+	      <entry>
+		The current state of the update flag.
+	      </entry>
+	      <entry>
+		Boolean
+	      </entry>
+	    </row>
+	    <row>
+	      <entry>
+		<replaceable>evt-id</replaceable>
+	      </entry>
+	      <entry>
+		ID number of event entry.
+	      </entry>
+	      <entry>
+		Number
+	      </entry>
+	    </row>
+	    <row>
+	      <entry>
+		<replaceable>date-time</replaceable>
+	      </entry>
+	      <entry>
+		Date-time of the event, in xs.datetime format.
+	      </entry>
+	      <entry>
+		String
+	      </entry>
+	    </row>
+	    <row>
+	      <entry>
+		<replaceable>type-str</replaceable>
+	      </entry>
+	      <entry>
+		Type of logged event.
+	      </entry>
+	      <entry>
+		String
+	      </entry>
+	    </row>
+	    <row>
+	      <entry>
+		<replaceable>status</replaceable>
+	      </entry>
+	      <entry>
+		Indicates success or failure of event.
+	      </entry>
+	      <entry>
+		Boolean
+	      </entry>
+	    </row>
+	    <row>
+	      <entry>
+		<replaceable>router-num</replaceable>
+	      </entry>
+	      <entry>
+		Router number
+	      </entry>
+	      <entry>
+		Number
+	      </entry>
+	    </row>
+	    <row>
+	      <entry>
+		<replaceable>router-name</replaceable>
+	      </entry>
+	      <entry>
+		Router name
+	      </entry>
+	      <entry>
+		String
+	      </entry>
+	    </row>
+	    <row>
+	      <entry>
+		<replaceable>source-num</replaceable>
+	      </entry>
+	      <entry>
+		Source number
+	      </entry>
+	      <entry>
+		Number
+	      </entry>
+	    </row>
+	    <row>
+	      <entry>
+		<replaceable>source-name</replaceable>
+	      </entry>
+	      <entry>
+		Source name
+	      </entry>
+	      <entry>
+		String
+	      </entry>
+	    </row>
+	    <row>
+	      <entry>
+		<replaceable>destination-num</replaceable>
+	      </entry>
+	      <entry>
+		Destination number
+	      </entry>
+	      <entry>
+		Number
+	      </entry>
+	    </row>
+	    <row>
+	      <entry>
+		<replaceable>destination-name</replaceable>
+	      </entry>
+	      <entry>
+		Destination name
+	      </entry>
+	      <entry>
+		String
+	      </entry>
+	    </row>
+	    <row>
+	      <entry>
+		<replaceable>comment-str</replaceable>
+	      </entry>
+	      <entry>
+		Comment text
+	      </entry>
+	      <entry>
+		String
+	      </entry>
+	    </row>
+	  </tbody>
+	</tgroup>
+      </table>
+    </sect3>
+
+    <sect3 xml:id="sect.commands.eventstat.example">
+      <title>Example</title>
+      <sect4 xml:id="sect.commands.eventstat.example.send">
+	<title>Send</title>
+	<literallayout class="monospaced">
+{
+    "eventstat" {
+        "sendUpdates": true
+    }
+}
+	</literallayout>
+      </sect4>
+      <sect4 xml:id="sect.commands.eventstat.example.response">
+	<title>Response</title>
+	<literallayout class="monospaced">
+{
+    "eventstat": {
+        "router": 2,
+        "action0": {
+            "id": 1,
+            "time": "16:00:00Z",
+            "sunday": false,
+            "monday": true,
+            "tuesday": false,
+            "wednesday": false,
+            "thursday": false,
+            "friday": false,
+            "saturday": false,
+            "destination": 4,
+            "destinationName": "DST 4",
+            "source": 4,
+            "sourceName": "SRC 4",
+            "comment": "Take input 4 to output 4"
+        },
+        "action1": {
+            "id": 2,
+            "time": "16:10:00Z",
+            "sunday": false,
+            "monday": true,
+            "tuesday": false,
+            "wednesday": false,
+            "thursday": false,
+            "friday": false,
+            "saturday": false,
+            "destination": 4,
+            "destinationName": "DST 4",
+            "source": 5,
+            "sourceName": "RDProbe",
+            "comment": "Take input 5 to output 4"
+        }
+    }
+}
+	</literallayout>
+      </sect4>
+    </sect3>
+  </sect2>
+  <!-- *********************************** -->
+  <!-- **** END OF EventStat COMMAND **** -->
+  <!-- *********************************** -->
+
+
+
+
+
+
+
+
+
+
+
+
+
   <!-- *********************************** -->
   <!-- *** START OF GPIStat COMMAND *** -->
   <!-- *********************************** -->

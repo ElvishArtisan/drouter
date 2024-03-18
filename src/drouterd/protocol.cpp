@@ -179,6 +179,13 @@ void Protocol::refreshAction(int action_id)
 }
 
 
+void Protocol::addEvent(int evt_id)
+{
+  proto_ipc_socket->write(("EventAdded "+
+			   QString::asprintf("%d\r\n",evt_id)).toUtf8());
+}
+
+
 void Protocol::ipcReadyReadData()
 {
   char data[1501];
@@ -293,6 +300,11 @@ void Protocol::actionChanged(int id)
 
 
 void Protocol::nextActionsChanged(int router,const QList<int> &action_ids)
+{
+}
+
+
+void Protocol::eventAdded(int evt_id)
 {
 }
 
@@ -413,5 +425,10 @@ void Protocol::ProcessIpcCommand(const QString &cmd)
       ids.push_back(cmds.at(i).toInt());
       nextActionsChanged(router,ids);
     }
+  }
+
+  if((cmds.at(0)=="EVENT_ADDED")&&(cmds.size()==2)) {
+    int evt_id=cmds.at(1).toInt();
+    eventAdded(evt_id);
   }
 }

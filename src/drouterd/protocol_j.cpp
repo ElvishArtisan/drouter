@@ -49,7 +49,7 @@ ProtocolJ::ProtocolJ(int sock,QObject *parent)
   proto_sources_subscribed=false;
   proto_clips_subscribed=false;
   proto_silences_subscribed=false;
-
+  proto_eventstat_subscribeds=false;
   proto_gpistat_masked=false;
   proto_gpostat_masked=false;
   proto_routestat_masked=false;
@@ -63,6 +63,7 @@ ProtocolJ::ProtocolJ(int sock,QObject *parent)
   // Event Logger
   //
   proto_logger=new LoggerFront(this);
+  connect(proto_logger,SIGNAL(eventAdded(int)),this,SLOT(eventAddedData(int)));
 
   //
   // The ProtocolJ Server
@@ -172,6 +173,12 @@ void ProtocolJ::readyReadData()
       break;
     }
   }
+}
+
+
+void ProtocolJ::eventAddedData(int evt_id)
+{
+  addEvent(evt_id);
 }
 
 
@@ -312,6 +319,20 @@ void ProtocolJ::nextActionsChanged(int router,const QList<int> &action_ids)
 {
   if(proto_actionstat_subscribeds.value(router)) {
     SendActionStat(router,action_ids);
+  }
+}
+
+
+void ProtocolJ::eventAdded(int evt_id)
+{
+  if(proto_eventstat_subscribeds) {
+    QString sql=EventStatSqlFields()+
+      QString::asprintf("where `PERM_SA_EVENTS`.`ID`=%d",evt_id);
+    DRSqlQuery *q=new DRSqlQuery(sql);
+    while(q->next()) {
+      SendEventStat(q);
+    }
+    delete q;
   }
 }
 
@@ -512,6 +533,14 @@ void ProtocolJ::DispatchMessage(const QJsonDocument &jdoc)
     int router=map.value("router").toInt();
     proto_actionstat_subscribeds[router-1]=map.value("sendUpdates").toBool();
     SendActionStatInfo(router-1);
+    return;
+  }
+
+  if(jdoc.object().contains("eventstat")) {
+    QVariantMap map=jdoc.object().value("eventstat").toObject().
+      toVariantMap();
+    proto_eventstat_subscribeds=map.value("sendUpdates").toBool();
+    SendEventStatInfo();
     return;
   }
 
@@ -1209,6 +1238,79 @@ void ProtocolJ::SendActionStat(int router,const QList<int> &action_ids)
 
   QJsonDocument jdoc;
   jdoc.setObject(jo1);
+  proto_socket->write(jdoc.toJson());
+}
+
+
+void ProtocolJ::SendEventStatInfo()
+{
+  QString sql=EventStatSqlFields()+
+    "order by `PERM_SA_EVENTS`.`DATETIME`";
+  DRSqlQuery *q=new DRSqlQuery(sql);
+  while(q->next()) {
+    SendEventStat(q);
+  }
+  delete q;
+}
+
+
+QString ProtocolJ::EventStatSqlFields() const
+{
+  return QString("select ")+
+    "`PERM_SA_EVENTS`.`ID`,"+                   // 00
+    "`PERM_SA_EVENTS`.`STATUS`,"+               // 01
+    "`PERM_SA_EVENTS`.`TYPE`,"+                 // 02
+    "`PERM_SA_EVENTS`.`DATETIME`,"+             // 03
+    "`PERM_SA_EVENTS`.`USERNAME`,"+             // 04
+    "`PERM_SA_EVENTS`.`HOSTNAME`,"+             // 05
+    "`PERM_SA_EVENTS`.`ORIGINATING_ADDRESS`,"+  // 06
+    "`PERM_SA_EVENTS`.`COMMENT`,"+              // 07
+    "`PERM_SA_EVENTS`.`ROUTER_NUMBER`,"+        // 08
+    "`PERM_SA_EVENTS`.`ROUTER_NAME`,"+          // 09
+    "`PERM_SA_EVENTS`.`SOURCE_NUMBER`,"+        // 10
+    "`PERM_SA_EVENTS`.`SOURCE_NAME`,"+          // 11
+    "`PERM_SA_EVENTS`.`DESTINATION_NUMBER`,"+   // 12
+    "`PERM_SA_EVENTS`.`DESTINATION_NAME` "+     // 13
+    "from `PERM_SA_EVENTS` ";
+}
+
+
+void ProtocolJ::SendEventStat(DRSqlQuery *q)
+{
+  DRJParser::EventType type=
+    (DRJParser::EventType)q->value(2).toString().at(0).cell();
+
+  QJsonObject jo0;
+  jo0.insert("sendUpdates",proto_eventstat_subscribeds);
+  jo0.insert("id",q->value(0).toInt());
+  jo0.insert("datetime",
+	     q->value(3).toDateTime().toString("yyyy-MM-ddThh:mm:ssZ"));
+  jo0.insert("type",DRJParser::eventTypeString(type));
+  jo0.insert("status",q->value(1).toString()=="Y");
+  jo0.insert("comment",q->value(7).toString());
+  if(type==DRJParser::CommentEvent) {
+    jo0.insert("router",QJsonValue());
+    jo0.insert("routerName",QJsonValue());
+    jo0.insert("source",QJsonValue());
+    jo0.insert("sourceName",QJsonValue());
+    jo0.insert("destination",QJsonValue());
+    jo0.insert("destinationName",QJsonValue());
+  }
+  else {
+    jo0.insert("router",1+q->value(8).toInt());
+    jo0.insert("routerName",q->value(9).toString());
+    jo0.insert("source",1+q->value(10).toInt());
+    jo0.insert("sourceName",q->value(11).toString());
+    jo0.insert("destination",1+q->value(12).toInt());
+    jo0.insert("destinationName",q->value(13).toString());
+  }
+
+  QJsonObject jo1;
+  jo1.insert("eventstat",jo0);
+
+  QJsonDocument jdoc;
+  jdoc.setObject(jo1);
+
   proto_socket->write(jdoc.toJson());
 }
 

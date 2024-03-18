@@ -1139,3 +1139,5 @@
 	in drouterd(8) into a 'LoggerBack' class.
 2024-03-15 Fred Gleason <fredg@paravelsystems.com>
 	* Added event logging to the Action Engine.
+2024-03-18 Fred Gleason <fredg@paravelsystems.com>
+	* Implemented the 'EventStat' ProtocolJ command.

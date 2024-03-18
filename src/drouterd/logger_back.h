@@ -36,13 +36,16 @@ class LoggerBack : public QObject
   ~LoggerBack();
   void setWriteable(bool state);
 
+ signals:
+  void eventAdded(int evt_id);
+
  private slots:
   void finalizeEventsData();
 
  private:
   void FinalizeSAAudioRoute(int event_id,int router,int output,int input);
   void FinalizeSAGpioRoute(int event_id,int router,int output,int input);
-  void FinalizeSARouteEvent(int event_id,bool status) const;
+  void FinalizeSARouteEvent(int event_id,bool status);
   QMap<int,DREndPointMap *> *d_router_maps;
   QTimer *d_finalize_timer;
 };

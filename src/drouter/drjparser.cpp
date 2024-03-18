@@ -339,6 +339,47 @@ QString DRJParser::errorString(ErrorType err)
 }
 
 
+QString DRJParser::eventTypeString(EventType type)
+{
+  QString ret="unknown";
+
+  switch(type) {
+  case DRJParser::CommentEvent:
+    ret="comment";
+    break;
+
+  case DRJParser::RouteEvent:
+    ret="route";
+    break;
+
+  case DRJParser::SnapshotEvent:
+    ret="snapshot";
+    break;
+
+  case DRJParser::UnknownEvent:
+    break;
+  }
+
+  return ret;
+}
+
+
+DRJParser::EventType typeFromString(const QString &str)
+{
+  if(str.trimmed().toLower()=="comment") {
+    return DRJParser::CommentEvent;
+  }
+  if(str.trimmed().toLower()=="route") {
+    return DRJParser::RouteEvent;
+  }
+  if(str.trimmed().toLower()=="snapshot") {
+    return DRJParser::SnapshotEvent;
+  }
+
+  return DRJParser::UnknownEvent;
+}
+
+
 void DRJParser::connectedData()
 {
   j_accum.clear();

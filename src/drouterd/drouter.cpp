@@ -67,7 +67,7 @@ DRouter::DRouter(int *proto_socks,QObject *parent)
 
 DRouter::~DRouter()
 {
-  LoggerFront::writeCommentEvent(tr("Stopping Drouter service"));
+  drouter_logger_front->writeCommentEvent(tr("Stopping Drouter service"));
 }
 
 
@@ -215,9 +215,14 @@ bool DRouter::start(QString *err_msg)
     return false;
   }
 
+  drouter_logger_front=new LoggerFront(this);
+  connect(drouter_logger_front,SIGNAL(eventAdded(int)),
+	  this,SLOT(eventAddedData(int)));
   drouter_logger_back=new LoggerBack(&drouter_maps,this);
+  connect(drouter_logger_back,SIGNAL(eventAdded(int)),
+	  this,SLOT(eventAddedData(int)));
 
-  LoggerFront::writeCommentEvent(tr("Started drouter service"));
+  drouter_logger_front->writeCommentEvent(tr("Started drouter service"));
 
   return true;
 }
@@ -316,7 +321,7 @@ void DRouter::setWriteable(bool state)
     drouter_writeable=state;
     NotifyProtocols("TETHER",letter);
 
-    LoggerFront::writeCommentEvent(comment);
+    drouter_logger_front->writeCommentEvent(comment);
   }
 }
 
@@ -885,6 +890,12 @@ void DRouter::purgeEventsData()
 }
 
 
+void DRouter::eventAddedData(int evt_id)
+{
+  NotifyProtocols("EVENT_ADDED",QString::asprintf("%d",evt_id));
+}
+
+
 void DRouter::NotifyProtocols(const QString &type,const QString &id,
 			      int srcs,int dsts,int gpis,int gpos)
 {
@@ -1067,6 +1078,14 @@ bool DRouter::ProcessIpcCommand(int sock,const QString &cmd)
     if(ok&&(id>0)) {
       emit routeEngineRefresh(id);
       NotifyProtocols("ACTION",QString::asprintf("%d",id));
+    }
+  }
+
+  if((cmds.at(0)=="EventAdded")&&(cmds.size()==2)) {
+    bool ok=false;
+    int id=cmds.at(1).toInt(&ok);
+    if(ok&&(id>0)) {
+      NotifyProtocols("EVENT_ADDED",QString::asprintf("%d",id));
     }
   }
 
