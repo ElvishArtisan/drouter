@@ -58,6 +58,10 @@ class DRJParser : public QObject
   ~DRJParser();
   void setModelFont(const QFont &font);
   void setModelPalette(const QPalette &pal);
+  QString timeFormat() const;
+  void setTimeFormat(const QString &fmt);
+  QString dateFormat() const;
+  void setDateFormat(const QString &fmt);
   QList<int> routerFilter() const;
   void setRouterFilter(const QList<int> routers);
   QMap<int,QString> routers() const;
@@ -120,6 +124,8 @@ class DRJParser : public QObject
   QMap<int,DRSnapshotListModel *> j_snapshot_models;
   QMap<int,DRActionListModel *> j_action_models;
   QFont j_model_font;
+  QString j_date_format;
+  QString j_time_format;
   QTcpSocket *j_socket;
   QString j_hostname;
   uint16_t j_port;

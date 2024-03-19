@@ -47,6 +47,8 @@ class DRActionListModel : public QAbstractTableModel
   void setPalette(const QPalette &pal);
   void setInputsModel(DREndPointListModel *model);
   void setOutputsModel(DREndPointListModel *model);
+  QString timeFormat() const;
+  void setTimeFormat(const QString &fmt);
   int columnCount(const QModelIndex &parent=QModelIndex()) const;
   int rowCount(const QModelIndex &parent=QModelIndex()) const;
   QVariant headerData(int section,Qt::Orientation orient,
@@ -93,6 +95,7 @@ class DRActionListModel : public QAbstractTableModel
   DREndPointListModel *d_outputs_model;
   int d_sort_column;
   Qt::SortOrder d_sort_order;
+  QString d_time_format;
 };
 
 

@@ -37,6 +37,7 @@ DRActionListModel::DRActionListModel(int router,QObject *parent)
   d_router_number=router;
   d_sort_column=0;
   d_sort_order=Qt::AscendingOrder;
+  d_time_format="hh:mm:ss";
 
   //
   // Column Attributes
@@ -165,6 +166,27 @@ void DRActionListModel::setInputsModel(DREndPointListModel *model)
 void DRActionListModel::setOutputsModel(DREndPointListModel *model)
 {
   d_outputs_model=model;
+}
+
+
+QString DRActionListModel::timeFormat() const
+{
+  return d_time_format;
+}
+
+
+void DRActionListModel::setTimeFormat(const QString &fmt)
+{
+  if(fmt!=d_time_format) {
+    for(int i=0;i<d_metadatas.size();i++) {
+      d_texts[i][1]=
+	QTime::fromString(d_metadatas.at(i).value("time").
+			  toString(),"hh:mm:ss").toString(d_time_format);
+    }
+    d_time_format=fmt;
+    emit dataChanged(index(0,1),index(rowCount()-1,1),
+		     QVector<int>(1,Qt::DisplayRole));
+  }
 }
 
 
@@ -426,7 +448,7 @@ void DRActionListModel::UpdateRowMetadata(const QVariantMap &fields)
 void DRActionListModel::UpdateRow(int linenum,const QVariantMap &fields)
 {
   d_texts[linenum][0]=fields.value("comment").toString();
-  d_texts[linenum][1]=fields.value("time").toTime().toString("hh:mm:ss");
+  d_texts[linenum][1]=fields.value("time").toTime().toString(d_time_format);
   d_texts[linenum][2]=DowMarker(fields.value("sunday").toBool(),tr("Sun"));
   d_texts[linenum][3]=DowMarker(fields.value("monday").toBool(),tr("Mon"));
   d_texts[linenum][4]=DowMarker(fields.value("tuesday").toBool(),tr("Tue"));

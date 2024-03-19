@@ -194,6 +194,9 @@ MainWidget::MainWidget(QWidget *parent)
   //
   d_parser=new DRJParser(this);
   d_parser->setModelFont(font());
+  d_parser->setModelPalette(palette());
+  d_parser->setDateFormat(date_format);
+  d_parser->setTimeFormat(time_format);
   d_parser->setRouterFilter(router_filter);
   connect(d_parser,SIGNAL(connected(bool,DRJParser::ConnectionState)),
 	  this,SLOT(connectedData(bool,DRJParser::ConnectionState)));

@@ -43,6 +43,8 @@ DRJParser::DRJParser(bool use_long_names,QObject *parent)
   j_last_xpoint_output=-1;
   j_accum_quoted=false;
   j_accum_level=0;
+  j_time_format="hh:mm:ss";
+  j_date_format="dddd, MMMM d yyyy";
 
   //
   // The Socket
@@ -101,6 +103,38 @@ void DRJParser::setModelPalette(const QPalette &pal)
   for(QMap<int,DRActionListModel *>::const_iterator it=j_action_models.begin();
       it!=j_action_models.end();it++) {
     it.value()->setPalette(pal);
+  }
+}
+
+
+QString DRJParser::timeFormat() const
+{
+  return j_time_format;
+}
+
+
+void DRJParser::setTimeFormat(const QString &fmt)
+{
+  if(fmt!=j_time_format) {
+    for(QMap<int,DRActionListModel *>::const_iterator it=j_action_models.begin();
+	it!=j_action_models.end();it++) {
+      it.value()->setTimeFormat(fmt);
+    }
+    j_time_format=fmt;
+  }
+}
+
+
+QString DRJParser::dateFormat() const
+{
+  return j_date_format;
+}
+
+
+void DRJParser::setDateFormat(const QString &fmt)
+{
+  if(fmt!=j_date_format) {
+    j_date_format=fmt;
   }
 }
 
@@ -507,6 +541,7 @@ void DRJParser::DispatchMessage(const QJsonDocument &jdoc)
 
 	DRActionListModel *amodel=new DRActionListModel(router,this);
 	amodel->setFont(j_model_font);
+	amodel->setTimeFormat(j_time_format);
 	amodel->setInputsModel(j_input_models.value(router));
 	amodel->setOutputsModel(j_output_models.value(router));
 	j_action_models[router]=amodel;

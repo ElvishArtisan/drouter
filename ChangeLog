@@ -1150,3 +1150,6 @@
 	for Actions.
 2024-03-18 Fred Gleason <fredg@paravelsystems.com>
 	* Added a walltime clock readout to the main window of actionpanel(1).
+2024-03-19 Fred Gleason <fredg@paravelsystems.com>
+	* Fixed a bug in actionpanel(1) that caused values in the 'Time'
+	column to ignore the value of the '--time-format' switch.
