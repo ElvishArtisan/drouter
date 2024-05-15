@@ -1153,3 +1153,10 @@
 2024-03-19 Fred Gleason <fredg@paravelsystems.com>
 	* Fixed a bug in actionpanel(1) that caused values in the 'Time'
 	column to ignore the value of the '--time-format' switch.
+2024-05-15 Fred Gleason <fredg@paravelsystems.com>
+	* Fixed a regression in dmap(1) that caused extraneous text
+	to be prepended to map outputs.
+2024-05-15 Fred Gleason <fredg@paravelsystems.com>
+	* Fixed a bug in dmap(1) that caused map output to specify a
+	'RouterNumber=' value of '0' when no '--router-number' switch
+	was given.
