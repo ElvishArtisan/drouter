@@ -982,3 +982,7 @@
 2024-05-15 Fred Gleason <fredg@paravelsystems.com>
 	* Fixed a regression in dmap(1) that caused extraneous text
 	to be prepended to map outputs.
+2024-05-15 Fred Gleason <fredg@paravelsystems.com>
+	* Fixed a bug in dmap(1) that caused map output to specify a
+	'RouterNumber=' value of '0' when no '--router-number' switch
+	was given.

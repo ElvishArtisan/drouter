@@ -40,7 +40,7 @@ MainObject::MainObject(QObject *parent)
 
   map_output_map="";
   map_save_names=false;
-  map_router_number=0;
+  map_router_number=1;
   map_router_name="Livewire";
   map_router_type=EndPointMap::AudioRouter;
   map_verbose=false;
