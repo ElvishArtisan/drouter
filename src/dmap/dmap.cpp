@@ -157,7 +157,6 @@ MainObject::MainObject(QObject *parent)
 
 void MainObject::connectedData(bool state)
 {
-  printf("connected\n");
   QList<QHostAddress> hosts;
 
   //
