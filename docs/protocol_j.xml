@@ -1200,26 +1200,17 @@
       <title>Response Syntax</title>
       <literallayout class="monospaced">
 {
-    "destnames": {
-        "router": <replaceable>router-num</replaceable>
-        "destination0": {
+    "router": <replaceable>router-num</replaceable>
+    "destnames": [
+        {
             "number": <replaceable>num</replaceable>,
             "name": <replaceable>name-str</replaceable>,
             "hostDescription":<replaceable>dest-str</replaceable>,
             "hostAddress":<replaceable>ipv4-addr</replaceable>,
             "hostName":<replaceable>host-str</replaceable>,
             "slot":<replaceable>slot-num</replaceable>
-        }[,]
-        [...]
-        "destination<replaceable>N</replaceable>": {
-            "number": <replaceable>dest-num</replaceable>,
-            "name": <replaceable>name-str</replaceable>,
-            "hostDescription":<replaceable>dest-str</replaceable>,
-            "hostAddress":<replaceable>ipv4-addr</replaceable>,
-            "hostName":<replaceable>host-str</replaceable>,
-            "slot":<replaceable>slot-num</replaceable>
-        }
-    }
+        } ...
+    ]
 }
       </literallayout>
       <table xml:id="table.commands.destnames.response.parameters" frame="all" pgwide="0">
@@ -1332,7 +1323,7 @@
 	<literallayout class="monospaced">
 {
     "destnames" {
-        "router": 2
+        "router": 11
     }
 }
 	</literallayout>
@@ -1341,41 +1332,41 @@
 	<title>Response</title>
 	<literallayout class="monospaced">
 {
-    "destnames": {
-        "router": 2,
-        "destination0": {
+    "destnames": [
+        {
+            "hostAddress": "192.168.21.4",
+            "hostDescription": "Analog Node (Gen1)",
+            "hostName": "ANODE",
+            "name": "DST 1",
             "number": 1,
-            "name": "Mackie 5/6",
-            "hostDescription": "Combination xNode",
-            "hostAddress": "172.30.4.211",
-            "hostName": "FRED-XNODE",
             "slot": 1
         },
-        "destination1": {
+        {
+            "hostAddress": "192.168.21.4",
+            "hostDescription": "Analog Node (Gen1)",
+            "hostName": "ANODE",
+            "name": "DST 2",
             "number": 2,
-            "name": "Mackie 7/8",
-            "hostDescription": "Combination xNode",
-            "hostAddress": "172.30.4.211",
-            "hostName": "FRED-XNODE",
             "slot": 2
         },
-        "destination2": {
-            "number": 17,
-            "name": "RD Port 0",
-            "hostDescription": "AudioScience 6685 Card",
-            "hostAddress": "172.30.4.213",
-            "hostName": "ELASTIGIRL",
-            "slot": 1
+        {
+            "hostAddress": "192.168.21.4",
+            "hostDescription": "Analog Node (Gen1)",
+            "hostName": "ANODE",
+            "name": "DST 3",
+            "number": 3,
+            "slot": 3
         },
-        "destination3": {
-            "number": 18,
-            "name": "RD Port 1",
-            "hostDescription": "AudioScience 6685 Card",
-            "hostAddress": "172.30.4.213",
-            "hostName": "ELASTIGIRL",
-            "slot": 2
+        {
+            "hostAddress": "192.168.21.4",
+            "hostDescription": "Analog Node (Gen1)",
+            "hostName": "ANODE",
+            "name": "DST 4",
+            "number": 4,
+            "slot": 4
         }
-    }
+    ],
+    "router": 11
 }
 	</literallayout>
       </sect4>
@@ -1384,9 +1375,6 @@
   <!-- ********************************** -->
   <!-- **** END OF DestNames COMMAND **** -->
   <!-- ********************************** -->
-
-
-
 
 
   <!-- *********************************** -->

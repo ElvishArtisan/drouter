@@ -1165,3 +1165,6 @@
 	to use a JSON array.
 	* Modified the response of the Protocol J 'SourceNames' command
 	to use a JSON array.
+2024-07-03 Fred Gleason <fredg@paravelsystems.com>
+	* Modified the response of the Protocol J 'DestNames' command
+	to use a JSON array.

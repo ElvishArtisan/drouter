@@ -542,30 +542,7 @@ void ProtocolJ::DispatchMessage(const QJsonDocument &jdoc)
     SendEventStatInfo();
     return;
   }
-  /*
-  if(jdoc.object().contains("routernames")) {
-    int count=0;
-    QJsonObject jo1;
-    for(QMap<int,DREndPointMap *>::const_iterator it=proto_maps.begin();
-	it!=proto_maps.end();it++) {
-      QJsonObject jo0;
-      
-      jo0.insert("number",QJsonValue((int)(1+it.value()->routerNumber())));
-      jo0.insert("name",QJsonValue(it.value()->routerName()));
-      jo0.insert("type",QJsonValue(DREndPointMap::routerTypeString(it.value()->
-				   routerType())));
-      jo1.insert(QString::asprintf("router%d",count),jo0);
-      count++;
-    }
-    QJsonObject jo2;
-    jo2.insert("routernames",jo1);
-    QJsonDocument jdoc;
-    jdoc.setObject(jo2);
-    proto_socket->write(jdoc.toJson());
 
-    return;
-  }
-  */
   if(jdoc.object().contains("routernames")) {
     QJsonArray ja0;
     for(QMap<int,DREndPointMap *>::const_iterator it=proto_maps.begin();
@@ -864,43 +841,6 @@ void ProtocolJ::ActivateSnapshot(unsigned router,const QString &snapshot_name)
 	 proto_socket->peerAddress().toString().toUtf8().constData());
 }
 
-/*
-void ProtocolJ::SendSourceInfo(unsigned router)
-{
-  QJsonObject jo0;
-  DREndPointMap *map;
-  QString sql;
-  DRSqlQuery *q;
-
-  if((map=proto_maps.value(router))==NULL) {
-    SendError(DRJParser::NoRouterError);
-    return;
-  }
-  if(map->routerType()==DREndPointMap::AudioRouter) {
-    sql=SourceNamesSqlFields(map->routerType())+"where "+
-      QString::asprintf("`SA_SOURCES`.`ROUTER_NUMBER`=%u ",router)+
-      "order by `SA_SOURCES`.`SOURCE_NUMBER`";
-  }
-  else {
-    sql=SourceNamesSqlFields(map->routerType())+"where "+
-      QString::asprintf("`SA_GPIS`.`ROUTER_NUMBER`=%u ",router)+
-      "order by `SA_GPIS`.`SOURCE_NUMBER`";
-  }
-  jo0.insert("router",QJsonValue((int)(1+router)));
-  q=new DRSqlQuery(sql);
-  while(q->next()) {
-    jo0.insert(QString::asprintf("source%d",q->at()),
-	       SourceNamesMessage(map->routerType(),q));
-  }
-  QJsonObject jo1;
-  jo1.insert("sourcenames",jo0);
-
-  QJsonDocument jdoc;
-  jdoc.setObject(jo1);
-
-  proto_socket->write(jdoc.toJson());
-}
-*/
 
 void ProtocolJ::SendSourceInfo(unsigned router)
 {
@@ -1018,6 +958,7 @@ QJsonObject ProtocolJ::SourceNamesMessage(DREndPointMap::RouterType type,
 
 void ProtocolJ::SendDestInfo(unsigned router)
 {
+  QJsonObject jo0;
   DREndPointMap *map;
   QString sql;
   DRSqlQuery *q;
@@ -1036,18 +977,16 @@ void ProtocolJ::SendDestInfo(unsigned router)
       QString::asprintf("`SA_GPOS`.`ROUTER_NUMBER`=%u ",router)+
       "order by `SA_GPOS`.`SOURCE_NUMBER`";
   }
-  QJsonObject jo0;
+  jo0.insert("router",QJsonValue((int)(1+router)));
+  QJsonArray ja0;
   q=new DRSqlQuery(sql);
   while(q->next()) {
-    jo0.insert(QString::asprintf("destination%d",q->at()),
-	       DestNamesMessage(map->routerType(),q));
+    ja0.append(DestNamesMessage(map->routerType(),q));
   }
-  QJsonObject jo1;
-  jo0.insert("router",QJsonValue((int)(1+router)));
-  jo1.insert("destnames",jo0);
+  jo0.insert("destnames",ja0);
 
   QJsonDocument jdoc;
-  jdoc.setObject(jo1);
+  jdoc.setObject(jo0);
 
   proto_socket->write(jdoc.toJson());
 }

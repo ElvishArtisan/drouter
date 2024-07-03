@@ -594,19 +594,18 @@ void DRJParser::DispatchMessage(const QJsonDocument &jdoc)
 
   if(jdoc.object().contains("destnames")) {
     QJsonObject jo0=jdoc.object().value("destnames").toObject();
-    int router=jo0.value("router").toInt();
+    int router=jdoc.object().value("router").toInt();
+    QJsonArray ja0=jdoc.object().value("destnames").toArray();
     DREndPointListModel *omod=j_output_models.value(router);
     if(omod!=NULL) {
-      for(QJsonObject::const_iterator it=jo0.begin();it!=jo0.end();it++) {
-	if(it.key().left(11)=="destination") {
-	  QJsonObject jo1=it.value().toObject();
-	  QStringList keys=jo1.keys();
-	  QVariantMap fields;
-	  for(int i=0;i<keys.size();i++) {
-	    fields[keys.at(i)]=jo1.value(keys.at(i)).toVariant();
-	  }
-	  omod->addEndPoint(fields);
+      for(int i=0;i<ja0.size();i++) {
+	QJsonObject jo1=ja0.at(i).toObject();
+	QStringList keys=jo1.keys();
+	QVariantMap fields;
+	for(int i=0;i<keys.size();i++) {
+	  fields[keys.at(i)]=jo1.value(keys.at(i)).toVariant();
 	}
+	omod->addEndPoint(fields);
       }
     }
     omod->finalize();
