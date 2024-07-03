@@ -2470,6 +2470,15 @@
       <title>Response Syntax</title>
       <literallayout class="monospaced">
 {
+    "routernames": [
+        {
+            "number": <replaceable>router-num</replaceable>,
+            "name": <replaceable>router-name</replaceable>,
+            "type": <replaceable>router-type</replaceable>
+        } ...
+    ]
+}
+<!--
     "routernames": {
         "router0": {
             "number": <replaceable>router-num</replaceable>,
@@ -2485,6 +2494,7 @@
         }
     }
 }
+-->
       </literallayout>
       <table xml:id="table.commands.routernames.response.parameters" frame="all" pgwide="0">
 	<title>Response Parameters</title>
@@ -2551,9 +2561,7 @@
 	<title>Send</title>
 	<literallayout class="monospaced">
 {
-    "routernames" {
-        "router": 2
-    }
+    "routernames": null
 }
 	</literallayout>
       </sect4>
@@ -2561,37 +2569,23 @@
 	<title>Response</title>
 	<literallayout class="monospaced">
 {
-    "routernames": {
-        "router": 2,
-        "action0": {
-            "id": 1,
-            "time": "16:00:00-00:00",
-            "sunday": false,
-            "monday": true,
-            "tuesday": false,
-            "wednesday": false,
-            "thursday": false,
-            "friday": false,
-            "saturday": false,
-            "destination": 2,
-            "source": 3,
-            "comment": "Take input 3 to output 2"
+    "routernames": [
+        {
+            "name": "Audio",
+            "number": 1,
+            "type": "Audio"
         },
-        "action1": {
-            "id": 2,
-            "time": "16:10:00-00:00",
-            "sunday": false,
-            "monday": true,
-            "tuesday": false,
-            "wednesday": false,
-            "thursday": false,
-            "friday": false,
-            "saturday": false,
-            "destination": 2,
-            "source": 4,
-            "comment": "Take input 4 to output 2"
+        {
+            "name": "GPIO",
+            "number": 2,
+            "type": "GPIO"
+        },
+        {
+            "name": "SimpleAudio",
+            "number": 11,
+            "type": "Audio"
         }
-    }
+    ]
 }
 	</literallayout>
       </sect4>
@@ -2600,10 +2594,6 @@
   <!-- *********************************** -->
   <!-- **** END OF RouterNames COMMAND **** -->
   <!-- *********************************** -->
-
-
-
-
 
 
   <!-- *********************************** -->
@@ -2987,9 +2977,9 @@
       <title>Response Syntax</title>
       <literallayout class="monospaced">
 {
-    "sourcenames": {
-        "router": <replaceable>router-num</replaceable>
-        "source0": {
+    "router": <replaceable>router-num</replaceable>
+    "sourcenames": [
+        {
             "number": <replaceable>num</replaceable>,
             "name": <replaceable>name-str</replaceable>,
             "hostDescription":<replaceable>dest-str</replaceable>,
@@ -2998,19 +2988,8 @@
             "slot":<replaceable>slot-num</replaceable>,
             "sourceNumber":<replaceable>stream-num</replaceable>,
             "streamAddress":<replaceable>stream-addr</replaceable>
-        }[,]
-        [...]
-        "source<replaceable>N</replaceable>": {
-            "number": <replaceable>dest-num</replaceable>,
-            "name": <replaceable>name-str</replaceable>,
-            "hostDescription":<replaceable>dest-str</replaceable>,
-            "hostAddress":<replaceable>ipv4-addr</replaceable>,
-            "hostName":<replaceable>host-str</replaceable>,
-            "slot":<replaceable>slot-num</replaceable>,
-            "sourceNumber":<replaceable>stream-num</replaceable>,
-            "streamAddress":<replaceable>stream-addr</replaceable>
-        }
-    }
+        } ...
+    ]    
 }
       </literallayout>
       <table xml:id="table.commands.sourcenames.response.parameters" frame="all" pgwide="0">
@@ -3053,6 +3032,17 @@
 	      </entry>
 	      <entry>
 		Number
+	      </entry>
+	    </row>
+	    <row>
+	      <entry>
+		<replaceable>gpio-addr</replaceable>
+	      </entry>
+	      <entry>
+		IPv4 multicast stream address (Livewire GPIO only)
+	      </entry>
+	      <entry>
+		IPv4 address / slot number
 	      </entry>
 	    </row>
 	    <row>
@@ -3116,7 +3106,7 @@
 		<replaceable>stream-num</replaceable>
 	      </entry>
 	      <entry>
-		Stream number (Livewire only)
+		Stream number (Livewire Audio only)
 	      </entry>
 	      <entry>
 		Number
@@ -3127,7 +3117,7 @@
 		<replaceable>stream-addr</replaceable>
 	      </entry>
 	      <entry>
-		IPv4 multicast stream address (Livewire only)
+		IPv4 multicast stream address (Livewire Audio only)
 	      </entry>
 	      <entry>
 		Number
@@ -3145,7 +3135,7 @@
 	<literallayout class="monospaced">
 {
     "sourcenames" {
-        "router": 2
+        "router": 11
     }
 }
 	</literallayout>
@@ -3153,42 +3143,40 @@
       <sect4 xml:id="sect.commands.sourcenames.example.response">
 	<title>Response</title>
 	<literallayout class="monospaced">
-{
-    "sourcenames": {
-        "router": 2,
-        "source0": {
+
+    "router": 11,
+    "sourcenames": [
+        {
+            "hostAddress": "192.168.21.4",
+            "hostDescription": "Analog Node (Gen1)",
+            "hostName": "ANODE",
+            "name": "SRC 1",
             "number": 1,
-            "name": "Mackie 5/6",
-            "hostDescription": "Combination xNode",
-            "hostAddress": "172.30.4.211",
-            "hostName": "FRED-XNODE",
-            "slot": 1
+            "slot": 1,
+            "sourceNumber": 401,
+            "streamAddress": "239.192.1.145"
         },
-        "source1": {
+        {
+            "hostAddress": "192.168.21.4",
+            "hostDescription": "Analog Node (Gen1)",
+            "hostName": "ANODE",
+            "name": "SRC 2",
             "number": 2,
-            "name": "Mackie 7/8",
-            "hostDescription": "Combination xNode",
-            "hostAddress": "172.30.4.211",
-            "hostName": "FRED-XNODE",
-            "slot": 2
+            "slot": 2,
+            "sourceNumber": 402,
+            "streamAddress": "239.192.1.146"
         },
-        "source2": {
-            "number": 17,
-            "name": "RD Port 0",
-            "hostDescription": "AudioScience 6685 Card",
-            "hostAddress": "172.30.4.213",
-            "hostName": "ELASTIGIRL",
-            "slot": 1
-        },
-        "source3": {
-            "number": 18,
-            "name": "RD Port 1",
-            "hostDescription": "AudioScience 6685 Card",
-            "hostAddress": "172.30.4.213",
-            "hostName": "ELASTIGIRL",
-            "slot": 2
+        {
+            "hostAddress": "192.168.21.4",
+            "hostDescription": "Analog Node (Gen1)",
+            "hostName": "ANODE",
+            "name": "SRC 3",
+            "number": 3,
+            "slot": 3,
+            "sourceNumber": 403,
+            "streamAddress": "239.192.1.147"
         }
-    }
+    ]
 }
 	</literallayout>
       </sect4>

@@ -1160,3 +1160,8 @@
 	* Fixed a bug in dmap(1) that caused map output to specify a
 	'RouterNumber=' value of '0' when no '--router-number' switch
 	was given.
+2024-07-03 Fred Gleason <fredg@paravelsystems.com>
+	* Modified the response of the Protocol J 'RouterNumbers' command
+	to use a JSON array.
+	* Modified the response of the Protocol J 'SourceNames' command
+	to use a JSON array.

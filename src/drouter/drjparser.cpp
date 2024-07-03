@@ -516,10 +516,10 @@ void DRJParser::DispatchMessage(const QJsonDocument &jdoc)
   }
 
   if(jdoc.object().contains("routernames")) {
-    QJsonObject jo0=jdoc.object().value("routernames").toObject();
-
-    for(QJsonObject::const_iterator it=jo0.begin();it!=jo0.end();it++) {
-      QJsonObject jo1=it.value().toObject();
+    QJsonObject jo0=jdoc.object();
+    QJsonArray ja0=jo0.value("routernames").toArray();
+    for(int i=0;i<ja0.size();i++) {
+      QJsonObject jo1=ja0.at(i).toObject();
       if((j_router_filter.size()==0)||
 	 (j_router_filter.contains(jo1.value("number").toInt()))) {
 	j_router_model->addRouter(jo1.value("number").toInt(),
@@ -535,7 +535,7 @@ void DRJParser::DispatchMessage(const QJsonDocument &jdoc)
 	  new DREndPointListModel(router,j_use_long_names,this);
 	j_output_models.value(router)->setFont(j_model_font);
 	j_output_xpoints[router]=QMap<int,int>();
-
+	
 	j_snapshot_models[router]=new DRSnapshotListModel(router,this);
 	j_snapshot_models.value(router)->setFont(j_model_font);
 
@@ -546,13 +546,11 @@ void DRJParser::DispatchMessage(const QJsonDocument &jdoc)
 	amodel->setOutputsModel(j_output_models.value(router));
 	j_action_models[router]=amodel;
 
-	/*
-	  j_gpi_states[router]=QMap<int,QString>();
-	  j_gpo_states[router]=QMap<int,QString>();
-	  j_gpio_supporteds[router]=false;
+	//  j_gpi_states[router]=QMap<int,QString>();
+	//  j_gpo_states[router]=QMap<int,QString>();
+	//  j_gpio_supporteds[router]=false;
 
-	  j_snapshot_names[router]=QStringList();
-	*/
+	//  j_snapshot_names[router]=QStringList();
 	QVariantMap router_fields;
 	router_fields["router"]=router;
 
@@ -560,15 +558,14 @@ void DRJParser::DispatchMessage(const QJsonDocument &jdoc)
 	SendCommand("destnames",router_fields);
 	SendCommand("snapshots",router_fields);
 	SendCommand("actionlist",router_fields);
-	/*
-	SendCommand("gpistat",router_fields);
-	SendCommand("gpostat",router_fields);
-	*/
+
+	// SendCommand("gpistat",router_fields);
+	// SendCommand("gpostat",router_fields);
+
 	SendCommand("routestat",router_fields);
 
 	router_fields["sendUpdates"]=true;
 	SendCommand("actionstat",router_fields);
-
       }
     }
     j_router_model->finalize();
@@ -577,19 +574,18 @@ void DRJParser::DispatchMessage(const QJsonDocument &jdoc)
 
   if(jdoc.object().contains("sourcenames")) {
     QJsonObject jo0=jdoc.object().value("sourcenames").toObject();
-    int router=jo0.value("router").toInt();
+    int router=jdoc.object().value("router").toInt();
+    QJsonArray ja0=jdoc.object().value("sourcenames").toArray();
     DREndPointListModel *imod=j_input_models.value(router);
     if(imod!=NULL) {
-      for(QJsonObject::const_iterator it=jo0.begin();it!=jo0.end();it++) {
-	if(it.key().left(6)=="source") {
-	  QJsonObject jo1=it.value().toObject();
-	  QStringList keys=jo1.keys();
-	  QVariantMap fields;
-	  for(int i=0;i<keys.size();i++) {
-	    fields[keys.at(i)]=jo1.value(keys.at(i)).toVariant();
-	  }
-	  imod->addEndPoint(fields);
+      for(int i=0;i<ja0.size();i++) {
+	QJsonObject jo1=ja0.at(i).toObject();
+	QStringList keys=jo1.keys();
+	QVariantMap fields;
+	for(int i=0;i<keys.size();i++) {
+	  fields[keys.at(i)]=jo1.value(keys.at(i)).toVariant();
 	}
+	imod->addEndPoint(fields);
       }
     }
     imod->finalize();
