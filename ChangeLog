@@ -1171,3 +1171,6 @@
 2024-07-04 Fred Gleason <fredg@paravelsystems.com>
 	* Modified the response of the Protocol J 'Snapshots' command
 	to use a JSON array.
+2024-07-04 Fred Gleason <fredg@paravelsystems.com>
+	* Modified the response of the Protocol J 'ListActions' command
+	to use a JSON array.

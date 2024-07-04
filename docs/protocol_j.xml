@@ -132,7 +132,7 @@
     <para>
       The parameters for each action record are expressed as follows:
       <literallayout class="monospaced">
-"action<replaceable>N</replaceable>": {
+{
     "id": <replaceable>id-num</replaceable>,
     "time": <replaceable>time</replaceable>,
     "sunday":<replaceable>boolean</replaceable>,
@@ -569,15 +569,13 @@
       <title>Response Syntax</title>
       <literallayout class="monospaced">
 {
-    "actionlist": {
+    {
         "router": <replaceable>router-num</replaceable>
-        "action0": {
-            <replaceable>action-params</replaceable>
-        }[,]
-    [...]
-        "action<replaceable>N</replaceable>": {
-            <replaceable>action-params</replaceable>
-        }
+        "actionlist": [
+            {
+                <replaceable>action-params</replaceable>
+            } ...
+        ]
     }
 }
       </literallayout>
@@ -714,7 +712,7 @@
 	<literallayout class="monospaced">
 {
     "actionlist" {
-        "router": 2
+        "router": 11
     }
 }
 	</literallayout>
@@ -723,41 +721,72 @@
 	<title>Response</title>
 	<literallayout class="monospaced">
 {
-    "actionlist": {
-        "router": 2,
-        "action0": {
+    "actionlist": [
+        {
+            "comment": "1st Test Action",
+            "destination": 1,
+            "destinationHostAddress": "192.168.21.4",
+            "destinationHostName": "ANODE",
+            "destinationName": "DST 1",
+            "friday": true,
             "id": 1,
-            "time": "16:00:00Z",
-            "sunday": false,
+            "isActive": true,
             "monday": true,
-            "tuesday": false,
-            "wednesday": false,
-            "thursday": false,
-            "friday": false,
             "saturday": false,
-            "destination": 4,
-            "destinationName": "DST 4",
-            "source": 4,
-            "sourceName": "SRC 4",
-            "comment": "Take input 4 to output 4"
+            "source": 1,
+            "sourceHostAddress": "192.168.21.4",
+            "sourceHostName": "ANODE",
+            "sourceName": "SRC 1",
+            "sunday": false,
+            "thursday": true,
+            "time": "00:00:00",
+            "tuesday": true,
+            "wednesday": true
         },
-        "action1": {
-            "id": 2,
-            "time": "16:10:00Z",
-            "sunday": false,
-            "monday": true,
-            "tuesday": false,
-            "wednesday": false,
-            "thursday": false,
+        {
+            "comment": "2nd Test Action",
+            "destination": 1,
+            "destinationHostAddress": "192.168.21.4",
+            "destinationHostName": "ANODE",
+            "destinationName": "DST 1",
             "friday": false,
+            "id": 2,
+            "isActive": true,
+            "monday": false,
+            "saturday": true,
+            "source": 2,
+            "sourceHostAddress": "192.168.21.4",
+            "sourceHostName": "ANODE",
+            "sourceName": "SRC 2",
+            "sunday": true,
+            "thursday": false,
+            "time": "01:00:00",
+            "tuesday": false,
+            "wednesday": false
+        },
+        {
+            "comment": "3rd Test Action",
+            "destination": 1,
+            "destinationHostAddress": "192.168.21.4",
+            "destinationHostName": "ANODE",
+            "destinationName": "DST 1",
+            "friday": true,
+            "id": 3,
+            "isActive": true,
+            "monday": true,
             "saturday": false,
-            "destination": 4,
-            "destinationName": "DST 4",
-            "source": 5,
-            "sourceName": "RDProbe",
-            "comment": "Take input 5 to output 4"
+            "source": 3,
+            "sourceHostAddress": "192.168.21.4",
+            "sourceHostName": "ANODE",
+            "sourceName": "SRC 3",
+            "sunday": false,
+            "thursday": false,
+            "time": "02:00:00",
+            "tuesday": false,
+            "wednesday": true
         }
-    }
+    ],
+    "router": 11
 }
 	</literallayout>
       </sect4>

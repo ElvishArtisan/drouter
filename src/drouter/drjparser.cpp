@@ -625,23 +625,22 @@ void DRJParser::DispatchMessage(const QJsonDocument &jdoc)
   }
 
   if(jdoc.object().contains("actionlist")) {
-    QJsonObject jo0=jdoc.object().value("actionlist").toObject();
-    int router=jo0.value("router").toInt();
+    int router=jdoc.object().value("router").toInt();
     DRActionListModel *amod=j_action_models.value(router);
     if(amod!=NULL) {
-      for(QJsonObject::const_iterator it=jo0.begin();it!=jo0.end();it++) {
-	if(it.key().left(6)=="action") {
-	  QJsonObject jo1=it.value().toObject();
-	  QStringList keys=jo1.keys();
-	  QVariantMap fields;
-	  for(int i=0;i<keys.size();i++) {
-	    fields[keys.at(i)]=jo1.value(keys.at(i)).toVariant();
-	  }
-	  amod->addAction(fields);
+      QJsonArray ja0=jdoc.object().value("actionlist").toArray();
+      for(int i=0;i<ja0.size();i++) {
+	QJsonObject jo1=ja0.at(i).toObject();
+	QStringList keys=jo1.keys();
+	QVariantMap fields;
+	for(int i=0;i<keys.size();i++) {
+	  fields[keys.at(i)]=jo1.value(keys.at(i)).toVariant();
 	}
+	amod->addAction(fields);
       }
     }
     return;
+
   }
 
   if(jdoc.object().contains("actiondelete")) {

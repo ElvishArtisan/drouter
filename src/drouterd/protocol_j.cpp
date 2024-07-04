@@ -301,12 +301,11 @@ void ProtocolJ::actionChanged(int action_id)
     if(proto_maps.value(q->value(10).toInt())!=NULL) {
       QJsonObject jo0;
       jo0.insert("router",QJsonValue((int)(1+router)));
-      jo0.insert(QString::asprintf("action%d",q->at()),ActionListMessage(q));
-
-      QJsonObject jo1;
-      jo1.insert("actionlist",jo0);
+      QJsonArray ja0;
+      ja0.append(ActionListMessage(q));
+      jo0.insert("actionlist",ja0);
       QJsonDocument jdoc;
-      jdoc.setObject(jo1);
+      jdoc.setObject(jo0);
 
       proto_socket->write(jdoc.toJson());
     }
@@ -1057,13 +1056,13 @@ void ProtocolJ::SendActionInfo(unsigned router)
   q=new DRSqlQuery(sql);
   QJsonObject jo0;
   jo0.insert("router",QJsonValue((int)(1+router)));
+  QJsonArray ja0;
   while(q->next()) {
-    jo0.insert(QString::asprintf("action%d",q->at()),ActionListMessage(q));
+    ja0.append(ActionListMessage(q));
   }
-  QJsonObject jo1;
-  jo1.insert("actionlist",jo0);
+  jo0.insert("actionlist",ja0);
   QJsonDocument jdoc;
-  jdoc.setObject(jo1);
+  jdoc.setObject(jo0);
 
   proto_socket->write(jdoc.toJson());
 }
