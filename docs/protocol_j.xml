@@ -1674,17 +1674,6 @@
   <!-- *********************************** -->
 
 
-
-
-
-
-
-
-
-
-
-
-
   <!-- *********************************** -->
   <!-- *** START OF GPIStat COMMAND *** -->
   <!-- *********************************** -->
@@ -1855,6 +1844,7 @@
   <!-- *********************************** -->
   <!-- **** END OF GPIStat COMMAND **** -->
   <!-- *********************************** -->
+
 
   <!-- *********************************** -->
   <!-- *** START OF GPOStat COMMAND *** -->
@@ -2813,16 +2803,12 @@
       <title>Response Syntax</title>
       <literallayout class="monospaced">
 {
-    "snapshots": {
-        "router": <replaceable>router-num</replaceable>
-        "snapshot0": {
+    "router": <replaceable>router-num</replaceable>
+    "snapshots": [
+        {
             "name": <replaceable>name-str</replaceable>
-        }[,]
-        [...]
-        "snapshot<replaceable>N</replaceable>": {
-            "name": <replaceable>name-str</replaceable>
-        }
-    }
+        } ...
+    ]
 }
       </literallayout>
       <table xml:id="table.commands.snapshots.response.parameters" frame="all" pgwide="0">
@@ -2879,7 +2865,7 @@
 	<literallayout class="monospaced">
 {
     "snapshots" {
-        "router": 2
+        "router": 11
     }
 }
 	</literallayout>
@@ -2888,15 +2874,18 @@
 	<title>Response</title>
 	<literallayout class="monospaced">
 {
-    "snapshots": {
-        "router": 2,
-        "snapshot0": {
-            "name": "Mackie Inputs Normal"
+    "router": 11,
+    "snapshots": [
+        {
+            "name": "Test Snapshot 1"
         },
-        "snapshot1": {
-            "name": "Mackie Inputs Reverse"
+        {
+            "name": "Test Snapshot 2"
+        },
+        {
+            "name": "Test Snapshot 3"
         }
-    }
+    ]
 }
 	</literallayout>
       </sect4>

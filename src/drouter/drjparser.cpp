@@ -613,17 +613,13 @@ void DRJParser::DispatchMessage(const QJsonDocument &jdoc)
   }
 
   if(jdoc.object().contains("snapshots")) {
-    QJsonObject jo0=jdoc.object().value("snapshots").toObject();
-    int router=jo0.value("router").toInt();
+    int router=jdoc.object().value("router").toInt();
+    QJsonArray ja0=jdoc.object().value("snapshots").toArray();
     DRSnapshotListModel *smodel=j_snapshot_models.value(router);
     if(smodel!=NULL) {
-      for(QJsonObject::const_iterator it=jo0.begin();it!=jo0.end();it++) {
-	if(it.key().left(8)=="snapshot") {
-	  QJsonObject jo1=it.value().toObject();
-	  if(smodel!=NULL) {
-	    smodel->addSnapshot(jo1.value("name").toString());
-	  }
-	}
+      for(int i=0;i<ja0.size();i++) {
+	QJsonObject jo1=ja0.at(i).toObject();
+	smodel->addSnapshot(jo1.value("name").toString());
       }
     }
   }

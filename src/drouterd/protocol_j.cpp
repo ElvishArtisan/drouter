@@ -770,18 +770,18 @@ void ProtocolJ::SendSnapshotNames(unsigned router)
     SendError(DRJParser::NoRouterError);
     return;
   }
-
+  
   QJsonObject jo1;
   jo1.insert("router",QJsonValue((int)(1+router)));
+  QJsonArray ja0;
   for(int i=0;i<map->snapshotQuantity();i++) {
     QJsonObject jo0;
     jo0.insert("name",QJsonValue(map->snapshot(i)->name()));
-    jo1.insert(QString::asprintf("snapshot%d",i),jo0);
+    ja0.append(jo0);
   }
-  QJsonObject jo2;
-  jo2.insert("snapshots",jo1);
+  jo1.insert("snapshots",ja0);
   QJsonDocument jdoc;
-  jdoc.setObject(jo2);
+  jdoc.setObject(jo1);
 
   proto_socket->write(jdoc.toJson());
 }
@@ -914,7 +914,6 @@ QString ProtocolJ::SourceNamesSqlFields(DREndPointMap::RouterType type) const
 QJsonObject ProtocolJ::SourceNamesMessage(DREndPointMap::RouterType type,
 					  DRSqlQuery *q)
 {
-  QString json;
   QJsonObject jo0;
 
   if(type==DREndPointMap::AudioRouter) {
@@ -1024,7 +1023,6 @@ QString ProtocolJ::DestNamesSqlFields(DREndPointMap::RouterType type) const
 QJsonObject ProtocolJ::DestNamesMessage(DREndPointMap::RouterType type,
 					DRSqlQuery *q)
 {
-  QString json;
   QJsonObject jo0;
   QString name=q->value(1).toString();
   if(!q->value(5).toString().isEmpty()) {
