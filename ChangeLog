@@ -1186,3 +1186,5 @@
 2024-07-05 Fred Gleason <fredg@paravelsystems.com>
 	* Removed the 'DRActionListModel::setInputsModel()' and
 	'DRActionListModel::setOutputsModel()' methods.
+2024-07-05 Fred Gleason <fredg@paravelsystems.com>
+	* Fixed malformed text layout in the info area of xpointpanel(1)

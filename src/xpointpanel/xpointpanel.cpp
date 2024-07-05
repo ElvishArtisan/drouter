@@ -496,18 +496,18 @@ void MainWidget::inputHoveredEndpointChangedData(int router,int rownum)
     if(mdata.contains("hostAddress")&&mdata.contains("slot")) {
       tt+="Host Address: <strong>"+
 	mdata.value("hostAddress").toString()+
-	QString::asprintf("/%d</strong>",mdata.value("slot").toInt());
+	QString::asprintf("/%d</strong><br>",mdata.value("slot").toInt());
     }
     if(mdata.contains("streamAddress")) {
       tt+="Stream Address: <strong>"+
-	mdata.value("streamAddress").toString()+"</strong>";
+	mdata.value("streamAddress").toString()+"</strong><br>";
     }
     break;
 
   case DREndPointMap::GpioRouter:
     if(mdata.contains("gpioAddress")) {
       tt+="GPIO Address: <strong>"+
-	mdata.value("gpioAddress").toString()+"</strong>";
+	mdata.value("gpioAddress").toString()+"</strong><br>";
     }
     break;
 
@@ -547,7 +547,7 @@ void MainWidget::outputHoveredEndpointChangedData(int router,int rownum)
   }
   if(mdata.contains("hostAddress")&&mdata.contains("slot")) {
     tt+="Node Address/Slot: <strong>"+mdata.value("hostAddress").toString();
-    tt+=QString::asprintf("/%d</strong>",mdata.value("slot").toInt());
+    tt+=QString::asprintf("/%d</strong><br>",mdata.value("slot").toInt());
   }
   panel_description_text_label->setText(tt);
 }
@@ -565,7 +565,7 @@ void MainWidget::crosspointSelectedData(int slot_x,int slot_y)
   }
   else {
     panel_description_name_label->
-      setText("<strong>"+tr("Selected Crosspoint")+"</strong>");
+      setText("<strong>"+tr("Selected Crosspoint")+"</strong><br>");
     panel_description_text_label->
       setText("<strong>"+tr("Output (Destination)")+":"+"</strong><br>"+
 	      "&nbsp;&nbsp;&nbsp;"+
