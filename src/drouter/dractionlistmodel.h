@@ -45,8 +45,6 @@ class DRActionListModel : public QAbstractTableModel
   int routerNumber() const;
   void setFont(const QFont &font);
   void setPalette(const QPalette &pal);
-  void setInputsModel(DREndPointListModel *model);
-  void setOutputsModel(DREndPointListModel *model);
   QString timeFormat() const;
   void setTimeFormat(const QString &fmt);
   int columnCount(const QModelIndex &parent=QModelIndex()) const;
@@ -91,8 +89,6 @@ class DRActionListModel : public QAbstractTableModel
   QPalette d_palette;
   QVector<int> d_active_roles;
   QFontMetrics *d_font_metrics;
-  DREndPointListModel *d_inputs_model;
-  DREndPointListModel *d_outputs_model;
   int d_sort_column;
   Qt::SortOrder d_sort_order;
   QString d_time_format;

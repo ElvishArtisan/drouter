@@ -157,18 +157,6 @@ void DRActionListModel::setPalette(const QPalette &pal)
 }
 
 
-void DRActionListModel::setInputsModel(DREndPointListModel *model)
-{
-  d_inputs_model=model;
-}
-
-
-void DRActionListModel::setOutputsModel(DREndPointListModel *model)
-{
-  d_outputs_model=model;
-}
-
-
 QString DRActionListModel::timeFormat() const
 {
   return d_time_format;

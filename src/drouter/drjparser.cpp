@@ -542,8 +542,6 @@ void DRJParser::DispatchMessage(const QJsonDocument &jdoc)
 	DRActionListModel *amodel=new DRActionListModel(router,this);
 	amodel->setFont(j_model_font);
 	amodel->setTimeFormat(j_time_format);
-	amodel->setInputsModel(j_input_models.value(router));
-	amodel->setOutputsModel(j_output_models.value(router));
 	j_action_models[router]=amodel;
 
 	//  j_gpi_states[router]=QMap<int,QString>();

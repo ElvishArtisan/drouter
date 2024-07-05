@@ -46,7 +46,7 @@ MainWidget::MainWidget(QWidget *parent)
   bool ok=false;
   QList<int> router_filter;
   QString time_format="hh:mm:ss";
-  QString date_format="dddd, MMMM dd yyyy";
+  QString date_format="dddd, MMMM d yyyy";
 
   //
   // Initialize Variables

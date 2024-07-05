@@ -1183,3 +1183,6 @@
 2024-07-05 Fred Gleason <fredg@paravelsystems.com>
 	* Added a 'routes' block to the response to the 'SnapShots'
 	Protocol J command.
+2024-07-05 Fred Gleason <fredg@paravelsystems.com>
+	* Removed the 'DRActionListModel::setInputsModel()' and
+	'DRActionListModel::setOutputsModel()' methods.
