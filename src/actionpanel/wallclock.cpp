@@ -102,7 +102,8 @@ void WallClock::paintEvent(QPaintEvent *e)
   //
   // Time
   //
-  int time_w=d_time_metrics->width(timestr)+5+d_zone_metrics->width(zonestr);
+  int time_w=d_time_metrics->horizontalAdvance(timestr)+5+
+    d_zone_metrics->horizontalAdvance(zonestr);
   p->setFont(d_time_font);
   p->drawText((w-time_w)/2,d_time_metrics->height(),timestr);
 
@@ -110,15 +111,15 @@ void WallClock::paintEvent(QPaintEvent *e)
   // Time Zone
   //
   p->setFont(d_zone_font);
-  p->drawText((w-time_w)/2+d_time_metrics->width(timestr)+5,
+  p->drawText((w-time_w)/2+d_time_metrics->horizontalAdvance(timestr)+5,
 	      d_time_metrics->height(),zonestr);
 
   //
   // Date
   //
   p->setFont(d_date_font);
-  p->drawText((w-d_date_metrics->width(datestr))/2,h-d_date_metrics->height(),
-	      datestr);
+  p->drawText((w-d_date_metrics->horizontalAdvance(datestr))/2,
+	      h-d_date_metrics->height(),datestr);
 
   delete p;
 }

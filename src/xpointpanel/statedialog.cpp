@@ -85,8 +85,8 @@ StateDialog::StateDialog(int router,int endpt,DREndPointMap::Type gpio_type,
   resetData();
 
   QFontMetrics *fm=new QFontMetrics(d_name_label->font());
-  if(fm->width(d_name_label->text())>STATEDIALOG_CONTROL_WIDTH) {
-    d_width=fm->width(d_name_label->text())+20;
+  if(fm->horizontalAdvance(d_name_label->text())>STATEDIALOG_CONTROL_WIDTH) {
+    d_width=fm->horizontalAdvance(d_name_label->text())+20;
   }
   else {
     d_width=STATEDIALOG_CONTROL_WIDTH;

@@ -187,7 +187,7 @@ MainWidget::MainWidget(QWidget *parent)
   //
   // The Protocol J Connection
   //
-  panel_parser=new DRJParser(this);
+  panel_parser=new DRJParser(true,this);
   panel_parser->setRouterFilter(router_filter);
   connect(panel_parser,SIGNAL(connected(bool,DRJParser::ConnectionState)),
 	  this,SLOT(connectedData(bool,DRJParser::ConnectionState)));

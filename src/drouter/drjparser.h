@@ -54,7 +54,7 @@ class DRJParser : public QObject
 		  NoSnapshotError=4,NoSourceError=5,NoDestinationError=6,
 		  NotGpioRouterError=7,NoCommandError=8,TimeError=9,
 		  DatabaseError=10,LastError=11};
-  DRJParser(bool use_long_names,QObject *parent=0);
+  DRJParser(bool use_long_names,QObject *parent);
   ~DRJParser();
   void setModelFont(const QFont &font);
   void setModelPalette(const QPalette &pal);

@@ -300,8 +300,8 @@ bool SendMail(QString *err_msg,const QString &subject,const QString &body,
 	      const QString &cc_addrs,const QString &bcc_addrs,bool dry_run)
 {
   return SendMail(err_msg,subject,body,from_addr,
-		  to_addrs.split(",",QString::SkipEmptyParts),
-		  cc_addrs.split(",",QString::SkipEmptyParts),
-		  bcc_addrs.split(",",QString::SkipEmptyParts),
+		  to_addrs.split(",",Qt::SkipEmptyParts),
+		  cc_addrs.split(",",Qt::SkipEmptyParts),
+		  bcc_addrs.split(",",Qt::SkipEmptyParts),
 		  dry_run);
 }

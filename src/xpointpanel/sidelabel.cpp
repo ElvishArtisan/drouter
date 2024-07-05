@@ -57,7 +57,8 @@ void SideLabel::paintEvent(QPaintEvent *e)
   p->setBrush(palette().color(QPalette::WindowText));
   p->setFont(font());
 
-  p->drawText((size().height()-p->fontMetrics().width(text()))/2,-6,text());
+  p->drawText((size().height()-p->fontMetrics().horizontalAdvance(text()))/2,
+	      -6,text());
 
   p->end();
   delete p;

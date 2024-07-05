@@ -174,8 +174,8 @@ void EndpointList::addEndpoint(int router,int endpt,const QString &name)
   QFontMetrics fm(list_selected_font);
   for(QMap<int,QString>::const_iterator it=list_labels.begin();
       it!=list_labels.end();it++) {
-    if(fm.width(it.value())>list_width) {
-      list_width=fm.width(it.value());
+    if(fm.horizontalAdvance(it.value())>list_width) {
+      list_width=fm.horizontalAdvance(it.value());
     }
   }
 
@@ -516,7 +516,7 @@ void EndpointList::paintEvent(QPaintEvent *e)
 		    0,w-i+list_position-(list_width+15+10));
 	p->drawLine(0,w-i+list_position-(list_width+15+10),
 		    list_width+15+gpio_offset,w-i+list_position-(list_width+15+10));
-	p->drawText(((list_width+15-5)-p->fontMetrics().width(it.value())),w-(text_y+i+list_width+15)+list_position,
+	p->drawText(((list_width+15-5)-p->fontMetrics().horizontalAdvance(it.value())),w-(text_y+i+list_width+15)+list_position,
 		    it.value());
 	it++;
       }
@@ -545,7 +545,8 @@ void EndpointList::paintEvent(QPaintEvent *e)
 		    i-list_position,
 		    w+gpio_offset,
 		    i-list_position);
-	p->drawText(w-p->fontMetrics().width(it.value())-gpio_offset-5,
+	p->drawText(w-p->fontMetrics().horizontalAdvance(it.value())-
+		    gpio_offset-5,
 		    text_y+i-list_position,
 		    it.value());
 	it++;

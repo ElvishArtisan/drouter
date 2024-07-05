@@ -276,7 +276,7 @@ void MatrixBt41Mlr::readyReadData()
   bool found=false;
   QByteArray data=d_socket->readAll();
   QStringList f0=QString::fromUtf8(data).trimmed().
-    split(",",QString::KeepEmptyParts);
+    split(",",Qt::KeepEmptyParts);
   if((f0.at(0)=="S0L")&&(f0.size()==5)) {  // Audio crosspoint changed
     for(int i=1;i<=MATRIX_BT41MLR_SOURCE_QUAN;i++) {
       if(f0.at(i)=="1") {

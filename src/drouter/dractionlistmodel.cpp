@@ -235,7 +235,7 @@ QVariant DRActionListModel::data(const QModelIndex &index,int role) const
 
     case Qt::SizeHintRole:
       return QSize(ITEM_WIDTH_PADDING+
-		   d_font_metrics->width(d_texts.at(row).at(col).toString()),
+	  d_font_metrics->horizontalAdvance(d_texts.at(row).at(col).toString()),
 		   ITEM_HEIGHT);
       break;
 
@@ -366,8 +366,8 @@ void DRActionListModel::sort(int col,Qt::SortOrder order)
     while(changed) {
       changed=false;
       for(int i=1;i<d_sorts.size();i++) {
-	if(d_texts.at(d_sorts.at(i)).at(col)>
-	   d_texts.at(d_sorts.at(i-1)).at(col)) {
+	if(d_texts.at(d_sorts.at(i)).at(col).toString()>
+	   d_texts.at(d_sorts.at(i-1)).at(col).toString()) {
 	  int index=d_sorts.at(i);
 	  d_sorts[i]=d_sorts.at(i-1);
 	  d_sorts[i-1]=index;
@@ -381,8 +381,8 @@ void DRActionListModel::sort(int col,Qt::SortOrder order)
     while(changed) {
       changed=false;
       for(int i=1;i<d_sorts.size();i++) {
-	if(d_texts.at(d_sorts.at(i)).at(col)<
-	   d_texts.at(d_sorts.at(i-1)).at(col)) {
+	if(d_texts.at(d_sorts.at(i)).at(col).toString()<
+	   d_texts.at(d_sorts.at(i-1)).at(col).toString()) {
 	  int index=d_sorts.at(i);
 	  d_sorts[i]=d_sorts.at(i-1);
 	  d_sorts[i-1]=index;

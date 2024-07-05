@@ -192,7 +192,7 @@ MainWidget::MainWidget(QWidget *parent)
   //
   // The Protocol J Connection
   //
-  d_parser=new DRJParser(this);
+  d_parser=new DRJParser(false,this);
   d_parser->setModelFont(font());
   d_parser->setModelPalette(palette());
   d_parser->setDateFormat(date_format);

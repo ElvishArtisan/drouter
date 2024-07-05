@@ -305,7 +305,7 @@ void MatrixGvg7000::ProcessGvgCommand(const QByteArray &msg)
 {
   bool ok=false;
   bool was_processed=false;
-  QStringList f0=QString(msg).split('\t',QString::KeepEmptyParts);
+  QStringList f0=QString(msg).split('\t',Qt::KeepEmptyParts);
 
   if((f0.at(0)=="ST")&&(f0.size()==2)) {
     QDateTime dt=QDateTime::fromString(f0.at(1),"yyyyddMMhhmmss");

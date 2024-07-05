@@ -96,7 +96,7 @@ GpioParser *GpioParser::fromString(const QString &str,QString *err_msg)
   QString mask;
 
   bool ok=false;
-  QStringList f0=str.split("/",QString::KeepEmptyParts);
+  QStringList f0=str.split("/",Qt::KeepEmptyParts);
   if(f0.size()<2) {
     *err_msg=QObject::tr("invalid --gpio argument");
     return NULL;
@@ -107,7 +107,7 @@ GpioParser *GpioParser::fromString(const QString &str,QString *err_msg)
     //
     // Get the type
     //
-    QStringList f1=f0.at(i).split(":",QString::KeepEmptyParts);
+    QStringList f1=f0.at(i).split(":",Qt::KeepEmptyParts);
     if(!TypeFromString(f1.at(0).trimmed(),&type)) {
       *err_msg=QObject::tr("unknown widget type")+" \""+f1.at(0).trimmed()+"\"";
       return NULL;
