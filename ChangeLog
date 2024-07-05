@@ -1176,3 +1176,7 @@
 	to use a JSON array.
 2024-07-05 Fred Gleason <fredg@paravelsystems.com>
 	* Fixed compiler warnings.
+2024-07-05 Fred Gleason <fredg@paravelsystems.com>
+	* Fixed a fencepost error in drouterd(8) that caused specifying the
+	last input or output in a snapshot definition to generate an
+	'invalid input' or 'invalid output' error.

@@ -445,14 +445,14 @@ bool DREndPointMap::loadSet(QMap<int,DREndPointMap *> *maps,QStringList *msgs)
 	  }
 	}
 	for(int k=0;k<map->snapshot(j)->routeQuantity();k++) {
-	  if(map->snapshot(j)->routeOutput(k)>=
+	  if(map->snapshot(j)->routeOutput(k)>
 	     map->quantity(DREndPointMap::Output)) {
 	    msgs->clear();
 	    msgs->push_back(QString::asprintf("invalid output \"%d\"",map->snapshot(j)->routeOutput(k))+" in snapshot \""+map->snapshot(j)->name()+"\" in \""+
 			    pathname+"\"");
 	    return false;
 	  }
-	  if(map->snapshot(j)->routeInput(k)>=
+	  if(map->snapshot(j)->routeInput(k)>
 	     map->quantity(DREndPointMap::Input)) {
 	    msgs->clear();
 	    msgs->push_back(QString::asprintf("invalid input \"%d\"",map->snapshot(j)->routeInput(k))+" in snapshot \""+map->snapshot(j)->name()+"\" in \""+
