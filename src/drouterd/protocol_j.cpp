@@ -774,8 +774,17 @@ void ProtocolJ::SendSnapshotNames(unsigned router)
   jo1.insert("router",QJsonValue((int)(1+router)));
   QJsonArray ja0;
   for(int i=0;i<map->snapshotQuantity();i++) {
+    DRSnapshot *ss=map->snapshot(i);
     QJsonObject jo0;
-    jo0.insert("name",QJsonValue(map->snapshot(i)->name()));
+    jo0.insert("name",QJsonValue(ss->name()));
+    QJsonArray ja1;
+    for(int j=0;j<ss->routeQuantity();j++) {
+      QJsonObject jo2;
+      jo2.insert("output",QJsonValue(ss->routeOutput(j)));
+      jo2.insert("input",QJsonValue(ss->routeInput(j)));
+      ja1.append(jo2);
+    }
+    jo0.insert("routes",ja1);
     ja0.append(jo0);
   }
   jo1.insert("snapshots",ja0);
@@ -783,37 +792,6 @@ void ProtocolJ::SendSnapshotNames(unsigned router)
   jdoc.setObject(jo1);
 
   proto_socket->write(jdoc.toJson());
-}
-
-
-void ProtocolJ::SendSnapshotRoutes(unsigned router,const QString &snap_name)
-{
-  /*
-  DREndPointMap *map=NULL;
-  DRSnapshot *ss=NULL;
-
-  if((map=proto_maps.value(router))==NULL) {
-    SendError(DRJParser::NoRouterError);
-    return;
-  }
-  if((ss=map->snapshot(snap_name))==NULL) {
-    SendError(DRJParser::NoSnapshotError);
-    return;
-  }
-  proto_socket->write((QString("Begin SnapshotRoutes - ")+
-		       QString::asprintf("%u ",router+1)+
-		       snap_name+"\r\n").toUtf8());
-  for(int i=0;i<ss->routeQuantity();i++) {
-    proto_socket->write(QString("   ActivateRoute "+
-				QString::asprintf("%d ",1+router)+
-				QString::asprintf("%d ",1+ss->routeOutput(i))+
-				QString::asprintf("%d",1+ss->routeInput(i))+
-				"\r\n").toUtf8());
-  }
-  proto_socket->write((QString("End SnapshotRoutes - ")+
-		       QString::asprintf("%u ",router+1)+
-		       snap_name+"\r\n").toUtf8());
-  */
 }
 
 

@@ -68,7 +68,7 @@ class ProtocolJ : public Protocol
   void TriggerGpo(unsigned router,unsigned output,unsigned msecs,
 		  const QString &code);
   void SendSnapshotNames(unsigned router);
-  void SendSnapshotRoutes(unsigned router,const QString &snap_name);
+  //  void SendSnapshotRoutes(unsigned router,const QString &snap_name);
   void ActivateSnapshot(unsigned router,const QString &snapshot_name);
   void SendSourceInfo(unsigned router);
   QString SourceNamesSqlFields(DREndPointMap::RouterType type) const;

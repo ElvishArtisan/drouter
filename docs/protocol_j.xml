@@ -2836,6 +2836,12 @@
     "snapshots": [
         {
             "name": <replaceable>name-str</replaceable>
+            "routes": [
+                {
+                    "input": <replaceable>input-num</replaceable>
+                    "output": <replaceable>output-num</replaceable>
+                } ...
+            ]
         } ...
     ]
 }
@@ -2882,6 +2888,28 @@
 		String
 	      </entry>
 	    </row>
+	    <row>
+	      <entry>
+		<replaceable>input</replaceable>
+	      </entry>
+	      <entry>
+		Input number
+	      </entry>
+	      <entry>
+		Number
+	      </entry>
+	    </row>
+	    <row>
+	      <entry>
+		<replaceable>output</replaceable>
+	      </entry>
+	      <entry>
+		Output number
+	      </entry>
+	      <entry>
+		Number
+	      </entry>
+	    </row>
 	  </tbody>
 	</tgroup>
       </table>
@@ -2894,7 +2922,7 @@
 	<literallayout class="monospaced">
 {
     "snapshots" {
-        "router": 11
+        "router": 2
     }
 }
 	</literallayout>
@@ -2903,16 +2931,33 @@
 	<title>Response</title>
 	<literallayout class="monospaced">
 {
-    "router": 11,
+    "router": 2,
     "snapshots": [
         {
-            "name": "Test Snapshot 1"
+            "name": "RDProbe_On",
+            "routes": [
+                {
+                    "input": 29,
+                    "output": 1
+                },
+                {
+                    "input": 29,
+                    "output": 2
+                }
+            ]
         },
         {
-            "name": "Test Snapshot 2"
-        },
-        {
-            "name": "Test Snapshot 3"
+            "name": "RDProbe_Off",
+            "routes": [
+                {
+                    "input": 30,
+                    "output": 1
+                },
+                {
+                    "input": 30,
+                    "output": 2
+                }
+            ]
         }
     ]
 }
