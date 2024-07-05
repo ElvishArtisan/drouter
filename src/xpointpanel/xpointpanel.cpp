@@ -326,7 +326,7 @@ void MainWidget::routerBoxActivatedData(int n)
 					omodel->endPointNumber(j))==
 	 imodel->endPointNumber(i)) {
 	QGraphicsPixmapItem *item=panel_scene->addPixmap(*panel_greenx_map);
-	item->setPos(26*i+5,26*j+5);
+	item->setPos(26*j+5,26*i+5);
       }
     }
   }
