@@ -512,17 +512,19 @@ void EndpointList::paintEvent(QPaintEvent *e)
 	p->setFont(font());
       }
       if(it!=list_labels.end()) {
+	// Top Line
 	p->drawLine(0,w-(ENDPOINTLIST_ITEM_HEIGHT+i)+list_position-(list_width+15+10),
 		    0,w-i+list_position-(list_width+15+10));
+	// Vertical divider lines
 	p->drawLine(0,w-i+list_position-(list_width+15+10),
-		    list_width+15+gpio_offset,w-i+list_position-(list_width+15+10));
-	p->drawText(((list_width+15-5)-p->fontMetrics().horizontalAdvance(it.value())),w-(text_y+i+list_width+15)+list_position,
+		    list_width+15+gpio_offset+5,w-i+list_position-(list_width+15+10));
+	p->drawText(((list_width+15)-p->fontMetrics().horizontalAdvance(it.value())),w-(text_y+i+list_width+15)+list_position,
 		    it.value());
 	it++;
       }
     }
-    p->drawLine(0,w-ENDPOINTLIST_ITEM_HEIGHT*endpointQuantity()+list_position-(list_width+15+10),
-		list_width+15+gpio_offset,w-ENDPOINTLIST_ITEM_HEIGHT*endpointQuantity()+list_position-(list_width+15+10));
+        p->drawLine(0,w-ENDPOINTLIST_ITEM_HEIGHT*endpointQuantity()+list_position-(list_width+15+10),
+    		list_width+15+gpio_offset+6,w-ENDPOINTLIST_ITEM_HEIGHT*endpointQuantity()+list_position-(list_width+15+10));
   }
   else {
     //

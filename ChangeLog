@@ -1192,3 +1192,6 @@
 	* Fixed a regression in xpointpanel(1) that caused crosspoint
 	positions to be transposed between inputs and outputs when
 	initializing a router view.
+2024-07-05 Fred Gleason <fredg@paravelsystems.com>
+	* Fixed a regression in xpointpanel(1) that caused scrollbars to
+	appear even when not required.

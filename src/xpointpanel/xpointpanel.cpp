@@ -340,6 +340,9 @@ void MainWidget::routerBoxActivatedData(int n)
   if(panel_output_list->sizeHint().width()>info_width) {
     info_width=15+panel_output_list->sizeHint().width();
   }
+  //  QSize panel(24+panel_output_list->sizeHint().height()+info_width,
+  //	      15+panel_view->sizeHint().height()+
+  //	      panel_output_list->sizeHint().width());
   QSize panel(24+panel_output_list->sizeHint().height()+info_width,
 	      15+panel_view->sizeHint().height()+
   	      panel_output_list->sizeHint().width());
@@ -616,8 +619,7 @@ void MainWidget::resizeEvent(QResizeEvent *e)
 		panel_output_list->sizeHint().width()-24);
   panel_output_list->
     setGeometry(info_width+10,10,
-		e->size().width()-10,panel_output_list->sizeHint().width()+1);
-  
+  		e->size().width()-10,panel_output_list->sizeHint().width()+1+10);
   int view_width=3+26*panel_output_list->endpointQuantity();
   int bar_width=0;
   int view_height=3+26*panel_input_list->endpointQuantity();
@@ -643,17 +645,25 @@ void MainWidget::resizeEvent(QResizeEvent *e)
   // Horrible Hack to deal with the idiotic "disappearing" scroll bars in
   // Adwaita styles.
   //
-  if(QString(QApplication::style()->metaObject()->className()).toLower().
+   if(QString(QApplication::style()->metaObject()->className()).toLower().
      contains("adwaita")) {
     bar_width+=2;
     bar_height+=2;
   }
-
   panel_view->setGeometry(info_width+bar_x+9,
 			  panel_output_list->sizeHint().width()+bar_y+9,
-			  view_width+bar_width,
-			  view_height+bar_height);
+			  view_width+bar_width+2,
+			  view_height+bar_height+2);
+  /*
+  panel_output_list->
+    setGeometry(info_width+10,
+		10,
+  		e->size().width()-10,
+		//		panel_view->geometry().height()+panel_view->geometry().y());
+    		panel_output_list->sizeHint().width()+1+10);
+  */
 
+  
   setMinimumWidth(10+panel_input_list->width());
   setMinimumHeight(10+panel_output_list->height());
 }
