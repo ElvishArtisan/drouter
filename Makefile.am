@@ -44,8 +44,12 @@ rpm:	dist
 	rm $(HOME)/rpmbuild/SOURCES/drouter-$(VERSION).tar.gz
 	rm -rf $(HOME)/rpmbuild/BUILD/drouter-$(VERSION)
 
+pkgconfigdir = $(libdir)/pkgconfig
+pkgconfig_DATA = drouter.pc
+
 EXTRA_DIST = autogen.sh\
              build_debs.sh.in\
+             drouter.pc.in\
              get_distro.pl\
              get_target.sh\
              GFDL-1.3\
@@ -75,6 +79,7 @@ DISTCLEANFILES = *.service\
                  py-compile
 
 MAINTAINERCLEANFILES = *~\
+                       *.pc\
                        *.spec\
                        *.tar.gz\
                        aclocal.m4\

@@ -1200,3 +1200,5 @@
 	in the 'drouter-python' DEB package from
 	'/usr/lib/python3/site-packages/' to
 	'/usr/lib/python3/dist-packages/'.
+2024-07-19 Fred Gleason <fredg@paravelsystems.com>
+	* Added a 'drouter-dev' DEB package.

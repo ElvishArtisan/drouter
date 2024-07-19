@@ -315,6 +315,7 @@ AC_CONFIG_FILES([ \
     src/Makefile \
     systemd/Makefile \
     systemd/drouter.service \
+    drouter.pc\
     drouter.spec \
     build_debs.sh \
     Makefile ])

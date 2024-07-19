@@ -24,6 +24,8 @@ binary:
 	mkdir -p debian/drouter/usr/sbin
 	mv debian/tmp/usr/sbin/dprotod debian/drouter/usr/sbin/
 	mv debian/tmp/usr/sbin/drouterd debian/drouter/usr/sbin/
+	mkdir -p debian/drouter/usr/lib
+	mv debian/tmp/usr/lib/libdrouter.so* debian/drouter/usr/lib/
 	mkdir -p debian/drouter/usr/share/man/man1
 	mv debian/tmp/usr/share/man/man1/dmap.1 debian/drouter/usr/share/man/man1/
 	mkdir -p debian/drouter/usr/share/man/man5
@@ -65,6 +67,7 @@ binary:
 # drouter-panels
 #
 	mkdir -p debian/drouter-panels/usr/bin
+	mv debian/tmp/usr/bin/actionpanel debian/drouter-panels/usr/bin/
 	mv debian/tmp/usr/bin/buttonpanel debian/drouter-panels/usr/bin/
 	mv debian/tmp/usr/bin/eventlogpanel debian/drouter-panels/usr/bin/
 	mv debian/tmp/usr/bin/outputpanel debian/drouter-panels/usr/bin/
@@ -80,6 +83,16 @@ binary:
 	mv debian/tmp/usr/share/man/man1/xypanel.1 debian/drouter-panels/usr/share/man/man1/
 	mkdir debian/drouter-panels/usr/share/icons/
 	mv debian/tmp/usr/share/icons/hicolor debian/drouter-panels/usr/share/icons/
+
+#
+# drouter-dev
+#
+	mkdir -p debian/drouter-dev/usr/include
+	mv debian/tmp/usr/include/drouter debian/drouter-dev/usr/include/
+	mkdir -p debian/drouter-dev/usr/lib
+	mv debian/tmp/usr/lib/*.a debian/drouter-dev/usr/lib
+	mkdir -p debian/drouter-dev/usr/share
+	mv debian/tmp/usr/lib/pkgconfig debian/drouter-dev/usr/share/
 
 	dh_strip_nondeterminism
 	dh_compress

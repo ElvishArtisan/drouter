@@ -17,9 +17,7 @@ Package: drouter-panels
 Architecture: any
 Depends: ${misc:Depends}, firefox, lwmon
 Description: GUI control panels for Drouter
- GUI control panels for Drouter. Most of these actually use Software
- Authority protocol and so should work fine with the various PathFinder
- versions as well.
+ GUI control panels for Drouter.
 
 Package: drouter-python
 Architecture: all
@@ -29,3 +27,9 @@ Description: Python API for using state scripts with Drouter
  that can be used to provide automated responses to changes in the state
  of the Livewire network.
 
+Package: drouter-dev
+Architecture: any
+Depends: ${misc:Depends}
+Description: Development components for the Drouter router framework.
+ These are the library components and headers required to develop application
+ for the Drouter router framework.
