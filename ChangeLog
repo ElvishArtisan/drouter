@@ -986,3 +986,8 @@
 	* Fixed a bug in dmap(1) that caused map output to specify a
 	'RouterNumber=' value of '0' when no '--router-number' switch
 	was given.
+2024-07-19 Fred Gleason <fredg@paravelsystems.com>
+	* Moved the installation location of the 'Drouter' python module
+	in the 'drouter-python' DEB package from
+	'/usr/lib/python3/site-packages/' to
+	'/usr/lib/python3/dist-packages/'.
