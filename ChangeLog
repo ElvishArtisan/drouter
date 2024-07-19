@@ -1195,3 +1195,8 @@
 2024-07-05 Fred Gleason <fredg@paravelsystems.com>
 	* Fixed a regression in xpointpanel(1) that caused scrollbars to
 	appear even when not required.
+2024-07-19 Fred Gleason <fredg@paravelsystems.com>
+	* Moved the installation location of the 'Drouter' python module
+	in the 'drouter-python' DEB package from
+	'/usr/lib/python3/site-packages/' to
+	'/usr/lib/python3/dist-packages/'.
