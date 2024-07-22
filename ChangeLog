@@ -997,3 +997,5 @@
 	* Removed superfluous rivendell elements from 'configure.ac'.
 	* Fixed a bug in 'configure.ac' that failed to correctly identify
 	Linux Mint.
+2024-07-22 Fred Gleason <fredg@paravelsystems.com>
+	* Removed 'debian/python_install.sh'.
