@@ -81,9 +81,6 @@ case "$ar_distro_id" in
        AC_SUBST(QT_MYSQL_PKG,"libqt5sql5-mysql")
        AC_SUBST(DOC_PATH,"/usr/share/doc/rivendell")
        AC_SUBST(HAVE_USERMODE,"no")
-       AC_SUBST(RDALSACONFIG_DESKTOP_FILE,"rivendell-rdalsaconfig-sudo.desktop")
-       AC_SUBST(RDDBCONFIG_DESKTOP_FILE,"rivendell-rddbconfig-sudo.desktop")
-       AC_SUBST(PYPAD_DEPS,"python3 python3-pycurl python3-requests python3-pyserial python3-mysql python3-urllib3")
      ;;
 
      raspbian)
@@ -98,12 +95,9 @@ case "$ar_distro_id" in
        AC_SUBST(QT_MYSQL_PKG,"libqt5sql5-mysql")
        AC_SUBST(DOC_PATH,"/usr/share/doc/rivendell")
        AC_SUBST(HAVE_USERMODE,"no")
-       AC_SUBST(RDALSACONFIG_DESKTOP_FILE,"rivendell-rdalsaconfig-sudo.desktop")
-       AC_SUBST(RDDBCONFIG_DESKTOP_FILE,"rivendell-rddbconfig-sudo.desktop")
-       AC_SUBST(PYPAD_DEPS,"python3 python3-pycurl python3-requests python3-pyserial python3-mysql python3-urllib3")
      ;;
 
-     ubuntu)
+     linuxmint|ubuntu)
        AC_MSG_NOTICE([Distro is Debian-ish])
        DISTRO_FAMILY="|                       Distribution Family ... Debian    |"
        DISTRO_IS_DEBIANISH=yes
@@ -115,9 +109,6 @@ case "$ar_distro_id" in
        AC_SUBST(QT_MYSQL_PKG,"libqt5sql5-mysql")
        AC_SUBST(DOC_PATH,"/usr/share/doc/rivendell")
        AC_SUBST(HAVE_USERMODE,"no")
-       AC_SUBST(RDALSACONFIG_DESKTOP_FILE,"rivendell-rdalsaconfig-sudo.desktop")
-       AC_SUBST(RDDBCONFIG_DESKTOP_FILE,"rivendell-rddbconfig-sudo.desktop")
-       AC_SUBST(PYPAD_DEPS,"python3 python3-pycurl python3-requests python3-pyserial python3-mysql python3-urllib3")
      ;;
 
      centos|fedora|rhel|rocky)
@@ -142,9 +133,6 @@ case "$ar_distro_id" in
        AC_SUBST(QT_MYSQL_PKG,"qt5-qtbase-mysql")
        AC_SUBST(DOC_PATH,"/usr/share/doc/rivendell-$PACKAGE_VERSION")
        AC_SUBST(HAVE_USERMODE,"yes")
-       AC_SUBST(RDALSACONFIG_DESKTOP_FILE,"rivendell-rdalsaconfig-root.desktop")
-       AC_SUBST(RDDBCONFIG_DESKTOP_FILE,"rivendell-rddbconfig-root.desktop")
-       AC_SUBST(PYPAD_DEPS,"python36 python36-pycurl python36-requests python36-pyserial python36-mysql python36-urllib3")
        ;;
 
      *)
@@ -157,9 +145,6 @@ case "$ar_distro_id" in
        AC_SUBST(QT_MYSQL_PKG,"qt-mysql")
        AC_SUBST(DOC_PATH,"/usr/share/doc/rivendell")
        AC_SUBST(HAVE_USERMODE,"no")
-       AC_SUBST(RDALSACONFIG_DESKTOP_FILE,"rivendell-rdalsaconfig.desktop")
-       AC_SUBST(RDDBCONFIG_DESKTOP_FILE,"rivendell-rddbconfig.desktop")
-       AC_SUBST(PYPAD_DEPS,"python3 python3-pycurl python3-requests python3-pyserial python3-mysql python3-urllib3")
      ;;
 esac
 
@@ -300,6 +285,20 @@ chmod 755 scripts/install_python.sh
 ./link_common.sh xpointpanel
 ./link_common.sh xypanel
 
+AC_MSG_NOTICE()
+AC_MSG_NOTICE("|---------------------------------------------------------|")
+AC_MSG_NOTICE("|          *** DROUTER CONFIGURATION SUMMARY ***          |")
+AC_MSG_NOTICE("|---------------------------------------------------------|")
+AC_MSG_NOTICE("| Platform Information:                                   |")
+AC_MSG_NOTICE("$DISTRO_NAME")
+AC_MSG_NOTICE("$DISTRO_FAMILY")
+if test $I18N_ENABLED ; then
+AC_MSG_NOTICE("|                          Update I18N Data ... Yes       |")
+else
+AC_MSG_NOTICE("|                          Update I18N Data ... No        |")
+fi
+AC_MSG_NOTICE("|---------------------------------------------------------|")
+AC_MSG_NOTICE()
 AC_MSG_NOTICE()
 AC_MSG_NOTICE(Now enter 'make' to build the software.)
 AC_MSG_NOTICE()

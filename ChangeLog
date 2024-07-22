@@ -993,3 +993,7 @@
 	'/usr/lib/python3/dist-packages/'.
 2024-07-22 Fred Gleason <fredg@paravelsystems.com>
 	* Fixed a bug that broke the 'make deb' target on Raspberry Pi OS.
+2024-07-22 Fred Gleason <fredg@paravelsystems.com>
+	* Removed superfluous rivendell elements from 'configure.ac'.
+	* Fixed a bug in 'configure.ac' that failed to correctly identify
+	Linux Mint.
