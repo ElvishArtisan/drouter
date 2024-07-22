@@ -1,3 +1,4 @@
+
 ## automake.am
 ##
 ## Automake.am for drouter debian/
@@ -30,6 +31,7 @@ EXTRA_DIST = changelog\
              prerm\
              postinst\
              postrm\
+             python_install.sh\
              rules
 
 MAINTAINERCLEANFILES = changelog\

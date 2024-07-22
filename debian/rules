@@ -48,7 +48,7 @@ binary:
 	mv debian/tmp/usr/bin/dlist debian/drouter-python/usr/bin/
 	mv debian/tmp/usr/bin/dstate debian/drouter-python/usr/bin/
 	mkdir -p debian/drouter-python/usr/lib/python3/dist-packages
-	mv debian/tmp/usr/lib/python*/site-packages/* debian/drouter-python/usr/lib/python3/dist-packages/
+	./debian/python_install.sh debian/tmp/usr/lib/python3
 	mkdir -p debian/drouter-python/usr/share/man/man1
 	mv debian/tmp/usr/share/man/man1/dlist.1 debian/drouter-python/usr/share/man/man1/
 	mv debian/tmp/usr/share/man/man1/dstate.1 debian/drouter-python/usr/share/man/man1/

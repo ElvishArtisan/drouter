@@ -991,3 +991,5 @@
 	in the 'drouter-python' DEB package from
 	'/usr/lib/python3/site-packages/' to
 	'/usr/lib/python3/dist-packages/'.
+2024-07-22 Fred Gleason <fredg@paravelsystems.com>
+	* Fixed a bug that broke the 'make deb' target on Raspberry Pi OS.
