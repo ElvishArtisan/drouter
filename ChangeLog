@@ -1002,3 +1002,5 @@
 2024-07-22 Fred Gleason <fredg@paravelsystems.com>
 	* Added a 'libqt5sql5-mysql' dependency to the 'drouter-panels'
 	DEB package.
+2024-07-22 Fred Gleason <fredg@paravelsystems.com>
+	* Incremented the package version to 1.0.0rc4int13.

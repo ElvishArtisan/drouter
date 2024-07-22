@@ -1,6 +1,13 @@
 This is the NEWS file for the drouter package.
 
 -------------------------------------------------------------------------------
+v1.0.0rc4int13 - 22 July 2024
+
+Changes:
+   Packaging. Added package support for Debian.
+
+   Various bugfixes. See the 'ChangeLog' for details.
+-------------------------------------------------------------------------------
 v1.0.0rc4int12 - 20 March 2023
 
 Changes:
