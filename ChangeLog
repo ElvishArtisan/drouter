@@ -999,3 +999,6 @@
 	Linux Mint.
 2024-07-22 Fred Gleason <fredg@paravelsystems.com>
 	* Removed 'debian/python_install.sh'.
+2024-07-22 Fred Gleason <fredg@paravelsystems.com>
+	* Added a 'libqt5sql5-mysql' dependency to the 'drouter-panels'
+	DEB package.

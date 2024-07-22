@@ -15,7 +15,7 @@ Description: Dynamic router framework for Livewire
 
 Package: drouter-panels
 Architecture: any
-Depends: ${misc:Depends}, firefox, lwmon
+Depends: ${misc:Depends}, firefox, lwmon, libqt5sql5-mysql
 Description: GUI control panels for Drouter
  GUI control panels for Drouter. Most of these actually use Software
  Authority protocol and so should work fine with the various PathFinder
