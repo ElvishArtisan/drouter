@@ -372,8 +372,7 @@
 	added, with <replaceable>num</replaceable> starting with
 	<userinput>1</userinput> and incremented for each additional section.
 	Each such section corresponds to a set of one or more switcher
-	device(s), to be controlled as a constellation of devices constituting
-	a single router matrix.
+	device(s), to be controlled as a constellation of devices.
       </para>
       <variablelist>
 	<varlistentry>
