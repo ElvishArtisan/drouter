@@ -1205,3 +1205,8 @@
 2024-09-13 Fred Gleason <fredg@paravelsystems.com>
 	* Tweaked verbiage in the '[Matrix<num>]' section of the
 	drouter(5) man page.
+2024-09-13 Fred Gleason <fredg@paravelsystems.com>
+	* Adjusted indentation in 'python/api/StateEngine.py' for
+	consistency.
+	* Fixed bugs in dprotod(8) that caused SQL errors to be generated
+	when initializing alarm resources.

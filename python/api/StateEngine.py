@@ -222,7 +222,7 @@ class StateEngine(object):
         self.__change_callback=cb
 
     def setAlarmCallback(self,cb):
-     """
+        """
         Set the 'alarm' callback, called by StateEngine immediately after
         reception of an audio alarm (a CLIP or SILENCE event).
 
@@ -232,11 +232,11 @@ class StateEngine(object):
              engine: reference to the calling StateEngine
 
               alarm: reference to an Alarm object
-     """
-     self.__alarm_callback=cb
+        """
+        self.__alarm_callback=cb
 
     def setTetherCallback(self,cb):
-     """
+        """
         Set the 'tether' callback, called by StateEngine immediately after
         reception of change of state in the Tether system.
 
@@ -246,8 +246,8 @@ class StateEngine(object):
              engine: reference to the calling StateEngine
 
               state: Boolean containing the Tether state
-     """
-     self.__tether_callback=cb
+        """
+        self.__tether_callback=cb
 
     def clearCrosspoint(self,out_host_addr,out_slot):
         """
