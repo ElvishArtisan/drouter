@@ -1007,3 +1007,5 @@
 2024-09-16 Fred Gleason <fredg@paravelsystems.com>
 	* Fixed bugs in dprotod(8) that caused SQL errors to be generated
 	when initializing alarm resources.
+2024-09-16 Fred Gleason <fredg@paravelsystems.com>
+	* Incremented the package version to 1.0.0rc4int14.

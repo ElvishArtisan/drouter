@@ -1,6 +1,12 @@
 This is the NEWS file for the drouter package.
 
 -------------------------------------------------------------------------------
+v1.0.0rc4int14 - 16 September 2024
+
+Changes:
+   Fixed bugs in dprotod(8) that caused SQL errors to be generated when
+   initializing alarm resources.
+-------------------------------------------------------------------------------
 v1.0.0rc4int13 - 22 July 2024
 
 Changes:
