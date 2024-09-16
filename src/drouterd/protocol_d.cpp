@@ -551,7 +551,9 @@ void ProtocolD::ProcessCommand(const QString &cmd)
   if(keyword=="listclips") {
     for(int j=0;j<2;j++) {
       sql=AlarmSqlFields("SOURCES","CLIP",j)+
-	"from `SOURCES` where "+
+	"from `SOURCES` left join `NODES` "+
+	"on `SOURCES`.`HOST_ADDRESS`=`NODES`.`HOST_ADDRESS` "+
+	"where "+
 	QString::asprintf("`NODES`.`MATRIX_TYPE`=%u ",Config::LwrpMatrix)+
 	"order by `SOURCES`.`HOST_ADDRESS`,`SOURCES`.`SLOT`";
       q=new SqlQuery(sql);
@@ -563,7 +565,9 @@ void ProtocolD::ProcessCommand(const QString &cmd)
     }
     for(int j=0;j<2;j++) {
       sql=AlarmSqlFields("DESTINATIONS","CLIP",j)+
-	"from `DESTINATIONS` where "+
+	"from `DESTINATIONS` left join `NODES` "+
+	"on `DESTINATIONS`.`HOST_ADDRESS`=`NODES`.`HOST_ADDRESS` "+
+	"where "+
 	QString::asprintf("`NODES`.`MATRIX_TYPE`=%u ",Config::LwrpMatrix)+
 	"order by `DESTINATIONS`.`HOST_ADDRESS`,`DESTINATIONS`.`SLOT`";
       q=new SqlQuery(sql);
@@ -581,7 +585,9 @@ void ProtocolD::ProcessCommand(const QString &cmd)
     proto_clips_subscribed=true;
     for(int j=0;j<2;j++) {
       sql=AlarmSqlFields("SOURCES","CLIP",j)+
-	"from `SOURCES` where "+
+	"from `SOURCES` left join `NODES` "+
+	"on `SOURCES`.`HOST_ADDRESS`=`NODES`.`HOST_ADDRESS` "+
+	"where "+
 	QString::asprintf("`NODES`.`MATRIX_TYPE`=%u ",Config::LwrpMatrix)+
 	"order by `SOURCES`.`HOST_ADDRESS`,`SOURCES`.`SLOT`";
       q=new SqlQuery(sql);
@@ -593,7 +599,9 @@ void ProtocolD::ProcessCommand(const QString &cmd)
     }
     for(int j=0;j<2;j++) {
       sql=AlarmSqlFields("DESTINATIONS","CLIP",j)+
-	"from `DESTINATIONS` where "+
+	"from `DESTINATIONS` left join `NODES` "+
+	"on `DESTINATIONS`.`HOST_ADDRESS`=`NODES`.`HOST_ADDRESS` "+
+	"where "+
 	QString::asprintf("`NODES`.`MATRIX_TYPE`=%u ",Config::LwrpMatrix)+
 	"order by `DESTINATIONS`.`HOST_ADDRESS`,`DESTINATIONS`.`SLOT`";
       q=new SqlQuery(sql);
@@ -610,7 +618,9 @@ void ProtocolD::ProcessCommand(const QString &cmd)
   if(keyword=="listsilences") {
     for(int j=0;j<2;j++) {
       sql=AlarmSqlFields("SOURCES","SILENCE",j)+
-	"from `SOURCES` where "+
+	"from `SOURCES` left join `NODES` "+
+	"on `SOURCES`.`HOST_ADDRESS`=`NODES`.`HOST_ADDRESS` "+
+	"where "+
 	QString::asprintf("`NODES`.`MATRIX_TYPE`=%u ",Config::LwrpMatrix)+
 	"order by `SOURCES`.`HOST_ADDRESS`,`SOURCES`.`SLOT`";
       q=new SqlQuery(sql);
@@ -622,7 +632,9 @@ void ProtocolD::ProcessCommand(const QString &cmd)
     }
     for(int j=0;j<2;j++) {
       sql=AlarmSqlFields("DESTINATIONS","SILENCE",j)+
-	"from `DESTINATIONS` where "+
+	"from `DESTINATIONS` left join 'NODES' "+
+	"on `DESTINATIONS`.`HOST_ADDRESS`=`NODES`.`HOST_ADDRESS` "+
+	"where "+
 	QString::asprintf("`NODES`.`MATRIX_TYPE`=%u ",Config::LwrpMatrix)+
 	"order by `DESTINATIONS`.`HOST_ADDRESS`,`DESTINATIONS`.`SLOT`";
       q=new SqlQuery(sql);
@@ -640,7 +652,9 @@ void ProtocolD::ProcessCommand(const QString &cmd)
     proto_silences_subscribed=true;
     for(int j=0;j<2;j++) {
       sql=AlarmSqlFields("SOURCES","SILENCE",j)+
-	"from `SOURCES` where "+
+	"from `SOURCES` left join `NODES` "+
+	"on `SOURCES`.`HOST_ADDRESS`=`NODES`.`HOST_ADDRESS` "+
+	"where "+
 	QString::asprintf("`NODES`.`MATRIX_TYPE`=%u ",Config::LwrpMatrix)+
 	"order by `SOURCES`.`HOST_ADDRESS`,`SOURCES`.`SLOT`";
       q=new SqlQuery(sql);
@@ -652,7 +666,9 @@ void ProtocolD::ProcessCommand(const QString &cmd)
     }
     for(int j=0;j<2;j++) {
       sql=AlarmSqlFields("DESTINATIONS","SILENCE",j)+
-	"from `DESTINATIONS` where "+
+	"from `DESTINATIONS` left join `NODES` "+
+	"on `DESTINATIONS`.`HOST_ADDRESS`=`NODES`.`HOST_ADDRESS` "+
+	"where "+
 	QString::asprintf("`NODES`.`MATRIX_TYPE`=%u ",Config::LwrpMatrix)+
 	"order by `DESTINATIONS`.`HOST_ADDRESS`,`DESTINATIONS`.`SLOT`";
       q=new SqlQuery(sql);

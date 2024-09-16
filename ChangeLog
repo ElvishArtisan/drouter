@@ -1004,3 +1004,6 @@
 	DEB package.
 2024-07-22 Fred Gleason <fredg@paravelsystems.com>
 	* Incremented the package version to 1.0.0rc4int13.
+2024-09-13 Fred Gleason <fredg@paravelsystems.com>
+	* Fixed bugs in dprotod(8) that caused SQL errors to be generated
+	when initializing alarm resources.
