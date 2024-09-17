@@ -106,7 +106,7 @@ case "$ar_distro_id" in
      debian)
        AC_MSG_NOTICE([Distro is Debian-ish])
        DISTRO_FAMILY="|                       Distribution Family ... Debian    |"
-       DISTRO_IS_DEBIANISH=yes
+       DISTRO_FAMILY="|                      Distribution Family ... Debian     |"
        DISTRO_NAME="|                         Distribution Name ... Debian    |"
        AC_SUBST(APACHE_PKG,"apache2")
        AC_SUBST(APACHE_CONFIG_DIR,"/etc/apache2/conf.d")
@@ -122,7 +122,7 @@ case "$ar_distro_id" in
 
      raspbian)
        AC_MSG_NOTICE([Distro is Debian-ish])
-       DISTRO_FAMILY="|                      Distribution Family ... Debian    |"
+         DISTRO_FAMILY="|                      Distribution Family ... Debian     |"
        DISTRO_IS_DEBIANISH=yes
        DISTRO_NAME="|                        Distribution Name ... Raspbian  |"
        AC_SUBST(APACHE_PKG,"apache2")
@@ -137,11 +137,16 @@ case "$ar_distro_id" in
        AC_SUBST(PYPAD_DEPS,"python3 python3-pycurl python3-requests python3-pyserial python3-mysql python3-urllib3")
      ;;
 
-     ubuntu)
-       AC_MSG_NOTICE([Distro is Debian-ish])
-       DISTRO_FAMILY="|                       Distribution Family ... Debian    |"
+     linuxmint|ubuntu)
+     AC_MSG_NOTICE([Distro is Debian-ish])
+         DISTRO_FAMILY="|                      Distribution Family ... Debian     |"
+       if test $ar_distro_id = "linuxmint" ; then
+         DISTRO_NAME="|                        Distribution Name ... Linux Mint |"
+       fi
+       if test $ar_distro_id = "ubuntu" ; then
+         DISTRO_NAME="|                        Distribution Name ... Ubuntu    |"
+       fi
        DISTRO_IS_DEBIANISH=yes
-       DISTRO_NAME="|                         Distribution Name ... Ubuntu    |"
        AC_SUBST(APACHE_PKG,"apache2")
        AC_SUBST(APACHE_CONFIG_DIR,"/etc/apache2/conf.d")
        AC_SUBST(USERMODE_PKG,"")
@@ -323,6 +328,14 @@ AC_OUTPUT()
 chmod 755 build_debs.sh
 chmod 755 scripts/install_python.sh
 
+AC_MSG_NOTICE()
+AC_MSG_NOTICE("|---------------------------------------------------------|")
+AC_MSG_NOTICE("|          *** DROUTER CONFIGURATION SUMMARY ***          |")
+AC_MSG_NOTICE("|---------------------------------------------------------|")
+AC_MSG_NOTICE("| Platform Information:                                   |")
+AC_MSG_NOTICE("$DISTRO_NAME")
+AC_MSG_NOTICE("$DISTRO_FAMILY")
+AC_MSG_NOTICE("|---------------------------------------------------------|")
 AC_MSG_NOTICE()
 AC_MSG_NOTICE(Now enter 'make' to build the software.)
 AC_MSG_NOTICE()

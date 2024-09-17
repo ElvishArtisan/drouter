@@ -1210,3 +1210,8 @@
 	consistency.
 	* Fixed bugs in dprotod(8) that caused SQL errors to be generated
 	when initializing alarm resources.
+2024-09-17 Fred Gleason <fredg@paravelsystems.com>
+	* Added printout of 'Distribution Family' and 'Distrbution Name'
+	to 'configure.ac'.
+	* Fixed a bug in 'configure.ac' that caused the 'Drouter' Python
+	module to be installed in the incorrect location on Linux Mint.
