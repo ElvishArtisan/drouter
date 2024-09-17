@@ -1215,3 +1215,8 @@
 	to 'configure.ac'.
 	* Fixed a bug in 'configure.ac' that caused the 'Drouter' Python
 	module to be installed in the incorrect location on Linux Mint.
+2024-09-17 Fred Gleason <fredg@paravelsystems.com>
+	* Changed the 'Switchyard5' dependency to require v0.24.0 or
+	greater.
+	* Added the actionpanel(1) man page to the 'drouter-panels(1) DEB
+	package.
