@@ -72,7 +72,7 @@ FromAddress=noreply@example.com
 ;  6 - Info (informational)
 ;  7 - Debug (debug-level messages)
 ; -1 - Disable (disable logging)
-IpcLogPriority=-1
+IpcLogPriority=7
 
 
 ; NodeLogPriority=<prio>
@@ -89,7 +89,7 @@ IpcLogPriority=-1
 ;  6 - Info (informational)
 ;  7 - Debug (debug-level messages)
 ; -1 - Disable (disable logging)
-NodeLogPriority=-1
+NodeLogPriority=7
 
 
 ; LwrpPassword=<passwd>

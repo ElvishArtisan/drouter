@@ -1223,3 +1223,8 @@
 2024-09-18 Fred Gleason <fredg@paravelsystems.com>
 	* Fixed a regression in drouterd(8) that caused the database to
 	fail to be initialized correctly.
+2024-09-18 Fred Gleason <fredg@paravelsystems.com>
+	* Changed the default value of the '[Drouterd]':'IpcLogPriority='
+	directive in drouter(5) from '-1' to '7' (LOG_DEBUG).
+	* Changed the default value of the '[Drouterd]':'NodeLogPriority='
+	directive in drouter(5) from '-1' to '7' (LOG_DEBUG).

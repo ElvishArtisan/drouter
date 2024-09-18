@@ -1533,7 +1533,7 @@ bool DRouter::StartLivewire(QString *err_msg)
       if(!drouter_advt_sockets.back()->
 	 bind(ifaces->ipv4Address(i),SWITCHYARD_ADVERTS_PORT)) {
 	syslog(LOG_ERR,"unable to bind %s:%d, aborting",
-	       (const char *)ifaces->ipv4Address(i).toString().toUtf8(),
+	       ifaces->ipv4Address(i).toString().toUtf8().constData(),
 	       SWITCHYARD_ADVERTS_PORT);
 	exit(1);
       }
