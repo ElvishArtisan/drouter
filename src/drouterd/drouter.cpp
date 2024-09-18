@@ -1123,7 +1123,6 @@ bool DRouter::StartDb(QString *err_msg)
   q=new DRSqlQuery(sql);
   while(q->next()) {
     if(q->value(0).toString()=="PERM_VERSION") {
-      schema_ver=1;
       sql=QString("select ")+
 	"`DB` "+  // 00
 	"from `PERM_VERSION`";
@@ -1131,7 +1130,13 @@ bool DRouter::StartDb(QString *err_msg)
       if(q1->first()) {
 	schema_ver=q1->value(0).toInt();
       }
+      else {
+	*err_msg=tr("unable to determine database version (missing/corrupt database?)");
+      }
       delete q1;
+      if(schema_ver<1) {
+	return false;
+      }
     }
     if(q->value(0).toString().left(5)!="PERM_") {
       sql=QString("drop table `")+q->value(0).toString()+"`";
@@ -1144,10 +1149,16 @@ bool DRouter::StartDb(QString *err_msg)
   // Permanent Tables
   //
   if(schema_ver<1) {
+    //
+    // Create PERM_VERSION table
+    //
     sql=QString("create table if not exists `PERM_VERSION` (")+
       "`DB` int not null primary key"+
       ") "+
       "engine InnoDB character set utf8 collate utf8_general_ci";
+    DRSqlQuery::apply(sql);
+
+    sql=QString("insert into `PERM_VERSION` set `DB`=1");
     DRSqlQuery::apply(sql);
 
     schema_ver=1;

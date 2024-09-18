@@ -165,8 +165,7 @@ MainObject::MainObject(QObject *parent)
   connect(main_drouter,SIGNAL(routeEngineRefresh(int)),
 	  main_route_engine,SLOT(refresh(int)));
   if(!main_drouter->start(&err_msg)) {
-    syslog(LOG_ERR,"core router startup error: %s, aborting",
-	   (const char *)err_msg.toUtf8());
+    syslog(LOG_ERR,"%s, aborting",err_msg.toUtf8().constData());
     exit(1);
   }
 

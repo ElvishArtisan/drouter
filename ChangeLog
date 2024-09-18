@@ -1220,3 +1220,6 @@
 	greater.
 	* Added the actionpanel(1) man page to the 'drouter-panels(1) DEB
 	package.
+2024-09-18 Fred Gleason <fredg@paravelsystems.com>
+	* Fixed a regression in drouterd(8) that caused the database to
+	fail to be initialized correctly.
