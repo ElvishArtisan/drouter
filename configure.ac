@@ -4,7 +4,7 @@ dnl Autoconf configuration
 dnl
 dnl Use autoconf to process this into a configure script
 dnl
-dnl   (C) Copyright 2014-2022 Fred Gleason <fredg@paravelsystems.com>
+dnl   (C) Copyright 2014-2024 Fred Gleason <fredg@paravelsystems.com>
 dnl
 dnl   This program is free software; you can redistribute it and/or modify
 dnl   it under the terms of the GNU General Public License version 2 as
@@ -312,6 +312,7 @@ AC_CONFIG_FILES([ \
     src/dmap/Makefile \
     src/drouterd/Makefile \
     src/eventlogpanel/Makefile \
+    src/jtest/Makefile \
     src/outputpanel/Makefile \
     src/shotpanel/Makefile \
     src/tests/Makefile \
@@ -320,6 +321,11 @@ AC_CONFIG_FILES([ \
     src/Makefile \
     systemd/Makefile \
     systemd/drouter.service \
+    tests/Makefile \
+    tests/protocol_j/Makefile \
+    tests/protocol_j/config/Makefile \
+    tests/protocol_j/config/maps.d/Makefile \
+    tests/protocol_j/config/scripts.d/Makefile \
     drouter.pc\
     drouter.spec \
     build_debs.sh \

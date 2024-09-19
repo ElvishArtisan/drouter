@@ -1228,3 +1228,6 @@
 	directive in drouter(5) from '-1' to '7' (LOG_DEBUG).
 	* Changed the default value of the '[Drouterd]':'NodeLogPriority='
 	directive in drouter(5) from '-1' to '7' (LOG_DEBUG).
+2024-09-19 Fred Gleason <fredg@paravelsystems.com>
+	* Stubbed out an integrated test framework in 'src/jtest/' and
+	'tests/'.

@@ -1,0 +1,85 @@
+[Global]
+RouterType=Audio
+RouterName=Test_Audio
+RouterNumber=1
+
+[Input1]
+HostAddress=192.168.21.4
+Slot=1
+; Name=TEST SRC 1
+
+[Input2]
+HostAddress=192.168.21.4
+Slot=2
+; Name=TEST SRC 2
+
+[Input3]
+HostAddress=192.168.21.4
+Slot=3
+; Name=TEST SRC 3
+
+[Input4]
+HostAddress=192.168.21.4
+Slot=4
+; Name=TEST SRC 4
+
+[Input5]
+HostAddress=192.168.21.4
+Slot=5
+; Name=TEST SRC 5
+
+[Input6]
+HostAddress=192.168.21.4
+Slot=6
+; Name=TEST SRC 6
+
+[Input7]
+HostAddress=192.168.21.4
+Slot=7
+; Name=TEST SRC 7
+
+[Input8]
+HostAddress=192.168.21.4
+Slot=8
+; Name=TEST SRC 8
+
+[Output1]
+HostAddress=192.168.21.4
+Slot=1
+; Name=TEST DST 1
+
+[Output2]
+HostAddress=192.168.21.4
+Slot=2
+; Name=TEST DST 2
+
+[Output3]
+HostAddress=192.168.21.4
+Slot=3
+; Name=TEST DST 3
+
+[Output4]
+HostAddress=192.168.21.4
+Slot=4
+; Name=TEST DST 4
+
+[Output5]
+HostAddress=192.168.21.4
+Slot=5
+; Name=TEST DST 5
+
+[Output6]
+HostAddress=192.168.21.4
+Slot=6
+; Name=TEST DST 6
+
+[Output7]
+HostAddress=192.168.21.4
+Slot=7
+; Name=TEST DST 7
+
+[Output8]
+HostAddress=192.168.21.4
+Slot=8
+; Name=TEST DST 8
+

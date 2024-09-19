@@ -31,7 +31,8 @@ SUBDIRS = helpers\
           python\
           scripts\
           $(DOCBOOK_AM_OPT) src\
-          systemd
+          systemd\
+          tests
 
 deb:	dist
 	./build_debs.sh

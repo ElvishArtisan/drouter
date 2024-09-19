@@ -1,8 +1,8 @@
 ## automake.am
 ##
-## Automake.am for src/
+## Automake.am for tests/protocol_j/config/scripts.d
 ##
-##   (C) Copyright 2017-2024 Fred Gleason <fredg@paravelsystems.com>
+##   (C) Copyright 2024 Fred Gleason <fredg@paravelsystems.com>
 ##
 ##   This program is free software; you can redistribute it and/or modify
 ##   it under the terms of the GNU General Public License as
@@ -19,19 +19,6 @@
 ##   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
 ##
 ## Use automake to process this into a Makefile.in
-
-SUBDIRS = drouter\
-          actionpanel\
-          buttonpanel\
-          dmap\
-          drouterd\
-          eventlogpanel\
-          jtest\
-          outputpanel\
-          shotpanel\
-          tests\
-          xpointpanel\
-          xypanel
 
 CLEANFILES = *~\
              *.idb\
