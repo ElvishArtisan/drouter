@@ -1233,3 +1233,8 @@
 	'tests/'.
 2024-09-20 Fred Gleason <fredg@paravelsystems.com>
 	* Added a '--connection-type=' switch to the jtest() test command.
+2024-09-20 Fred Gleason <fredg@paravelsystems.com>
+	* Fixed typos in the 'ActivateSnap' section of the ProtocolJ
+	documentation.
+	* Removed spurious output in response to the 'ActivateSnap'
+	ProtocolJ command.

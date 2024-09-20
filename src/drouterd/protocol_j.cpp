@@ -805,7 +805,6 @@ void ProtocolJ::ActivateSnapshot(unsigned router,const QString &snapshot_name)
     SendError(DRJParser::NoRouterError);
     return;
   }
-  proto_socket->write(QString("Snapshot Initiated\r\n").toUtf8());
   if((ss=map->snapshot(snapshot_name))!=NULL) {
     proto_logger->addSnapEvent(proto_socket->peerAddress(),proto_username,
 			       router,snapshot_name);
