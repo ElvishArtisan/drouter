@@ -36,16 +36,47 @@ MainObject::MainObject(QObject *parent)
   : QObject(parent)
 {
   QString hostname="localhost";
+  unsigned portnum=9600;
   QString tests;
   FILE *testsfile=NULL;
+  bool ok=false;
+  JsonTest::ConnectionType conntype=JsonTest::ConnectionTcp;
   d_linenum=1;
   d_passed=0;
   d_failed=0;
   
   SyCmdSwitch *cmd=new SyCmdSwitch("jtest",VERSION,JTEST_USAGE);
   for(int i=0;i<cmd->keys();i++) {
+    if(cmd->key(i)=="--connection-type") {
+      if(cmd->value(i).toLower()=="tcp") {
+	conntype=JsonTest::ConnectionTcp;
+      }
+      else {
+	if(cmd->value(i).toLower()=="websocket") {
+	  conntype=JsonTest::ConnectionWebSocket;
+	}
+	else {
+	  fprintf(stderr,"jtest: unknown connection type \"%s\"\n",
+		  cmd->value(i).toUtf8().constData());
+	  exit(1);
+	}
+      }
+      cmd->setProcessed(i,true);
+    }
     if(cmd->key(i)=="--hostname") {
-      hostname=cmd->value(i);
+      QStringList f0=cmd->value(i).split(":",Qt::KeepEmptyParts);
+      if((f0.size()==0)||(f0.size()>2)) {
+	fprintf(stderr,"invalid \"--hostname\" argument\n");
+	exit(1);
+      }
+      if(f0.size()==2) {
+	portnum=f0.at(1).toUInt(&ok);
+	if((!ok)||(portnum>0xFFFF)) {
+	  fprintf(stderr,"invalid port value in \"--hostname\" argument\n");
+	  exit(1);
+	}
+      }
+      hostname=f0.at(0);
       cmd->setProcessed(i,true);
     }
     if(cmd->key(i)=="--tests") {
@@ -74,7 +105,7 @@ MainObject::MainObject(QObject *parent)
   //
   // Create Test Jig
   //
-  d_json_test=new JsonTest(hostname,this);
+  d_json_test=new JsonTest(hostname,portnum,conntype,this);
   connect(d_json_test,
 	  SIGNAL(testComplete(int,const QString &,bool,const QString&)),
 	  this,

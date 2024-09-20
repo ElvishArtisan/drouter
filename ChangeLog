@@ -1231,3 +1231,5 @@
 2024-09-19 Fred Gleason <fredg@paravelsystems.com>
 	* Stubbed out an integrated test framework in 'src/jtest/' and
 	'tests/'.
+2024-09-20 Fred Gleason <fredg@paravelsystems.com>
+	* Added a '--connection-type=' switch to the jtest() test command.

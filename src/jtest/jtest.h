@@ -27,7 +27,7 @@
 
 #include "jsontest.h"
 
-#define JTEST_USAGE "[--hostname=<ip-addr>] --tests=<filename>\n"
+#define JTEST_USAGE "[--hostname=<ip-addr>[:<port-num>]] [--connection-type=TCP|WebSocket] --tests=<filename>\n"
 
 class MainObject : public QObject
 {
