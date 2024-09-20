@@ -130,6 +130,7 @@ src/eventlogpanel/sendmail.cpp
 src/eventlogpanel/sendmail.h
 src/eventlogpanel/sqlquery.cpp
 src/eventlogpanel/sqlquery.h
+src/jtest/jtest
 src/outputpanel/combobox.cpp
 src/outputpanel/combobox.h
 src/outputpanel/config.cpp
