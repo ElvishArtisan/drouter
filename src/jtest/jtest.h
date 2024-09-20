@@ -40,6 +40,7 @@ class MainObject : public QObject
 			const QString &err_msg);
   
  private:
+  void Finish();
   QTextStream *d_tests_stream;
   JsonTest *d_json_test;
   int d_linenum;

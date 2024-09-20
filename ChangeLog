@@ -1241,3 +1241,6 @@
 2024-09-20 Fred Gleason <fredg@paravelsystems.com>
 	* Fixed a bug in drouterd(8) that caused ProtocolJ to return an
 	error when attempting to turn off a destination using 'ActivateRoute'.
+2024-09-20 Fred Gleason <fredg@paravelsystems.com>
+	* Fixed a bug in jtest() that that cause the command to hang at
+	the end of a test run.

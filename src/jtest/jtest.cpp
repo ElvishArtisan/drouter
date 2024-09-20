@@ -150,16 +150,10 @@ void MainObject::testCompleteData(int testnum,const QString &testname,
   }
 
   if(d_tests_stream->atEnd()) {  // We're done!
-    printf("\n");
-    printf("%d out of %d tests passed.\n",d_passed,d_passed+d_failed);
-    if(d_failed==0) {
-      exit(0);
-    }
-    exit(1);
+    Finish();
   }
-  while(1==1) {
+  while(!d_tests_stream->atEnd()) {
     QString line=d_tests_stream->readLine();
-    //    printf("%d: %s\n",d_linenum,line.toUtf8().constData());
     if(line.left(7)=="=======") {
       QStringList f0=line.split(":",Qt::KeepEmptyParts);
       if(f0.size()!=3) {
@@ -208,6 +202,18 @@ void MainObject::testCompleteData(int testnum,const QString &testname,
     }
     d_linenum++;
   }
+  Finish();
+}
+
+
+void MainObject::Finish()
+{
+    printf("\n");
+    printf("%d out of %d tests passed.\n",d_passed,d_passed+d_failed);
+    if(d_failed==0) {
+      exit(0);
+    }
+    exit(1);
 }
 
 
