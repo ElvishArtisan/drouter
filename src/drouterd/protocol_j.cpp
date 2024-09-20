@@ -365,7 +365,7 @@ void ProtocolJ::DispatchMessage(const QJsonDocument &jdoc)
       int output=jo0.value("destination").toInt();
       if(output>0) {
 	int input=jo0.value("source").toInt();
-	if(input>0) {
+	if(input>=0) {
 	  ActivateRoute(router-1,output-1,input);
 	}
 	else {
