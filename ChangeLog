@@ -1244,3 +1244,6 @@
 2024-09-20 Fred Gleason <fredg@paravelsystems.com>
 	* Fixed a bug in jtest() that that cause the command to hang at
 	the end of a test run.
+2024-09-20 Fred Gleason <fredg@paravelsystems.com>
+	* Added ProtocolJ integration tests for the 'Snapshots',
+	'ActivateSnap','ActivateRoute' and 'RouteStat' commands.

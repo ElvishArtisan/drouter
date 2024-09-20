@@ -4,82 +4,123 @@ RouterName=Test_Audio
 RouterNumber=1
 
 [Input1]
-HostAddress=192.168.21.4
+HostAddress=172.30.4.254
 Slot=1
 ; Name=TEST SRC 1
 
 [Input2]
-HostAddress=192.168.21.4
+HostAddress=172.30.4.254
 Slot=2
 ; Name=TEST SRC 2
 
 [Input3]
-HostAddress=192.168.21.4
+HostAddress=172.30.4.254
 Slot=3
 ; Name=TEST SRC 3
 
 [Input4]
-HostAddress=192.168.21.4
+HostAddress=172.30.4.254
 Slot=4
 ; Name=TEST SRC 4
 
 [Input5]
-HostAddress=192.168.21.4
+HostAddress=172.30.4.254
 Slot=5
 ; Name=TEST SRC 5
 
 [Input6]
-HostAddress=192.168.21.4
+HostAddress=172.30.4.254
 Slot=6
 ; Name=TEST SRC 6
 
 [Input7]
-HostAddress=192.168.21.4
+HostAddress=172.30.4.254
 Slot=7
 ; Name=TEST SRC 7
 
 [Input8]
-HostAddress=192.168.21.4
+HostAddress=172.30.4.254
 Slot=8
 ; Name=TEST SRC 8
 
 [Output1]
-HostAddress=192.168.21.4
+HostAddress=172.30.4.254
 Slot=1
 ; Name=TEST DST 1
 
 [Output2]
-HostAddress=192.168.21.4
+HostAddress=172.30.4.254
 Slot=2
 ; Name=TEST DST 2
 
 [Output3]
-HostAddress=192.168.21.4
+HostAddress=172.30.4.254
 Slot=3
 ; Name=TEST DST 3
 
 [Output4]
-HostAddress=192.168.21.4
+HostAddress=172.30.4.254
 Slot=4
 ; Name=TEST DST 4
 
 [Output5]
-HostAddress=192.168.21.4
+HostAddress=172.30.4.254
 Slot=5
 ; Name=TEST DST 5
 
 [Output6]
-HostAddress=192.168.21.4
+HostAddress=172.30.4.254
 Slot=6
 ; Name=TEST DST 6
 
 [Output7]
-HostAddress=192.168.21.4
+HostAddress=172.30.4.254
 Slot=7
 ; Name=TEST DST 7
 
 [Output8]
-HostAddress=192.168.21.4
+HostAddress=172.30.4.254
 Slot=8
 ; Name=TEST DST 8
+
+[Snapshot1]
+Name=On
+
+Route1Output=1
+Route1Input=1
+
+
+[Snapshot2]
+Name=Off
+
+Route1Output=1
+Route1Input=0
+
+
+[Snapshot3]
+Name=All Off
+
+Route1Output=1
+Route1Input=0
+
+Route2Output=2
+Route2Input=0
+
+Route3Output=3
+Route3Input=0
+
+Route4Output=4
+Route4Input=0
+
+Route5Output=5
+Route5Input=0
+
+Route6Output=6
+Route6Input=0
+
+Route7Output=7
+Route7Input=0
+
+Route8Output=8
+Route8Input=0
 
