@@ -1,0 +1,382 @@
+{"routernames":null}
+=======:1:GPIO RouterNames
+{
+    "routernames": [
+        {
+            "name": "Test_Audio",
+            "number": 1,
+            "type": "Audio"
+        },
+        {
+            "name": "Test_GPIO",
+            "number": 2,
+            "type": "GPIO"
+        }
+    ]
+}
+*******:1
+{"sourcenames":{"router":2}}
+=======:2:GPIO SourceNames
+{
+    "router": 2,
+    "sourcenames": [
+        {
+            "gpioAddress": "172.30.4.252/1",
+            "hostAddress": "172.30.4.252",
+            "hostDescription": "AudioScience 6685 Card",
+            "hostName": "ELASTIGIRL",
+            "name": "GPI-1",
+            "number": 1,
+            "slot": 1
+        },
+        {
+            "gpioAddress": "172.30.4.252/2",
+            "hostAddress": "172.30.4.252",
+            "hostDescription": "AudioScience 6685 Card",
+            "hostName": "ELASTIGIRL",
+            "name": "GPI-2",
+            "number": 2,
+            "slot": 2
+        },
+        {
+            "gpioAddress": "172.30.4.252/3",
+            "hostAddress": "172.30.4.252",
+            "hostDescription": "AudioScience 6685 Card",
+            "hostName": "ELASTIGIRL",
+            "name": "GPI-3",
+            "number": 3,
+            "slot": 3
+        },
+        {
+            "gpioAddress": "172.30.4.252/4",
+            "hostAddress": "172.30.4.252",
+            "hostDescription": "AudioScience 6685 Card",
+            "hostName": "ELASTIGIRL",
+            "name": "GPI-4",
+            "number": 4,
+            "slot": 4
+        },
+        {
+            "gpioAddress": "172.30.4.252/5",
+            "hostAddress": "172.30.4.252",
+            "hostDescription": "AudioScience 6685 Card",
+            "hostName": "ELASTIGIRL",
+            "name": "GPI-5",
+            "number": 5,
+            "slot": 5
+        },
+        {
+            "gpioAddress": "172.30.4.252/6",
+            "hostAddress": "172.30.4.252",
+            "hostDescription": "AudioScience 6685 Card",
+            "hostName": "ELASTIGIRL",
+            "name": "GPI-6",
+            "number": 6,
+            "slot": 6
+        },
+        {
+            "gpioAddress": "172.30.4.252/7",
+            "hostAddress": "172.30.4.252",
+            "hostDescription": "AudioScience 6685 Card",
+            "hostName": "ELASTIGIRL",
+            "name": "GPI-7",
+            "number": 7,
+            "slot": 7
+        },
+        {
+            "gpioAddress": "172.30.4.252/8",
+            "hostAddress": "172.30.4.252",
+            "hostDescription": "AudioScience 6685 Card",
+            "hostName": "ELASTIGIRL",
+            "name": "GPI-8",
+            "number": 8,
+            "slot": 8
+        }
+    ]
+}
+*******:2
+{"destnames":{"router":2}}
+=======:3:GPIO DestNames
+{
+    "destnames": [
+        {
+            "hostAddress": "172.30.4.252",
+            "hostDescription": "AudioScience 6685 Card",
+            "hostName": "ELASTIGIRL",
+            "name": "GPO 1",
+            "number": 1,
+            "slot": 1
+        },
+        {
+            "hostAddress": "172.30.4.252",
+            "hostDescription": "AudioScience 6685 Card",
+            "hostName": "ELASTIGIRL",
+            "name": "GPO 2",
+            "number": 2,
+            "slot": 2
+        },
+        {
+            "hostAddress": "172.30.4.252",
+            "hostDescription": "AudioScience 6685 Card",
+            "hostName": "ELASTIGIRL",
+            "name": "GPO 3",
+            "number": 3,
+            "slot": 3
+        },
+        {
+            "hostAddress": "172.30.4.252",
+            "hostDescription": "AudioScience 6685 Card",
+            "hostName": "ELASTIGIRL",
+            "name": "GPO 4",
+            "number": 4,
+            "slot": 4
+        },
+        {
+            "hostAddress": "172.30.4.252",
+            "hostDescription": "AudioScience 6685 Card",
+            "hostName": "ELASTIGIRL",
+            "name": "GPO 5",
+            "number": 5,
+            "slot": 5
+        },
+        {
+            "hostAddress": "172.30.4.252",
+            "hostDescription": "AudioScience 6685 Card",
+            "hostName": "ELASTIGIRL",
+            "name": "GPO 6",
+            "number": 6,
+            "slot": 6
+        },
+        {
+            "hostAddress": "172.30.4.252",
+            "hostDescription": "AudioScience 6685 Card",
+            "hostName": "ELASTIGIRL",
+            "name": "GPO 7",
+            "number": 7,
+            "slot": 7
+        },
+        {
+            "hostAddress": "172.30.4.252",
+            "hostDescription": "AudioScience 6685 Card",
+            "hostName": "ELASTIGIRL",
+            "name": "GPO 8",
+            "number": 8,
+            "slot": 8
+        }
+    ],
+    "router": 2
+}
+*******:3
+{"snapshots":{"router":2}}
+=======:4:GPIO Snapshots
+{
+    "router": 2,
+    "snapshots": [
+        {
+            "name": "On",
+            "routes": [
+                {
+                    "input": 1,
+                    "output": 1
+                }
+            ]
+        },
+        {
+            "name": "Off",
+            "routes": [
+                {
+                    "input": 0,
+                    "output": 1
+                }
+            ]
+        },
+        {
+            "name": "All Off",
+            "routes": [
+                {
+                    "input": 0,
+                    "output": 1
+                },
+                {
+                    "input": 0,
+                    "output": 2
+                },
+                {
+                    "input": 0,
+                    "output": 3
+                },
+                {
+                    "input": 0,
+                    "output": 4
+                },
+                {
+                    "input": 0,
+                    "output": 5
+                },
+                {
+                    "input": 0,
+                    "output": 6
+                },
+                {
+                    "input": 0,
+                    "output": 7
+                },
+                {
+                    "input": 0,
+                    "output": 8
+                }
+            ]
+        }
+    ]
+}
+*******:4
+{"activatesnap":{"router":2,"snapshot":"On"}}
+=======:5:GPIO ActivateSnap On
+{
+    "routestat": {
+        "destination": 1,
+        "router": 2,
+        "source": 1
+    }
+}
+*******:5
+{"activatesnap":{"router":2,"snapshot":"Off"}}
+=======:6:GPIO ActivateSnap Off
+{
+    "routestat": {
+        "destination": 1,
+        "router": 2,
+        "source": -1
+    }
+}
+*******:6
+{"activateroute":{"router":2,"destination":1,"source":1}}
+=======:7:ActivateRoute On
+{
+    "routestat": {
+        "destination": 1,
+        "router": 2,
+        "source": 1
+    }
+}
+*******:7
+{"activateroute":{"router":2,"destination":1,"source":0}}
+=======:8:GPIO ActivateRoute Off
+{
+    "routestat": {
+        "destination": 1,
+        "router": 2,
+        "source": -1
+    }
+}
+*******:8
+{"routestat":{"router":2,"destination":1}}
+=======:9:GPIO RouteStat
+{
+    "routestat": {
+        "destination": 1,
+        "router": 2,
+        "source": -1
+    }
+}
+*******:9
+{"triggergpi":{"router":2,"number":1,"code":"lhlhl","duration":0}}
+=======:10:GPIO TriggerGPI lhlhl
+{
+    "gpistat": {
+        "code": "lhlhl",
+        "router": 2,
+        "source": 1
+    }
+}
+*******:10
+{"triggergpi":{"router":2,"number":1,"code":"hlhlh","duration":0}}
+=======:11:GPIO TriggerGPI hlhlh
+{
+    "gpistat": {
+        "code": "hlhlh",
+        "router": 2,
+        "source": 1
+    }
+}
+*******:11
+{"gpistat":{"router":2,"number":1}}
+=======:12:GPIO GPIStat
+{
+    "gpistat": {
+        "code": "hlhlh",
+        "router": 2,
+        "source": 1
+    }
+}
+*******:12
+{"triggergpi":{"router":2,"number":1,"code":"lllll","duration":0}}
+=======:13:GPIO TriggerGPI lllll
+{
+    "gpistat": {
+        "code": "lllll",
+        "router": 2,
+        "source": 1
+    }
+}
+*******:13
+{"triggergpi":{"router":2,"number":1,"code":"hhhhh","duration":0}}
+=======:14:GPIO TriggerGPI hhhhh
+{
+    "gpistat": {
+        "code": "hhhhh",
+        "router": 2,
+        "source": 1
+    }
+}
+*******:14
+{"triggergpo":{"router":2,"number":1,"code":"lhlhl","duration":0}}
+=======:15:GPIO TriggerGPO lhlhl
+{
+    "gpostat": {
+        "code": "lhlhl",
+        "destination": 1,
+        "router": 2
+    }
+}
+*******:15
+{"triggergpo":{"router":2,"number":1,"code":"hlhlh","duration":0}}
+=======:16:GPIO TriggerGPO hlhlh
+{
+    "gpostat": {
+        "code": "hlhlh",
+        "destination": 1,
+        "router": 2
+    }
+}
+*******:16
+{"gpostat":{"router":2,"number":1}}
+=======:17:GPIO GPOStat
+{
+    "gpostat": {
+        "code": "hlhlh",
+        "destination": 1,
+        "router": 2
+    }
+}
+*******:17
+{"triggergpo":{"router":2,"number":1,"code":"lllll","duration":0}}
+=======:18:GPIO TriggerGPO lllll
+{
+    "gpostat": {
+        "code": "lllll",
+        "destination": 1,
+        "router": 2
+    }
+}
+*******:18
+{"triggergpo":{"router":2,"number":1,"code":"hhhhh","duration":0}}
+=======:19:GPIO TriggerGPO hhhhh
+{
+    "gpostat": {
+        "code": "hhhhh",
+        "destination": 1,
+        "router": 2
+    }
+}
+*******:19

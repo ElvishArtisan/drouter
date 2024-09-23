@@ -20,7 +20,8 @@
 ##
 ## Use automake to process this into a Makefile.in
 
-EXTRA_DIST = 01-Test_Audio.map
+EXTRA_DIST = 01-Test_Audio.map\
+             02-Test_GPIO.map
 
 CLEANFILES = *~\
              *.idb\

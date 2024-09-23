@@ -22,7 +22,9 @@
 
 SUBDIRS = config
 
-EXTRA_DIST = tests.txt
+EXTRA_DIST = run_tests.sh\
+             tests_audio.txt\
+             tests_gpio.txt
 
 CLEANFILES = *~\
              *.idb\
