@@ -44,87 +44,74 @@
   <sect2 xml:id="sect.overview.message_command_syntax.specifying_time">
     <title>Specifying Time</title>
     <para>
-      All time values in ProtocolJ are assumed to be in the UTC timezone,
-      encoded in <link xlink:href="https://www.ibm.com/docs/en/i/7.5?topic=types-xstime">xs.time format</link> as follows:
+      All time values in ProtocolJ are assumed to be in the locally
+      configured timezone of the host running the
+      <command>drouter</command> service, encoded in
+      <link xlink:href="https://www.ibm.com/docs/en/i/7.5?topic=types-xstime">xs.time format</link> as follows:
     </para>
     <para>
-      <replaceable>HH</replaceable><userinput>:</userinput><replaceable>MM</replaceable><userinput>:</userinput><replaceable>SS</replaceable><userinput>Z</userinput>
+      <replaceable>HH</replaceable><userinput>:</userinput><replaceable>MM</replaceable><userinput>:</userinput><replaceable>SS</replaceable>
     </para>
-      <table xml:id="table.overview.message_command_syntax.specifying_time" frame="all" pgwide="0">
-	<title>Time Format Elements</title>
-	<tgroup cols="3" align="left" colstep="1" rowstep="1">
-	  <colspec colname="Element" colwidth="1.5*"/>
-	  <colspec colname="Value" colwidth="5.0*"/>
-	  <colspec colname="Range" colwidth="1.5*"/>
-	  <thead>
-	    <row>
-	      <entry>
-		Element
-	      </entry>
-	      <entry>
-		Meaning
-	      </entry>
-	      <entry>
-		Valid Range
-	      </entry>
-	    </row>
-	  </thead>
-	  <tbody>
-	    <row>
-	      <entry>
-		<replaceable>HH</replaceable>
-	      </entry>
-	      <entry>
-		The hours component of the time, in twenty-four hour format
-		and zero-padded.
-	      </entry>
-	      <entry>
-		<userinput>00</userinput> through <userinput>23</userinput>
-		inclusive.
-	      </entry>
-	    </row>
-	    <row>
-	      <entry>
-		<replaceable>MM</replaceable>
-	      </entry>
-	      <entry>
-		The minutes component of the time, zero-padded.
-	      </entry>
-	      <entry>
-		<userinput>00</userinput> through <userinput>59</userinput>
-		inclusive.
-	      </entry>
-	    </row>
-	    <row>
-	      <entry>
-		<replaceable>SS</replaceable>
-	      </entry>
-	      <entry>
-		The seconds component of the time, zero-padded.
-	      </entry>
-	      <entry>
-		<userinput>00</userinput> through <userinput>60</userinput>
-		inclusive.
-	      </entry>
-	    </row>
-	  </tbody>
-	</tgroup>
-      </table>
-      <sect3 xml:id="sect.overview.message_command_syntax.specifying_time.examples">
-	<title>Examples</title>
-	<para>
-	  The following examples all express the same time (14:30:15 UTC):
-	</para>
-	<para>
-	  <userinput>14:30:15-00:00</userinput>
-	</para>
-	<para>
-	  <userinput>19:30:15-05:00</userinput>
-	</para>
-	<para>
-	  <userinput>12:00:15+02:30</userinput>
-	</para>
-      </sect3>
+    <table xml:id="table.overview.message_command_syntax.specifying_time" frame="all" pgwide="0">
+      <title>Time Format Elements</title>
+      <tgroup cols="3" align="left" colstep="1" rowstep="1">
+	<colspec colname="Element" colwidth="1.5*"/>
+	<colspec colname="Value" colwidth="5.0*"/>
+	<colspec colname="Range" colwidth="1.5*"/>
+	<thead>
+	  <row>
+	    <entry>
+	      Element
+	    </entry>
+	    <entry>
+	      Meaning
+	    </entry>
+	    <entry>
+	      Valid Range
+	    </entry>
+	  </row>
+	</thead>
+	<tbody>
+	  <row>
+	    <entry>
+	      <replaceable>HH</replaceable>
+	    </entry>
+	    <entry>
+	      The hours component of the time, in twenty-four hour format
+	      and zero-padded.
+	    </entry>
+	    <entry>
+	      <userinput>00</userinput> through <userinput>23</userinput>
+	      inclusive.
+	    </entry>
+	  </row>
+	  <row>
+	    <entry>
+	      <replaceable>MM</replaceable>
+	    </entry>
+	    <entry>
+	      The minutes component of the time, zero-padded.
+	    </entry>
+	    <entry>
+	      <userinput>00</userinput> through <userinput>59</userinput>
+	      inclusive.
+	    </entry>
+	  </row>
+	  <row>
+	    <entry>
+	      <replaceable>SS</replaceable>
+	    </entry>
+	    <entry>
+	      The seconds component of the time, zero-padded.
+	    </entry>
+	    <entry>
+	      <userinput>00</userinput> through <userinput>60</userinput>
+	      inclusive.
+	    </entry>
+	  </row>
+	</tbody>
+      </tgroup>
+    </table>
   </sect2>
 
   <sect2 xml:id="sect.overview.message_command_syntax.action_parameters">

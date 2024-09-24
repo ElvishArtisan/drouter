@@ -36,3 +36,12 @@ echo  ProtocolJ - GPIO Tests
 echo ======================================
 src/jtest/jtest --hostname=localhost:9600 --connection-type=tcp --tests=tests/protocol_j/tests_gpio.txt
 echo
+
+#
+# Action Tests
+#
+echo ======================================
+echo  ProtocolJ - Action Tests
+echo ======================================
+src/jtest/jtest --hostname=localhost:9600 --connection-type=tcp --tests=tests/protocol_j/tests_action.txt
+echo

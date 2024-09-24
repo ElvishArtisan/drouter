@@ -1,0 +1,83 @@
+{"actionlist":{"router":1}}
+=======:1:ActionList
+{
+    "actionlist": [
+        {
+            "comment": "First action panel event",
+            "destination": 1,
+            "destinationHostAddress": "172.30.4.252",
+            "destinationHostName": "ELASTIGIRL",
+            "destinationName": "DST 1",
+            "friday": true,
+            "id": 1,
+            "isActive": true,
+            "monday": true,
+            "saturday": false,
+            "source": 1,
+            "sourceHostAddress": "172.30.4.252",
+            "sourceHostName": "ELASTIGIRL",
+            "sourceName": "SRC 1",
+            "sunday": false,
+            "thursday": false,
+            "time": "01:02:03",
+            "tuesday": false,
+            "wednesday": true
+        },
+        {
+            "comment": "Null Event",
+            "destination": 1,
+            "destinationHostAddress": "172.30.4.252",
+            "destinationHostName": "ELASTIGIRL",
+            "destinationName": "DST 1",
+            "friday": false,
+            "id": 2,
+            "isActive": true,
+            "monday": false,
+            "saturday": false,
+            "source": 1,
+            "sourceHostAddress": "172.30.4.252",
+            "sourceHostName": "ELASTIGIRL",
+            "sourceName": "SRC 1",
+            "sunday": false,
+            "thursday": false,
+            "time": "00:00:00",
+            "tuesday": false,
+            "wednesday": false
+        },
+        {
+            "comment": "All Weekdays",
+            "destination": 4,
+            "destinationHostAddress": "172.30.4.252",
+            "destinationHostName": "ELASTIGIRL",
+            "destinationName": "DST 4",
+            "friday": true,
+            "id": 3,
+            "isActive": true,
+            "monday": true,
+            "saturday": false,
+            "source": 4,
+            "sourceHostAddress": "172.30.4.252",
+            "sourceHostName": "ELASTIGIRL",
+            "sourceName": "SRC 4",
+            "sunday": false,
+            "thursday": true,
+            "time": "17:01:00",
+            "tuesday": true,
+            "wednesday": true
+        }
+    ],
+    "router": 1
+}
+*******:1
+{"actionstat":{"router":1,"sendUpdates":true}}
+=======:2:ActionStat
+{
+    "actionstat": {
+        "nextId": [
+            2
+        ],
+        "router": 1,
+        "sendUpdates": true
+    }
+}
+*******:2
