@@ -411,7 +411,6 @@ void DRActionListModel::updateNextActions(int router,
 
 void DRActionListModel::UpdateRowMetadata(const QVariantMap &fields)
 {
-  printf("DRActionListMode::UpdateRowMetadata(id=%d)\n",fields.value("id").toInt());
   int linenum=-1;
   int id=fields.value("id").toInt();
 

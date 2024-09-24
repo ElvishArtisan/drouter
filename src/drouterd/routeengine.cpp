@@ -272,15 +272,18 @@ QList<int> RouteEngine::GetNextActionIds(int router) const
 	     it.value()->time().toString("hh:mm:ss").toUtf8().constData(),
 	     it.value()->nextRunsAt(now).toString("ddd @ hh:mm:ss").toUtf8().constData());
       */
-      int64_t new_interval=now.msecsTo(it.value()->nextRunsAt(now));
-      if(new_interval<interval) {
-	interval=new_interval;
-	ids.clear();
-	ids.push_back(it.key());
-      }
-      else {
-	if(new_interval==interval) {
+      QDateTime next=it.value()->nextRunsAt(now);
+      if(next.isValid()) {
+	int64_t new_interval=now.msecsTo(next);
+	if(new_interval<interval) {
+	  interval=new_interval;
+	  ids.clear();
 	  ids.push_back(it.key());
+	}
+	else {
+	  if(new_interval==interval) {
+	    ids.push_back(it.key());
+	  }
 	}
       }
     }

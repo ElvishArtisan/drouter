@@ -1252,3 +1252,7 @@
 	* Added a '02-Test_GPIO' map to the config data for 'ProtocolJ'.
 2024-09-24 Fred Gleason <fredg@paravelsystems.com>
 	* Added ProtocolJ integration tests for Action commands.
+2024-09-24 Fred Gleason <fredg@paravelsystems.com>
+	* Fixed a bug in drouterd(8) that caused actionpanel(1) to indicate
+	incorrect next event(s) when one or more events had no days of the
+	week selected.
