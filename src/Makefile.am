@@ -1,6 +1,6 @@
-## automake.am
+## Makefile.am
 ##
-## Automake.am for src/
+## Makefile.am for src/
 ##
 ##   (C) Copyright 2017-2024 Fred Gleason <fredg@paravelsystems.com>
 ##
@@ -29,6 +29,7 @@ SUBDIRS = drouter\
           getnode\
           jtest\
           outputpanel\
+          putnode\
           shotpanel\
           tests\
           xpointpanel\

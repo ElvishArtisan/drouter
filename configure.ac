@@ -326,6 +326,7 @@ AC_CONFIG_FILES([ \
     src/getnode/Makefile \
     src/jtest/Makefile \
     src/outputpanel/Makefile \
+    src/putnode/Makefile \
     src/shotpanel/Makefile \
     src/tests/Makefile \
     src/xpointpanel/Makefile \
