@@ -156,6 +156,7 @@ src/outputpanel/sendmail.cpp
 src/outputpanel/sendmail.h
 src/outputpanel/sqlquery.cpp
 src/outputpanel/sqlquery.h
+src/putnode/putnode
 src/shotpanel/combobox.cpp
 src/shotpanel/combobox.h
 src/shotpanel/config.cpp
