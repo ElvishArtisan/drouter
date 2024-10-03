@@ -87,6 +87,8 @@ AC_ARG_ENABLE(docbook,[  --disable-docbook       disable building of DocBook doc
 #
 AC_ARG_VAR(DROUTER_TEST_NODE_IP,[IPv4 address of the node for running test cases])
 AC_SUBST(NODE_IP,$DROUTER_TEST_NODE_IP)
+AC_ARG_VAR(DROUTER_TEST_HOSTNAME,[Hostname of the node for running test cases])
+AC_SUBST(NODE_HOSTNAME,$DROUTER_TEST_HOSTNAME)
 
 #
 # Check for Qt (Mandatory)
