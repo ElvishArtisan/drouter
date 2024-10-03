@@ -83,6 +83,12 @@ esac
 AC_ARG_ENABLE(docbook,[  --disable-docbook       disable building of DocBook documentation],[DOCBOOK_DISABLED=yes],[])
 
 #
+# Test Fixture Configuration
+#
+AC_ARG_VAR(DROUTER_TEST_NODE_IP,[IPv4 address of the node for running test cases])
+AC_SUBST(NODE_IP,$DROUTER_TEST_NODE_IP)
+
+#
 # Check for Qt (Mandatory)
 #
 PKG_CHECK_MODULES(QT5CLI,Qt5Core Qt5Network Qt5Sql Qt5WebSockets,[],[AC_MSG_ERROR([*** Qt5 CLI components not found ***])])
@@ -293,6 +299,9 @@ GENERATED_SCRIPT_FILE_WARNING=$srcdir/helpers/script_file_warning
 AC_SUBST_FILE(GENERATED_XML_FILE_WARNING)
 GENERATED_XML_FILE_WARNING=$srcdir/helpers/xml_file_warning
 
+AC_SUBST_FILE(GENERATED_INI_FILE_WARNING)
+GENERATED_INI_FILE_WARNING=$srcdir/helpers/ini_file_warning
+
 AC_CONFIG_FILES([ \
     helpers/Makefile \
     conf/Makefile \
@@ -322,8 +331,13 @@ AC_CONFIG_FILES([ \
     systemd/Makefile \
     systemd/drouter.service \
     tests/Makefile \
+    tests/protocol_j/tests_action.tst\
+    tests/protocol_j/tests_audio.tst\
+    tests/protocol_j/tests_gpio.tst\
     tests/protocol_j/Makefile \
     tests/protocol_j/config/Makefile \
+    tests/protocol_j/config/maps.d/01-Test_Audio.map \
+    tests/protocol_j/config/maps.d/02-Test_GPIO.map \
     tests/protocol_j/config/maps.d/Makefile \
     tests/protocol_j/config/scripts.d/Makefile \
     drouter.pc\

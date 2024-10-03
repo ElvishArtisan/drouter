@@ -22,9 +22,11 @@
 
 SUBDIRS = config
 
-EXTRA_DIST = run_tests.sh\
-             tests_audio.txt\
-             tests_gpio.txt
+EXTRA_DIST = configure_tests.sh\
+             run_tests.sh\
+             tests_action.tst.in\
+             tests_audio.tst.in\
+             tests_gpio.tst.in
 
 CLEANFILES = *~\
              *.idb\
@@ -36,6 +38,7 @@ CLEANFILES = *~\
 
 MAINTAINERCLEANFILES = *~\
                        *.tar.gz\
+                       *.tst\
                        aclocal.m4\
                        configure\
                        Makefile.in\

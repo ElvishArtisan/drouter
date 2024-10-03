@@ -21,8 +21,8 @@
     "router": 2,
     "sourcenames": [
         {
-            "gpioAddress": "172.30.4.252/1",
-            "hostAddress": "172.30.4.252",
+            "gpioAddress": "@NODE_IP@/1",
+            "hostAddress": "@NODE_IP@",
             "hostDescription": "AudioScience 6685 Card",
             "hostName": "ELASTIGIRL",
             "name": "GPI-1",
@@ -30,8 +30,8 @@
             "slot": 1
         },
         {
-            "gpioAddress": "172.30.4.252/2",
-            "hostAddress": "172.30.4.252",
+            "gpioAddress": "@NODE_IP@/2",
+            "hostAddress": "@NODE_IP@",
             "hostDescription": "AudioScience 6685 Card",
             "hostName": "ELASTIGIRL",
             "name": "GPI-2",
@@ -39,8 +39,8 @@
             "slot": 2
         },
         {
-            "gpioAddress": "172.30.4.252/3",
-            "hostAddress": "172.30.4.252",
+            "gpioAddress": "@NODE_IP@/3",
+            "hostAddress": "@NODE_IP@",
             "hostDescription": "AudioScience 6685 Card",
             "hostName": "ELASTIGIRL",
             "name": "GPI-3",
@@ -48,8 +48,8 @@
             "slot": 3
         },
         {
-            "gpioAddress": "172.30.4.252/4",
-            "hostAddress": "172.30.4.252",
+            "gpioAddress": "@NODE_IP@/4",
+            "hostAddress": "@NODE_IP@",
             "hostDescription": "AudioScience 6685 Card",
             "hostName": "ELASTIGIRL",
             "name": "GPI-4",
@@ -57,8 +57,8 @@
             "slot": 4
         },
         {
-            "gpioAddress": "172.30.4.252/5",
-            "hostAddress": "172.30.4.252",
+            "gpioAddress": "@NODE_IP@/5",
+            "hostAddress": "@NODE_IP@",
             "hostDescription": "AudioScience 6685 Card",
             "hostName": "ELASTIGIRL",
             "name": "GPI-5",
@@ -66,8 +66,8 @@
             "slot": 5
         },
         {
-            "gpioAddress": "172.30.4.252/6",
-            "hostAddress": "172.30.4.252",
+            "gpioAddress": "@NODE_IP@/6",
+            "hostAddress": "@NODE_IP@",
             "hostDescription": "AudioScience 6685 Card",
             "hostName": "ELASTIGIRL",
             "name": "GPI-6",
@@ -75,8 +75,8 @@
             "slot": 6
         },
         {
-            "gpioAddress": "172.30.4.252/7",
-            "hostAddress": "172.30.4.252",
+            "gpioAddress": "@NODE_IP@/7",
+            "hostAddress": "@NODE_IP@",
             "hostDescription": "AudioScience 6685 Card",
             "hostName": "ELASTIGIRL",
             "name": "GPI-7",
@@ -84,8 +84,8 @@
             "slot": 7
         },
         {
-            "gpioAddress": "172.30.4.252/8",
-            "hostAddress": "172.30.4.252",
+            "gpioAddress": "@NODE_IP@/8",
+            "hostAddress": "@NODE_IP@",
             "hostDescription": "AudioScience 6685 Card",
             "hostName": "ELASTIGIRL",
             "name": "GPI-8",
@@ -100,7 +100,7 @@
 {
     "destnames": [
         {
-            "hostAddress": "172.30.4.252",
+            "hostAddress": "@NODE_IP@",
             "hostDescription": "AudioScience 6685 Card",
             "hostName": "ELASTIGIRL",
             "name": "GPO 1",
@@ -108,7 +108,7 @@
             "slot": 1
         },
         {
-            "hostAddress": "172.30.4.252",
+            "hostAddress": "@NODE_IP@",
             "hostDescription": "AudioScience 6685 Card",
             "hostName": "ELASTIGIRL",
             "name": "GPO 2",
@@ -116,7 +116,7 @@
             "slot": 2
         },
         {
-            "hostAddress": "172.30.4.252",
+            "hostAddress": "@NODE_IP@",
             "hostDescription": "AudioScience 6685 Card",
             "hostName": "ELASTIGIRL",
             "name": "GPO 3",
@@ -124,7 +124,7 @@
             "slot": 3
         },
         {
-            "hostAddress": "172.30.4.252",
+            "hostAddress": "@NODE_IP@",
             "hostDescription": "AudioScience 6685 Card",
             "hostName": "ELASTIGIRL",
             "name": "GPO 4",
@@ -132,7 +132,7 @@
             "slot": 4
         },
         {
-            "hostAddress": "172.30.4.252",
+            "hostAddress": "@NODE_IP@",
             "hostDescription": "AudioScience 6685 Card",
             "hostName": "ELASTIGIRL",
             "name": "GPO 5",
@@ -140,7 +140,7 @@
             "slot": 5
         },
         {
-            "hostAddress": "172.30.4.252",
+            "hostAddress": "@NODE_IP@",
             "hostDescription": "AudioScience 6685 Card",
             "hostName": "ELASTIGIRL",
             "name": "GPO 6",
@@ -148,7 +148,7 @@
             "slot": 6
         },
         {
-            "hostAddress": "172.30.4.252",
+            "hostAddress": "@NODE_IP@",
             "hostDescription": "AudioScience 6685 Card",
             "hostName": "ELASTIGIRL",
             "name": "GPO 7",
@@ -156,7 +156,7 @@
             "slot": 7
         },
         {
-            "hostAddress": "172.30.4.252",
+            "hostAddress": "@NODE_IP@",
             "hostDescription": "AudioScience 6685 Card",
             "hostName": "ELASTIGIRL",
             "name": "GPO 8",

@@ -24,6 +24,7 @@
 AM_CFLAGS = -Wall
 
 EXTRA_DIST = c_file_warning\
+             init_file_warning\
              script_file_warning\
              xml_file_warning
 

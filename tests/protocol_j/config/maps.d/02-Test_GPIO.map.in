@@ -1,85 +1,87 @@
+@GENERATED_INI_FILE_WARNING@
+
 [Global]
 RouterType=GPIO
 RouterName=Test_GPIO
 RouterNumber=2
 
 [Input1]
-HostAddress=172.30.4.252
+HostAddress=@NODE_IP@
 Slot=1
 ; Name=OUT 1
 
 [Input2]
-HostAddress=172.30.4.252
+HostAddress=@NODE_IP@
 Slot=2
 ; Name=OUT 2
 
 [Input3]
-HostAddress=172.30.4.252
+HostAddress=@NODE_IP@
 Slot=3
 ; Name=OUT 3
 
 [Input4]
-HostAddress=172.30.4.252
+HostAddress=@NODE_IP@
 Slot=4
 ; Name=OUT 4
 
 [Input5]
-HostAddress=172.30.4.252
+HostAddress=@NODE_IP@
 Slot=5
 ; Name=OUT 5
 
 [Input6]
-HostAddress=172.30.4.252
+HostAddress=@NODE_IP@
 Slot=6
 ; Name=OUT 6
 
 [Input7]
-HostAddress=172.30.4.252
+HostAddress=@NODE_IP@
 Slot=7
 ; Name=OUT 7
 
 [Input8]
-HostAddress=172.30.4.252
+HostAddress=@NODE_IP@
 Slot=8
 ; Name=OUT 8
 
 [Output1]
-HostAddress=172.30.4.252
+HostAddress=@NODE_IP@
 Slot=1
 ; Name=OUT 1
 
 [Output2]
-HostAddress=172.30.4.252
+HostAddress=@NODE_IP@
 Slot=2
 ; Name=OUT 2
 
 [Output3]
-HostAddress=172.30.4.252
+HostAddress=@NODE_IP@
 Slot=3
 ; Name=OUT 3
 
 [Output4]
-HostAddress=172.30.4.252
+HostAddress=@NODE_IP@
 Slot=4
 ; Name=OUT 4
 
 [Output5]
-HostAddress=172.30.4.252
+HostAddress=@NODE_IP@
 Slot=5
 ; Name=OUT 5
 
 [Output6]
-HostAddress=172.30.4.252
+HostAddress=@NODE_IP@
 Slot=6
 ; Name=OUT 6
 
 [Output7]
-HostAddress=172.30.4.252
+HostAddress=@NODE_IP@
 Slot=7
 ; Name=OUT 7
 
 [Output8]
-HostAddress=172.30.4.252
+HostAddress=@NODE_IP@
 Slot=8
 ; Name=OUT 8
 

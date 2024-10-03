@@ -1,85 +1,87 @@
+@GENERATED_INI_FILE_WARNING@
+
 [Global]
 RouterType=Audio
 RouterName=Test_Audio
 RouterNumber=1
 
 [Input1]
-HostAddress=172.30.4.252
+HostAddress=@NODE_IP@
 Slot=1
 ; Name=SRC 1
 
 [Input2]
-HostAddress=172.30.4.252
+HostAddress=@NODE_IP@
 Slot=2
 ; Name=SRC 2
 
 [Input3]
-HostAddress=172.30.4.252
+HostAddress=@NODE_IP@
 Slot=3
 ; Name=SRC 3
 
 [Input4]
-HostAddress=172.30.4.252
+HostAddress=@NODE_IP@
 Slot=4
 ; Name=SRC 4
 
 [Input5]
-HostAddress=172.30.4.252
+HostAddress=@NODE_IP@
 Slot=5
 ; Name=SRC 5
 
 [Input6]
-HostAddress=172.30.4.252
+HostAddress=@NODE_IP@
 Slot=6
 ; Name=SRC 6
 
 [Input7]
-HostAddress=172.30.4.252
+HostAddress=@NODE_IP@
 Slot=7
 ; Name=SRC 7
 
 [Input8]
-HostAddress=172.30.4.252
+HostAddress=@NODE_IP@
 Slot=8
 ; Name=SRC 8
 
 [Output1]
-HostAddress=172.30.4.252
+HostAddress=@NODE_IP@
 Slot=1
 ; Name=DST 1
 
 [Output2]
-HostAddress=172.30.4.252
+HostAddress=@NODE_IP@
 Slot=2
 ; Name=DST 2
 
 [Output3]
-HostAddress=172.30.4.252
+HostAddress=@NODE_IP@
 Slot=3
 ; Name=DST 3
 
 [Output4]
-HostAddress=172.30.4.252
+HostAddress=@NODE_IP@
 Slot=4
 ; Name=DST 4
 
 [Output5]
-HostAddress=172.30.4.252
+HostAddress=@NODE_IP@
 Slot=5
 ; Name=DST 5
 
 [Output6]
-HostAddress=172.30.4.252
+HostAddress=@NODE_IP@
 Slot=6
 ; Name=DST 6
 
 [Output7]
-HostAddress=172.30.4.252
+HostAddress=@NODE_IP@
 Slot=7
 ; Name=DST 7
 
 [Output8]
-HostAddress=172.30.4.252
+HostAddress=@NODE_IP@
 Slot=8
 ; Name=DST 8
 

@@ -10,6 +10,7 @@
 *.html
 *.la
 *.lo
+*.map
 *.o
 *.pc
 *.pdf
@@ -18,6 +19,7 @@
 *.spec
 *.tar.gz
 *.tar.xz
+*.tst
 .deps
 .libs
 build_debs.sh

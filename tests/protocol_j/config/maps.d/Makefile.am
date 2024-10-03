@@ -20,8 +20,8 @@
 ##
 ## Use automake to process this into a Makefile.in
 
-EXTRA_DIST = 01-Test_Audio.map\
-             02-Test_GPIO.map
+EXTRA_DIST = 01-Test_Audio.map.in\
+             02-Test_GPIO.map.in
 
 CLEANFILES = *~\
              *.idb\
@@ -33,6 +33,8 @@ CLEANFILES = *~\
 
 MAINTAINERCLEANFILES = *~\
                        *.tar.gz\
+                       01-Test_Audio.map\
+                       02-Test_GPIO.map\
                        aclocal.m4\
                        configure\
                        Makefile.in\

@@ -29,7 +29,7 @@ moc_%.cpp:	%.h
 	$(MOC) $< -o $@
 
 
-noinst_PROGRAMS = jtest
+bin_PROGRAMS = jtest
 
 dist_jtest_SOURCES = jsontest.cpp jsontest.h\
                      jtest.cpp jtest.h

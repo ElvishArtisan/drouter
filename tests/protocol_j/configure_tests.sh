@@ -1,6 +1,6 @@
 #!/bin/bash
 
-# Run all integrated tests in this directory
+# Configure test fixtures
 #
 #   (C) Copyright 2024 Fred Gleason <fredg@paravelsystems.com>
 #
@@ -19,29 +19,22 @@
 #   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
 #
 
-#
-# Audio Tests
-#
-echo ======================================
-echo  ProtocolJ - Audio Tests
-echo ======================================
-jtest --hostname=localhost:9600 --connection-type=tcp --tests=tests_audio.tst
+echo "Configure the test fixtures for the ProtocolJ test suite."
 echo
 
-#
-# GPIO Tests
-#
-echo ======================================
-echo  ProtocolJ - GPIO Tests
-echo ======================================
-jtest --hostname=localhost:9600 --connection-type=tcp --tests=tests_gpio.tst
-echo
+read -a MAP_NODE_IP -p "IPv4 address of the test node: "
 
 #
-# Action Tests
+# SA Maps
 #
-echo ======================================
-echo  ProtocolJ - Action Tests
-echo ======================================
-jtest --hostname=localhost:9600 --connection-type=tcp --tests=tests_action.tst
-echo
+cat config/maps.d/01-Test_Audio.map.src | sed s/@MAP_NODE_IP@/$MAP_NODE_IP/ > config/maps.d/01-Test_Audio.map
+
+cat config/maps.d/02-Test_GPIO.map.src | sed s/@MAP_NODE_IP@/$MAP_NODE_IP/ > config/maps.d/02-Test_GPIO.map
+
+#
+# Test Cases
+#
+cat tests_action.tst.src | sed s/@MAP_NODE_IP@/$MAP_NODE_IP/ > tests_action.tst
+cat tests_audio.tst.src | sed s/@MAP_NODE_IP@/$MAP_NODE_IP/ > tests_audio.tst
+cat tests_gpio.tst.src | sed s/@MAP_NODE_IP@/$MAP_NODE_IP/ > tests_gpio.tst
+

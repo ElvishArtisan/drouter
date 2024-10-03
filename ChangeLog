@@ -1256,3 +1256,7 @@
 	* Fixed a bug in drouterd(8) that caused actionpanel(1) to indicate
 	incorrect next event(s) when one or more events had no days of the
 	week selected.
+2024-10-03 Fred Gleason <fredg@paravelsystems.com>
+	* Added the environmental variable $DROUTER_TEST_NODE_IP to allow
+	automatic detection of the node address to use for integrated
+	testing.

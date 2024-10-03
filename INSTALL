@@ -70,3 +70,12 @@ create and configure the DB correctly when invoked as follows:
 
 Where <admin-name> and <admin-pw> are the user username/password of
 a MySQL account with GRANT prvileges.
+
+TESTING
+-------
+Drouter includes an integrated testing framework for validating the
+correctness of various subsystems. The following environmental variables
+should be set so that the various test fixtures can be generated properly:
+
+DROUTER_TEST_NODE_IP - The IPv4 address of the node to be used for integrated
+                       test. This should be an AudioScience ASI6585 card.

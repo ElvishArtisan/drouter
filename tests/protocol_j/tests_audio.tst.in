@@ -21,7 +21,7 @@
     "router": 1,
     "sourcenames": [
         {
-            "hostAddress": "172.30.4.252",
+            "hostAddress": "@NODE_IP@",
             "hostDescription": "AudioScience 6685 Card",
             "hostName": "ELASTIGIRL",
             "name": "SRC 1",
@@ -31,7 +31,7 @@
             "streamAddress": "239.192.119.37"
         },
         {
-            "hostAddress": "172.30.4.252",
+            "hostAddress": "@NODE_IP@",
             "hostDescription": "AudioScience 6685 Card",
             "hostName": "ELASTIGIRL",
             "name": "SRC 2",
@@ -41,7 +41,7 @@
             "streamAddress": "239.192.119.38"
         },
         {
-            "hostAddress": "172.30.4.252",
+            "hostAddress": "@NODE_IP@",
             "hostDescription": "AudioScience 6685 Card",
             "hostName": "ELASTIGIRL",
             "name": "SRC 3",
@@ -51,7 +51,7 @@
             "streamAddress": "239.192.119.39"
         },
         {
-            "hostAddress": "172.30.4.252",
+            "hostAddress": "@NODE_IP@",
             "hostDescription": "AudioScience 6685 Card",
             "hostName": "ELASTIGIRL",
             "name": "SRC 4",
@@ -61,7 +61,7 @@
             "streamAddress": "239.192.119.40"
         },
         {
-            "hostAddress": "172.30.4.252",
+            "hostAddress": "@NODE_IP@",
             "hostDescription": "AudioScience 6685 Card",
             "hostName": "ELASTIGIRL",
             "name": "SRC 5",
@@ -71,7 +71,7 @@
             "streamAddress": "239.192.119.41"
         },
         {
-            "hostAddress": "172.30.4.252",
+            "hostAddress": "@NODE_IP@",
             "hostDescription": "AudioScience 6685 Card",
             "hostName": "ELASTIGIRL",
             "name": "SRC 6",
@@ -81,7 +81,7 @@
             "streamAddress": "239.192.119.42"
         },
         {
-            "hostAddress": "172.30.4.252",
+            "hostAddress": "@NODE_IP@",
             "hostDescription": "AudioScience 6685 Card",
             "hostName": "ELASTIGIRL",
             "name": "SRC 7",
@@ -91,7 +91,7 @@
             "streamAddress": "239.192.119.43"
         },
         {
-            "hostAddress": "172.30.4.252",
+            "hostAddress": "@NODE_IP@",
             "hostDescription": "AudioScience 6685 Card",
             "hostName": "ELASTIGIRL",
             "name": "SRC 8",
@@ -108,7 +108,7 @@
 {
     "destnames": [
         {
-            "hostAddress": "172.30.4.252",
+            "hostAddress": "@NODE_IP@",
             "hostDescription": "AudioScience 6685 Card",
             "hostName": "ELASTIGIRL",
             "name": "DST 1",
@@ -116,7 +116,7 @@
             "slot": 1
         },
         {
-            "hostAddress": "172.30.4.252",
+            "hostAddress": "@NODE_IP@",
             "hostDescription": "AudioScience 6685 Card",
             "hostName": "ELASTIGIRL",
             "name": "DST 2",
@@ -124,7 +124,7 @@
             "slot": 2
         },
         {
-            "hostAddress": "172.30.4.252",
+            "hostAddress": "@NODE_IP@",
             "hostDescription": "AudioScience 6685 Card",
             "hostName": "ELASTIGIRL",
             "name": "DST 3",
@@ -132,7 +132,7 @@
             "slot": 3
         },
         {
-            "hostAddress": "172.30.4.252",
+            "hostAddress": "@NODE_IP@",
             "hostDescription": "AudioScience 6685 Card",
             "hostName": "ELASTIGIRL",
             "name": "DST 4",
@@ -140,7 +140,7 @@
             "slot": 4
         },
         {
-            "hostAddress": "172.30.4.252",
+            "hostAddress": "@NODE_IP@",
             "hostDescription": "AudioScience 6685 Card",
             "hostName": "ELASTIGIRL",
             "name": "DST 5",
@@ -148,7 +148,7 @@
             "slot": 5
         },
         {
-            "hostAddress": "172.30.4.252",
+            "hostAddress": "@NODE_IP@",
             "hostDescription": "AudioScience 6685 Card",
             "hostName": "ELASTIGIRL",
             "name": "DST 6",
@@ -156,7 +156,7 @@
             "slot": 6
         },
         {
-            "hostAddress": "172.30.4.252",
+            "hostAddress": "@NODE_IP@",
             "hostDescription": "AudioScience 6685 Card",
             "hostName": "ELASTIGIRL",
             "name": "DST 7",
@@ -164,7 +164,7 @@
             "slot": 7
         },
         {
-            "hostAddress": "172.30.4.252",
+            "hostAddress": "@NODE_IP@",
             "hostDescription": "AudioScience 6685 Card",
             "hostName": "ELASTIGIRL",
             "name": "DST 8",
