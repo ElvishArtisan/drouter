@@ -1268,3 +1268,6 @@
 	* Added a getnode(1) command.
 2024-10-03 Fred Gleason <fredg@paravelsystems.com>
 	* Added a putnode(1) command.
+2024-10-03 Fred Gleason <fredg@paravelsystems.com>
+	* Added a reference LWRP configuration in
+	'tests/protocol_j/test_node.lwrp'.

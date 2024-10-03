@@ -24,6 +24,7 @@ SUBDIRS = config
 
 EXTRA_DIST = configure_tests.sh\
              run_tests.sh\
+             test_node.lwrp\
              tests_action.tst.in\
              tests_audio.tst.in\
              tests_gpio.tst.in
