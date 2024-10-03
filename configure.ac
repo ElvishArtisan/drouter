@@ -323,6 +323,7 @@ AC_CONFIG_FILES([ \
     src/dmap/Makefile \
     src/drouterd/Makefile \
     src/eventlogpanel/Makefile \
+    src/getnode/Makefile \
     src/jtest/Makefile \
     src/outputpanel/Makefile \
     src/shotpanel/Makefile \

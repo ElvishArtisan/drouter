@@ -1264,3 +1264,5 @@
 	* Added the environmental variable $DROUTER_TEST_HOSTNAME to allow
 	automatic detection of the node hostname to use for integrated
 	testing.
+2024-10-03 Fred Gleason <fredg@paravelsystems.com>
+	* Added a getnode(1) command.

@@ -26,6 +26,7 @@ SUBDIRS = drouter\
           dmap\
           drouterd\
           eventlogpanel\
+          getnode\
           jtest\
           outputpanel\
           shotpanel\
