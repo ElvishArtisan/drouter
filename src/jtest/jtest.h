@@ -27,7 +27,7 @@
 
 #include "jsontest.h"
 
-#define JTEST_USAGE "[--hostname=<ip-addr>[:<port-num>]] [--connection-type=TCP|WebSocket] --tests=<filename>\n"
+#define JTEST_USAGE "[--generate-diffs] [--hostname=<ip-addr>[:<port-num>]] [--connection-type=TCP|WebSocket] --tests=<filename>\n"
 
 class MainObject : public QObject
 {
@@ -37,7 +37,7 @@ class MainObject : public QObject
 
  private slots:
   void testCompleteData(int testnum,const QString &testname,bool passed,
-			const QString &err_msg);
+			const QString &err_msg,const QString &diff);
   
  private:
   void Finish();
@@ -46,6 +46,7 @@ class MainObject : public QObject
   int d_linenum;
   int d_passed;
   int d_failed;
+  bool d_generate_diffs;
 };
 
 

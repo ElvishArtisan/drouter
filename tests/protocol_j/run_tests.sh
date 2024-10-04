@@ -25,7 +25,7 @@
 echo ======================================
 echo  ProtocolJ - Audio Tests
 echo ======================================
-jtest --hostname=localhost:9600 --connection-type=tcp --tests=tests_audio.tst
+jtest $1 --hostname=localhost:9600 --connection-type=tcp --tests=tests_audio.tst
 echo
 
 #
@@ -34,7 +34,7 @@ echo
 echo ======================================
 echo  ProtocolJ - GPIO Tests
 echo ======================================
-jtest --hostname=localhost:9600 --connection-type=tcp --tests=tests_gpio.tst
+jtest $1 --hostname=localhost:9600 --connection-type=tcp --tests=tests_gpio.tst
 echo
 
 #
@@ -43,5 +43,5 @@ echo
 echo ======================================
 echo  ProtocolJ - Action Tests
 echo ======================================
-jtest --hostname=localhost:9600 --connection-type=tcp --tests=tests_action.tst
+jtest $1 --hostname=localhost:9600 --connection-type=tcp --tests=tests_action.tst
 echo

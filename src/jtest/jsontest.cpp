@@ -18,6 +18,10 @@
 //   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
 //
 
+#include <unistd.h>
+
+#include <QProcess>
+
 #include "jsontest.h"
 
 JsonTest::JsonTest(const QString &hostname,uint16_t portnum,
@@ -59,12 +63,7 @@ void JsonTest::runTest(int testnum,const QString &testname,
 		       const QStringList &recv,int recv_start_linenum)
 {
   QString err_msg;
-  /*
-  printf("SEND: %s\n",send.join("\n").toUtf8().constData());
-  printf("*****************************************************************\n");
-  printf("RECV: %s\n",recv.join("\n").toUtf8().constData());
-  printf("*****************************************************************\n");
-  */
+
   d_test_number=testnum;
   d_test_name=testname;
   d_recv_start_linenum=recv_start_linenum;
@@ -141,15 +140,89 @@ bool JsonTest::parseCheck(QString *err_msg,const QJsonParseError &jerr,
 }
 
 
+QString JsonTest::makeDiff(const QJsonDocument &jdoc) const
+{
+  QString ret="";
+  char tempdir[PATH_MAX]={"/tmp/jtestXXXXXX"};
+
+  //
+  // Create Temporary Directory
+  //
+  if(mkdtemp(tempdir)==NULL) {
+    fprintf(stderr,"jtest: unable to create temporary directory [%s]\n",
+	    strerror(errno));
+    exit(1);
+  }
+
+  //
+  // Generate JSON Files
+  //
+  QString orig_filepath=tempdir+QString("/exemplar.json");
+  writeJson(d_exemplar_doc,orig_filepath);
+
+  QString alt_filepath=tempdir+QString("/received.json");
+  writeJson(jdoc,alt_filepath);
+
+  //
+  // Generate Diff Data
+  //
+  QProcess *proc=new QProcess();
+  QStringList args;
+  args.push_back("-u");
+  args.push_back(orig_filepath);
+  args.push_back(alt_filepath);
+  proc->start("diff",args);
+  proc->waitForFinished();
+  if(proc->exitStatus()!=QProcess::NormalExit) {
+    fprintf(stderr,"jtest: diff process crashed\n");
+    exit(1);
+  }
+  if(proc->exitCode()>1) {
+    fprintf(stderr,"jtest: diff process exited abnormally [%s]\n",
+	    proc->readAllStandardError().constData());
+    exit(1);
+  }
+  ret=QString::fromUtf8(proc->readAllStandardOutput());
+  delete proc;
+
+  //
+  // Clean Up
+  //
+  unlink(orig_filepath.toUtf8());
+  unlink(alt_filepath.toUtf8());
+  if(rmdir(tempdir)!=0) {
+    fprintf(stderr,"jtest: failed to delete temporary directory [%s]\n",
+	    strerror(errno));
+  }
+
+  return ret;
+}
+
+
+void JsonTest::writeJson(const QJsonDocument &json,const QString &filepath)
+  const
+{
+  FILE *f=NULL;
+
+  if((f=fopen(filepath.toUtf8(),"w"))==NULL) {
+    fprintf(stderr,"jtest: unable to create temporary file \"%s\" [%s]\n",
+	    filepath.toUtf8().constData(),strerror(errno));
+    exit(1);
+  }
+  fprintf(f,"%s",json.toJson().constData());
+  fclose(f);
+}
+
+
 void JsonTest::exemplarErrorData()
 {
-  emit testComplete(d_test_number,d_test_name,false,d_exemplar_error_string);
+  emit testComplete(d_test_number,d_test_name,false,d_exemplar_error_string,
+		    QString());
 }
 
 
 void JsonTest::connectedData()
 {
-  //  printf("connected!\n");
   switch(d_connection_type) {
   case JsonTest::ConnectionTcp:
     d_tcp_socket->write(d_send_list.join("\n").toUtf8());
@@ -167,7 +240,6 @@ void JsonTest::connectedData()
 
 void JsonTest::disconnectedData()
 {
-  //  printf("disconnected!\n");
   if(d_processing) {
     switch(d_connection_type) {
     case JsonTest::ConnectionTcp:
@@ -183,7 +255,8 @@ void JsonTest::disconnectedData()
     case JsonTest::ConnectionLast:
       break;
     }
-    emit testComplete(d_test_number,d_test_name,false,"far end disconnected");
+    emit testComplete(d_test_number,d_test_name,false,
+		      "far end disconnected",QString());
   }
 }
 
@@ -208,7 +281,8 @@ void JsonTest::errorOccurredData(QAbstractSocket::SocketError err)
       break;
     }
     emit testComplete(d_test_number,d_test_name,false,
-		      QString::asprintf("received socket error %d",err));
+		      QString::asprintf("received socket error %d",err),
+		      QString());
   }
 }
 
@@ -225,22 +299,20 @@ void JsonTest::readyReadData()
   QJsonParseError jerr;
   QJsonDocument recv_doc=QJsonDocument::fromJson(json,&jerr);
 
-//  printf("RETURNED STARTS\n");
-//  printf("%s",json.constData());
-//  printf("RETURNED ENDS\n");
-
   if(!JsonTest::parseCheck(&err_msg,jerr,json,d_recv_start_linenum)) {
     emit testComplete(d_test_number,d_test_name,false,
 		      QString::asprintf("parse error in returned json: %s",
-					err_msg.toUtf8().constData()));
+					err_msg.toUtf8().constData()),
+		      QString());
   }
   else {
     if(d_exemplar_doc!=recv_doc) {
       emit testComplete(d_test_number,d_test_name,false,
-			"returned json does not match exemplar");
+			"returned json does not match exemplar",
+			makeDiff(recv_doc));
     }
     else {
-      emit testComplete(d_test_number,d_test_name,true,"OK");
+      emit testComplete(d_test_number,d_test_name,true,"OK","");
     }
   }
 }
@@ -258,22 +330,20 @@ void JsonTest::binaryMessageReceivedData(const QByteArray &json)
   QJsonParseError jerr;
   QJsonDocument recv_doc=QJsonDocument::fromJson(json,&jerr);
 
-//  printf("RETURNED STARTS\n");
-//  printf("%s",json.constData());
-//  printf("RETURNED ENDS\n");
-
   if(!JsonTest::parseCheck(&err_msg,jerr,json,d_recv_start_linenum)) {
     emit testComplete(d_test_number,d_test_name,false,
 		      QString::asprintf("parse error in returned json: %s",
-					err_msg.toUtf8().constData()));
+					err_msg.toUtf8().constData()),
+		      QString());
   }
   else {
     if(d_exemplar_doc!=recv_doc) {
       emit testComplete(d_test_number,d_test_name,false,
-			"returned json does not match exemplar");
+			"returned json does not match exemplar",
+			makeDiff(recv_doc));
     }
     else {
-      emit testComplete(d_test_number,d_test_name,true,"OK");
+      emit testComplete(d_test_number,d_test_name,true,"OK","");
     }
   }
 }

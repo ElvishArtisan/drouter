@@ -23,6 +23,7 @@
 SUBDIRS = config
 
 EXTRA_DIST = configure_tests.sh\
+             perm_sa_actions.sh\
              run_tests.sh\
              test_node.lwrp\
              tests_action.tst.in\

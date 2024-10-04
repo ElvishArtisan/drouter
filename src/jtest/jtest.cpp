@@ -44,7 +44,8 @@ MainObject::MainObject(QObject *parent)
   d_linenum=1;
   d_passed=0;
   d_failed=0;
-  
+  d_generate_diffs=false;
+
   SyCmdSwitch *cmd=new SyCmdSwitch("jtest",VERSION,JTEST_USAGE);
   for(int i=0;i<cmd->keys();i++) {
     if(cmd->key(i)=="--connection-type") {
@@ -61,6 +62,10 @@ MainObject::MainObject(QObject *parent)
 	  exit(1);
 	}
       }
+      cmd->setProcessed(i,true);
+    }
+    if(cmd->key(i)=="--generate-diffs") {
+      d_generate_diffs=true;
       cmd->setProcessed(i,true);
     }
     if(cmd->key(i)=="--hostname") {
@@ -107,19 +112,22 @@ MainObject::MainObject(QObject *parent)
   //
   d_json_test=new JsonTest(hostname,portnum,conntype,this);
   connect(d_json_test,
-	  SIGNAL(testComplete(int,const QString &,bool,const QString&)),
+	  SIGNAL(testComplete(int,const QString &,bool,const QString &,
+			      const QString &)),
 	  this,
-	  SLOT(testCompleteData(int,const QString &,bool,const QString &)));
+	  SLOT(testCompleteData(int,const QString &,bool,const QString &,
+				const QString &)));
 
   //
   // Kick It Off
   //
-  testCompleteData(0,"KICKOFF!",true,"KICKOFF!");
+  testCompleteData(0,"KICKOFF!",true,"KICKOFF!",QString());
 }
 
 
 void MainObject::testCompleteData(int testnum,const QString &testname,
-				  bool passed,const QString &err_msg)
+				  bool passed,const QString &err_msg,
+				  const QString &diff)
 {
   /*
   printf("testCompleteData(%d,%s,%d,%s)\n",
@@ -146,6 +154,11 @@ void MainObject::testCompleteData(int testnum,const QString &testname,
       d_failed++;
       printf("Test %d [%s]: FAIL (%s)\n",testnum,testname.toUtf8().constData(),
 	     err_msg.toUtf8().constData());
+      if(d_generate_diffs) {
+	printf("================================ Diff Starts ================================\n");
+	printf("%s",diff.toUtf8().constData());
+	printf("================================= Diff Ends =================================\n");
+      }
     }
   }
 

@@ -1271,3 +1271,7 @@
 2024-10-03 Fred Gleason <fredg@paravelsystems.com>
 	* Added a reference LWRP configuration in
 	'tests/protocol_j/test_node.lwrp'.
+2024-10-04 Fred Gleason <fredg@paravelsystems.com>
+	* Added a '--generate-diffs` switch to jtest().
+	* Added a SQL dump for the 'protocol_j' test in
+	'tests/protocol_j/perm_sa_actions.sql'.

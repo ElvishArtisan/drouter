@@ -40,7 +40,8 @@ class JsonTest : public QObject
  
  signals:
   void testComplete(int testnum,const QString &testname,
-		    bool passed,const QString &err_msg);
+		    bool passed,const QString &err_msg,
+		    const QString &diff);
  
  public slots:
   void runTest(int testnum,const QString &testname,
@@ -50,6 +51,10 @@ class JsonTest : public QObject
  public:
   static bool parseCheck(QString *err_msg,const QJsonParseError &jerr,
 			 const QByteArray &json,int start_linenum);
+
+ protected:
+  QString makeDiff(const QJsonDocument &jdoc) const;
+  void writeJson(const QJsonDocument &json,const QString &filepath) const; 
 
  private slots:
   void exemplarErrorData();
