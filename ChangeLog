@@ -1009,3 +1009,6 @@
 	when initializing alarm resources.
 2024-09-16 Fred Gleason <fredg@paravelsystems.com>
 	* Incremented the package version to 1.0.0rc4int14.
+2024-11-18 Fred Gleason <fredg@paravelsystems.com>
+	* Added a 'DbKeepaliveInterval=' directive to the '[Drouterd]'
+	section of drouter.conf(5).

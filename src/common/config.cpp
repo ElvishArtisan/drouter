@@ -46,6 +46,12 @@ int Config::clipAlarmTimeout() const
 }
 
 
+int Config::dbKeepaliveInterval() const
+{
+  return conf_db_keepalive_interval;
+}
+
+
 int Config::silenceAlarmThreshold() const
 {
   return conf_silence_alarm_threshold;
@@ -233,10 +239,15 @@ void Config::load()
     p->intValue("Drouterd","ClipAlarmThreshold",DROUTER_DEFAULT_CLIP_THRESHOLD);
   conf_clip_alarm_timeout=
     p->intValue("Drouterd","ClipAlarmTimeout",DROUTER_DEFAULT_CLIP_TIMEOUT);
+  conf_db_keepalive_interval=
+    p->intValue("Drouterd","DbKeepaliveInterval",
+		DROUTER_DEFAULT_DB_KEEPALIVE_INTERVAL);
   conf_silence_alarm_threshold=
-    p->intValue("Drouterd","SilenceAlarmThreshold",DROUTER_DEFAULT_SILENCE_THRESHOLD);
+    p->intValue("Drouterd","SilenceAlarmThreshold",
+		DROUTER_DEFAULT_SILENCE_THRESHOLD);
   conf_silence_alarm_timeout=
-    p->intValue("Drouterd","SilenceAlarmTimeout",DROUTER_DEFAULT_SILENCE_TIMEOUT);
+    p->intValue("Drouterd","SilenceAlarmTimeout",
+		DROUTER_DEFAULT_SILENCE_TIMEOUT);
   QStringList f0=p->stringValue("Drouterd","NoAudioAlarmDevices").
     split(",",QString::SkipEmptyParts);
   for(int i=0;i<f0.size();i++) {

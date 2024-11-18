@@ -109,6 +109,20 @@
 	    </para>
 	  </listitem>
 	</varlistentry>
+	<varlistentry>
+	  <term>
+	    <userinput>DbKeepaliveInterval=<replaceable>secs</replaceable></userinput>
+	  </term>
+	  <listitem>
+	    <para>
+	      Where <replaceable>secs</replaceable> is the interval, in
+	      seconds, between database keepalive operations. Default value
+	      is <userinput>300</userinput> (fifteen minutes). Setting this
+	      value to <userinput>0</userinput> will disable database
+	      keepalives.
+	    </para>
+	  </listitem>
+	</varlistentry>
 
 	<varlistentry>
 	  <term>

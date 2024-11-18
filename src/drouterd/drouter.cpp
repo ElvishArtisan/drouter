@@ -65,6 +65,11 @@ DRouter::DRouter(int *proto_socks,QObject *parent)
     drouter_purge_events_timer->
       start(drouter_config->retainEventRecordsDuration());
   }
+
+  drouter_db_keepalive_timer=new QTimer(this);
+  drouter_db_keepalive_timer->setSingleShot(true);
+  connect(drouter_db_keepalive_timer,SIGNAL(timeout()),
+	  this,SLOT(dbKeepaliveData()));
 }
 
 
@@ -858,6 +863,20 @@ void DRouter::purgeEventsData()
 }
 
 
+void DRouter::dbKeepaliveData()
+{
+  printf("dbKeepAliveData(): %d\n",drouter_config->dbKeepaliveInterval());
+  QString sql=QString("select `DB` from `PERM_VERSION`");
+  SqlQuery *q=new SqlQuery(sql);
+  delete q;
+  
+  drouter_db_keepalive_timer->start(1000*drouter_config->dbKeepaliveInterval());
+  syslog(LOG_DEBUG,"ran database keepalive, next keepalive scheduled for %s",
+	 QDateTime::currentDateTime().toString("yyyy-MM-dd hh:mm:ss").
+	 toUtf8().constData());
+}
+
+
 void DRouter::NotifyProtocols(const QString &type,const QString &id,
 			      int srcs,int dsts,int gpis,int gpos)
 {
@@ -1358,6 +1377,8 @@ bool DRouter::StartDb(QString *err_msg)
   sql=QString("insert into `TETHER` set `IS_ACTIVE`='N'");
   SqlQuery::apply(sql);
 
+  dbKeepaliveData();
+  
   return true;
 }
 
