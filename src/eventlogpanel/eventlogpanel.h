@@ -46,6 +46,7 @@ class MainWidget : public QWidget
   void showAttributesData(int n);
   void toggleScrollingData();
   void refreshData();
+  void dbKeepaliveData();
 
  protected:
   void resizeEvent(QResizeEvent *e);
@@ -59,6 +60,8 @@ class MainWidget : public QWidget
   EventLogModel *d_log_model;
   bool d_scrolling;
   QTimer *d_refresh_timer;
+  int d_db_keepalive_interval;
+  QTimer *d_db_keepalive_timer;
 };
 
 

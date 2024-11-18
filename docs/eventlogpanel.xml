@@ -60,6 +60,19 @@
   <variablelist remap='TP'>
     <varlistentry>
       <term>
+	<option>--db-keepalive-interval=<replaceable>sec</replaceable></option>
+      </term>
+      <listitem>
+	<para>
+	  Send a keep-alive message to the database server every
+	  <replaceable>sec</replaceable> seconds. Default value is
+	  <userinput>900</userinput> (fifteen minutes).
+	</para>
+      </listitem>
+    </varlistentry>
+
+    <varlistentry>
+      <term>
 	<option>--dbname=<replaceable>db-name</replaceable></option>
       </term>
       <listitem>
