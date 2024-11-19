@@ -2,7 +2,7 @@
 //
 // Applet for reading the event log
 //
-//   (C) Copyright 2002-2022 Fred Gleason <fredg@paravelsystems.com>
+//   (C) Copyright 2002-2024 Fred Gleason <fredg@paravelsystems.com>
 //
 //   This program is free software; you can redistribute it and/or modify
 //   it under the terms of the GNU General Public License as
@@ -50,8 +50,9 @@ class MainWidget : public QWidget
 
  protected:
   void resizeEvent(QResizeEvent *e);
+  void dbKeepaliveData();
 
- private:
+private:
   QLabel *d_show_attributes_label;
   QComboBox *d_show_attributes_box;
   QPushButton *d_scroll_button;
@@ -60,6 +61,8 @@ class MainWidget : public QWidget
   DREventLogModel *d_log_model;
   bool d_scrolling;
   QTimer *d_refresh_timer;
+  int d_db_keepalive_interval;
+  QTimer *d_db_keepalive_timer;
 };
 
 

@@ -44,6 +44,8 @@ MainWidget::MainWidget(QWidget *parent)
   QString db_username="drouter";
   QString db_password="drouter";
   QString db_dbname="drouter";
+  d_db_keepalive_interval=900;
+  bool ok=false;
 
   if(getenv("DROUTER_HOSTNAME")!=NULL) {
     db_hostname=getenv("DROUTER_HOSTNAME");
@@ -65,6 +67,14 @@ MainWidget::MainWidget(QWidget *parent)
     }
     if(cmd->key(i)=="--dbname") {
       db_dbname=cmd->value(i);
+      cmd->setProcessed(i,true);
+    }
+    if(cmd->key(i)=="--db-keepalive-interval") {
+      d_db_keepalive_interval=cmd->value(i).toInt(&ok);
+      if((!ok)||(d_db_keepalive_interval<0)) {
+	fprintf(stderr,"invalid --db-keepalive-interval\n");
+	exit(1);
+      }
       cmd->setProcessed(i,true);
     }
     if(!cmd->processed(i)) {
@@ -103,6 +113,9 @@ MainWidget::MainWidget(QWidget *parent)
 			 db.lastError().driverText()+"]");
     exit(1);
   }
+  d_db_keepalive_timer=new QTimer(this);
+  d_db_keepalive_timer->setSingleShot(true);
+  connect(d_db_keepalive_timer,SIGNAL(timeout()),this,SLOT(dbKeepaliveData()));
 
   //
   // Attributes Filter
@@ -155,6 +168,10 @@ MainWidget::MainWidget(QWidget *parent)
 
   d_refresh_timer->start(0);
   toggleScrollingData();
+
+  if(d_db_keepalive_interval!=0) {
+    dbKeepaliveData();
+  }
 }
 
 
@@ -197,6 +214,16 @@ void MainWidget::refreshData()
     d_table_view->scrollTo(index);
   }
   d_refresh_timer->start(1000);
+}
+
+
+void MainWidget::dbKeepaliveData()
+{
+  QString sql=QString("select `DB` from `PERM_VERSION`");
+  DRSqlQuery *q=new DRSqlQuery(sql);
+  delete q;
+
+  d_db_keepalive_timer->start(1000*d_db_keepalive_interval);
 }
 
 

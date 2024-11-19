@@ -1275,3 +1275,5 @@
 	* Added a '--generate-diffs` switch to jtest().
 	* Added a SQL dump for the 'protocol_j' test in
 	'tests/protocol_j/perm_sa_actions.sql'.
+2024-11-18 Fred Gleason <fredg@paravelsystems.com>
+	* Added a '--db-keepalive-interval' switch to eventlogpanel(1).
