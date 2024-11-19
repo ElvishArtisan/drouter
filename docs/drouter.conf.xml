@@ -117,7 +117,7 @@
 	    <para>
 	      Where <replaceable>secs</replaceable> is the interval, in
 	      seconds, between database keepalive operations. Default value
-	      is <userinput>300</userinput> (fifteen minutes). Setting this
+	      is <userinput>900</userinput> (fifteen minutes). Setting this
 	      value to <userinput>0</userinput> will disable database
 	      keepalives.
 	    </para>

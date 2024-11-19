@@ -1016,3 +1016,5 @@
 	* Added a '--db-keepalive-interval' switch to eventlogpanel(1).
 2024-11-19 Fred Gleason <fredg@paravelsystems.com>
 	* Added a DEB build dependency for 'switchyard5-dev'.
+2024-11-19 Fred Gleason <fredg@paravelsystems.com>
+	* Fixed a typo in the drouter.conf(5) manpage.
