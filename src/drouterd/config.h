@@ -32,6 +32,7 @@
 #define DROUTER_NULL_STREAM_ADDRESS QString("239.192.0.0")
 #define DROUTER_DEFAULT_CLIP_THRESHOLD -20
 #define DROUTER_DEFAULT_CLIP_TIMEOUT 1000
+#define DROUTER_DEFAULT_DB_KEEPALIVE_INTERVAL 900
 #define DROUTER_DEFAULT_SILENCE_THRESHOLD -500
 #define DROUTER_DEFAULT_SILENCE_TIMEOUT 10000
 #define DEFAULT_DEFAULT_RETAIN_EVENT_RECORDS_DURATION 168
@@ -55,6 +56,7 @@ class Config
   Config();
   int clipAlarmThreshold() const;
   int clipAlarmTimeout() const;
+  int dbKeepaliveInterval() const;
   int silenceAlarmThreshold() const;
   int silenceAlarmTimeout() const;
   bool configureAudioAlarms(const QString &dev_name) const;
@@ -96,6 +98,7 @@ class Config
   QString conf_lwrp_password;
   int conf_clip_alarm_threshold;
   int conf_clip_alarm_timeout;
+  int conf_db_keepalive_interval;
   int conf_silence_alarm_threshold;
   int conf_silence_alarm_timeout;
   int conf_ipc_log_priority;

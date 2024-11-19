@@ -86,6 +86,7 @@ class DRouter : public QObject
   void ipcReadyReadData(int sock);
   void purgeEventsData();
   void eventAddedData(int evt_id);
+  void dbKeepaliveData();
 
  private:
   void NotifyProtocols(const QString &type,const QString &id,
@@ -115,6 +116,7 @@ class DRouter : public QObject
   QTimer *drouter_purge_events_timer;
   LoggerFront *drouter_logger_front;
   LoggerBack *drouter_logger_back;
+  QTimer *drouter_db_keepalive_timer;
   Config *drouter_config;
 };
 

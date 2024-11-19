@@ -1277,3 +1277,6 @@
 	'tests/protocol_j/perm_sa_actions.sql'.
 2024-11-18 Fred Gleason <fredg@paravelsystems.com>
 	* Added a '--db-keepalive-interval' switch to eventlogpanel(1).
+2024-11-18 Fred Gleason <fredg@paravelsystems.com>
+	* Added a 'DbKeepaliveInterval=' directive to the '[Drouterd]'
+	section of drouter.conf(5).
