@@ -1282,3 +1282,6 @@
 	section of drouter.conf(5).
 2024-11-18 Fred Gleason <fredg@paravelsystems.com>
 	* Commented out building of 'Action' commands.
+2024-11-18 Fred Gleason <fredg@paravelsystems.com>
+	* Added a test router in
+	'tests/protocol_j/config/maps.d/03-Test_41MLR_Audio.map.in'.
