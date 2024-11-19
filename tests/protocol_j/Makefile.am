@@ -22,6 +22,9 @@
 
 SUBDIRS = config
 
+tests:
+	./run_tests.sh
+
 EXTRA_DIST = configure_tests.sh\
              perm_sa_actions.sh\
              run_tests.sh\

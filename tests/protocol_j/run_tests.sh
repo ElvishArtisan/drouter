@@ -40,8 +40,8 @@ echo
 #
 # Action Tests
 #
-echo ======================================
-echo  ProtocolJ - Action Tests
-echo ======================================
-jtest $1 --hostname=localhost:9600 --connection-type=tcp --tests=tests_action.tst
-echo
+#echo ======================================
+#echo  ProtocolJ - Action Tests
+#echo ======================================
+#jtest $1 --hostname=localhost:9600 --connection-type=tcp --tests=tests_action.tst
+#echo

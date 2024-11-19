@@ -318,7 +318,6 @@ AC_CONFIG_FILES([ \
     scripts/Makefile \
     src/drouter/Makefile \
     src/drouter/paths.h\
-    src/actionpanel/Makefile \
     src/buttonpanel/Makefile \
     src/dmap/Makefile \
     src/drouterd/Makefile \

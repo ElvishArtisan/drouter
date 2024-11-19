@@ -243,9 +243,11 @@ void Config::load()
     p->intValue("Drouterd","DbKeepaliveInterval",
 		DROUTER_DEFAULT_DB_KEEPALIVE_INTERVAL);
   conf_silence_alarm_threshold=
-    p->intValue("Drouterd","SilenceAlarmThreshold",DROUTER_DEFAULT_SILENCE_THRESHOLD);
+    p->intValue("Drouterd","SilenceAlarmThreshold",
+		DROUTER_DEFAULT_SILENCE_THRESHOLD);
   conf_silence_alarm_timeout=
-    p->intValue("Drouterd","SilenceAlarmTimeout",DROUTER_DEFAULT_SILENCE_TIMEOUT);
+    p->intValue("Drouterd","SilenceAlarmTimeout",
+		DROUTER_DEFAULT_SILENCE_TIMEOUT);
   QStringList f0=p->stringValue("Drouterd","NoAudioAlarmDevices").
     split(",",Qt::SkipEmptyParts);
   for(int i=0;i<f0.size();i++) {

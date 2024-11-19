@@ -21,7 +21,6 @@
 ## Use automake to process this into a Makefile.in
 
 SUBDIRS = drouter\
-          actionpanel\
           buttonpanel\
           dmap\
           drouterd\
