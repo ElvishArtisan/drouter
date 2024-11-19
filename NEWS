@@ -1,6 +1,12 @@
 This is the NEWS file for the drouter package.
 
 -------------------------------------------------------------------------------
+v1.0.0rc4int15 - 19 November 2024
+
+Changes:
+   Fixed bugs in drouterd(8) and eventlogpanel(1) that could cause loss of
+   connectivity to the database server.
+-------------------------------------------------------------------------------
 v1.0.0rc4int14 - 16 September 2024
 
 Changes:

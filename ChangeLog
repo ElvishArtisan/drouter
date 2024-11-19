@@ -1018,3 +1018,5 @@
 	* Added a DEB build dependency for 'switchyard5-dev'.
 2024-11-19 Fred Gleason <fredg@paravelsystems.com>
 	* Fixed a typo in the drouter.conf(5) manpage.
+2024-11-19 Fred Gleason <fredg@paravelsystems.com>
+	* Incremented the package version to 1.0.0rc4int15.
