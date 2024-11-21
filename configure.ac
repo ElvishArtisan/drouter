@@ -85,10 +85,17 @@ AC_ARG_ENABLE(docbook,[  --disable-docbook       disable building of DocBook doc
 #
 # Test Fixture Configuration
 #
-AC_ARG_VAR(DROUTER_TEST_NODE_IP,[IPv4 address of the node for running test cases])
-AC_SUBST(NODE_IP,$DROUTER_TEST_NODE_IP)
-AC_ARG_VAR(DROUTER_TEST_HOSTNAME,[Hostname of the node for running test cases])
+AC_ARG_VAR(DROUTER_TEST_HOSTNAME,[Hostname of Livewire node for running test cases])
 AC_SUBST(NODE_HOSTNAME,$DROUTER_TEST_HOSTNAME)
+
+AC_ARG_VAR(DROUTER_TEST_NODE_IP,[IPv4 address of Livewire node for running test cases])
+AC_SUBST(NODE_IP,$DROUTER_TEST_NODE_IP)
+
+AC_ARG_VAR(DROUTER_TEST_BTOOLS_IP,[IPv4 address of Broadcast Tools device for running test cases])
+AC_SUBST(BOOLS_IP,$DROUTER_TEST_BTOOLS_IP)
+
+AC_ARG_VAR(DROUTER_TEST_ULTRICORE_IP,[IPv4 address of Ultricore device for running test cases])
+AC_SUBST(ULTRICORE_IP,$DROUTER_TEST_ULTRICORE_IP)
 
 #
 # Check for Qt (Mandatory)

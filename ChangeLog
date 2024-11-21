@@ -1288,3 +1288,6 @@
 2024-11-21 Fred Gleason <fredg@paravelsystems.com>
 	* Added test cases for GPIO on the Broadcast Tools 4.1 MLR>>Web
 	switcher.
+2024-11-21 Fred Gleason <fredg@paravelsystems.com>
+	* Added $DROUTER_TEST_BTOOLS_IP and $DROUTER_TEST_ULTRICORE_IP
+	environmental variables to the integrated test configuration.

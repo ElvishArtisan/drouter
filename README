@@ -6,3 +6,19 @@ This software comes with ABSOLUTELY NO WARRANTY.  See the file 'COPYING' for
 details.
 
 See the file 'INSTALL' for instructions on building drouter from source.
+
+TESTING SETUP
+-------------
+The following environmental variable are for use with the integrated test
+framework:
+
+$DROUTER_TEST_HOSTNAME - The hostname of the Livewire running the tests.
+
+$DROUTER_TEST_NODE_IP - The IPv4 address of the Livewire node to be used
+                        for the Livewire integrated tests
+
+$DROUTER_TEST_BTOOLS_IP - The IPv4 address of the Broadcast Tools device to
+                          be used for the Broadcast Tools integrated tests
+
+$DROUTER_TEST_ULTRICORE_IP - The IPv4 address of the Ultricore device to
+                             be used for the Ultricore integrated tests

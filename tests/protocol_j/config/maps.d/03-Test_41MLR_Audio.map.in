@@ -6,26 +6,26 @@ RouterName=Test_41MLR_Audio
 RouterNumber=3
 
 [Input1]
-HostAddress=192.168.21.49
+HostAddress=BTOOLS_IP
 Slot=1
 Name=AES 1
 
 [Input2]
-HostAddress=192.168.21.49
+HostAddress=BTOOLS_IP
 Slot=2
 Name=AES 2
 
 [Input3]
-HostAddress=192.168.21.49
+HostAddress=BTOOLS_IP
 Slot=3
 Name=AES 3
 
 [Input4]
-HostAddress=192.168.21.49
+HostAddress=BTOOLS_IP
 Slot=4
 Name=AES 4
 
 [Output1]
-HostAddress=192.168.21.49
+HostAddress=BTOOLS_IP
 Slot=1
 Name=AES 1
