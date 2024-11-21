@@ -22,7 +22,8 @@
 
 EXTRA_DIST = 01-Test_Audio.map.in\
              02-Test_GPIO.map.in\
-             03-Test_41MLR_Audio.map.in
+             03-Test_41MLR_Audio.map.in\
+             04-Test_41MLR_GPIO.map.in
 
 CLEANFILES = *~\
              *.idb\
@@ -33,10 +34,8 @@ CLEANFILES = *~\
              moc_*
 
 MAINTAINERCLEANFILES = *~\
+                       *.map\
                        *.tar.gz\
-                       01-Test_Audio.map\
-                       02-Test_GPIO.map\
-                       03-Test_41MLR_Audio.map\
                        aclocal.m4\
                        configure\
                        Makefile.in\

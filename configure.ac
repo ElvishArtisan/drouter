@@ -342,6 +342,7 @@ AC_CONFIG_FILES([ \
     tests/protocol_j/config/maps.d/01-Test_Audio.map \
     tests/protocol_j/config/maps.d/02-Test_GPIO.map \
     tests/protocol_j/config/maps.d/03-Test_41MLR_Audio.map \
+    tests/protocol_j/config/maps.d/04-Test_41MLR_GPIO.map \
     tests/protocol_j/config/maps.d/Makefile \
     tests/protocol_j/config/scripts.d/Makefile \
     drouter.pc\

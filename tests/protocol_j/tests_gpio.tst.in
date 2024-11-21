@@ -11,6 +11,16 @@
             "name": "Test_GPIO",
             "number": 2,
             "type": "GPIO"
+        },
+        {
+            "name": "Test_41MLR_Audio",
+            "number": 3,
+            "type": "Audio"
+        },
+        {
+            "name": "Test_41MLR_GPIO",
+            "number": 4,
+            "type": "GPIO"
         }
     ]
 }

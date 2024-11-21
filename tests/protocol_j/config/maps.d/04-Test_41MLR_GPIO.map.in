@@ -1,0 +1,32 @@
+@GENERATED_INI_FILE_WARNING@
+
+[Global]
+RouterType=GPIO
+RouterName=Test_41MLR_GPIO
+RouterNumber=4
+
+[Input1]
+HostAddress=192.168.21.49
+Slot=1
+Name=GPI 1
+
+
+[Output1]
+HostAddress=192.168.21.49
+Slot=1
+Name=GPO 1
+
+[Output2]
+HostAddress=192.168.21.49
+Slot=2
+Name=GPO 2
+
+[Output3]
+HostAddress=192.168.21.49
+Slot=3
+Name=GPO 3
+
+[Output4]
+HostAddress=192.168.21.49
+Slot=4
+Name=GPO 4

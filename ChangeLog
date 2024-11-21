@@ -1285,3 +1285,6 @@
 2024-11-18 Fred Gleason <fredg@paravelsystems.com>
 	* Added a test router in
 	'tests/protocol_j/config/maps.d/03-Test_41MLR_Audio.map.in'.
+2024-11-21 Fred Gleason <fredg@paravelsystems.com>
+	* Added test cases for GPIO on the Broadcast Tools 4.1 MLR>>Web
+	switcher.
