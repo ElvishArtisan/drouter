@@ -1296,3 +1296,7 @@
 	to $DROUTER_TEST_GVG7000_IP.
 2024-11-22 Fred Gleason <fredg@paravelsystems.com>
 	* Removed support for the Broadcast Tools Universal 4.1 MLR>>Web.
+2024-11-22 Fred Gleason <fredg@paravelsystems.com>
+	* Added support for generating matrix maps from GVG7000 protocol
+	devices.
+	* Added '--device-address' and '--device-type' switches to dmap(1).

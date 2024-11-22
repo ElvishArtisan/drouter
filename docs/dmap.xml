@@ -39,10 +39,10 @@
   <refsect1 id='description'><title>Description</title>
   <para>
     <command>dmap</command><manvolnum>1</manvolnum> is a utility for
-    automatically checking or generating Livewire matrix maps for use by
+    automatically checking or generating matrix maps for use by
     <command>drouterd</command><manvolnum>1</manvolnum>. It works by
-    connecting to a local drouterd instance and enumerating the reported
-    resources.
+    connecting to a local or remote routing instance (such as Drouter's
+    ProtocolD service) and enumerating the reported resources found there.
   </para>
   <para>
     When invoked with no arguments,
@@ -57,12 +57,61 @@
   <variablelist remap='TP'>
     <varlistentry>
       <term>
+	<option>--device-address=</option><replaceable>hostname</replaceable>[:<replaceable>portnum</replaceable>]
+      </term>
+      <listitem>
+	<para>
+	  The parameters to use to connect to a routing instance. The default
+	  values are <userinput>localhost:23883</userinput>.
+	</para>
+      </listitem>
+    </varlistentry>
+  </variablelist>
+
+  <variablelist remap='TP'>
+    <varlistentry>
+      <term>
+	<option>--device-type=</option><replaceable>dev-type</replaceable>
+      </term>
+      <listitem>
+	<para>
+	  Specify the type of router device. The following types are
+	  recognized:
+	</para>
+	<variablelist>
+	  <varlistentry>
+	    <term>Livewire</term>
+	    <listitem>
+	      <para>
+		Connect to a running Drouter instance using ProtocolD.
+	      </para>
+	    </listitem>
+	  </varlistentry>
+	  <varlistentry>
+	    <term>GVG7000</term>
+	    <listitem>
+	      <para>
+		Connect to a router using Grass Valley 7000 protocol.
+	      </para>
+	    </listitem>
+	  </varlistentry>	  
+	</variablelist>
+	<para>
+	  The default value is <userinput>Livewire</userinput>
+	</para>
+      </listitem>
+    </varlistentry>
+  </variablelist>
+
+  <variablelist remap='TP'>
+    <varlistentry>
+      <term>
 	<option>--generate</option>
       </term>
       <listitem>
 	<para>
-	  Connect to the <command>drouterd</command><manvolnum>8</manvolnum>
-	  service generate a map from the resources found there.
+	  Connect to the specified router service and
+	  generate a map from the resources found there.
 	</para>
       </listitem>
     </varlistentry>
@@ -180,9 +229,9 @@
 	<para>
 	  Do not attempt to enumerate the node located at
 	  <replaceable>ip-addr</replaceable>, even if it has been detected
-	  during a scan.  This can be useful for avoiding timeout delays
+	  during a scan. This can be useful for avoiding timeout delays
 	  when working with devices (such as Telos VSets) that send Livewire
-	  multicast advertisements but fail to implement LWRP.  This option
+	  multicast advertisements but fail to implement LWRP. This option
 	  can be specified multiple times.
 	</para>
       </listitem>
@@ -212,7 +261,7 @@
       <listitem>
 	<para>
 	  Skip the scan phase and attempt to enumerate the node at
-	  <replaceable>ip-addr</replaceable>.  Useful mostly for debugging.
+	  <replaceable>ip-addr</replaceable>. Useful mostly for debugging.
 	  This option can be specified multiple times.
 	</para>
       </listitem>

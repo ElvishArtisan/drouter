@@ -23,8 +23,10 @@
 
 #include <stdint.h>
 
+#include <QHostAddress>
 #include <QList>
 #include <QObject>
+#include <QTcpSocket>
 #include <QTimer>
 
 #include <sy5/symcastsocket.h>
@@ -32,6 +34,8 @@
 
 #include <drouter/drdparser.h>
 #include <drouter/drendpointmap.h>
+
+#include "gvg7000mapper.h"
 
 #define DMAP_USAGE "[options]\n"
 #define DMAP_DEFAULT_SCAN_DURATION 25000
@@ -41,17 +45,23 @@ class MainObject : public QObject
 {
  Q_OBJECT;
  public:
+  enum DeviceType {DeviceLivewire=0,DeviceGvg7000=1};
   MainObject(QObject *parent=0);
 
  private slots:
   void connectedData(bool state);
   void errorData(QAbstractSocket::SocketError err,const QString &err_msg);
- 
- private:
-  void Check();
-  void Generate();
+  void gvg7000ReadCompletedData(bool result,const QString &err_msg);
+
+private:
+  void LivewireCheck();
+  void LivewireGenerate();
   int ProcessUseNodeList(const QString &filename);
   int ProcessSkipNodeList(const QString &filename);
+  void Gvg7000Generate();
+  DeviceType map_device_type;
+  QString map_device_hostname;
+  unsigned map_device_port;
   DRDParser *map_parser;
   QString map_output_map;
   DREndPointMap::RouterType map_router_type;
@@ -63,6 +73,8 @@ class MainObject : public QObject
   bool map_verbose;
   QList<QHostAddress> map_node_addresses;
   QList<QHostAddress> map_skip_node_addresses;
+
+  Gvg7000Mapper *map_gvg7000_mapper;
 };
 
 

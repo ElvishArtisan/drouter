@@ -31,9 +31,11 @@ moc_%.cpp:	%.h
 
 bin_PROGRAMS = dmap
 
-dist_dmap_SOURCES = dmap.cpp dmap.h
+dist_dmap_SOURCES = dmap.cpp dmap.h\
+                    gvg7000mapper.cpp gvg7000mapper.h
 
-nodist_dmap_SOURCES = moc_dmap.cpp
+nodist_dmap_SOURCES = moc_dmap.cpp\
+                      moc_gvg7000mapper.cpp
 
 dmap_LDADD = -ldrouter @QT5CLI_LIBS@ @SWITCHYARD5_LIBS@
 dmap_LDFLAGS = -rdynamic

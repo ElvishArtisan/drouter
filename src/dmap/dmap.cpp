@@ -44,11 +44,51 @@ MainObject::MainObject(QObject *parent)
   map_router_name="Livewire";
   map_router_type=DREndPointMap::AudioRouter;
   map_verbose=false;
+  map_device_type=MainObject::DeviceLivewire;
+  map_device_hostname="localhost";
+  map_device_port=23883;
+  map_gvg7000_mapper=NULL;
 
   SyCmdSwitch *cmd=new SyCmdSwitch("dmap",VERSION,DMAP_USAGE);
   for(int i=0;i<cmd->keys();i++) {
     if(cmd->key(i)=="--check") {
       generate=false;
+      cmd->setProcessed(i,true);
+    }
+
+    if(cmd->key(i)=="--device-address") {
+      QStringList f0=cmd->value(i).split(":",Qt::KeepEmptyParts);
+      if(f0.size()>2) {
+	fprintf(stderr,"dmap: invalid --device-address invocation\n");
+	exit(1);
+      }
+      map_device_hostname=f0.first();
+      if(map_device_hostname.isEmpty()) {
+	fprintf(stderr,"dmap: invalid device hostname\n");
+	exit(1);
+      }
+      if(f0.size()==2) {
+	map_device_port=f0.last().toUInt(&ok);
+	if((!ok)||(map_device_port>0xffff)) {
+	  fprintf(stderr,"dmap: invalid device port\n");
+	  exit(1);
+	}
+      }
+      cmd->setProcessed(i,true);
+    }
+    if(cmd->key(i)=="--device-type") {
+      if(cmd->value(i).toLower()=="livewire") {
+	map_device_type=MainObject::DeviceLivewire;
+      }
+      else {
+	if(cmd->value(i).toLower()=="gvg7000") {
+	  map_device_type=MainObject::DeviceGvg7000;
+	}
+	else {
+	  fprintf(stderr,"dmap: unknown device type\n");
+	  exit(1);
+	}
+      }
       cmd->setProcessed(i,true);
     }
     if(cmd->key(i)=="--generate") {
@@ -142,15 +182,24 @@ MainObject::MainObject(QObject *parent)
       cmd->setProcessed(i,true);
     }
     if(!cmd->processed(i)) {
-      fprintf(stderr,"dmap: unknown option\n");
+      fprintf(stderr,"dmap: unknown option \"%s\"\n",
+	      cmd->key(i).toUtf8().constData());
       exit(256);
     }
   }
-  if(generate) {
-    Generate();
-  }
-  else {
-    Check();
+  switch(map_device_type) {
+  case MainObject::DeviceLivewire:
+    if(generate) {
+      LivewireGenerate();
+    }
+    else {
+      LivewireCheck();
+    }
+    break;
+
+  case MainObject::DeviceGvg7000:
+    Gvg7000Generate();
+    break;
   }
 }
 
@@ -272,7 +321,29 @@ void MainObject::errorData(QAbstractSocket::SocketError err,
 }
 
 
-void MainObject::Check()
+void MainObject::gvg7000ReadCompletedData(bool result,const QString &err_msg)
+{
+  if(result) {
+    if(map_output_map.isEmpty()) {
+      map_gvg7000_mapper->endpointMap()->save(stdout,map_save_names);
+    }
+    else {
+      if(!map_gvg7000_mapper->endpointMap()->
+	 save(map_output_map,map_save_names)) {
+	fprintf(stderr,"dmap: unable to save map\n");
+	exit(1);
+      }
+    }
+  }
+  else {
+    fprintf(stderr,"dmap: %s\n",err_msg.toUtf8().constData());
+    exit(1);
+  }
+  exit(0);
+}
+
+
+void MainObject::LivewireCheck()
 {
   QMap<int,DREndPointMap *> maps;
   QStringList msgs;
@@ -292,7 +363,7 @@ void MainObject::Check()
 }
 
 
-void MainObject::Generate()
+void MainObject::LivewireGenerate()
 {
   //
   // Create Map
@@ -311,7 +382,7 @@ void MainObject::Generate()
 	  SIGNAL(error(QAbstractSocket::SocketError,const QString &)),
 	  this,
 	  SLOT(errorData(QAbstractSocket::SocketError,const QString &)));
-  map_parser->connectToHost("localhost",23883);
+  map_parser->connectToHost(map_device_hostname,map_device_port);
 }
 
 
@@ -362,6 +433,16 @@ int MainObject::ProcessSkipNodeList(const QString &filename)
   fclose(f);
 
   return 0;
+}
+
+
+void MainObject::Gvg7000Generate()
+{
+  map_gvg7000_mapper=
+    new Gvg7000Mapper(map_router_type,map_router_name,map_router_number);
+  connect(map_gvg7000_mapper,SIGNAL(completed(bool,const QString &)),
+	  this,SLOT(gvg7000ReadCompletedData(bool,const QString &)));
+  map_gvg7000_mapper->readDevice(map_device_hostname,map_device_port);
 }
 
 
