@@ -91,9 +91,6 @@ AC_SUBST(NODE_HOSTNAME,$DROUTER_TEST_HOSTNAME)
 AC_ARG_VAR(DROUTER_TEST_NODE_IP,[IPv4 address of Livewire node for running test cases])
 AC_SUBST(NODE_IP,$DROUTER_TEST_NODE_IP)
 
-AC_ARG_VAR(DROUTER_TEST_BTOOLS_IP,[IPv4 address of Broadcast Tools device for running test cases])
-AC_SUBST(BTOOLS_IP,$DROUTER_TEST_BTOOLS_IP)
-
 AC_ARG_VAR(DROUTER_TEST_GVG7000_IP,[IPv4 address of Grass Valley 7000 device for running test cases])
 AC_SUBST(GVG7000_IP,$DROUTER_TEST_GVG7000_IP)
 
