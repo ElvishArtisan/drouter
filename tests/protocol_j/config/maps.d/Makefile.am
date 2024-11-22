@@ -22,8 +22,7 @@
 
 EXTRA_DIST = 01-Test_Audio.map.in\
              02-Test_GPIO.map.in\
-             03-Test_41MLR_Audio.map.in\
-             04-Test_41MLR_GPIO.map.in
+             03-Test_GVG7000_Audio.map.in
 
 CLEANFILES = *~\
              *.idb\

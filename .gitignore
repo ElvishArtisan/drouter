@@ -37,6 +37,7 @@ config.status
 config.sub
 configure
 depcomp
+drouter.conf
 install-sh
 libtool
 ltmain.sh

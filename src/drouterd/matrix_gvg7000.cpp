@@ -332,7 +332,7 @@ void MatrixGvg7000::ProcessGvgCommand(const QByteArray &msg)
 	    d_destinations.value(dst_num)->setStreamAddress(s_addr);
 	    emit destinationChanged(id(),dst_num,d_node,
 				    *(d_destinations.value(dst_num)));
-	    printf("destChanged: %d:%s\n",dst_num,d_destinations.value(dst_num)->streamAddress().toString().toUtf8().constData());
+	    //printf("destChanged: %d:%s\n",dst_num,d_destinations.value(dst_num)->streamAddress().toString().toUtf8().constData());
 	  }
 	}
       }

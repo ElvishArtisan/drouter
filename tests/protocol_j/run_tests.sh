@@ -20,21 +20,30 @@
 #
 
 #
+# General Tests
+#
+echo ======================================
+echo  ProtocolJ - General Tests
+echo ======================================
+jtest $1 --hostname=localhost:9600 --connection-type=tcp --tests=tests_general.tst
+echo
+
+#
 # Audio Tests
 #
 echo ======================================
-echo  ProtocolJ - Audio Tests
+echo  ProtocolJ - Livewire Audio Tests
 echo ======================================
-jtest $1 --hostname=localhost:9600 --connection-type=tcp --tests=tests_audio.tst
+jtest $1 --hostname=localhost:9600 --connection-type=tcp --tests=tests_livewire_audio.tst
 echo
 
 #
 # GPIO Tests
 #
 echo ======================================
-echo  ProtocolJ - GPIO Tests
+echo  ProtocolJ - Livewire GPIO Tests
 echo ======================================
-jtest $1 --hostname=localhost:9600 --connection-type=tcp --tests=tests_gpio.tst
+jtest $1 --hostname=localhost:9600 --connection-type=tcp --tests=tests_livewire_gpio.tst
 echo
 
 #

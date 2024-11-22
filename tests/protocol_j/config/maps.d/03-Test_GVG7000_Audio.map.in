@@ -1,0 +1,168 @@
+@GENERATED_INI_FILE_WARNING@
+
+[Global]
+RouterType=Audio
+RouterName=Test_GVG7000_Audio
+RouterNumber=3
+
+[Input1]
+HostAddress=@GVG7000_IP@
+Slot=1
+Name=In 1
+
+[Input2]
+HostAddress=@GVG7000_IP@
+Slot=2
+Name=In 2
+
+[Input3]
+HostAddress=@GVG7000_IP@
+Slot=3
+Name=In 3
+
+[Input4]
+HostAddress=@GVG7000_IP@
+Slot=4
+Name=In 4
+
+[Input5]
+HostAddress=@GVG7000_IP@
+Slot=5
+Name=In 5
+
+[Input6]
+HostAddress=@GVG7000_IP@
+Slot=6
+Name=In 6
+
+[Input7]
+HostAddress=@GVG7000_IP@
+Slot=7
+Name=In 7
+
+[Input8]
+HostAddress=@GVG7000_IP@
+Slot=8
+Name=In 8
+
+[Input9]
+HostAddress=@GVG7000_IP@
+Slot=9
+Name=In 9
+
+[Input10]
+HostAddress=@GVG7000_IP@
+Slot=10
+Name=In 10
+
+[Input11]
+HostAddress=@GVG7000_IP@
+Slot=11
+Name=In 11
+
+[Input12]
+HostAddress=@GVG7000_IP@
+Slot=12
+Name=In 12
+
+[Input13]
+HostAddress=@GVG7000_IP@
+Slot=13
+Name=In 13
+
+[Input14]
+HostAddress=@GVG7000_IP@
+Slot=14
+Name=In 14
+
+[Input15]
+HostAddress=@GVG7000_IP@
+Slot=15
+Name=In 15
+
+[Input16]
+HostAddress=@GVG7000_IP@
+Slot=16
+Name=In 16
+
+
+[Output1]
+HostAddress=@GVG7000_IP@
+Slot=1
+Name=Out 1
+
+[Output2]
+HostAddress=@GVG7000_IP@
+Slot=2
+Name=Out 2
+
+[Output3]
+HostAddress=@GVG7000_IP@
+Slot=3
+Name=Out 3
+
+[Output4]
+HostAddress=@GVG7000_IP@
+Slot=4
+Name=Out 4
+
+[Output5]
+HostAddress=@GVG7000_IP@
+Slot=5
+Name=Out 5
+
+[Output6]
+HostAddress=@GVG7000_IP@
+Slot=6
+Name=Out 6
+
+[Output7]
+HostAddress=@GVG7000_IP@
+Slot=7
+Name=Out 7
+
+[Output8]
+HostAddress=@GVG7000_IP@
+Slot=8
+Name=Out 8
+
+[Output9]
+HostAddress=@GVG7000_IP@
+Slot=9
+Name=Out 9
+
+[Output10]
+HostAddress=@GVG7000_IP@
+Slot=10
+Name=Out 10
+
+[Output11]
+HostAddress=@GVG7000_IP@
+Slot=11
+Name=Out 11
+
+[Output12]
+HostAddress=@GVG7000_IP@
+Slot=12
+Name=Out 12
+
+[Output13]
+HostAddress=@GVG7000_IP@
+Slot=13
+Name=Out 13
+
+[Output14]
+HostAddress=@GVG7000_IP@
+Slot=14
+Name=Out 14
+
+[Output15]
+HostAddress=@GVG7000_IP@
+Slot=15
+Name=Out 15
+
+[Output16]
+HostAddress=@GVG7000_IP@
+Slot=16
+Name=Out 16
+

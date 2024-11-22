@@ -1291,3 +1291,8 @@
 2024-11-21 Fred Gleason <fredg@paravelsystems.com>
 	* Added $DROUTER_TEST_BTOOLS_IP and $DROUTER_TEST_ULTRICORE_IP
 	environmental variables to the integrated test configuration.
+2024-11-21 Fred Gleason <fredg@paravelsystems.com>
+	* Renamed the $DROUTER_TEST_ULTRICORE_IP environmental variable
+	to $DROUTER_TEST_GVG7000_IP.
+2024-11-22 Fred Gleason <fredg@paravelsystems.com>
+	* Removed support for the Broadcast Tools Universal 4.1 MLR>>Web.

@@ -1,3 +1,5 @@
+@GENERATED_INI_FILE_WARNING@
+
 ; drouter.conf
 ;
 ; This is the configuration file for the 'protocol_j' test fixture.
@@ -145,9 +147,9 @@ Type=LWRP
 
 ; Other matrix types can be enabled here, see the drouter.conf(5) man page.
 [Matrix2]
-Type=BT-41MLR
-HostAddress=192.168.21.49
-HostPort=56
+Type=GVG7000
+HostAddress=@GVG7000_IP@
+HostPort=12345
 
 
 [Tether]

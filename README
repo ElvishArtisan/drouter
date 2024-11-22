@@ -17,8 +17,5 @@ $DROUTER_TEST_HOSTNAME - The hostname of the Livewire running the tests.
 $DROUTER_TEST_NODE_IP - The IPv4 address of the Livewire node to be used
                         for the Livewire integrated tests
 
-$DROUTER_TEST_BTOOLS_IP - The IPv4 address of the Broadcast Tools device to
-                          be used for the Broadcast Tools integrated tests
-
-$DROUTER_TEST_ULTRICORE_IP - The IPv4 address of the Ultricore device to
-                             be used for the Ultricore integrated tests
+$DROUTER_TEST_GVG7000_IP - The IPv4 address of the Grass Valley 7000 device to
+                           be used for the GVG7000 integrated tests

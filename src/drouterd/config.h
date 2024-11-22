@@ -52,7 +52,7 @@ class Config
 {
  public:
   enum TetherRole {This=0,That=1};
-  enum MatrixType {LwrpMatrix=0,Bt41MlrMatrix=1,Gvg7000Matrix=2,LastMatrix=3};
+  enum MatrixType {LwrpMatrix=0,Gvg7000Matrix=1,LastMatrix=2};
   Config();
   int clipAlarmThreshold() const;
   int clipAlarmTimeout() const;

@@ -48,7 +48,6 @@ dist_drouterd_SOURCES = config.cpp config.h\
                         logger_back.cpp logger_back.h\
                         logger_front.cpp logger_front.h\
                         matrix.cpp matrix.h\
-                        matrix_bt-41mlr.cpp matrix_bt-41mlr.h\
                         matrix_gvg7000.cpp matrix_gvg7000.h\
                         matrix_lwrp.cpp matrix_lwrp.h\
                         matrix_factory.cpp matrix_factory.h\
@@ -67,7 +66,6 @@ nodist_drouterd_SOURCES = moc_drouter.cpp\
                           moc_logger_back.cpp\
                           moc_logger_front.cpp\
                           moc_matrix.cpp\
-                          moc_matrix_bt-41mlr.cpp\
                           moc_matrix_gvg7000.cpp\
                           moc_matrix_lwrp.cpp\
                           moc_routeengine.cpp\

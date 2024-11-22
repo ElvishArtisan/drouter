@@ -19,7 +19,6 @@
 //    Boston, MA  02111-1307  USA
 //
 
-#include "matrix_bt-41mlr.h"
 #include "matrix_gvg7000.h"
 #include "matrix_lwrp.h"
 
@@ -33,10 +32,6 @@ Matrix *MatrixFactory(Config::MatrixType type,unsigned id,Config *conf,
   switch(type) {
   case Config::LwrpMatrix:
     matrix=new MatrixLwrp(id,conf,parent);
-    break;
-
-  case Config::Bt41MlrMatrix:
-    matrix=new MatrixBt41Mlr(id,conf,parent);
     break;
 
   case Config::Gvg7000Matrix:

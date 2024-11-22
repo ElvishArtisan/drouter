@@ -428,10 +428,6 @@ QString Config::matrixTypeString(MatrixType type)
     ret="LWRP";
     break;
 
-  case Config::Bt41MlrMatrix:
-    ret="BT-41MLR";
-    break;
-
   case Config::Gvg7000Matrix:
     ret="GVG7000";
     break;

@@ -1,32 +1,5 @@
-{"routernames":null}
-=======:1:GPIO RouterNames
-{
-    "routernames": [
-        {
-            "name": "Test_Audio",
-            "number": 1,
-            "type": "Audio"
-        },
-        {
-            "name": "Test_GPIO",
-            "number": 2,
-            "type": "GPIO"
-        },
-        {
-            "name": "Test_41MLR_Audio",
-            "number": 3,
-            "type": "Audio"
-        },
-        {
-            "name": "Test_41MLR_GPIO",
-            "number": 4,
-            "type": "GPIO"
-        }
-    ]
-}
-*******:1
 {"sourcenames":{"router":2}}
-=======:2:GPIO SourceNames
+=======:1:GPIO SourceNames
 {
     "router": 2,
     "sourcenames": [
@@ -104,9 +77,9 @@
         }
     ]
 }
-*******:2
+*******:1
 {"destnames":{"router":2}}
-=======:3:GPIO DestNames
+=======:2:GPIO DestNames
 {
     "destnames": [
         {
@@ -176,9 +149,9 @@
     ],
     "router": 2
 }
-*******:3
+*******:2
 {"snapshots":{"router":2}}
-=======:4:GPIO Snapshots
+=======:3:GPIO Snapshots
 {
     "router": 2,
     "snapshots": [
@@ -239,9 +212,9 @@
         }
     ]
 }
-*******:4
+*******:3
 {"activatesnap":{"router":2,"snapshot":"On"}}
-=======:5:GPIO ActivateSnap On
+=======:4:GPIO ActivateSnap On
 {
     "routestat": {
         "destination": 1,
@@ -249,9 +222,9 @@
         "source": 1
     }
 }
-*******:5
+*******:4
 {"activatesnap":{"router":2,"snapshot":"Off"}}
-=======:6:GPIO ActivateSnap Off
+=======:5:GPIO ActivateSnap Off
 {
     "routestat": {
         "destination": 1,
@@ -259,9 +232,9 @@
         "source": -1
     }
 }
-*******:6
+*******:5
 {"activateroute":{"router":2,"destination":1,"source":1}}
-=======:7:ActivateRoute On
+=======:6:ActivateRoute On
 {
     "routestat": {
         "destination": 1,
@@ -269,9 +242,19 @@
         "source": 1
     }
 }
-*******:7
+*******:6
 {"activateroute":{"router":2,"destination":1,"source":0}}
-=======:8:GPIO ActivateRoute Off
+=======:7:GPIO ActivateRoute Off
+{
+    "routestat": {
+        "destination": 1,
+        "router": 2,
+        "source": -1
+    }
+}
+*******:7
+{"routestat":{"router":2,"destination":1}}
+=======:8:GPIO RouteStat
 {
     "routestat": {
         "destination": 1,
@@ -280,18 +263,8 @@
     }
 }
 *******:8
-{"routestat":{"router":2,"destination":1}}
-=======:9:GPIO RouteStat
-{
-    "routestat": {
-        "destination": 1,
-        "router": 2,
-        "source": -1
-    }
-}
-*******:9
 {"triggergpi":{"router":2,"number":1,"code":"lhlhl","duration":0}}
-=======:10:GPIO TriggerGPI lhlhl
+=======:9:GPIO TriggerGPI lhlhl
 {
     "gpistat": {
         "code": "lhlhl",
@@ -299,9 +272,19 @@
         "source": 1
     }
 }
-*******:10
+*******:9
 {"triggergpi":{"router":2,"number":1,"code":"hlhlh","duration":0}}
-=======:11:GPIO TriggerGPI hlhlh
+=======:10:GPIO TriggerGPI hlhlh
+{
+    "gpistat": {
+        "code": "hlhlh",
+        "router": 2,
+        "source": 1
+    }
+}
+*******:10
+{"gpistat":{"router":2,"number":1}}
+=======:11:GPIO GPIStat
 {
     "gpistat": {
         "code": "hlhlh",
@@ -310,18 +293,8 @@
     }
 }
 *******:11
-{"gpistat":{"router":2,"number":1}}
-=======:12:GPIO GPIStat
-{
-    "gpistat": {
-        "code": "hlhlh",
-        "router": 2,
-        "source": 1
-    }
-}
-*******:12
 {"triggergpi":{"router":2,"number":1,"code":"lllll","duration":0}}
-=======:13:GPIO TriggerGPI lllll
+=======:12:GPIO TriggerGPI lllll
 {
     "gpistat": {
         "code": "lllll",
@@ -329,9 +302,9 @@
         "source": 1
     }
 }
-*******:13
+*******:12
 {"triggergpi":{"router":2,"number":1,"code":"hhhhh","duration":0}}
-=======:14:GPIO TriggerGPI hhhhh
+=======:13:GPIO TriggerGPI hhhhh
 {
     "gpistat": {
         "code": "hhhhh",
@@ -339,9 +312,9 @@
         "source": 1
     }
 }
-*******:14
+*******:13
 {"triggergpo":{"router":2,"number":1,"code":"lhlhl","duration":0}}
-=======:15:GPIO TriggerGPO lhlhl
+=======:14:GPIO TriggerGPO lhlhl
 {
     "gpostat": {
         "code": "lhlhl",
@@ -349,9 +322,19 @@
         "router": 2
     }
 }
-*******:15
+*******:14
 {"triggergpo":{"router":2,"number":1,"code":"hlhlh","duration":0}}
-=======:16:GPIO TriggerGPO hlhlh
+=======:15:GPIO TriggerGPO hlhlh
+{
+    "gpostat": {
+        "code": "hlhlh",
+        "destination": 1,
+        "router": 2
+    }
+}
+*******:15
+{"gpostat":{"router":2,"number":1}}
+=======:16:GPIO GPOStat
 {
     "gpostat": {
         "code": "hlhlh",
@@ -360,18 +343,8 @@
     }
 }
 *******:16
-{"gpostat":{"router":2,"number":1}}
-=======:17:GPIO GPOStat
-{
-    "gpostat": {
-        "code": "hlhlh",
-        "destination": 1,
-        "router": 2
-    }
-}
-*******:17
 {"triggergpo":{"router":2,"number":1,"code":"lllll","duration":0}}
-=======:18:GPIO TriggerGPO lllll
+=======:17:GPIO TriggerGPO lllll
 {
     "gpostat": {
         "code": "lllll",
@@ -379,9 +352,9 @@
         "router": 2
     }
 }
-*******:18
+*******:17
 {"triggergpo":{"router":2,"number":1,"code":"hhhhh","duration":0}}
-=======:19:GPIO TriggerGPO hhhhh
+=======:18:GPIO TriggerGPO hhhhh
 {
     "gpostat": {
         "code": "hhhhh",
@@ -389,4 +362,4 @@
         "router": 2
     }
 }
-*******:19
+*******:18

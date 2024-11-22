@@ -92,10 +92,10 @@ AC_ARG_VAR(DROUTER_TEST_NODE_IP,[IPv4 address of Livewire node for running test 
 AC_SUBST(NODE_IP,$DROUTER_TEST_NODE_IP)
 
 AC_ARG_VAR(DROUTER_TEST_BTOOLS_IP,[IPv4 address of Broadcast Tools device for running test cases])
-AC_SUBST(BOOLS_IP,$DROUTER_TEST_BTOOLS_IP)
+AC_SUBST(BTOOLS_IP,$DROUTER_TEST_BTOOLS_IP)
 
-AC_ARG_VAR(DROUTER_TEST_ULTRICORE_IP,[IPv4 address of Ultricore device for running test cases])
-AC_SUBST(ULTRICORE_IP,$DROUTER_TEST_ULTRICORE_IP)
+AC_ARG_VAR(DROUTER_TEST_GVG7000_IP,[IPv4 address of Grass Valley 7000 device for running test cases])
+AC_SUBST(GVG7000_IP,$DROUTER_TEST_GVG7000_IP)
 
 #
 # Check for Qt (Mandatory)
@@ -342,14 +342,16 @@ AC_CONFIG_FILES([ \
     systemd/drouter.service \
     tests/Makefile \
     tests/protocol_j/tests_action.tst\
-    tests/protocol_j/tests_audio.tst\
-    tests/protocol_j/tests_gpio.tst\
+    tests/protocol_j/tests_btools_audio.tst\
+    tests/protocol_j/tests_general.tst\
+    tests/protocol_j/tests_livewire_audio.tst\
+    tests/protocol_j/tests_livewire_gpio.tst\
     tests/protocol_j/Makefile \
+    tests/protocol_j/config/drouter.conf \
     tests/protocol_j/config/Makefile \
     tests/protocol_j/config/maps.d/01-Test_Audio.map \
     tests/protocol_j/config/maps.d/02-Test_GPIO.map \
-    tests/protocol_j/config/maps.d/03-Test_41MLR_Audio.map \
-    tests/protocol_j/config/maps.d/04-Test_41MLR_GPIO.map \
+    tests/protocol_j/config/maps.d/03-Test_GVG7000_Audio.map \
     tests/protocol_j/config/maps.d/Makefile \
     tests/protocol_j/config/scripts.d/Makefile \
     drouter.pc\

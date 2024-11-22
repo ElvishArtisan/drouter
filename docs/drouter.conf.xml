@@ -403,27 +403,6 @@
 	      <variablelist>
 		<varlistentry>
 		  <term>
-		    <userinput>BT-41MLR</userinput>
-		  </term>
-		  <listitem>
-		    <para>
-		      Broadcast Tools Universal 4.1 MLR>>Web Switcher
-		    </para>
-		    <para>
-		      Required parameters:
-		      <simplelist type="inline">
-			<member>
-			  HostAddress=<replaceable>ipv4-addr</replaceable>
-			</member>
-			<member>
-			  HostPort=<replaceable>port-num</replaceable>
-			</member>
-		      </simplelist>
-		    </para>
-		  </listitem>
-		</varlistentry>
-		<varlistentry>
-		  <term>
 		    <userinput>GVG7000</userinput>
 		  </term>
 		  <listitem>

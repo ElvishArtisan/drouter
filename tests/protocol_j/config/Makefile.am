@@ -23,7 +23,7 @@
 SUBDIRS = maps.d \
           scripts.d
 
-EXTRA_DIST = drouter.conf
+EXTRA_DIST = drouter.conf.in
 
 CLEANFILES = *~\
              *.idb\
@@ -37,5 +37,6 @@ MAINTAINERCLEANFILES = *~\
                        *.tar.gz\
                        aclocal.m4\
                        configure\
+                       drouter.conf\
                        Makefile.in\
                        moc_*
