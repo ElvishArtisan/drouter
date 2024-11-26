@@ -1305,3 +1305,5 @@
 2024-11-26 Fred Gleason <fredg@paravelsystems.com>
 	* Removed tests for Broadcast Tools.
 	* Removed tests for ProtocolJ 'Action' commands.
+2024-11-26 Fred Gleason <fredg@paravelsystems.com>
+	* Removed documentation for ProtocolJ 'Action' commands.
