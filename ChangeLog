@@ -1307,3 +1307,8 @@
 	* Removed tests for ProtocolJ 'Action' commands.
 2024-11-26 Fred Gleason <fredg@paravelsystems.com>
 	* Removed documentation for ProtocolJ 'Action' commands.
+2024-11-26 Fred Gleason <fredg@paravelsystems.com>
+	* Dropped the 'PERM_SA_ACTIONS' table from the database.
+	* Incremented the database version 10 11.
+	* Removed removed support for ProtocolJ 'Action' commands from
+	drouterd(8).

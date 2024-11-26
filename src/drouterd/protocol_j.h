@@ -55,9 +55,6 @@ class ProtocolJ : public Protocol
   void gpiCodeChanged(const QHostAddress &host_addr,int slotnum);
   void gpoCodeChanged(const QHostAddress &host_addr,int slotnum);
   void gpoCrosspointChanged(const QHostAddress &host_addr,int slotnum);
-  void actionChanged(int id);
-  void nextActionsChanged(int router,const QList<int> &action_ids);
-  void eventAdded(int evt_id);
   void quitting();
 
  private:
@@ -68,7 +65,6 @@ class ProtocolJ : public Protocol
   void TriggerGpo(unsigned router,unsigned output,unsigned msecs,
 		  const QString &code);
   void SendSnapshotNames(unsigned router);
-  //  void SendSnapshotRoutes(unsigned router,const QString &snap_name);
   void ActivateSnapshot(unsigned router,const QString &snapshot_name);
   void SendSourceInfo(unsigned router);
   QString SourceNamesSqlFields(DREndPointMap::RouterType type) const;
@@ -76,20 +72,9 @@ class ProtocolJ : public Protocol
   void SendDestInfo(unsigned router);
   QString DestNamesSqlFields(DREndPointMap::RouterType type) const;
   QJsonObject DestNamesMessage(DREndPointMap::RouterType type,DRSqlQuery *q);
-  void SendActionInfo(unsigned router);
-  QString ActionListSqlFields(DREndPointMap::RouterType type) const;
-  QJsonObject ActionListMessage(DRSqlQuery *q);
-  QString ActionEditSqlFields(const QVariantMap &fields,
-			      const QTime &time) const;
-  void SendActionStatInfo(int router);
-  QString ActionStatSqlFields() const;
-  void SendActionStat(int router,const QList<int> &action_ids);
-
   void SendEventStatInfo();
   QString EventStatSqlFields() const;
   void SendEventStat(DRSqlQuery *q);
-
-  void DeleteAction(int id);
   void SendGpiInfo(unsigned router,int input);
   QString GPIStatSqlFields() const;
   QString GPIStatMessage(DRSqlQuery *q);

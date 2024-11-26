@@ -280,25 +280,6 @@ void DRouter::setCrosspoint(int router,int output,int input)
 }
 
 
-void DRouter::updateActions(int router,const QList<int> &action_ids)
-{
-  QString sql=QString("delete from `SA_NEXT_ACTIONS` where ")+
-    QString::asprintf("`ROUTER_NUMBER`=%d ",router);
-  DRSqlQuery::apply(sql);
-
-  QString action_list=QString::asprintf("%d",router);
-  for(int i=0;i<action_ids.size();i++) {
-    sql=QString("insert into `SA_NEXT_ACTIONS` set ")+
-      QString::asprintf("`ROUTER_NUMBER`=%d,",router)+
-      QString::asprintf("`ACTION_ID`=%d ",action_ids.at(i));
-    DRSqlQuery::apply(sql);
-
-    action_list+=QString::asprintf(":%d",action_ids.at(i));
-  }
-  NotifyProtocols("ACTION_ACTIVATED",action_list);
-}
-
-
 void DRouter::setWriteable(bool state)
 {
   QString sql;
@@ -1090,15 +1071,6 @@ bool DRouter::ProcessIpcCommand(int sock,const QString &cmd)
     }
   }
 
-  if((cmds.at(0)=="RefreshAction")&&(cmds.size()==2)) {
-    bool ok=false;
-    int id=cmds.at(1).toInt(&ok);
-    if(ok&&(id>0)) {
-      emit routeEngineRefresh(id);
-      NotifyProtocols("ACTION",QString::asprintf("%d",id));
-    }
-  }
-
   if((cmds.at(0)=="EventAdded")&&(cmds.size()==2)) {
     bool ok=false;
     int id=cmds.at(1).toInt(&ok);
@@ -1335,6 +1307,14 @@ bool DRouter::StartDb(QString *err_msg)
     DRSqlQuery::apply(sql);
 
     schema_ver=10;
+    SetSchemaVersion(schema_ver);
+  }
+
+  if(schema_ver<11) {
+    sql=QString("drop table `PERM_SA_ACTIONS`");
+    DRSqlQuery::apply(sql);
+
+    schema_ver=11;
     SetSchemaVersion(schema_ver);
   }
 

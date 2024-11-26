@@ -59,11 +59,7 @@ class DRouter : public QObject
   bool start(QString *err_msg);
   bool isWriteable() const;
 
- signals:
-  void routeEngineRefresh(int action_id);
-
  public slots:
-  void updateActions(int router,const QList<int> &action_ids);
   void setCrosspoint(int router,int output,int input);
   void setWriteable(bool state);
 

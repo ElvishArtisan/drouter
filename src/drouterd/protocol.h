@@ -46,7 +46,6 @@ class Protocol : public QObject
 		   const QString &code,int duration);
   void setGpoState(const QHostAddress &gpo_node_addr,int gpo_slotnum,
 		   const QString &code,int duration);
-  void refreshAction(int action_id);
   void addEvent(int evt_id);
 
  private slots:
@@ -73,8 +72,6 @@ class Protocol : public QObject
   virtual void silenceChanged(const QHostAddress &host_addr,int slotnum,
 			      SyLwrpClient::MeterType meter_type,
 			      const QString &tbl_name,int chan);
-  virtual void actionChanged(int id);
-  virtual void nextActionsChanged(int router,const QList<int> &action_ids);
   virtual void eventAdded(int evt_id);
   Config *config();
   void logIpc(const QString &msg);

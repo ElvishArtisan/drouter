@@ -172,13 +172,6 @@ void Protocol::setGpoState(const QHostAddress &gpo_node_addr,int gpo_slotnum,
 }
 
 
-void Protocol::refreshAction(int action_id)
-{
-  proto_ipc_socket->write(("RefreshAction "+
-			   QString::asprintf("%d\r\n",action_id)).toUtf8());
-}
-
-
 void Protocol::addEvent(int evt_id)
 {
   proto_ipc_socket->write(("EventAdded "+
@@ -294,16 +287,6 @@ void Protocol::silenceChanged(const QHostAddress &host_addr,int slotnum,
 }
 
 
-void Protocol::actionChanged(int id)
-{
-}
-
-
-void Protocol::nextActionsChanged(int router,const QList<int> &action_ids)
-{
-}
-
-
 void Protocol::eventAdded(int evt_id)
 {
 }
@@ -411,20 +394,6 @@ void Protocol::ProcessIpcCommand(const QString &cmd)
       table_name="SOURCES";
     }
     silenceChanged(QHostAddress(cmds.at(3)),cmds.at(4).toInt(),meter_type,table_name,cmds.at(2).toInt());
-  }
-
-  if((cmds.at(0)=="ACTION")&&(cmds.size()==2)) {
-    int id=cmds.at(1).toInt();
-    actionChanged(id);
-  }
-
-  if((cmds.at(0)=="ACTION_ACTIVATED")&&(cmds.size()>=2)) {
-    int router=cmds.at(1).toInt();
-    QList<int> ids;
-    for(int i=2;i<cmds.size();i++) {
-      ids.push_back(cmds.at(i).toInt());
-      nextActionsChanged(router,ids);
-    }
   }
 
   if((cmds.at(0)=="EVENT_ADDED")&&(cmds.size()==2)) {

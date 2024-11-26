@@ -148,22 +148,11 @@ MainObject::MainObject(QObject *parent)
 	  this,SLOT(instanceStateChangedData(bool)));
 
   //
-  // Route Engine Process
-  //
-  main_route_engine=new RouteEngine(this);
-
-  //
   // Start Router Process
   //
   main_drouter=new DRouter(main_protocol_socks,this);
   connect(main_tether,SIGNAL(instanceStateChanged(bool)),
 	  main_drouter,SLOT(setWriteable(bool)));
-  connect(main_route_engine,SIGNAL(setCrosspoint(int,int,int)),
-	  main_drouter,SLOT(setCrosspoint(int,int,int)));
-  connect(main_route_engine,SIGNAL(nextActionsChanged(int,const QList<int> &)),
-	  main_drouter,SLOT(updateActions(int,const QList<int> &)));
-  connect(main_drouter,SIGNAL(routeEngineRefresh(int)),
-	  main_route_engine,SLOT(refresh(int)));
   if(!main_drouter->start(&err_msg)) {
     syslog(LOG_ERR,"%s, aborting",err_msg.toUtf8().constData());
     exit(1);
@@ -238,11 +227,6 @@ void MainObject::protocolData()
     main_protocol_pids.push_back(pid);
     syslog(LOG_INFO,"started Protocol J protocol");
   }
-
-  //
-  // Route Engine
-  //
-  main_route_engine->load();
 
   if(!main_no_scripts) {
     main_scripts_timer->start(5000);

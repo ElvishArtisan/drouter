@@ -52,7 +52,6 @@ dist_drouterd_SOURCES = config.cpp config.h\
                         matrix_lwrp.cpp matrix_lwrp.h\
                         matrix_factory.cpp matrix_factory.h\
                         protoipc.h\
-                        routeengine.cpp routeengine.h\
                         scriptengine.cpp scriptengine.h\
                         sendmail.cpp sendmail.h\
                         tether.cpp tether.h\
@@ -68,7 +67,6 @@ nodist_drouterd_SOURCES = moc_drouter.cpp\
                           moc_matrix.cpp\
                           moc_matrix_gvg7000.cpp\
                           moc_matrix_lwrp.cpp\
-                          moc_routeengine.cpp\
                           moc_scriptengine.cpp\
                           moc_tether.cpp\
                           moc_timeengine.cpp\
