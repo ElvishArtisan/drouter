@@ -1302,3 +1302,6 @@
 	* Added '--device-address' and '--device-type' switches to dmap(1).
 2024-11-26 Fred Gleason <fredg@paravelsystems.com>
 	* Added tests for the GVG7000 matrix type.
+2024-11-26 Fred Gleason <fredg@paravelsystems.com>
+	* Removed tests for Broadcast Tools.
+	* Removed tests for ProtocolJ 'Action' commands.

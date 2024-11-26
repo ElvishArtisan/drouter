@@ -26,11 +26,9 @@ tests:
 	./run_tests.sh
 
 EXTRA_DIST = configure_tests.sh\
-             perm_sa_actions.sh\
              run_tests.sh\
              test_node.lwrp\
              tests_action.tst.in\
-             tests_btools_audio.tst.in\
              tests_general.tst.in\
              tests_gvg7000_audio.tst.in\
              tests_livewire_audio.tst.in\
