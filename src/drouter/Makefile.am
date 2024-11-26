@@ -28,8 +28,7 @@ moc_%.cpp:	%.h
 	$(MOC) $< -o $@
 
 lib_LTLIBRARIES = libdrouter.la
-dist_libdrouter_la_SOURCES = dractionlistmodel.cpp dractionlistmodel.h\
-                             drdparser.cpp drdparser.h\
+dist_libdrouter_la_SOURCES = drdparser.cpp drdparser.h\
                              drendpointmap.cpp drendpointmap.h\
                              drendpointlistmodel.cpp drendpointlistmodel.h\
                              dreventlogmodel.cpp dreventlogmodel.h\
@@ -40,8 +39,7 @@ dist_libdrouter_la_SOURCES = dractionlistmodel.cpp dractionlistmodel.h\
                              drsnapshotlistmodel.cpp drsnapshotlistmodel.h\
                              drsqlquery.cpp drsqlquery.h
 
-nodist_libdrouter_la_SOURCES = moc_dractionlistmodel.cpp\
-                               moc_drdparser.cpp\
+nodist_libdrouter_la_SOURCES = moc_drdparser.cpp\
                                moc_drendpointlistmodel.cpp\
                                moc_dreventlogmodel.cpp\
                                moc_drjparser.cpp\
@@ -52,8 +50,7 @@ nodist_libdrouter_la_SOURCES = moc_dractionlistmodel.cpp\
                                paths.h
 
 includedir = $(prefix)/include/drouter
-include_HEADERS = dractionlistmodel.h\
-                  drdparser.h\
+include_HEADERS = drdparser.h\
                   drendpointlistmodel.h\
                   drendpointmap.h\
                   dreventlogmodel.h\

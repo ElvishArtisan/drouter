@@ -1314,3 +1314,5 @@
 	drouterd(8).
 2024-11-26 Fred Gleason <fredg@paravelsystems.com>
 	* Removed actionpanel(1).
+2024-11-26 Fred Gleason <fredg@paravelsystems.com>
+	* Removed the 'DRActionList' model from 'libdrouter'.

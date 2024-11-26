@@ -35,7 +35,6 @@
 #include <QTcpSocket>
 #include <QTimer>
 
-#include <drouter/dractionlistmodel.h>
 #include <drouter/drendpointlistmodel.h>
 #include <drouter/drrouterlistmodel.h>
 #include <drouter/drsnapshotlistmodel.h>
@@ -57,9 +56,7 @@ class DRJParser : public QObject
   DRJParser(bool use_long_names,QObject *parent);
   ~DRJParser();
   void setModelFont(const QFont &font);
-  void setModelPalette(const QPalette &pal);
   QString timeFormat() const;
-  void setTimeFormat(const QString &fmt);
   QString dateFormat() const;
   void setDateFormat(const QString &fmt);
   QList<int> routerFilter() const;
@@ -73,7 +70,6 @@ class DRJParser : public QObject
   DREndPointListModel *outputModel(int router) const;
   DREndPointListModel *inputModel(int router) const;
   DRSnapshotListModel *snapshotModel(int router) const;
-  DRActionListModel *actionModel(int router) const;
   bool isConnected() const;
   bool gpioSupported(int router) const;
   int outputCrosspoint(int router,int output) const;
@@ -83,8 +79,6 @@ class DRJParser : public QObject
   QString gpoState(int router,int output) const;
   void setGpoState(int router,int output,const QString &code,int msec=-1);
   void activateSnapshot(int router,const QString &snapshot);
-  void saveAction(int router,QVariantMap fields);
-  void removeAction(int id);
   void connectToHost(const QString &hostname,uint16_t port,
 		     const QString &username,const QString &passwd);
   static QString connectionStateString(ConnectionState cstate);
@@ -102,7 +96,6 @@ class DRJParser : public QObject
   void outputCrosspointChanged(int router,int output,int input);
   void gpiStateChanged(int router,int input,const QString &code);
   void gpoStateChanged(int router,int output,const QString &code);
-  void actionActivated(int router,int now_action_id,int next_action_id);
 
  private slots:
   void connectedData();
@@ -122,7 +115,6 @@ class DRJParser : public QObject
   QMap<int,DREndPointListModel *> j_output_models;
   QMap<int,DREndPointListModel *> j_input_models;
   QMap<int,DRSnapshotListModel *> j_snapshot_models;
-  QMap<int,DRActionListModel *> j_action_models;
   QFont j_model_font;
   QString j_date_format;
   QString j_time_format;

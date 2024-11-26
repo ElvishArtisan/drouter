@@ -83,10 +83,6 @@ void DRJParser::setModelFont(const QFont &font)
 {
   j_model_font=font;
   j_router_model->setFont(font);
-  for(QMap<int,DRActionListModel *>::const_iterator it=j_action_models.begin();
-      it!=j_action_models.end();it++) {
-    it.value()->setFont(font);
-  }
   for(QMap<int,DREndPointListModel *>::const_iterator it=j_input_models.begin();
       it!=j_input_models.end();it++) {
     it.value()->setFont(font);
@@ -98,30 +94,9 @@ void DRJParser::setModelFont(const QFont &font)
 }
 
 
-void DRJParser::setModelPalette(const QPalette &pal)
-{
-  for(QMap<int,DRActionListModel *>::const_iterator it=j_action_models.begin();
-      it!=j_action_models.end();it++) {
-    it.value()->setPalette(pal);
-  }
-}
-
-
 QString DRJParser::timeFormat() const
 {
   return j_time_format;
-}
-
-
-void DRJParser::setTimeFormat(const QString &fmt)
-{
-  if(fmt!=j_time_format) {
-    for(QMap<int,DRActionListModel *>::const_iterator it=j_action_models.begin();
-	it!=j_action_models.end();it++) {
-      it.value()->setTimeFormat(fmt);
-    }
-    j_time_format=fmt;
-  }
 }
 
 
@@ -178,12 +153,6 @@ DREndPointListModel *DRJParser::inputModel(int router) const
 DRSnapshotListModel *DRJParser::snapshotModel(int router) const
 {
   return j_snapshot_models.value(router);
-}
-
-
-DRActionListModel *DRJParser::actionModel(int router) const
-{
-  return j_action_models.value(router);
 }
 
 
@@ -263,22 +232,6 @@ void DRJParser::activateSnapshot(int router,const QString &snapshot)
   fields["snapshot"]=snapshot;
 
   SendCommand("activatesnap",fields);
-}
-
-
-void DRJParser::saveAction(int router,QVariantMap fields)
-{
-  fields["router"]=router;
-  fields["time"]=fields.value("time").toString()+"Z";
-  SendCommand("actionedit",fields);
-}
-
-
-void DRJParser::removeAction(int id)
-{
-  QVariantMap fields;
-  fields["id"]=id;
-  SendCommand("actiondelete",fields);
 }
 
 
@@ -539,11 +492,6 @@ void DRJParser::DispatchMessage(const QJsonDocument &jdoc)
 	j_snapshot_models[router]=new DRSnapshotListModel(router,this);
 	j_snapshot_models.value(router)->setFont(j_model_font);
 
-	DRActionListModel *amodel=new DRActionListModel(router,this);
-	amodel->setFont(j_model_font);
-	amodel->setTimeFormat(j_time_format);
-	j_action_models[router]=amodel;
-
 	//  j_gpi_states[router]=QMap<int,QString>();
 	//  j_gpo_states[router]=QMap<int,QString>();
 	//  j_gpio_supporteds[router]=false;
@@ -555,7 +503,6 @@ void DRJParser::DispatchMessage(const QJsonDocument &jdoc)
 	SendCommand("sourcenames",router_fields);
 	SendCommand("destnames",router_fields);
 	SendCommand("snapshots",router_fields);
-	SendCommand("actionlist",router_fields);
 
 	// SendCommand("gpistat",router_fields);
 	// SendCommand("gpostat",router_fields);
@@ -563,7 +510,6 @@ void DRJParser::DispatchMessage(const QJsonDocument &jdoc)
 	SendCommand("routestat",router_fields);
 
 	router_fields["sendUpdates"]=true;
-	SendCommand("actionstat",router_fields);
       }
     }
     j_router_model->finalize();
@@ -620,52 +566,6 @@ void DRJParser::DispatchMessage(const QJsonDocument &jdoc)
 	smodel->addSnapshot(jo1.value("name").toString());
       }
     }
-  }
-
-  if(jdoc.object().contains("actionlist")) {
-    int router=jdoc.object().value("router").toInt();
-    DRActionListModel *amod=j_action_models.value(router);
-    if(amod!=NULL) {
-      QJsonArray ja0=jdoc.object().value("actionlist").toArray();
-      for(int i=0;i<ja0.size();i++) {
-	QJsonObject jo1=ja0.at(i).toObject();
-	QStringList keys=jo1.keys();
-	QVariantMap fields;
-	for(int i=0;i<keys.size();i++) {
-	  fields[keys.at(i)]=jo1.value(keys.at(i)).toVariant();
-	}
-	amod->addAction(fields);
-      }
-    }
-    return;
-
-  }
-
-  if(jdoc.object().contains("actiondelete")) {
-    QJsonObject jo0=jdoc.object().value("actiondelete").toObject();
-    int id=jo0.value("id").toInt();
-    if(id>0) {
-      for(QMap<int,DRActionListModel *>::const_iterator it=
-	    j_action_models.begin();it!=j_action_models.end();it++) {
-	it.value()->removeAction(id);
-      }
-    }
-    return;
-  }
-
-  if(jdoc.object().contains("actionstat")) {
-    QJsonObject jo0=jdoc.object().value("actionstat").toObject();
-    int router=jo0.value("router").toInt();
-    DRActionListModel *amodel=actionModel(router);
-    if(amodel!=NULL) {
-      QJsonArray ja=jo0.value("nextId").toArray();
-      QList<int> ids;
-      for(int i=0;i<ja.size();i++) {
-	ids.push_back(ja.at(i).toInt());
-      }
-      amodel->updateNextActions(router,ids);
-    }
-    return;
   }
 
   if(jdoc.object().contains("gpistat")) {
