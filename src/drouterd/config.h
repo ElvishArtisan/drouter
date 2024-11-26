@@ -33,6 +33,9 @@
 #define DROUTER_DEFAULT_CLIP_THRESHOLD -20
 #define DROUTER_DEFAULT_CLIP_TIMEOUT 1000
 #define DROUTER_DEFAULT_DB_KEEPALIVE_INTERVAL 900
+#define DROUTER_DEFAULT_ENABLE_PROTOCOL_D true
+#define DROUTER_DEFAULT_ENABLE_PROTOCOL_J true
+#define DROUTER_DEFAULT_ENABLE_PROTOCOL_SA true
 #define DROUTER_DEFAULT_SILENCE_THRESHOLD -500
 #define DROUTER_DEFAULT_SILENCE_TIMEOUT 10000
 #define DEFAULT_DEFAULT_RETAIN_EVENT_RECORDS_DURATION 168
@@ -56,6 +59,9 @@ class Config
   Config();
   int clipAlarmThreshold() const;
   int clipAlarmTimeout() const;
+  bool enableProtocolD() const;
+  bool enableProtocolJ() const;
+  bool enableProtocolSA() const;
   int dbKeepaliveInterval() const;
   int silenceAlarmThreshold() const;
   int silenceAlarmTimeout() const;
@@ -99,6 +105,9 @@ class Config
   int conf_clip_alarm_threshold;
   int conf_clip_alarm_timeout;
   int conf_db_keepalive_interval;
+  bool conf_enable_protocol_d;
+  bool conf_enable_protocol_j;
+  bool conf_enable_protocol_sa;
   int conf_silence_alarm_threshold;
   int conf_silence_alarm_timeout;
   int conf_ipc_log_priority;

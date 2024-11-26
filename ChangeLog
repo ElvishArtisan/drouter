@@ -1316,3 +1316,6 @@
 	* Removed actionpanel(1).
 2024-11-26 Fred Gleason <fredg@paravelsystems.com>
 	* Removed the 'DRActionList' model from 'libdrouter'.
+2024-11-26 Fred Gleason <fredg@paravelsystems.com>
+	* Added 'EnableProtocolD=', 'EnableProtocolJ=' and
+	'EnableProtocolSA=' directives to drouter.conf(5).

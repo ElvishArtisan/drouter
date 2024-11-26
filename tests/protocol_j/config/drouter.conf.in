@@ -27,6 +27,21 @@ ClipAlarmTimeout=1000
 ; database keepalives.
 DbKeepaliveInterval=900
 
+; EnableProtocolD
+;
+; Enable support for ProtocolD in drouterd(8). Default value is 'yes'.
+EnableProtocolD=yes
+
+; EnableProtocolJ
+;
+; Enable support for ProtocolJ in drouterd(8). Default value is 'yes'.
+EnableProtocolJ=yes
+
+; EnableProtocolSA
+;
+; Enable support for ProtocolSA in drouterd(8). Default value is 'yes'.
+EnableProtocolSA=no
+
 ; SilenceAlarmThreshold=<level>
 ;
 ; The audio level below which to treat an audio port as being 'silent'.

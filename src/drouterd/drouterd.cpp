@@ -182,50 +182,74 @@ void MainObject::protocolData()
     //
     // Start Protocol D
     //
-    if((pid=fork())==0) {
-      if(main_protocol_socks[0]<0) {
-	execl((QString(PATH_SBIN)+"/dprotod").toUtf8(),"dprotod","--protocol-d",
-	      (char *)NULL);
+    if(main_config->enableProtocolD()) {
+      if((pid=fork())==0) {
+	if(main_protocol_socks[0]<0) {
+	  execl((QString(PATH_SBIN)+"/dprotod").toUtf8(),"dprotod",
+		"--protocol-d",(char *)NULL);
+	}
+	else {
+	  execl((QString(PATH_SBIN)+"/dprotod").toUtf8(),"dprotod","--protocol-d",
+		"--systemd",(char *)NULL);
+	}
       }
-      else {
-	execl((QString(PATH_SBIN)+"/dprotod").toUtf8(),"dprotod","--protocol-d",
-	      "--systemd",(char *)NULL);
-      }
+      main_protocol_pids.push_back(pid);
+      syslog(LOG_INFO,"started Protocol D protocol");
     }
-    main_protocol_pids.push_back(pid);
-    syslog(LOG_INFO,"started Protocol D protocol");
+    else {
+      if(main_protocol_socks[0]>=0) {
+	close(main_protocol_socks[0]);
+      }
+      syslog(LOG_INFO,"Protocol D disabled in configuration, not starting");
+    }
 
     //
     // Start Protocol SA
     //
-    if((pid=fork())==0) {
-      if(main_protocol_socks[1]<0) {
-	execl((QString(PATH_SBIN)+"/dprotod").toUtf8(),"dprotod","--protocol-sa",
-	      (char *)NULL);
+    if(main_config->enableProtocolSA()) {
+      if((pid=fork())==0) {
+	if(main_protocol_socks[1]<0) {
+	  execl((QString(PATH_SBIN)+"/dprotod").toUtf8(),"dprotod",
+		"--protocol-sa",(char *)NULL);
+	}
+	else {
+	  execl((QString(PATH_SBIN)+"/dprotod").toUtf8(),"dprotod","--protocol-sa",
+		"--systemd",(char *)NULL);
+	}
       }
-      else {
-	execl((QString(PATH_SBIN)+"/dprotod").toUtf8(),"dprotod","--protocol-sa",
-	      "--systemd",(char *)NULL);
-      }
+      main_protocol_pids.push_back(pid);
+      syslog(LOG_INFO,"started Software Authority protocol");
     }
-    main_protocol_pids.push_back(pid);
-    syslog(LOG_INFO,"started Software Authority protocol");
-
+    else {
+      if(main_protocol_socks[1]>=0) {
+	close(main_protocol_socks[1]);
+      }
+      syslog(LOG_INFO,"Protocol SA disabled in configuration, not starting");
+    }
+    
     //
     // Start Protocol J
     //
-    if((pid=fork())==0) {
-      if(main_protocol_socks[2]<0) {
-	execl((QString(PATH_SBIN)+"/dprotod").toUtf8(),"dprotod","--protocol-j",
-	      (char *)NULL);
+    if(main_config->enableProtocolJ()) {
+      if((pid=fork())==0) {
+	if(main_protocol_socks[2]<0) {
+	  execl((QString(PATH_SBIN)+"/dprotod").toUtf8(),"dprotod",
+		"--protocol-j",(char *)NULL);
+	}
+	else {
+	  execl((QString(PATH_SBIN)+"/dprotod").toUtf8(),"dprotod",
+		"--protocol-j","--systemd",(char *)NULL);
+	}
       }
-      else {
-	execl((QString(PATH_SBIN)+"/dprotod").toUtf8(),"dprotod","--protocol-j",
-	      "--systemd",(char *)NULL);
-      }
+      main_protocol_pids.push_back(pid);
+      syslog(LOG_INFO,"started Protocol J protocol");
     }
-    main_protocol_pids.push_back(pid);
-    syslog(LOG_INFO,"started Protocol J protocol");
+    else {
+      if(main_protocol_socks[2]>=0) {
+	close(main_protocol_socks[2]);
+      }
+      syslog(LOG_INFO,"Protocol J disabled in configuration, not starting");
+    }
   }
 
   if(!main_no_scripts) {

@@ -52,6 +52,24 @@ int Config::dbKeepaliveInterval() const
 }
 
 
+bool Config::enableProtocolD() const
+{
+  return conf_enable_protocol_d;
+}
+
+
+bool Config::enableProtocolJ() const
+{
+  return conf_enable_protocol_j;
+}
+
+
+bool Config::enableProtocolSA() const
+{
+  return conf_enable_protocol_sa;
+}
+
+
 int Config::silenceAlarmThreshold() const
 {
   return conf_silence_alarm_threshold;
@@ -242,6 +260,12 @@ void Config::load()
   conf_db_keepalive_interval=
     p->intValue("Drouterd","DbKeepaliveInterval",
 		DROUTER_DEFAULT_DB_KEEPALIVE_INTERVAL);
+  conf_enable_protocol_d=p->boolValue("Drouterd","EnableProtocolD",
+				      DROUTER_DEFAULT_ENABLE_PROTOCOL_D);
+  conf_enable_protocol_j=p->boolValue("Drouterd","EnableProtocolJ",
+				      DROUTER_DEFAULT_ENABLE_PROTOCOL_J);
+  conf_enable_protocol_sa=p->boolValue("Drouterd","EnableProtocolSA",
+				      DROUTER_DEFAULT_ENABLE_PROTOCOL_SA);
   conf_silence_alarm_threshold=
     p->intValue("Drouterd","SilenceAlarmThreshold",
 		DROUTER_DEFAULT_SILENCE_THRESHOLD);

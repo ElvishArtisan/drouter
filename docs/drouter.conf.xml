@@ -126,6 +126,45 @@
 	</varlistentry>
 
 	<varlistentry>
+          <term>
+            <userinput>EnableProtocolD=yes</userinput>|<userinput>no</userinput>
+          </term>
+          <listitem>
+            <para>
+	      If <userinput>yes</userinput> is given, enable support
+	      for ProtocolD, otherwise disable it. Default value is
+	      <userinput>yes</userinput>.
+            </para>
+          </listitem>
+	</varlistentry>
+
+	<varlistentry>
+          <term>
+            <userinput>EnableProtocolJ=yes</userinput>|<userinput>no</userinput>
+          </term>
+          <listitem>
+            <para>
+	      If <userinput>yes</userinput> is given, enable support
+	      for ProtocolJ, otherwise disable it. Default value is
+	      <userinput>yes</userinput>.
+            </para>
+          </listitem>
+	</varlistentry>
+
+	<varlistentry>
+          <term>
+            <userinput>EnableProtocolSA=yes</userinput>|<userinput>no</userinput>
+          </term>
+          <listitem>
+            <para>
+	      If <userinput>yes</userinput> is given, enable support
+	      for ProtocolSA, otherwise disable it. Default value is
+	      <userinput>yes</userinput>.
+            </para>
+          </listitem>
+	</varlistentry>
+
+	<varlistentry>
 	  <term>
 	    <userinput>FileDescriptorLimit=<replaceable>num</replaceable></userinput>
 	  </term>
