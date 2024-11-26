@@ -1,5 +1,3 @@
-@GENERATED_INI_FILE_WARNING@
-
 [Global]
 RouterType=Audio
 RouterName=Test_GVG7000_Audio
@@ -8,161 +6,274 @@ RouterNumber=3
 [Input1]
 HostAddress=@GVG7000_IP@
 Slot=1
-Name=In 1
+; Name=Src 1
 
 [Input2]
 HostAddress=@GVG7000_IP@
 Slot=2
-Name=In 2
+; Name=Src 2
 
 [Input3]
 HostAddress=@GVG7000_IP@
 Slot=3
-Name=In 3
+; Name=Src 3
 
 [Input4]
 HostAddress=@GVG7000_IP@
 Slot=4
-Name=In 4
+; Name=Src 4
 
 [Input5]
 HostAddress=@GVG7000_IP@
 Slot=5
-Name=In 5
+; Name=Src 5
 
 [Input6]
 HostAddress=@GVG7000_IP@
 Slot=6
-Name=In 6
+; Name=Src 6
 
 [Input7]
 HostAddress=@GVG7000_IP@
 Slot=7
-Name=In 7
+; Name=Src 7
 
 [Input8]
 HostAddress=@GVG7000_IP@
 Slot=8
-Name=In 8
+; Name=Src 8
 
 [Input9]
 HostAddress=@GVG7000_IP@
 Slot=9
-Name=In 9
+; Name=Src 9
 
 [Input10]
 HostAddress=@GVG7000_IP@
 Slot=10
-Name=In 10
+; Name=Src 10
 
 [Input11]
 HostAddress=@GVG7000_IP@
 Slot=11
-Name=In 11
+; Name=Src 11
 
 [Input12]
 HostAddress=@GVG7000_IP@
 Slot=12
-Name=In 12
+; Name=Src 12
 
 [Input13]
 HostAddress=@GVG7000_IP@
 Slot=13
-Name=In 13
+; Name=Src 13
 
 [Input14]
 HostAddress=@GVG7000_IP@
 Slot=14
-Name=In 14
+; Name=Src 14
 
 [Input15]
 HostAddress=@GVG7000_IP@
 Slot=15
-Name=In 15
+; Name=Src 15
 
 [Input16]
 HostAddress=@GVG7000_IP@
 Slot=16
-Name=In 16
-
+; Name=Src 16
 
 [Output1]
 HostAddress=@GVG7000_IP@
 Slot=1
-Name=Out 1
+; Name=Dest 1
 
 [Output2]
 HostAddress=@GVG7000_IP@
 Slot=2
-Name=Out 2
+; Name=Dest 2
 
 [Output3]
 HostAddress=@GVG7000_IP@
 Slot=3
-Name=Out 3
+; Name=Dest 3
 
 [Output4]
 HostAddress=@GVG7000_IP@
 Slot=4
-Name=Out 4
+; Name=Dest 4
 
 [Output5]
 HostAddress=@GVG7000_IP@
 Slot=5
-Name=Out 5
+; Name=Dest 5
 
 [Output6]
 HostAddress=@GVG7000_IP@
 Slot=6
-Name=Out 6
+; Name=Dest 6
 
 [Output7]
 HostAddress=@GVG7000_IP@
 Slot=7
-Name=Out 7
+; Name=Dest 7
 
 [Output8]
 HostAddress=@GVG7000_IP@
 Slot=8
-Name=Out 8
+; Name=Dest 8
 
 [Output9]
 HostAddress=@GVG7000_IP@
 Slot=9
-Name=Out 9
+; Name=Dest 9
 
 [Output10]
 HostAddress=@GVG7000_IP@
 Slot=10
-Name=Out 10
+; Name=Dest 10
 
 [Output11]
 HostAddress=@GVG7000_IP@
 Slot=11
-Name=Out 11
+; Name=Dest 11
 
 [Output12]
 HostAddress=@GVG7000_IP@
 Slot=12
-Name=Out 12
+; Name=Dest 12
 
 [Output13]
 HostAddress=@GVG7000_IP@
 Slot=13
-Name=Out 13
+; Name=Dest 13
 
 [Output14]
 HostAddress=@GVG7000_IP@
 Slot=14
-Name=Out 14
+; Name=Dest 14
 
 [Output15]
 HostAddress=@GVG7000_IP@
 Slot=15
-Name=Out 15
+; Name=Dest 15
 
 [Output16]
 HostAddress=@GVG7000_IP@
 Slot=16
-Name=Out 16
+; Name=Dest 16
 
+
+[Snapshot1]
+Name=Forward
+
+Route1Output=1
+Route1Input=1
+
+Route2Output=2
+Route2Input=2
+
+Route3Output=3
+Route3Input=3
+
+Route4Output=4
+Route4Input=4
+
+Route5Output=5
+Route5Input=5
+
+Route6Output=6
+Route6Input=6
+
+Route7Output=7
+Route7Input=7
+
+Route8Output=8
+Route8Input=8
+
+Route9Output=9
+Route9Input=9
+
+Route10Output=10
+Route10Input=10
+
+Route11Output=11
+Route11Input=11
+
+Route12Output=12
+Route12Input=12
+
+Route13Output=13
+Route13Input=13
+
+Route14Output=14
+Route14Input=14
+
+Route15Output=15
+Route15Input=15
+
+Route16Output=16
+Route16Input=16
+
+[Snapshot2]
+Name=Reverse
+
+Route1Output=1
+Route1Input=16
+
+Route2Output=2
+Route2Input=15
+
+Route3Output=3
+Route3Input=14
+
+Route4Output=4
+Route4Input=13
+
+Route5Output=5
+Route5Input=12
+
+Route6Output=6
+Route6Input=11
+
+Route7Output=7
+Route7Input=10
+
+Route8Output=8
+Route8Input=9
+
+Route9Output=9
+Route9Input=8
+
+Route10Output=10
+Route10Input=7
+
+Route11Output=11
+Route11Input=6
+
+Route12Output=12
+Route12Input=5
+
+Route13Output=13
+Route13Input=4
+
+Route14Output=14
+Route14Input=3
+
+Route15Output=15
+Route15Input=2
+
+Route16Output=16
+Route16Input=1
+
+[Snapshot3]
+Name=1To16
+
+Route1Output=1
+Route1Input=16
+
+[Snapshot4]
+Name=1To1
+
+Route1Output=1
+Route1Input=1

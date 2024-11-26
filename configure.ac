@@ -341,6 +341,7 @@ AC_CONFIG_FILES([ \
     tests/protocol_j/tests_action.tst\
     tests/protocol_j/tests_btools_audio.tst\
     tests/protocol_j/tests_general.tst\
+    tests/protocol_j/tests_gvg7000_audio.tst\
     tests/protocol_j/tests_livewire_audio.tst\
     tests/protocol_j/tests_livewire_gpio.tst\
     tests/protocol_j/Makefile \

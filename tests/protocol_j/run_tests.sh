@@ -29,7 +29,7 @@ jtest $1 --hostname=localhost:9600 --connection-type=tcp --tests=tests_general.t
 echo
 
 #
-# Audio Tests
+# Livewire Tests
 #
 echo ======================================
 echo  ProtocolJ - Livewire Audio Tests
@@ -37,13 +37,19 @@ echo ======================================
 jtest $1 --hostname=localhost:9600 --connection-type=tcp --tests=tests_livewire_audio.tst
 echo
 
-#
-# GPIO Tests
-#
 echo ======================================
 echo  ProtocolJ - Livewire GPIO Tests
 echo ======================================
 jtest $1 --hostname=localhost:9600 --connection-type=tcp --tests=tests_livewire_gpio.tst
+echo
+
+#
+# GVG7000 Tests
+#
+echo ======================================
+echo  ProtocolJ - GVG7000 Audio Tests
+echo ======================================
+jtest $1 --hostname=localhost:9600 --connection-type=tcp --tests=tests_gvg7000_audio.tst
 echo
 
 #

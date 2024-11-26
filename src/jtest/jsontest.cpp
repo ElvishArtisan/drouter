@@ -129,7 +129,7 @@ bool JsonTest::parseCheck(QString *err_msg,const QJsonParseError &jerr,
       else {
 	colnum++;
       }
-    }    
+    }
     *err_msg=QString::asprintf("parse error at %d:%d: %s",linenum,colnum,
 			       jerr.errorString().toUtf8().constData());
     return false;

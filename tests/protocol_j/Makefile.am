@@ -32,6 +32,7 @@ EXTRA_DIST = configure_tests.sh\
              tests_action.tst.in\
              tests_btools_audio.tst.in\
              tests_general.tst.in\
+             tests_gvg7000_audio.tst.in\
              tests_livewire_audio.tst.in\
              tests_livewire_gpio.tst.in
 
