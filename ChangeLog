@@ -1312,3 +1312,5 @@
 	* Incremented the database version 10 11.
 	* Removed removed support for ProtocolJ 'Action' commands from
 	drouterd(8).
+2024-11-26 Fred Gleason <fredg@paravelsystems.com>
+	* Removed actionpanel(1).

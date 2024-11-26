@@ -1,6 +1,6 @@
-## automake.am
+## Makefile.am
 ##
-## Automake.am for tests/protocol_j
+## Makefile.am for tests/protocol_j
 ##
 ##   (C) Copyright 2024 Fred Gleason <fredg@paravelsystems.com>
 ##
@@ -25,10 +25,8 @@ SUBDIRS = config
 tests:
 	./run_tests.sh
 
-EXTRA_DIST = configure_tests.sh\
-             run_tests.sh\
+EXTRA_DIST = run_tests.sh\
              test_node.lwrp\
-             tests_action.tst.in\
              tests_general.tst.in\
              tests_gvg7000_audio.tst.in\
              tests_livewire_audio.tst.in\

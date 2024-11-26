@@ -1,4 +1,4 @@
-## automake.am
+## Makefile.am
 ##
 ## docs/Makefile.am
 ##

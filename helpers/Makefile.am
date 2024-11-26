@@ -1,8 +1,8 @@
 ## Makefile.am
 ##
-## helper/ Makefile.am for drouter
+## helpers/ Makefile.am for drouter
 ##
-## (C) Copyright 2022 Fred Gleason <fredg@paravelsystems.com>
+## (C) Copyright 2022-2024 Fred Gleason <fredg@paravelsystems.com>
 ##
 ## Use automake to process this into a Makefile.in
 ##
@@ -24,7 +24,7 @@
 AM_CFLAGS = -Wall
 
 EXTRA_DIST = c_file_warning\
-             init_file_warning\
+             ini_file_warning\
              script_file_warning\
              xml_file_warning
 

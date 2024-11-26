@@ -68,7 +68,6 @@ binary:
 # drouter-panels
 #
 	mkdir -p debian/drouter-panels/usr/bin
-	mv debian/tmp/usr/bin/actionpanel debian/drouter-panels/usr/bin/
 	mv debian/tmp/usr/bin/buttonpanel debian/drouter-panels/usr/bin/
 	mv debian/tmp/usr/bin/eventlogpanel debian/drouter-panels/usr/bin/
 	mv debian/tmp/usr/bin/outputpanel debian/drouter-panels/usr/bin/
@@ -76,7 +75,6 @@ binary:
 	mv debian/tmp/usr/bin/xpointpanel debian/drouter-panels/usr/bin/
 	mv debian/tmp/usr/bin/xypanel debian/drouter-panels/usr/bin/
 	mkdir -p debian/drouter-panels/usr/share/man/man1
-	mv debian/tmp/usr/share/man/man1/actionpanel.1 debian/drouter-panels/usr/share/man/man1/
 	mv debian/tmp/usr/share/man/man1/buttonpanel.1 debian/drouter-panels/usr/share/man/man1/
 	mv debian/tmp/usr/share/man/man1/eventlogpanel.1 debian/drouter-panels/usr/share/man/man1/
 	mv debian/tmp/usr/share/man/man1/outputpanel.1 debian/drouter-panels/usr/share/man/man1/

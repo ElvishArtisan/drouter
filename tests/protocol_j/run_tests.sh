@@ -51,12 +51,3 @@ echo  ProtocolJ - GVG7000 Audio Tests
 echo ======================================
 jtest $1 --hostname=localhost:9600 --connection-type=tcp --tests=tests_gvg7000_audio.tst
 echo
-
-#
-# Action Tests
-#
-#echo ======================================
-#echo  ProtocolJ - Action Tests
-#echo ======================================
-#jtest $1 --hostname=localhost:9600 --connection-type=tcp --tests=tests_action.tst
-#echo
