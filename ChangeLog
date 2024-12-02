@@ -1321,3 +1321,5 @@
 	'EnableProtocolSA=' directives to drouter.conf(5).
 2024-12-02 Fred Gleason <fredg@paravelsystems.com>
 	* Deleted 'tests/protocol_j/perm_sa_actions.sql'.
+2024-12-02 Fred Gleason <fredg@paravelsystems.com>
+	* Added a 'DRJsonSocket' class.

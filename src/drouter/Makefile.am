@@ -33,6 +33,7 @@ dist_libdrouter_la_SOURCES = drdparser.cpp drdparser.h\
                              drendpointlistmodel.cpp drendpointlistmodel.h\
                              dreventlogmodel.cpp dreventlogmodel.h\
                              drjparser.cpp drjparser.h\
+                             drjsonsocket.cpp drjsonsocket.h\
                              drlogindialog.cpp drlogindialog.h\
                              drmultistatewidget.cpp drmultistatewidget.h\
                              drrouterlistmodel.cpp drrouterlistmodel.h\
@@ -43,6 +44,7 @@ nodist_libdrouter_la_SOURCES = moc_drdparser.cpp\
                                moc_drendpointlistmodel.cpp\
                                moc_dreventlogmodel.cpp\
                                moc_drjparser.cpp\
+                               moc_drjsonsocket.cpp\
                                moc_drlogindialog.cpp\
                                moc_drmultistatewidget.cpp\
                                moc_drrouterlistmodel.cpp\
@@ -55,6 +57,7 @@ include_HEADERS = drdparser.h\
                   drendpointmap.h\
                   dreventlogmodel.h\
                   drjparser.h\
+                  drjsonsocket.h\
                   drlogindialog.h\
                   drmultistatewidget.h\
                   drrouterlistmodel.h\

@@ -18,14 +18,14 @@
 <sect1 xml:id="sect.overview">
   <title>Overview</title>
   <para>
-    Messages to the Protocol J routing service are by means of a
+    Messages to the Protocol J routing service are conveyed by means of a
     TCP SOCK_STREAM connection to TCP port 9600 on the host server.
   </para>
   <sect2 xml:id="sect.overview.message_command_syntax">
     <title>Message Command Syntax</title>
     <para>
-      Every message in ProtocolJ is a valid JSON document.
-      A minimally valid message has the form:
+      Every message in ProtocolJ is a series of one or more valid JSON
+      document(s). A minimally valid message has the form:
     </para>
     <literallayout class="monospaced">
 {
@@ -37,8 +37,14 @@
 }
     </literallayout>
     <para>
-      JSON objects as well as values may be nested within the body of an
-      operation.
+      N.B. - Actual command responses may consist of zero, one or more valid
+      JSON documents, concatenated on the same transport stream. See the
+      Wikipedia article
+      <link xlink:href="https://en.wikipedia.org/wiki/JSON_streaming">
+	JSON Streaming
+      </link>
+      (specifically, the  &quot;Concatenated JSON&quot; section) for
+      discussion of some of the requirements that this imposes.
     </para>
   </sect2>
   <sect2 xml:id="sect.overview.message_command_syntax.specifying_time">
