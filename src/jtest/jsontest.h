@@ -44,9 +44,8 @@ class JsonTest : public QObject
 		    const QString &diff);
  
  public slots:
-  void runTest(int testnum,const QString &testname,
-	       const QStringList &send_json,
-	       const QStringList &recv_json,int recv_start_linenum);
+  void runTest(int testnum,const QString &testname,const QString &send_json,
+	       const QString &recv_json,int recv_start_linenum);
 
  public:
   static bool parseCheck(QString *err_msg,const QJsonParseError &jerr,
@@ -68,7 +67,7 @@ private:
   int d_test_number;
   QString d_test_name;
   int d_recv_start_linenum;
-  QStringList d_send_list;
+  QString d_send_json;
   QJsonDocument d_exemplar_doc;
   QString d_hostname;
   uint16_t d_port_number;

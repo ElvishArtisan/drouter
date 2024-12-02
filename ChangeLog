@@ -1323,3 +1323,5 @@
 	* Deleted 'tests/protocol_j/perm_sa_actions.sql'.
 2024-12-02 Fred Gleason <fredg@paravelsystems.com>
 	* Added a 'DRJsonSocket' class.
+2024-12-02 Fred Gleason <fredg@paravelsystems.com>
+	* Replaced the source format for ProtocolJ test cases.

@@ -38,9 +38,10 @@ MainObject::MainObject(QObject *parent)
   QString hostname="localhost";
   unsigned portnum=9600;
   QString tests;
-  FILE *testsfile=NULL;
   bool ok=false;
   JsonTest::ConnectionType conntype=JsonTest::ConnectionTcp;
+  QString err_msg;
+  d_test_number=0;
   d_linenum=1;
   d_passed=0;
   d_failed=0;
@@ -99,13 +100,13 @@ MainObject::MainObject(QObject *parent)
   }
 
   //
-  // Open Test Stream
+  // Open Test Cases
   //
-  if((testsfile=fopen(tests.toUtf8(),"r"))==NULL) {
-    fprintf(stderr,"jtest: %s\n",strerror(errno));
+  d_test_profile=new Profile();
+  if(!d_test_profile->loadFile(tests,&err_msg)) {
+    fprintf(stderr,"jtest: %s\n",err_msg.toUtf8().constData());
     exit(1);
   }
-  d_tests_stream=new QTextStream(testsfile,QIODevice::ReadOnly);
   
   //
   // Create Test Jig
@@ -162,6 +163,19 @@ void MainObject::testCompleteData(int testnum,const QString &testname,
     }
   }
 
+  //
+  // Load Next Test Case
+  //
+  d_test_number++;
+  QString section=QString::asprintf("Test%d",d_test_number);
+  QString name=d_test_profile->stringValue(section,"Name","",&ok);
+  if(!ok) {  // We're done
+    Finish();
+  }
+  QString input=d_test_profile->stringValue(section,"Input");
+  QString output=d_test_profile->stringValue(section,"Output");
+  d_json_test->runTest(d_test_number,name,input,output,1);
+  /*
   if(d_tests_stream->atEnd()) {  // We're done!
     Finish();
   }
@@ -216,6 +230,7 @@ void MainObject::testCompleteData(int testnum,const QString &testname,
     d_linenum++;
   }
   Finish();
+  */
 }
 
 

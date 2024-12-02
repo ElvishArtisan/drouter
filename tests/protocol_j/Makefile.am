@@ -27,9 +27,13 @@ tests:
 
 EXTRA_DIST = run_tests.sh\
              test_node.lwrp\
+             tests_general.ini.in\
              tests_general.tst.in\
+             tests_gvg7000_audio.ini.in\
              tests_gvg7000_audio.tst.in\
+             tests_livewire_audio.ini.in\
              tests_livewire_audio.tst.in\
+             tests_livewire_gpio.ini.in\
              tests_livewire_gpio.tst.in
 
 CLEANFILES = *~\
@@ -41,6 +45,7 @@ CLEANFILES = *~\
              moc_*
 
 MAINTAINERCLEANFILES = *~\
+                       *.ini\
                        *.tar.gz\
                        *.tst\
                        aclocal.m4\

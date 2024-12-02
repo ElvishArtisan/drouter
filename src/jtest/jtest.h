@@ -26,6 +26,7 @@
 #include <QTextStream>
 
 #include "jsontest.h"
+#include "profile.h"
 
 #define JTEST_USAGE "[--generate-diffs] [--hostname=<ip-addr>[:<port-num>]] [--connection-type=TCP|WebSocket] --tests=<filename>\n"
 
@@ -41,12 +42,13 @@ class MainObject : public QObject
   
  private:
   void Finish();
-  QTextStream *d_tests_stream;
   JsonTest *d_json_test;
   int d_linenum;
   int d_passed;
   int d_failed;
   bool d_generate_diffs;
+  int d_test_number;
+  Profile *d_test_profile;
 };
 
 

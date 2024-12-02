@@ -59,18 +59,18 @@ JsonTest::~JsonTest()
 
 
 void JsonTest::runTest(int testnum,const QString &testname,
-		       const QStringList &send,
-		       const QStringList &recv,int recv_start_linenum)
+		       const QString &send,
+		       const QString &recv,int recv_start_linenum)
 {
   QString err_msg;
 
   d_test_number=testnum;
   d_test_name=testname;
   d_recv_start_linenum=recv_start_linenum;
-  d_send_list=send;
+  d_send_json=send;
 
   QJsonParseError jerr;
-  QByteArray recv_json=recv.join("\n").toUtf8();
+  QByteArray recv_json=recv.toUtf8();
   d_exemplar_doc=QJsonDocument::fromJson(recv_json,&jerr);
   if(!JsonTest::parseCheck(&err_msg,jerr,recv_json,recv_start_linenum)) {
     d_exemplar_error_string=
@@ -119,6 +119,7 @@ bool JsonTest::parseCheck(QString *err_msg,const QJsonParseError &jerr,
 			  const QByteArray &json,int start_linenum)
 {
   if(jerr.error!=QJsonParseError::NoError) {
+    /*
     int linenum=start_linenum;
     int colnum=0;
     for(int i=0;i<jerr.offset;i++) {
@@ -130,8 +131,10 @@ bool JsonTest::parseCheck(QString *err_msg,const QJsonParseError &jerr,
 	colnum++;
       }
     }
-    *err_msg=QString::asprintf("parse error at %d:%d: %s",linenum,colnum,
-			       jerr.errorString().toUtf8().constData());
+    */
+    *err_msg=QString::asprintf("parse error at 1:%d: %s, JSON: %s",jerr.offset,
+			       jerr.errorString().toUtf8().constData(),
+			       json.constData());
     return false;
   }
   *err_msg="OK";
@@ -225,11 +228,11 @@ void JsonTest::connectedData()
 {
   switch(d_connection_type) {
   case JsonTest::ConnectionTcp:
-    d_tcp_socket->write(d_send_list.join("\n").toUtf8());
+    d_tcp_socket->write(d_send_json.toUtf8());
     break;
 
   case JsonTest::ConnectionWebSocket:
-    d_web_socket->sendBinaryMessage(d_send_list.join("\n").toUtf8());
+    d_web_socket->sendBinaryMessage(d_send_json.toUtf8());
     break;
 
   case JsonTest::ConnectionLast:

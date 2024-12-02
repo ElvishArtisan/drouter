@@ -32,7 +32,8 @@ moc_%.cpp:	%.h
 bin_PROGRAMS = jtest
 
 dist_jtest_SOURCES = jsontest.cpp jsontest.h\
-                     jtest.cpp jtest.h
+                     jtest.cpp jtest.h\
+                     profile.cpp profile.h
 
 nodist_jtest_SOURCES = moc_jsontest.cpp\
                        moc_jtest.cpp

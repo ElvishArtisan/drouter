@@ -338,9 +338,13 @@ AC_CONFIG_FILES([ \
     systemd/Makefile \
     systemd/drouter.service \
     tests/Makefile \
+    tests/protocol_j/tests_general.ini\
     tests/protocol_j/tests_general.tst\
+    tests/protocol_j/tests_gvg7000_audio.ini\
     tests/protocol_j/tests_gvg7000_audio.tst\
+    tests/protocol_j/tests_livewire_audio.ini\
     tests/protocol_j/tests_livewire_audio.tst\
+    tests/protocol_j/tests_livewire_gpio.ini\
     tests/protocol_j/tests_livewire_gpio.tst\
     tests/protocol_j/Makefile \
     tests/protocol_j/config/drouter.conf \

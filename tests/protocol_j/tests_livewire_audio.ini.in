@@ -1,0 +1,43 @@
+[Prologue]
+Command={"activatesnap":{"router":1,"snapshot":"Off"}}
+
+[Test1]
+Name=Livewire Audio SourceNames
+Input={"sourcenames":{"router":1}}
+Output={"router": 1,"sourcenames": [{"hostAddress": "@NODE_IP@","hostDescription": "AudioScience 6685 Card","hostName": "@NODE_HOSTNAME@","name": "SRC 1","number": 1,"slot": 1,"sourceNumber": 30501,"streamAddress": "239.192.119.37"},{"hostAddress": "@NODE_IP@","hostDescription": "AudioScience 6685 Card","hostName": "@NODE_HOSTNAME@","name": "SRC 2","number": 2,"slot": 2,"sourceNumber": 30502,"streamAddress": "239.192.119.38"},{"hostAddress": "@NODE_IP@","hostDescription": "AudioScience 6685 Card","hostName": "@NODE_HOSTNAME@","name": "SRC 3","number": 3,"slot": 3,"sourceNumber": 30503,"streamAddress": "239.192.119.39"},{"hostAddress": "@NODE_IP@","hostDescription": "AudioScience 6685 Card","hostName": "@NODE_HOSTNAME@","name": "SRC 4","number": 4,"slot": 4,"sourceNumber": 30504,"streamAddress": "239.192.119.40"},{"hostAddress": "@NODE_IP@","hostDescription": "AudioScience 6685 Card","hostName": "@NODE_HOSTNAME@","name": "SRC 5","number": 5,"slot": 5,"sourceNumber": 30505,"streamAddress": "239.192.119.41"},{"hostAddress": "@NODE_IP@","hostDescription": "AudioScience 6685 Card","hostName": "@NODE_HOSTNAME@","name": "SRC 6","number": 6,"slot": 6,"sourceNumber": 30506,"streamAddress": "239.192.119.42"},{"hostAddress": "@NODE_IP@","hostDescription": "AudioScience 6685 Card","hostName": "@NODE_HOSTNAME@","name": "SRC 7","number": 7,"slot": 7,"sourceNumber": 30507,"streamAddress": "239.192.119.43"},{"hostAddress": "@NODE_IP@","hostDescription": "AudioScience 6685 Card","hostName": "@NODE_HOSTNAME@","name": "SRC 8","number": 8,"slot": 8,"sourceNumber": 30508,"streamAddress": "239.192.119.44"}]}
+
+[Test2]
+Name=Livewire Audio DestNames
+Input={"destnames":{"router":1}}
+Output={"destnames": [{"hostAddress": "@NODE_IP@","hostDescription": "AudioScience 6685 Card","hostName": "@NODE_HOSTNAME@","name": "DST 1","number": 1,"slot": 1},{"hostAddress": "@NODE_IP@","hostDescription": "AudioScience 6685 Card","hostName": "@NODE_HOSTNAME@","name": "DST 2","number": 2,"slot": 2},{"hostAddress": "@NODE_IP@","hostDescription": "AudioScience 6685 Card","hostName": "@NODE_HOSTNAME@","name": "DST 3","number": 3,"slot": 3},{"hostAddress": "@NODE_IP@","hostDescription": "AudioScience 6685 Card","hostName": "@NODE_HOSTNAME@","name": "DST 4","number": 4,"slot": 4},{"hostAddress": "@NODE_IP@","hostDescription": "AudioScience 6685 Card","hostName": "@NODE_HOSTNAME@","name": "DST 5","number": 5,"slot": 5},{"hostAddress": "@NODE_IP@","hostDescription": "AudioScience 6685 Card","hostName": "@NODE_HOSTNAME@","name": "DST 6","number": 6,"slot": 6},{"hostAddress": "@NODE_IP@","hostDescription": "AudioScience 6685 Card","hostName": "@NODE_HOSTNAME@","name": "DST 7","number": 7,"slot": 7},{"hostAddress": "@NODE_IP@","hostDescription": "AudioScience 6685 Card","hostName": "@NODE_HOSTNAME@","name": "DST 8","number": 8,"slot": 8}],"router": 1}
+
+[Test3]
+Name=Livewire Audio Snapshots
+Input={"snapshots":{"router":1}}
+Output={"router": 1,"snapshots": [{"name": "On","routes": [{"input": 1,"output": 1}]},{"name": "Off","routes": [{"input": 0,"output": 1}]},{"name": "All Off","routes": [{"input": 0,"output": 1},{"input": 0,"output": 2},{"input": 0,"output": 3},{"input": 0,"output": 4},{"input": 0,"output": 5},{"input": 0,"output": 6},{"input": 0,"output": 7},{"input": 0,"output": 8}]}]}
+
+[Test4]
+Name=Livewire Audio ActivateSnap On
+Input={"activatesnap":{"router":1,"snapshot":"On"}}
+Output={"routestat": {"destination": 1,"router": 1,"source": 1}}
+
+[Test5]
+Name=Livewire Audio ActivateSnap Off
+Input={"activatesnap":{"router":1,"snapshot":"Off"}}
+Output={"routestat": {"destination": 1,"router": 1,"source": -1}}
+
+[Test6]
+Name=Livewire Audio ActivateRoute On
+Input={"activateroute":{"router":1,"destination":1,"source":1}}
+Output={"routestat": {"destination": 1,"router": 1,"source": 1}}
+
+[Test7]
+Name=Livewire Audio ActivateRoute Off
+Input={"activateroute":{"router":1,"destination":1,"source":0}}
+Output={"routestat": {"destination": 1,"router": 1,"source": -1}}
+
+[Test8]
+Name=Livewire Audio RouteStat
+Input={"routestat":{"router":1,"destination":1}}
+Output={"routestat": {"destination": 1,"router": 1,"source": -1}}
+
