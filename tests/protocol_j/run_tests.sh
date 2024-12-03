@@ -25,7 +25,7 @@
 echo ======================================
 echo  ProtocolJ - General Tests
 echo ======================================
-jtest $1 --hostname=localhost:9600 --connection-type=tcp --tests=tests_general.tst
+jtest $1 --hostname=localhost:9600 --connection-type=tcp --tests=tests_general.ini
 echo
 
 #
@@ -34,13 +34,13 @@ echo
 echo ======================================
 echo  ProtocolJ - Livewire Audio Tests
 echo ======================================
-jtest $1 --hostname=localhost:9600 --connection-type=tcp --tests=tests_livewire_audio.tst
+jtest $1 --hostname=localhost:9600 --connection-type=tcp --tests=tests_livewire_audio.ini
 echo
 
 echo ======================================
 echo  ProtocolJ - Livewire GPIO Tests
 echo ======================================
-jtest $1 --hostname=localhost:9600 --connection-type=tcp --tests=tests_livewire_gpio.tst
+jtest $1 --hostname=localhost:9600 --connection-type=tcp --tests=tests_livewire_gpio.ini
 echo
 
 #
@@ -49,5 +49,5 @@ echo
 echo ======================================
 echo  ProtocolJ - GVG7000 Audio Tests
 echo ======================================
-jtest $1 --hostname=localhost:9600 --connection-type=tcp --tests=tests_gvg7000_audio.tst
+jtest $1 --hostname=localhost:9600 --connection-type=tcp --tests=tests_gvg7000_audio.ini
 echo
