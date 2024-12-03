@@ -119,19 +119,6 @@ bool JsonTest::parseCheck(QString *err_msg,const QJsonParseError &jerr,
 			  const QByteArray &json,int start_linenum)
 {
   if(jerr.error!=QJsonParseError::NoError) {
-    /*
-    int linenum=start_linenum;
-    int colnum=0;
-    for(int i=0;i<jerr.offset;i++) {
-      if(json.at(i)==QChar('\n')) {
-	linenum++;
-	colnum=0;
-      }
-      else {
-	colnum++;
-      }
-    }
-    */
     *err_msg=QString::asprintf("parse error at 1:%d: %s, JSON: %s",jerr.offset,
 			       jerr.errorString().toUtf8().constData(),
 			       json.constData());

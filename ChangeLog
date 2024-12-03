@@ -1329,3 +1329,5 @@
 	* Removed superseded test cases.
 2024-12-02 Fred Gleason <fredg@paravelsystems.com>
 	* Fixed a bug in 'tests/protocol_j/run_tests.sh'.
+2024-12-02 Fred Gleason <fredg@paravelsystems.com>
+	* Added support for prologue data in test cases.

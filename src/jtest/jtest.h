@@ -22,8 +22,9 @@
 #define JTEST_H
 
 #include <QJsonDocument>
-#include <QTcpSocket>
 #include <QTextStream>
+
+#include <drouter/drjsonsocket.h>
 
 #include "jsontest.h"
 #include "profile.h"
@@ -39,6 +40,12 @@ class MainObject : public QObject
  private slots:
   void testCompleteData(int testnum,const QString &testname,bool passed,
 			const QString &err_msg,const QString &diff);
+  void prologueConnectedData();
+  void prologueDocumentReceivedData(const QJsonDocument &jdoc);
+  void prologueParseErrorData(const QByteArray &json,
+			      const QJsonParseError &jerr);
+  void prologueErrorData(QAbstractSocket::SocketError err);
+  void prologueTimeoutData();
   
  private:
   void Finish();
@@ -49,6 +56,9 @@ class MainObject : public QObject
   bool d_generate_diffs;
   int d_test_number;
   Profile *d_test_profile;
+  QStringList d_prologue_commands;
+  DRJsonSocket *d_prologue_socket;
+  QTimer *d_prologue_timer;
 };
 
 

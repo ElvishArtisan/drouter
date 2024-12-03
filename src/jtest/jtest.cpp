@@ -23,11 +23,13 @@
 #include <stdlib.h>
 
 #include <QCoreApplication>
+#include <QJsonObject>
 #include <QSignalMapper>
 
 #include <sy5/sycmdswitch.h>
 #include <sy5/syconfig.h>
 #include <sy5/syinterfaces.h>
+#include <sy5/symcastsocket.h>
 #include <sy5/syprofile.h>
 
 #include "jtest.h"
@@ -120,9 +122,34 @@ MainObject::MainObject(QObject *parent)
 				const QString &)));
 
   //
-  // Kick It Off
+  // Run Prologue Commands
   //
-  testCompleteData(0,"KICKOFF!",true,"KICKOFF!",QString());
+  d_prologue_commands=d_test_profile->stringValues("Prologue","Command");
+  if(d_prologue_commands.size()>0) {
+    d_prologue_timer=new QTimer(this);
+    d_prologue_timer->setSingleShot(true);
+    connect(d_prologue_timer,SIGNAL(timeout()),
+	    this,SLOT(prologueTimeoutData()));
+    d_prologue_socket=new DRJsonSocket(this);
+    connect(d_prologue_socket,SIGNAL(connected()),
+	    this,SLOT(prologueConnectedData()));
+    connect(d_prologue_socket,SIGNAL(documentReceived(const QJsonDocument &)),
+	    this,SLOT(prologueDocumentReceivedData(const QJsonDocument &)));
+    connect(d_prologue_socket,
+	    SIGNAL(parseError(const QByteArray &,const QJsonParseError &)),
+	    this,
+	    SLOT(prologueParseErrorData(const QByteArray &,
+					const QJsonParseError &)));
+    connect(d_prologue_socket,SIGNAL(error(QAbstractSocket::SocketError)),
+	    this,SLOT(prologueErrorData(QAbstractSocket::SocketError)));
+    d_prologue_socket->connectToHost(hostname,portnum);
+  }
+  else {
+    //
+    // Kick It Off
+    //
+    testCompleteData(0,"KICKOFF!",true,"KICKOFF!",QString());
+  }
 }
 
 
@@ -135,13 +162,10 @@ void MainObject::testCompleteData(int testnum,const QString &testname,
 	 testnum,testname.toUtf8().constData(),passed,
 	 err_msg.toUtf8().constData());
   */
-  int next_testnum=0;
   QString next_testname;
   bool ok=false;
-  bool receiving=false;
   QStringList send;
   QStringList recv;
-  int next_recv_start_linenum=0;
 
   //
   // Process Completed Test
@@ -175,62 +199,48 @@ void MainObject::testCompleteData(int testnum,const QString &testname,
   QString input=d_test_profile->stringValue(section,"Input");
   QString output=d_test_profile->stringValue(section,"Output");
   d_json_test->runTest(d_test_number,name,input,output,1);
-  /*
-  if(d_tests_stream->atEnd()) {  // We're done!
-    Finish();
+}
+
+
+void MainObject::prologueConnectedData()
+{
+  for(int i=0;i<d_prologue_commands.size();i++) {
+    d_prologue_socket->write(d_prologue_commands.at(i).toUtf8());
   }
-  while(!d_tests_stream->atEnd()) {
-    QString line=d_tests_stream->readLine();
-    if(line.left(7)=="=======") {
-      QStringList f0=line.split(":",Qt::KeepEmptyParts);
-      if(f0.size()!=3) {
-	fprintf(stderr,"jtest: malformed test header at line %d\n",1+d_linenum);
-	exit(1);
-      }
-      next_testnum=f0.at(1).toInt(&ok);
-      if(!ok) {
-	fprintf(stderr,"jtest: malformed test header at line %d\n",1+d_linenum);
-	exit(1);
-      }
-      next_testname=f0.at(2);
-      next_recv_start_linenum=1+d_linenum;
-      receiving=true;
-    }
-    else {
-      if(line.left(7)=="*******") {
-	QStringList f0=line.split(":",Qt::KeepEmptyParts);
-	if(f0.size()!=2) {
-	  fprintf(stderr,"jtest: malformed test footer at line %d\n",
-		  1+d_linenum);
-	  exit(1);
-	}
-	int end_next_testnum=f0.at(1).toInt(&ok);
-	if((!ok)||(next_testnum!=end_next_testnum)) {
-	  fprintf(stderr,"jtest: mismatched test footer number at line %d\n",
-		  1+d_linenum);
-	  exit(1);
-	}
-	receiving=false;
-	d_json_test->runTest(next_testnum,next_testname,send,recv,
-			     next_recv_start_linenum);
-	send.clear();
-	recv.clear();
-	d_linenum++;
-	return;
-      }
-      else {
-	if(receiving) {
-	  recv.push_back(line);
-	}
-	else {
-	  send.push_back(line);
-	}
-      }
-    }
-    d_linenum++;
+  d_prologue_socket->write("{\"ping\":null}");
+}
+
+
+void MainObject::prologueDocumentReceivedData(const QJsonDocument &jdoc)
+{
+  if(jdoc.object().contains("pong")) {
+    d_prologue_socket->deleteLater();
+    d_prologue_socket=NULL;
+    d_prologue_timer->start(1000);
   }
-  Finish();
-  */
+}
+
+
+void MainObject::prologueParseErrorData(const QByteArray &json,
+					const QJsonParseError &jerr)
+{
+  fprintf(stderr,"jtest: prologue command return \"%s\": %s at %d\n",
+	  json.constData(),jerr.errorString().toUtf8().constData(),jerr.offset);
+  exit(1);
+}
+
+
+void MainObject::prologueErrorData(QAbstractSocket::SocketError err)
+{
+  fprintf(stderr,"prologue socket error: %s\n",
+	  SyMcastSocket::socketErrorText(err).toUtf8().constData());
+  exit(1);
+}
+
+
+void MainObject::prologueTimeoutData()
+{
+  testCompleteData(0,"KICKOFF!",true,"KICKOFF!",QString());
 }
 
 
