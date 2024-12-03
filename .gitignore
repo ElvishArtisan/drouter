@@ -242,3 +242,7 @@ src/xypanel/sendmail.h
 src/xypanel/xypanel
 src/xypanel/sqlquery.cpp
 src/xypanel/sqlquery.h
+tests/protocol_j/tests_general.ini
+tests/protocol_j/tests_gvg7000_audio.ini
+tests/protocol_j/tests_livewire_audio.ini
+tests/protocol_j/tests_livewire_gpio.ini

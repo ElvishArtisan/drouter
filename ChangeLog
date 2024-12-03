@@ -1325,3 +1325,5 @@
 	* Added a 'DRJsonSocket' class.
 2024-12-02 Fred Gleason <fredg@paravelsystems.com>
 	* Replaced the source format for ProtocolJ test cases.
+2024-12-02 Fred Gleason <fredg@paravelsystems.com>
+	* Removed superseded test cases.
