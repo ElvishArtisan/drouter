@@ -23,7 +23,8 @@
 SUBDIRS = maps.d \
           scripts.d
 
-EXTRA_DIST = drouter.conf.in
+EXTRA_DIST = drouter.conf.in\
+             livewire_node.lwrp
 
 CLEANFILES = *~\
              *.idb\

@@ -1335,3 +1335,5 @@
 	* Added 'GVG7000 Audio Forward ActivateSnap' and
 	'GVG7000 Audio Reverse ActivateSnap' tests.
 	* Added an '--intertest-interval=' directive to jtest(1).
+2024-12-17 Fred Gleason <fredg@paravelsystems.com>
+	* Added a test configuration for the 'Livewire' tests.
