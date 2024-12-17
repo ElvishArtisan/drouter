@@ -1331,3 +1331,7 @@
 	* Fixed a bug in 'tests/protocol_j/run_tests.sh'.
 2024-12-02 Fred Gleason <fredg@paravelsystems.com>
 	* Added support for prologue data in test cases.
+2024-12-17 Fred Gleason <fredg@paravelsystems.com>
+	* Added 'GVG7000 Audio Forward ActivateSnap' and
+	'GVG7000 Audio Reverse ActivateSnap' tests.
+	* Added an '--intertest-interval=' directive to jtest(1).

@@ -24,10 +24,12 @@
 #include <stdint.h>
 
 #include <QJsonDocument>
+#include <QList>
 #include <QStringList>
-#include <QTcpSocket>
 #include <QTimer>
 #include <QWebSocket>
+
+#include <drouter/drjsonsocket.h>
 
 class JsonTest : public QObject
 {
@@ -45,7 +47,7 @@ class JsonTest : public QObject
  
  public slots:
   void runTest(int testnum,const QString &testname,const QString &send_json,
-	       const QString &recv_json,int recv_start_linenum);
+	       const QStringList &recv_jsons,int recv_start_linenum);
 
  public:
   static bool parseCheck(QString *err_msg,const QJsonParseError &jerr,
@@ -54,26 +56,32 @@ class JsonTest : public QObject
  protected:
   QString makeDiff(const QJsonDocument &jdoc) const;
   void writeJson(const QJsonDocument &json,const QString &filepath) const; 
-
+  void completeTest(bool passed,const QString &err_msg,const QString &diff);
+									 
  private slots:
   void exemplarErrorData();
   void connectedData();
   void disconnectedData();
   void errorOccurredData(QAbstractSocket::SocketError err);
-  void readyReadData();
+  void documentReceivedData(const QJsonDocument &jdoc);
+  void parseErrorData(const QByteArray &json,const QJsonParseError &jerr);
   void binaryMessageReceivedData(const QByteArray &);
 
 private:
+  // Persistent variables
+  QString d_hostname;
+  uint16_t d_port_number;
+  ConnectionType d_connection_type;
+  DRJsonSocket *d_json_socket;
+  QWebSocket *d_web_socket;
+
+  // Per-test variables
   int d_test_number;
   QString d_test_name;
   int d_recv_start_linenum;
   QString d_send_json;
-  QJsonDocument d_exemplar_doc;
-  QString d_hostname;
-  uint16_t d_port_number;
-  ConnectionType d_connection_type;
-  QTcpSocket *d_tcp_socket;
-  QWebSocket *d_web_socket;
+  QList<QJsonDocument> d_exemplar_docs;
+  int d_objects_remaining;
   QString d_exemplar_error_string;
   QTimer *d_exemplar_error_timer;
   bool d_processing;

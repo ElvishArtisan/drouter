@@ -30,3 +30,45 @@ Name=GVG7000 Audio ActivateSnap
 Input={"activatesnap":{"router":3,"snapshot":"1To1"}}
 Output={"routestat": {"destination": 1,"router": 3,"source": 1}}
 
+
+[Test6]
+Name=GVG7000 Audio Reverse ActivateSnap
+Input={"activatesnap":{"router":3,"snapshot":"Reverse"}}
+Output={"routestat": {"destination": 1,"router": 3,"source": 16}}
+Output={"routestat": {"destination": 2,"router": 3,"source": 15}}
+Output={"routestat": {"destination": 3,"router": 3,"source": 14}}
+Output={"routestat": {"destination": 4,"router": 3,"source": 13}}
+Output={"routestat": {"destination": 5,"router": 3,"source": 12}}
+Output={"routestat": {"destination": 6,"router": 3,"source": 11}}
+Output={"routestat": {"destination": 7,"router": 3,"source": 10}}
+Output={"routestat": {"destination": 8,"router": 3,"source": 9}}
+Output={"routestat": {"destination": 9,"router": 3,"source": 8}}
+Output={"routestat": {"destination": 10,"router": 3,"source": 7}}
+Output={"routestat": {"destination": 11,"router": 3,"source": 6}}
+Output={"routestat": {"destination": 12,"router": 3,"source": 5}}
+Output={"routestat": {"destination": 13,"router": 3,"source": 4}}
+Output={"routestat": {"destination": 14,"router": 3,"source": 3}}
+Output={"routestat": {"destination": 15,"router": 3,"source": 2}}
+Output={"routestat": {"destination": 16,"router": 3,"source": 1}}
+
+
+[Test7]
+Name=GVG7000 Audio Forward ActivateSnap
+Input={"activatesnap":{"router":3,"snapshot":"Forward"}}
+Output={"routestat": {"destination": 1,"router": 3,"source": 1}}
+Output={"routestat": {"destination": 2,"router": 3,"source": 2}}
+Output={"routestat": {"destination": 3,"router": 3,"source": 3}}
+Output={"routestat": {"destination": 4,"router": 3,"source": 4}}
+Output={"routestat": {"destination": 5,"router": 3,"source": 5}}
+Output={"routestat": {"destination": 6,"router": 3,"source": 6}}
+Output={"routestat": {"destination": 7,"router": 3,"source": 7}}
+Output={"routestat": {"destination": 8,"router": 3,"source": 8}}
+Output={"routestat": {"destination": 9,"router": 3,"source": 9}}
+Output={"routestat": {"destination": 10,"router": 3,"source": 10}}
+Output={"routestat": {"destination": 11,"router": 3,"source": 11}}
+Output={"routestat": {"destination": 12,"router": 3,"source": 12}}
+Output={"routestat": {"destination": 13,"router": 3,"source": 13}}
+Output={"routestat": {"destination": 14,"router": 3,"source": 14}}
+Output={"routestat": {"destination": 15,"router": 3,"source": 15}}
+Output={"routestat": {"destination": 16,"router": 3,"source": 16}}
+

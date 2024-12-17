@@ -29,7 +29,7 @@
 #include "jsontest.h"
 #include "profile.h"
 
-#define JTEST_USAGE "[--generate-diffs] [--hostname=<ip-addr>[:<port-num>]] [--connection-type=TCP|WebSocket] --tests=<filename>\n"
+#define JTEST_USAGE "[--generate-diffs] [--intertest-interval=<msec>] [--hostname=<ip-addr>[:<port-num>]] [--connection-type=TCP|WebSocket] --tests=<filename>\n"
 
 class MainObject : public QObject
 {
@@ -40,6 +40,7 @@ class MainObject : public QObject
  private slots:
   void testCompleteData(int testnum,const QString &testname,bool passed,
 			const QString &err_msg,const QString &diff);
+  void nextTestData();
   void prologueConnectedData();
   void prologueDocumentReceivedData(const QJsonDocument &jdoc);
   void prologueParseErrorData(const QByteArray &json,
@@ -59,6 +60,8 @@ class MainObject : public QObject
   QStringList d_prologue_commands;
   DRJsonSocket *d_prologue_socket;
   QTimer *d_prologue_timer;
+  QTimer *d_next_test_timer;
+  int d_intertest_interval;
 };
 
 

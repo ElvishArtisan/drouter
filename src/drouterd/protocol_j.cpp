@@ -191,7 +191,7 @@ void ProtocolJ::destinationCrosspointChanged(const QHostAddress &host_addr,int s
 {
   QString sql;
   DRSqlQuery *q;
- 
+
   if(!proto_routestat_masked) {
     sql=RouteStatSqlFields(DREndPointMap::AudioRouter)+
       " `SA_DESTINATIONS`.`HOST_ADDRESS`='"+host_addr.toString()+"' && "+

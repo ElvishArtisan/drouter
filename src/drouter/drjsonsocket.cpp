@@ -24,10 +24,18 @@
 DRJsonSocket::DRJsonSocket(QObject *parent)
   : QTcpSocket(parent)
 {
-  d_bracket_count=0;
-  d_in_string=false;
+  resetParser();
   
   connect(this,SIGNAL(readyRead()),this,SLOT(readyReadData()));
+}
+
+
+void DRJsonSocket::resetParser()
+{
+  d_accum.clear();
+  d_bracket_count=0;
+  d_in_string=false;
+  d_escaped=false;
 }
 
 
@@ -38,9 +46,16 @@ void DRJsonSocket::readyReadData()
 
   for(int i=0;i<data.size();i++) {
     switch(data.at(i)) {
+    case '\\':
+      d_escaped=!d_escaped;
+      break;
+
     case '"':
-      d_in_string=!d_in_string;
-      d_accum+=data.at(i);
+      if(!d_escaped) {
+	d_in_string=!d_in_string;
+	d_accum+=data.at(i);
+      }
+      d_escaped=false;
       break;
 
     case '{':
@@ -48,6 +63,7 @@ void DRJsonSocket::readyReadData()
 	d_bracket_count++;
       }
       d_accum+=data.at(i);
+      d_escaped=false;
       break;
 
     case '}':
@@ -62,7 +78,7 @@ void DRJsonSocket::readyReadData()
 	  else {
 	    emit documentReceived(jdoc);
 	  }
-	  d_accum.clear();
+	  resetParser();
 	}
 	if(d_bracket_count<0) {
 	  QJsonParseError jerr;
@@ -71,12 +87,14 @@ void DRJsonSocket::readyReadData()
 	  emit parseError(d_accum,jerr);
 	  d_accum.clear();
 	  d_bracket_count=0;
+	  d_escaped=false;
 	}
       }
       break;
 
     default:
       d_accum+=data.at(i);
+      d_escaped=false;
       break;
     }
   }

@@ -32,6 +32,7 @@ class DRJsonSocket : public QTcpSocket
  Q_OBJECT
  public:
   DRJsonSocket(QObject *parent);
+  void resetParser();
 
  signals:
   void documentReceived(const QJsonDocument &jdoc);
@@ -44,6 +45,7 @@ class DRJsonSocket : public QTcpSocket
   QByteArray d_accum;
   int d_bracket_count;
   bool d_in_string;
+  bool d_escaped;
 };
 
 

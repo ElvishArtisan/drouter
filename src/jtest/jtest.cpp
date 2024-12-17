@@ -48,6 +48,7 @@ MainObject::MainObject(QObject *parent)
   d_passed=0;
   d_failed=0;
   d_generate_diffs=false;
+  d_intertest_interval=100;
 
   SyCmdSwitch *cmd=new SyCmdSwitch("jtest",VERSION,JTEST_USAGE);
   for(int i=0;i<cmd->keys();i++) {
@@ -87,6 +88,14 @@ MainObject::MainObject(QObject *parent)
       hostname=f0.at(0);
       cmd->setProcessed(i,true);
     }
+    if(cmd->key(i)=="--intertest-interval") {
+      d_intertest_interval=cmd->value(i).toInt(&ok);
+      if((!ok)||(d_intertest_interval<0)) {
+	fprintf(stderr,"invalid --intertest-interval argument\n");
+	exit(1);
+      }
+      cmd->setProcessed(i,true);
+    }
     if(cmd->key(i)=="--tests") {
       tests=cmd->value(i);
       cmd->setProcessed(i,true);
@@ -120,6 +129,9 @@ MainObject::MainObject(QObject *parent)
 	  this,
 	  SLOT(testCompleteData(int,const QString &,bool,const QString &,
 				const QString &)));
+  d_next_test_timer=new QTimer(this);
+  d_next_test_timer->setSingleShot(true);
+  connect(d_next_test_timer,SIGNAL(timeout()),this,SLOT(nextTestData()));
 
   //
   // Run Prologue Commands
@@ -163,7 +175,6 @@ void MainObject::testCompleteData(int testnum,const QString &testname,
 	 err_msg.toUtf8().constData());
   */
   QString next_testname;
-  bool ok=false;
   QStringList send;
   QStringList recv;
 
@@ -186,6 +197,13 @@ void MainObject::testCompleteData(int testnum,const QString &testname,
       }
     }
   }
+  d_next_test_timer->start(d_intertest_interval);
+}
+
+
+void MainObject::nextTestData()
+{
+  bool ok=false;
 
   //
   // Load Next Test Case
@@ -197,8 +215,8 @@ void MainObject::testCompleteData(int testnum,const QString &testname,
     Finish();
   }
   QString input=d_test_profile->stringValue(section,"Input");
-  QString output=d_test_profile->stringValue(section,"Output");
-  d_json_test->runTest(d_test_number,name,input,output,1);
+  QStringList outputs=d_test_profile->stringValues(section,"Output");
+  d_json_test->runTest(d_test_number,name,input,outputs,1);
 }
 
 

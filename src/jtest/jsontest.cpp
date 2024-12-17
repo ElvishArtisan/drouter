@@ -31,7 +31,7 @@ JsonTest::JsonTest(const QString &hostname,uint16_t portnum,
   d_hostname=hostname;
   d_port_number=portnum;
   d_connection_type=conn_type;
-  d_tcp_socket=NULL;
+  d_json_socket=NULL;
   d_web_socket=NULL;
   d_processing=false;
 
@@ -47,9 +47,9 @@ JsonTest::JsonTest(const QString &hostname,uint16_t portnum,
 
 JsonTest::~JsonTest()
 {
-  if(d_tcp_socket!=NULL) {
-    d_tcp_socket->disconnect();
-    delete d_tcp_socket;
+  if(d_json_socket!=NULL) {
+    d_json_socket->disconnect();
+    delete d_json_socket;
   }
   if(d_web_socket!=NULL) {
     d_web_socket->disconnect();
@@ -60,7 +60,7 @@ JsonTest::~JsonTest()
 
 void JsonTest::runTest(int testnum,const QString &testname,
 		       const QString &send,
-		       const QString &recv,int recv_start_linenum)
+		       const QStringList &recv,int recv_start_linenum)
 {
   QString err_msg;
 
@@ -68,15 +68,21 @@ void JsonTest::runTest(int testnum,const QString &testname,
   d_test_name=testname;
   d_recv_start_linenum=recv_start_linenum;
   d_send_json=send;
+  d_exemplar_docs.clear();
+  d_objects_remaining=recv.size();
 
   QJsonParseError jerr;
-  QByteArray recv_json=recv.toUtf8();
-  d_exemplar_doc=QJsonDocument::fromJson(recv_json,&jerr);
-  if(!JsonTest::parseCheck(&err_msg,jerr,recv_json,recv_start_linenum)) {
-    d_exemplar_error_string=
-      QString::asprintf("error in test %d exemplar JSON: %s",d_test_number,
-			err_msg.toUtf8().constData());
-    d_exemplar_error_timer->start(0);
+  for(int i=0;i<recv.size();i++) {
+    d_exemplar_docs.
+      push_back(QJsonDocument::fromJson(recv.at(i).toUtf8(),&jerr));
+    if(jerr.error!=QJsonParseError::NoError) {
+      d_exemplar_error_string=
+	QString::asprintf("error in test %d exemplar JSON \"%s\": %s",
+			  d_test_number,
+			  recv.at(i).toUtf8().constData(),
+			  err_msg.toUtf8().constData());
+      d_exemplar_error_timer->start(0);
+    }
   }
 
   //
@@ -84,14 +90,19 @@ void JsonTest::runTest(int testnum,const QString &testname,
   //
   switch(d_connection_type) {
   case JsonTest::ConnectionTcp:
-    d_tcp_socket=new QTcpSocket(this);
-    connect(d_tcp_socket,SIGNAL(connected()),this,SLOT(connectedData()));
-    connect(d_tcp_socket,SIGNAL(disconnected()),this,SLOT(disconnectedData()));
-    connect(d_tcp_socket,SIGNAL(errorOccurred(QAbstractSocket::SocketError)),
+    d_json_socket=new DRJsonSocket(this);
+    connect(d_json_socket,SIGNAL(connected()),this,SLOT(connectedData()));
+    connect(d_json_socket,SIGNAL(disconnected()),this,SLOT(disconnectedData()));
+    connect(d_json_socket,SIGNAL(errorOccurred(QAbstractSocket::SocketError)),
 	    this,SLOT(errorOccurredData(QAbstractSocket::SocketError)));
-    connect(d_tcp_socket,SIGNAL(readyRead()),this,SLOT(readyReadData()));
+    connect(d_json_socket,SIGNAL(documentReceived(const QJsonDocument &)),
+	    this,SLOT(documentReceivedData(const QJsonDocument &)));
+    connect(d_json_socket,
+	    SIGNAL(parseError(const QByteArray &,const QJsonParseError &)),
+	    this,
+	    SLOT(parseErrorData(const QByteArray &,const QJsonParseError &)));
     d_processing=true;
-    d_tcp_socket->connectToHost(d_hostname,d_port_number);
+    d_json_socket->connectToHost(d_hostname,d_port_number);
     break;
 
   case JsonTest::ConnectionWebSocket:
@@ -148,7 +159,7 @@ QString JsonTest::makeDiff(const QJsonDocument &jdoc) const
   // Generate JSON Files
   //
   QString orig_filepath=tempdir+QString("/exemplar.json");
-  writeJson(d_exemplar_doc,orig_filepath);
+  writeJson(d_exemplar_docs.at(0),orig_filepath);
 
   QString alt_filepath=tempdir+QString("/received.json");
   writeJson(jdoc,alt_filepath);
@@ -204,10 +215,19 @@ void JsonTest::writeJson(const QJsonDocument &json,const QString &filepath)
 }
 
 
+void JsonTest::completeTest(bool passed,const QString &err_msg,
+			    const QString &diff)
+{
+  emit testComplete(d_test_number,d_test_name,passed,err_msg,diff);
+  d_json_socket->deleteLater();
+  d_json_socket=NULL;
+  d_processing=false;
+}
+
+
 void JsonTest::exemplarErrorData()
 {
-  emit testComplete(d_test_number,d_test_name,false,d_exemplar_error_string,
-		    QString());
+  completeTest(false,d_exemplar_error_string,"");
 }
 
 
@@ -215,7 +235,7 @@ void JsonTest::connectedData()
 {
   switch(d_connection_type) {
   case JsonTest::ConnectionTcp:
-    d_tcp_socket->write(d_send_json.toUtf8());
+    d_json_socket->write(d_send_json.toUtf8());
     break;
 
   case JsonTest::ConnectionWebSocket:
@@ -233,8 +253,8 @@ void JsonTest::disconnectedData()
   if(d_processing) {
     switch(d_connection_type) {
     case JsonTest::ConnectionTcp:
-      d_tcp_socket->deleteLater();
-      d_tcp_socket=NULL;
+      d_json_socket->deleteLater();
+      d_json_socket=NULL;
       break;
 
     case JsonTest::ConnectionWebSocket:
@@ -245,8 +265,7 @@ void JsonTest::disconnectedData()
     case JsonTest::ConnectionLast:
       break;
     }
-    emit testComplete(d_test_number,d_test_name,false,
-		      "far end disconnected",QString());
+    completeTest(false,"far end disconnected","");
   }
 }
 
@@ -256,9 +275,9 @@ void JsonTest::errorOccurredData(QAbstractSocket::SocketError err)
   if(d_processing) {
     switch(d_connection_type) {
     case JsonTest::ConnectionTcp:
-      d_tcp_socket->disconnect();
-      d_tcp_socket->deleteLater();
-      d_tcp_socket=NULL;
+      d_json_socket->disconnect();
+      d_json_socket->deleteLater();
+      d_json_socket=NULL;
       break;
 
     case JsonTest::ConnectionWebSocket:
@@ -270,41 +289,37 @@ void JsonTest::errorOccurredData(QAbstractSocket::SocketError err)
     case JsonTest::ConnectionLast:
       break;
     }
-    emit testComplete(d_test_number,d_test_name,false,
-		      QString::asprintf("received socket error %d",err),
-		      QString());
+    completeTest(false,QString::asprintf("received socket error %d",err),"");
   }
 }
 
 
-void JsonTest::readyReadData()
+void JsonTest::documentReceivedData(const QJsonDocument &jdoc)
 {
-  QString err_msg;
-  QByteArray json=d_tcp_socket->readAll();
-  d_processing=false;
-  d_tcp_socket->disconnect();
-  d_tcp_socket->deleteLater();
-  d_tcp_socket=NULL;
-
-  QJsonParseError jerr;
-  QJsonDocument recv_doc=QJsonDocument::fromJson(json,&jerr);
-
-  if(!JsonTest::parseCheck(&err_msg,jerr,json,d_recv_start_linenum)) {
-    emit testComplete(d_test_number,d_test_name,false,
-		      QString::asprintf("parse error in returned json: %s",
-					err_msg.toUtf8().constData()),
-		      QString());
+  //  printf("*******************************************\n");
+  //  printf("TEST: %d\n",d_test_number);
+  //  printf("%s\n",jdoc.toJson().constData());
+  //  printf("*******************************************\n");
+  if(!d_exemplar_docs.contains(jdoc)) {
+    completeTest(false,"returned json does not match exemplar(s)",
+		 makeDiff(jdoc));
   }
   else {
-    if(d_exemplar_doc!=recv_doc) {
-      emit testComplete(d_test_number,d_test_name,false,
-			"returned json does not match exemplar",
-			makeDiff(recv_doc));
-    }
-    else {
-      emit testComplete(d_test_number,d_test_name,true,"OK","");
-    }
+    d_exemplar_docs.removeOne(jdoc);
   }
+  if(--d_objects_remaining==0) {
+    completeTest(true,"OK","");
+  }
+}
+
+
+void JsonTest::parseErrorData(const QByteArray &json,
+			      const QJsonParseError &jerr)
+{
+  completeTest(false,
+	     QString::asprintf("parse error at %d in returned json \"%s\": %s",
+			       jerr.offset,json.constData(),
+			       jerr.errorString().toUtf8().constData()),"");
 }
 
 
@@ -321,19 +336,19 @@ void JsonTest::binaryMessageReceivedData(const QByteArray &json)
   QJsonDocument recv_doc=QJsonDocument::fromJson(json,&jerr);
 
   if(!JsonTest::parseCheck(&err_msg,jerr,json,d_recv_start_linenum)) {
-    emit testComplete(d_test_number,d_test_name,false,
-		      QString::asprintf("parse error in returned json: %s",
-					err_msg.toUtf8().constData()),
-		      QString());
+    completeTest(false,QString::asprintf("parse error in returned json: %s",
+					 err_msg.toUtf8().constData()),"");
   }
   else {
-    if(d_exemplar_doc!=recv_doc) {
-      emit testComplete(d_test_number,d_test_name,false,
-			"returned json does not match exemplar",
-			makeDiff(recv_doc));
+    if(!d_exemplar_docs.contains(recv_doc)) {
+      completeTest(false,"returned json does not match exemplar(s)",
+		   makeDiff(recv_doc));
     }
     else {
-      emit testComplete(d_test_number,d_test_name,true,"OK","");
+      d_exemplar_docs.removeOne(recv_doc);
+      if(d_exemplar_docs.size()==0) {
+	completeTest(true,"OK","");
+      }
     }
   }
 }
