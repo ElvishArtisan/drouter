@@ -122,7 +122,7 @@ NodeLogPriority=7
 ;
 ; It is seldom necessary to change this.
 ;
-LwrpPassword=
+LwrpPassword=@NODE_PASSWORD@
 
 
 ; MaxHeapTableSize=<bytes>

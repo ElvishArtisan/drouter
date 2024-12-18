@@ -1337,3 +1337,7 @@
 	* Added an '--intertest-interval=' directive to jtest(1).
 2024-12-17 Fred Gleason <fredg@paravelsystems.com>
 	* Added a test configuration for the 'Livewire' tests.
+2024-12-18 Fred Gleason <fredg@paravelsystems.com>
+	* Added the environmental variable $DROUTER_TEST_NODE_PASSWORD to
+	allow automatic detection of the node LWRP password to use for
+	integrated testing.
