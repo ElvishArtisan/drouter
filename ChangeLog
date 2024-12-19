@@ -1351,3 +1351,6 @@
 2024-12-19 Fred Gleason <fredg@paravelsystems.com>
 	* Changed the $DROUTER_TEST_HOSTNAME environmental variable to
 	$DROUTER_TEST_NODE_HOSTNAME.
+2024-12-19 Fred Gleason <fredg@paravelsystems.com>
+	* Modified the Protocol J integrated tests so as to automatically
+	skip tests for unavailable devices.

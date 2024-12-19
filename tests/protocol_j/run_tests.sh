@@ -26,7 +26,6 @@ echo ======================================
 echo  ProtocolJ - General Tests
 echo ======================================
 jtest $1 --hostname=localhost:9600 --connection-type=tcp --tests=tests_general.ini
-echo
 
 #
 # Livewire Tests
@@ -34,13 +33,21 @@ echo
 echo ======================================
 echo  ProtocolJ - Livewire Audio Tests
 echo ======================================
-jtest $1 --hostname=localhost:9600 --connection-type=tcp --tests=tests_livewire_audio.ini
+if test -z $DROUTER_TEST_NODE_IP; then
+    echo "[skipping...]"
+else
+    jtest $1 --hostname=localhost:9600 --connection-type=tcp --tests=tests_livewire_audio.ini
+fi
 echo
 
-echo ======================================
-echo  ProtocolJ - Livewire GPIO Tests
-echo ======================================
-jtest $1 --hostname=localhost:9600 --connection-type=tcp --tests=tests_livewire_gpio.ini
+    echo ======================================
+    echo  ProtocolJ - Livewire GPIO Tests
+    echo ======================================
+if test -z $DROUTER_TEST_NODE_IP ; then
+    echo "[skipping...]"
+else
+    jtest $1 --hostname=localhost:9600 --connection-type=tcp --tests=tests_livewire_gpio.ini
+fi
 echo
 
 #
@@ -49,5 +56,9 @@ echo
 echo ======================================
 echo  ProtocolJ - GVG7000 Audio Tests
 echo ======================================
-jtest $1 --hostname=localhost:9600 --connection-type=tcp --tests=tests_gvg7000_audio.ini
+if test -z $DROUTER_TEST_GVG7000_IP; then
+    echo "[skipping...]"
+else
+    jtest $1 --hostname=localhost:9600 --connection-type=tcp --tests=tests_gvg7000_audio.ini
+fi
 echo
