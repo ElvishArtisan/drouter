@@ -1348,3 +1348,6 @@
 2024-12-19 Fred Gleason <fredg@paravelsystems.com>
 	* Fixed a bug in jtest(1) that could cause multiple results from
 	a single test to be returned.
+2024-12-19 Fred Gleason <fredg@paravelsystems.com>
+	* Changed the $DROUTER_TEST_HOSTNAME environmental variable to
+	$DROUTER_TEST_NODE_HOSTNAME.

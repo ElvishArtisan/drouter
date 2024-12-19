@@ -13,8 +13,8 @@ Drouter includes an integrated testing framework for validating the
 correctness of various subsystems. The following environmental variables
 should be set so that the various test fixtures can be generated properly:
 
-$DROUTER_TEST_HOSTNAME - The hostname of the system running the tests and
-                         hosting the Drouter database.
+$DROUTER_TEST_NODE_HOSTNAME - The hostname of the system running the tests and
+                              hosting the Drouter database.
 
 $DROUTER_TEST_NODE_IP - The IPv4 address of the Livewire node to be used
                         for the Livewire integrated tests

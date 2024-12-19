@@ -85,8 +85,8 @@ AC_ARG_ENABLE(docbook,[  --disable-docbook       disable building of DocBook doc
 #
 # Test Fixture Configuration
 #
-AC_ARG_VAR(DROUTER_TEST_HOSTNAME,[Hostname of Livewire node for running test cases])
-AC_SUBST(NODE_HOSTNAME,$DROUTER_TEST_HOSTNAME)
+AC_ARG_VAR(DROUTER_TEST_NODE_HOSTNAME,[Hostname of Livewire node for running test cases])
+AC_SUBST(NODE_HOSTNAME,$DROUTER_TEST_NODE_HOSTNAME)
 
 AC_ARG_VAR(DROUTER_TEST_NODE_IP,[IPv4 address of Livewire node for running test cases])
 AC_SUBST(NODE_IP,$DROUTER_TEST_NODE_IP)
