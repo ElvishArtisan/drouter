@@ -1341,3 +1341,7 @@
 	* Added the environmental variable $DROUTER_TEST_NODE_PASSWORD to
 	allow automatic detection of the node LWRP password to use for
 	integrated testing.
+2024-12-19 Fred Gleason <fredg@paravelsystems.com>
+	* Consolidated documentation regarding the environmental variables
+	for the integrated test suite to 'README'.
+	* Cleaned up dead files in 'src/tests/'.

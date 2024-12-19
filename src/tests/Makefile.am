@@ -31,11 +31,6 @@ moc_%.cpp:	%.h
 
 noinst_PROGRAMS = dparsertest
 
-#dist_actiontorture_SOURCES = actiontorture.cpp actiontorture.h
-#nodist_actiontorture_SOURCES = moc_actiontorture.cpp
-#actiontorture_LDADD = -ldrouter @QT5CLI_LIBS@ @SWITCHYARD5_LIBS@
-#actiontorture_LDFLAGS = -rdynamic
-
 dist_dparsertest_SOURCES = dparsertest.cpp dparsertest.h
 nodist_dparsertest_SOURCES = moc_dparsertest.cpp
 dparsertest_LDADD = -ldrouter @QT5CLI_LIBS@ @SWITCHYARD5_LIBS@
