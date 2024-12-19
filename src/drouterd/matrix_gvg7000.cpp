@@ -23,6 +23,8 @@
 
 #include <QStringList>
 
+#include <sy5/symcastsocket.h>
+
 #include "matrix_gvg7000.h"
 
 MatrixGvg7000::MatrixGvg7000(unsigned id,Config *conf,QObject *parent)
@@ -38,6 +40,8 @@ MatrixGvg7000::MatrixGvg7000(unsigned id,Config *conf,QObject *parent)
   connect(d_socket,SIGNAL(connected()),this,SLOT(connectedData()));
   connect(d_socket,SIGNAL(disconnected()),this,SLOT(disconnectedData()));
   connect(d_socket,SIGNAL(readyRead()),this,SLOT(readyReadData()));
+  connect(d_socket,SIGNAL(errorOccurred(QAbstractSocket::SocketError)),
+	  this,SLOT(errorOccurredData(QAbstractSocket::SocketError)));
   d_poll_timer=new QTimer(this);
   connect(d_poll_timer,SIGNAL(timeout()),this,SLOT(pollData()));
 
@@ -49,7 +53,7 @@ MatrixGvg7000::MatrixGvg7000(unsigned id,Config *conf,QObject *parent)
   connect(d_reconnect_timer,SIGNAL(timeout()),this,SLOT(reconnectData()));
   d_watchdog=new Watchdog(this);
   connect(d_watchdog,SIGNAL(poll()),this,SLOT(watchdogPollData()));
-  connect(d_watchdog,SIGNAL(timeout()),this,SLOT(watchdogTimeoutData()));
+  connect(d_watchdog,SIGNAL(timeout()),this,SLOT(disconnectedData()));
 }
 
 
@@ -194,7 +198,7 @@ void MatrixGvg7000::connectToHost(const QHostAddress &addr,uint16_t port,
   d_host_port=port;
 
   d_socket->connectToHost(d_host_address,d_host_port);
-  //  d_watchdog->start();
+  d_watchdog->start();
 }
 
 
@@ -218,8 +222,11 @@ void MatrixGvg7000::connectedData()
 
 void MatrixGvg7000::disconnectedData()
 {
-  emit connected(id(),false);
-
+  if(d_connected) {
+    emit connected(id(),false);
+    syslog(LOG_WARNING,"connection to GVG7000 device at %s:%d dropped",
+	   d_host_address.toString().toUtf8().constData(),d_host_port);
+  }
   d_poll_timer->stop();
   d_connected=false;
   d_socket->deleteLater();
@@ -227,6 +234,8 @@ void MatrixGvg7000::disconnectedData()
   connect(d_socket,SIGNAL(connected()),this,SLOT(connectedData()));
   connect(d_socket,SIGNAL(disconnected()),this,SLOT(disconnectedData()));
   connect(d_socket,SIGNAL(readyRead()),this,SLOT(readyReadData()));
+  connect(d_socket,SIGNAL(errorOccurred(QAbstractSocket::SocketError)),
+	  this,SLOT(errorOccurredData(QAbstractSocket::SocketError)));
 
   d_reconnect_timer->start(0);
 }
@@ -251,6 +260,15 @@ void MatrixGvg7000::readyReadData()
       break;
     }
   }
+}
+
+
+void MatrixGvg7000::errorOccurredData(QAbstractSocket::SocketError err)
+{
+  syslog(LOG_WARNING,"received %s from connection %s:%d",
+	 SyMcastSocket::socketErrorText(err).toUtf8().constData(),
+	 d_host_address.toString().toUtf8().constData(),d_host_port);
+  disconnectedData();
 }
 
 
@@ -308,16 +326,21 @@ void MatrixGvg7000::ProcessGvgCommand(const QByteArray &msg)
   QStringList f0=QString(msg).split('\t',Qt::KeepEmptyParts);
 
   if((f0.at(0)=="ST")&&(f0.size()==2)) {
-    QDateTime dt=QDateTime::fromString(f0.at(1),"yyyyddMMhhmmss");
-    syslog(LOG_DEBUG,
-	   "date/time on GVG7000 device at connection %s:%u is: %s UTC\n",
-	   d_socket->peerAddress().toString().toUtf8().constData(),
-	   0xffff&d_socket->peerPort(),
-	   dt.toString("yyyy-MM-dd hh:mm:ss").toUtf8().constData());
+    d_watchdog->touch();
     was_processed=true;
 
-    d_connected=true;
-    emit connected(id(),true);
+    if(!d_connected) {
+      syslog(LOG_NOTICE,"connection to GVG7000 device at %s:%d established",
+	     d_host_address.toString().toUtf8().constData(),d_host_port);
+      QDateTime dt=QDateTime::fromString(f0.at(1),"yyyyMMddhhmmss");
+      syslog(LOG_DEBUG,
+	     "date/time on GVG7000 device at connection %s:%u is: %s UTC\n",
+	     d_socket->peerAddress().toString().toUtf8().constData(),
+	     0xffff&d_socket->peerPort(),
+	     dt.toString("yyyy-MM-dd hh:mm:ss").toUtf8().constData());
+      d_connected=true;
+      emit connected(id(),true);
+    }
   }
 
   if((f0.at(0)=="JQ")&&(f0.size()>=3)) {

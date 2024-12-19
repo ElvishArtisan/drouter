@@ -1357,3 +1357,5 @@
 2024-12-19 Fred Gleason <fredg@paravelsystems.com>
 	* Added a prologue command to fix possible hangup in the GVG7000
 	integration tests.
+2024-12-19 Fred Gleason <fredg@paravelsystems.com>
+	* Enabled connection watchdog for GVG7000 devices.

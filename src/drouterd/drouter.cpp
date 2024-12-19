@@ -1502,7 +1502,7 @@ bool DRouter::StartStaticMatrices(QString *err_msg)
       mtx->connectToHost(drouter_config->matrixHostAddress(i),
 			 drouter_config->matrixPort(i),"",false);
       drouter_nodes[drouter_config->matrixHostAddress(i).toIPv4Address()]=mtx;
-      syslog(LOG_INFO,"Initialized %s device at %s:%u",
+      syslog(LOG_INFO,"attempting to start %s device at %s:%u",
 	     mtx->deviceName().toUtf8().constData(),
 	     drouter_config->matrixHostAddress(i).
 	     toString().toUtf8().constData(),

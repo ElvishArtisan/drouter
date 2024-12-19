@@ -75,8 +75,8 @@ bool Watchdog::isActive()
 
 void Watchdog::start()
 {
-  d_timeout_timer->start(5000+d_timeout_interval);
-  d_poll_timer->start(5000);
+  d_timeout_timer->start(d_poll_interval+d_timeout_interval);
+  d_poll_timer->start(d_poll_interval);
 }
 
 

@@ -65,6 +65,7 @@ class MatrixGvg7000 :public Matrix
   void connectedData();
   void disconnectedData();
   void readyReadData();
+  void errorOccurredData(QAbstractSocket::SocketError err);
   void reconnectData();
   void pollData();
   void watchdogPollData();
