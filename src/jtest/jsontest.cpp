@@ -300,13 +300,13 @@ void JsonTest::documentReceivedData(const QJsonDocument &jdoc)
   //  printf("TEST: %d\n",d_test_number);
   //  printf("%s\n",jdoc.toJson().constData());
   //  printf("*******************************************\n");
+
   if(!d_exemplar_docs.contains(jdoc)) {
     completeTest(false,"returned json does not match exemplar(s)",
 		 makeDiff(jdoc));
+    return;
   }
-  else {
-    d_exemplar_docs.removeOne(jdoc);
-  }
+  d_exemplar_docs.removeOne(jdoc);
   if(--d_objects_remaining==0) {
     completeTest(true,"OK","");
   }

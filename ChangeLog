@@ -1345,3 +1345,6 @@
 	* Consolidated documentation regarding the environmental variables
 	for the integrated test suite to 'README'.
 	* Cleaned up dead files in 'src/tests/'.
+2024-12-19 Fred Gleason <fredg@paravelsystems.com>
+	* Fixed a bug in jtest(1) that could cause multiple results from
+	a single test to be returned.
