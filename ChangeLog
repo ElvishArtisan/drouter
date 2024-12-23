@@ -1359,3 +1359,5 @@
 	integration tests.
 2024-12-19 Fred Gleason <fredg@paravelsystems.com>
 	* Enabled connection watchdog for GVG7000 devices.
+2024-12-19 Fred Gleason <fredg@paravelsystems.com>
+	* Fixed a 'no such slot' warning in eventlogpanel(1).

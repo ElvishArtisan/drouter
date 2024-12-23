@@ -47,10 +47,10 @@ class MainWidget : public QWidget
   void showAttributesData(int n);
   void toggleScrollingData();
   void refreshData();
+  void dbKeepaliveData();
 
  protected:
   void resizeEvent(QResizeEvent *e);
-  void dbKeepaliveData();
 
 private:
   QLabel *d_show_attributes_label;
