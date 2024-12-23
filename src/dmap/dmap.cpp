@@ -207,6 +207,7 @@ MainObject::MainObject(QObject *parent)
 void MainObject::connectedData(bool state)
 {
   QList<QHostAddress> hosts;
+  SyNode *node=NULL;
 
   //
   // Get Node List
@@ -248,12 +249,13 @@ void MainObject::connectedData(bool state)
     // Sources
     //
     for(int i=0;i<hosts.size();i++) {
-      SyNode *node=map_parser->node(hosts.at(i));
-      for(unsigned j=0;j<node->srcSlotQuantity();j++) {
-	SySource *src=map_parser->src(hosts.at(i),j);
-	map_map->
-	  insert(DREndPointMap::Input,map_map->quantity(DREndPointMap::Input),
-		 node->hostAddress(),j,src->name());
+      if((node=map_parser->node(hosts.at(i)))!=NULL) {
+	for(unsigned j=0;j<node->srcSlotQuantity();j++) {
+	  SySource *src=map_parser->src(hosts.at(i),j);
+	  map_map->
+	    insert(DREndPointMap::Input,map_map->quantity(DREndPointMap::Input),
+		   node->hostAddress(),j,src->name());
+	}
       }
     }
 
@@ -261,12 +263,13 @@ void MainObject::connectedData(bool state)
     // Destinations
     //
     for(int i=0;i<hosts.size();i++) {
-      SyNode *node=map_parser->node(hosts.at(i));
-      for(unsigned j=0;j<node->dstSlotQuantity();j++) {
-	SyDestination *dst=map_parser->dst(hosts.at(i),j);
-	map_map->
-	  insert(DREndPointMap::Output,map_map->quantity(DREndPointMap::Output),
-		 node->hostAddress(),j,dst->name());
+      if((node=map_parser->node(hosts.at(i)))!=NULL) {
+	for(unsigned j=0;j<node->dstSlotQuantity();j++) {
+	  SyDestination *dst=map_parser->dst(hosts.at(i),j);
+	  map_map->insert(DREndPointMap::Output,
+			  map_map->quantity(DREndPointMap::Output),
+			  node->hostAddress(),j,dst->name());
+	}
       }
     }
   }
@@ -275,11 +278,12 @@ void MainObject::connectedData(bool state)
     // GPIs
     //
     for(int i=0;i<hosts.size();i++) {
-      SyNode *node=map_parser->node(hosts.at(i));
-      for(unsigned j=0;j<node->gpiSlotQuantity();j++) {
-	map_map->
-	  insert(DREndPointMap::Input,map_map->quantity(DREndPointMap::Input),
-		 node->hostAddress(),j,QString::asprintf("OUT %d",j+1));
+      if((node=map_parser->node(hosts.at(i)))!=NULL) {
+	for(unsigned j=0;j<node->gpiSlotQuantity();j++) {
+	  map_map->
+	    insert(DREndPointMap::Input,map_map->quantity(DREndPointMap::Input),
+		   node->hostAddress(),j,QString::asprintf("OUT %d",j+1));
+	}
       }
     }
 
@@ -287,11 +291,12 @@ void MainObject::connectedData(bool state)
     // GPOs
     //
     for(int i=0;i<hosts.size();i++) {
-      SyNode *node=map_parser->node(hosts.at(i));
-      for(unsigned j=0;j<node->gpoSlotQuantity();j++) {
-	map_map->
-	  insert(DREndPointMap::Output,map_map->quantity(DREndPointMap::Output),
-		 node->hostAddress(),j,QString::asprintf("OUT %d",j+1));
+      if((node=map_parser->node(hosts.at(i)))!=NULL) {
+	for(unsigned j=0;j<node->gpoSlotQuantity();j++) {
+	  map_map->insert(DREndPointMap::Output,
+			map_map->quantity(DREndPointMap::Output),
+			node->hostAddress(),j,QString::asprintf("OUT %d",j+1));
+	}
       }
     }
   }

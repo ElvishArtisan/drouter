@@ -1361,3 +1361,6 @@
 	* Enabled connection watchdog for GVG7000 devices.
 2024-12-19 Fred Gleason <fredg@paravelsystems.com>
 	* Fixed a 'no such slot' warning in eventlogpanel(1).
+2024-12-23 Fred Gleason <fredg@paravelsystems.com>
+	* Fixed a bug in dmap(1) that caused a segfault when attempting to
+	generate an empty map.
