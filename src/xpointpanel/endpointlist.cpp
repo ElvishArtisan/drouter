@@ -323,7 +323,7 @@ void EndpointList::connectViaHttpData()
   case Qt::Horizontal:
     mdata=list_parser->inputModel(list_router)->
       rowMetadata(list_mouse_endpoint);
-    strncpy(c_str,mdata.value("nodeAddress").toString().toUtf8().constData(),
+    strncpy(c_str,mdata.value("hostAddress").toString().toUtf8().constData(),
 	    255);
     if(fork()==0) {
       execlp("firefox","firefox",c_str,(char *)NULL);
@@ -334,7 +334,7 @@ void EndpointList::connectViaHttpData()
   case Qt::Vertical:
     mdata=list_parser->outputModel(list_router)->
       rowMetadata(list_mouse_endpoint);
-    strncpy(c_str,mdata.value("nodeAddress").toString().toUtf8().constData(),
+    strncpy(c_str,mdata.value("hostAddress").toString().toUtf8().constData(),
 	    255);
     if(fork()==0) {
       execlp("firefox","firefox",c_str,(char *)NULL);
@@ -354,7 +354,7 @@ void EndpointList::connectViaLwrpData()
   case Qt::Horizontal:
     mdata=list_parser->inputModel(list_router)->
       rowMetadata(list_mouse_endpoint);
-    strncpy(c_str,mdata.value("nodeAddress").toString().toUtf8().constData(),
+    strncpy(c_str,mdata.value("hostAddress").toString().toUtf8().constData(),
 	    255);
     if(fork()==0) {
       execlp("lwmon","lwmon","--mode=lwrp",c_str,(char *)NULL);
@@ -365,7 +365,7 @@ void EndpointList::connectViaLwrpData()
   case Qt::Vertical:
     mdata=list_parser->outputModel(list_router)->
       rowMetadata(list_mouse_endpoint);
-    strncpy(c_str,mdata.value("nodeAddress").toString().toUtf8().constData(),
+    strncpy(c_str,mdata.value("hostAddress").toString().toUtf8().constData(),
 	    255);
     if(fork()==0) {
       execlp("lwmon","lwmon","--mode=lwrp",c_str,(char *)NULL);

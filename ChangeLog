@@ -1374,3 +1374,6 @@
 	* Adjusted the positioning of the GPIO widgets in xpointpanel(1).
 2024-12-30 Fred Gleason <fredg@paravelsystems.com>
 	* Added a 'DRJParser::dumpMetadata()' static method.
+2024-12-30 Fred Gleason <fredg@paravelsystems.com>
+	* Fixed a regression in 'xpointpanel(1)' that broke the 'Connect to
+	via HTTP' and 'Connect to via LWRP' right-click menu options.

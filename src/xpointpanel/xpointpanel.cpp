@@ -186,10 +186,6 @@ MainWidget::MainWidget(QWidget *parent)
 			  fm.horizontalAdvance(tr("Outputs (Destinations)")));
   connect(panel_output_list,SIGNAL(hoveredEndpointChanged(int,int)),
   	  this,SLOT(outputHoveredEndpointChangedData(int,int)));
-  panel_output_list->setStyleSheet("background-color: #FF0000");
-  QPalette pal=panel_output_list->palette();
-  pal.setColor(QPalette::Window,Qt::red);
-  panel_output_list->setPalette(pal);
 
   //
   // Scroll Area
