@@ -44,13 +44,14 @@ class EndpointList : public QWidget
   ~EndpointList();
   QSize sizeHint() const;
   QSizePolicy sizePolicy() const;
+  void setMinimumOutputWidth(int pixels);
   int router() const;
   void setRouter(int router);
   void setParser(DRJParser *psr);
   bool showGpio() const;
   void setShowGpio(bool state);
   int slot(int endpt) const;
-  void addEndpoint(int router,int endpt,const QString &name);
+  void addEndpoints(int router,const QStringList &names);
   void clearEndpoints();
   int endpointQuantity() const;
 
@@ -89,7 +90,8 @@ class EndpointList : public QWidget
   DRJParser *list_parser;
   Qt::Orientation list_orientation;
   bool list_show_gpio;
-  int list_width;
+  int list_output_width;
+  int list_min_output_width;
   QMenu *list_mouse_menu;
   int list_mouse_endpoint;
   int list_move_endpoint;

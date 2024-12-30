@@ -173,12 +173,23 @@ MainWidget::MainWidget(QWidget *parent)
   panel_description_text_label->
     setFont(QFont(font().family(),font().pointSize()-2,QFont::Normal));
 
+  QFontMetrics fm(endpoint_label_font);
   panel_input_list=new EndpointList(Qt::Horizontal,this);
+  panel_input_list->
+    setMinimumOutputWidth(ENDPOINTLIST_ITEM_HEIGHT+
+			  fm.horizontalAdvance(tr("Outputs (Destinations)")));
   connect(panel_input_list,SIGNAL(hoveredEndpointChanged(int,int)),
   	  this,SLOT(inputHoveredEndpointChangedData(int,int)));
   panel_output_list=new EndpointList(Qt::Vertical,this);
+  panel_output_list->
+    setMinimumOutputWidth(10+ENDPOINTLIST_ITEM_HEIGHT+
+			  fm.horizontalAdvance(tr("Outputs (Destinations)")));
   connect(panel_output_list,SIGNAL(hoveredEndpointChanged(int,int)),
   	  this,SLOT(outputHoveredEndpointChangedData(int,int)));
+  panel_output_list->setStyleSheet("background-color: #FF0000");
+  QPalette pal=panel_output_list->palette();
+  pal.setColor(QPalette::Window,Qt::red);
+  panel_output_list->setPalette(pal);
 
   //
   // Scroll Area
@@ -255,7 +266,6 @@ QSizePolicy MainWidget::sizePolicy() const
 void MainWidget::routerBoxActivatedData(int n)
 {
   QString name;
-  int endpt=0;
   int router=SelectedRouter();
   DREndPointListModel *imodel=panel_parser->inputModel(router);
   DREndPointListModel *omodel=panel_parser->outputModel(router);
@@ -276,36 +286,33 @@ void MainWidget::routerBoxActivatedData(int n)
   //
   // Populate Inputs
   //
+  QStringList inames;
   panel_input_list->setShowGpio(panel_parser->gpioSupported(router));
-  QMap<int,QString> endpts;
   for(int i=0;i<imodel->rowCount();i++) {
     mdata=imodel->rowMetadata(i);
-    panel_input_list->addEndpoint(router,endpt,
-				  QString::asprintf("%d - ",endpt+1)+
-				  mdata.value("name").toString());
-    panel_input_list->
-      setGpioState(router,endpt,panel_parser->gpiState(router,i));
-    endpt++;
+    inames.
+      push_back(QString::asprintf("%d - ",i+1)+mdata.value("name").toString());
+  }
+  panel_input_list->addEndpoints(router,inames);
+  for(int i=0;i<imodel->rowCount();i++) {
+    panel_input_list->setGpioState(router,i,panel_parser->gpiState(router,i));
   }
 
   //
   // Populate Outputs
   //
-  endpt=0;
+  QStringList onames;
   panel_output_list->setShowGpio(panel_parser->gpioSupported(router));
-  endpts.clear();
-  int count=0;
-  while(count<omodel->rowCount()) {
-    mdata=omodel->rowMetadata(count);
-    panel_output_list->addEndpoint(router,endpt,
-				   QString::asprintf("%d - ",endpt+1)+
-				   mdata.value("name").toString());
-    panel_output_list->
-      setGpioState(router,endpt,panel_parser->gpoState(router,endpt));
-    count++;
-    endpt++;
+  for(int i=0;i<omodel->rowCount();i++) {
+    mdata=omodel->rowMetadata(i);
+    onames.
+      push_back(QString::asprintf("%d - ",i+1)+mdata.value("name").toString());
   }
-
+  panel_output_list->addEndpoints(router,onames);
+  for(int i=0;i<omodel->rowCount();i++) {
+    panel_output_list->setGpioState(router,i,panel_parser->gpoState(router,i));
+  }
+  
   //
   // Populate Crosspoints
   //

@@ -37,7 +37,8 @@ EndpointList::EndpointList(Qt::Orientation orient,QWidget *parent)
   list_orientation=orient;
   list_show_gpio=false;
   list_position=0;
-  list_width=0;
+  list_output_width=0;
+  list_min_output_width=0;
   list_mouse_endpoint=-1;
   list_move_endpoint=-1;
   list_router=0;
@@ -89,12 +90,12 @@ EndpointList::~EndpointList()
 
 QSize EndpointList::sizeHint() const
 {
-  int width=15+list_width;
+  int width=15+list_output_width;
 
   if(list_show_gpio) {
     width+=ENDPOINTLIST_GPIO_WIDTH;
   }
-  if(width<ENDPOINTLIST_MIN_INPUT_WIDTH) {
+  if((list_orientation==Qt::Horizontal)&&(width<ENDPOINTLIST_MIN_INPUT_WIDTH)) {
     width=ENDPOINTLIST_MIN_INPUT_WIDTH;
   }
 
@@ -105,6 +106,12 @@ QSize EndpointList::sizeHint() const
 QSizePolicy EndpointList::sizePolicy() const
 {
   return QSizePolicy(QSizePolicy::Fixed,QSizePolicy::Fixed);
+}
+
+
+void EndpointList::setMinimumOutputWidth(int pixels)
+{
+  list_min_output_width=pixels;
 }
 
 
@@ -164,28 +171,28 @@ int EndpointList::slot(int endpt) const
 }
 
 
-void EndpointList::addEndpoint(int router,int endpt,const QString &name)
+void EndpointList::addEndpoints(int router,const QStringList &names)
 {
-  list_labels[endpt]=name;
-  list_gpio_widgets[endpt]=
-    new DRMultiStateWidget(router,endpt,list_orientation,this);
-  list_gpio_widgets.value(endpt)->setVisible(list_show_gpio);
-
   QFontMetrics fm(list_selected_font);
-  for(QMap<int,QString>::const_iterator it=list_labels.begin();
-      it!=list_labels.end();it++) {
-    if(fm.horizontalAdvance(it.value())>list_width) {
-      list_width=fm.horizontalAdvance(it.value());
+  list_output_width=list_min_output_width;
+  
+  for(int i=0;i<names.size();i++) {
+    list_labels[i]=names.at(i);
+    list_gpio_widgets[i]=new DRMultiStateWidget(router,i,list_orientation,this);
+    list_gpio_widgets.value(i)->setVisible(list_show_gpio);
+    if(fm.horizontalAdvance(names.at(i))>list_output_width) {
+      list_output_width=fm.horizontalAdvance(names.at(i));
     }
   }
 
   update();
 }
 
+
 void EndpointList::clearEndpoints()
 {
   list_labels.clear();
-  list_width=0;
+  list_output_width=0;
 
   for(QMap<int,DRMultiStateWidget *>::const_iterator it=list_gpio_widgets.begin();
       it!=list_gpio_widgets.end();it++) {
@@ -500,7 +507,7 @@ void EndpointList::paintEvent(QPaintEvent *e)
     //
     // Vertical Orientation (Destinations, Outputs)
     //
-    p->translate(w-(list_width+15+10),0);
+    p->translate(w-(list_output_width+25),0);
     p->rotate(90.0);
 
     QMap<int,QString>::const_iterator it=list_labels.begin();
@@ -513,18 +520,25 @@ void EndpointList::paintEvent(QPaintEvent *e)
       }
       if(it!=list_labels.end()) {
 	// Top Line
-	p->drawLine(0,w-(ENDPOINTLIST_ITEM_HEIGHT+i)+list_position-(list_width+15+10),
-		    0,w-i+list_position-(list_width+15+10));
+	p->drawLine(0,w-(ENDPOINTLIST_ITEM_HEIGHT+i)+list_position-
+		    (list_output_width+15+10),
+		    0,w-i+list_position-(list_output_width+15+10));
 	// Vertical divider lines
-	p->drawLine(0,w-i+list_position-(list_width+15+10),
-		    list_width+15+gpio_offset+5,w-i+list_position-(list_width+15+10));
-	p->drawText(((list_width+15)-p->fontMetrics().horizontalAdvance(it.value())),w-(text_y+i+list_width+15)+list_position,
+	p->drawLine(0,w-i+list_position-(list_output_width+15+10),
+		    list_output_width+15+gpio_offset+5,w-i+list_position-
+		    (list_output_width+15+10));
+	p->drawText(((list_output_width+10)-
+		     p->fontMetrics().horizontalAdvance(it.value())),
+		    w-(text_y+i+list_output_width+15)+list_position,
 		    it.value());
 	it++;
       }
     }
-        p->drawLine(0,w-ENDPOINTLIST_ITEM_HEIGHT*endpointQuantity()+list_position-(list_width+15+10),
-    		list_width+15+gpio_offset+6,w-ENDPOINTLIST_ITEM_HEIGHT*endpointQuantity()+list_position-(list_width+15+10));
+        p->drawLine(0,w-ENDPOINTLIST_ITEM_HEIGHT*endpointQuantity()+
+		    list_position-(list_output_width+15+10),
+		    list_output_width+15+gpio_offset+6,w-
+		    ENDPOINTLIST_ITEM_HEIGHT*endpointQuantity()+
+		    list_position-(list_output_width+15+10));
   }
   else {
     //
