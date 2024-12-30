@@ -1372,3 +1372,5 @@
 	GPIO support.
 2024-12-30 Fred Gleason <fredg@paravelsystems.com>
 	* Adjusted the positioning of the GPIO widgets in xpointpanel(1).
+2024-12-30 Fred Gleason <fredg@paravelsystems.com>
+	* Added a 'DRJParser::dumpMetadata()' static method.

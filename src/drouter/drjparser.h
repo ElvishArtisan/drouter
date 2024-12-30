@@ -85,7 +85,8 @@ class DRJParser : public QObject
   static QString errorString(ErrorType err);
   static QString eventTypeString(EventType type);
   static EventType typeFromString(const QString &str);
-
+  static QString dumpMetadata(const QMap<QString,QVariant> &metadata);
+  
  signals:
   void connected(bool state,DRJParser::ConnectionState code);
   void error(QAbstractSocket::SocketError err);

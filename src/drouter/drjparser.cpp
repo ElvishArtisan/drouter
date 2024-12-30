@@ -351,7 +351,7 @@ QString DRJParser::eventTypeString(EventType type)
 }
 
 
-DRJParser::EventType typeFromString(const QString &str)
+DRJParser::EventType DRJParser::typeFromString(const QString &str)
 {
   if(str.trimmed().toLower()=="comment") {
     return DRJParser::CommentEvent;
@@ -364,6 +364,20 @@ DRJParser::EventType typeFromString(const QString &str)
   }
 
   return DRJParser::UnknownEvent;
+}
+
+
+QString DRJParser::dumpMetadata(const QMap<QString,QVariant> &metadata)
+{
+  QString ret;
+
+  for(QMap<QString,QVariant>::const_iterator it=metadata.begin();
+      it!=metadata.end();it++) {
+    ret+=QString::asprintf("%s: %s\n",it.key().toUtf8().constData(),
+			   it.value().toString().toUtf8().constData());
+  }
+  
+  return ret;
 }
 
 
