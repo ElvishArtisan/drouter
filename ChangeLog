@@ -1370,3 +1370,5 @@
 2024-12-30 Fred Gleason <fredg@paravelsystems.com>
 	* Fixed a regression in the ProtocolJ parser that failed to detect
 	GPIO support.
+2024-12-30 Fred Gleason <fredg@paravelsystems.com>
+	* Adjusted the positioning of the GPIO widgets in xpointpanel(1).

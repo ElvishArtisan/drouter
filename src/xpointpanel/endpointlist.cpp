@@ -600,7 +600,7 @@ void EndpointList::resizeEvent(QResizeEvent *e)
     for(QMap<int,DRMultiStateWidget *>::const_iterator it=
 	  list_gpio_widgets.begin();it!=list_gpio_widgets.end();it++) {
       it.value()->setGeometry(ypos+4,
-			      h-65,
+			      h-65-10,
 			      18,
 			      60);
       ypos+=ENDPOINTLIST_ITEM_HEIGHT;
