@@ -479,6 +479,8 @@ void DRJParser::DispatchMessage(const QJsonDocument &jdoc)
 				  jo1.value("name").toString(),
 				  jo1.value("type").toString());
 	int router=jo1.value("number").toInt();
+	j_gpio_supporteds[router]=
+	  jo1.value("type").toString().toLower()=="gpio";;
 
 	j_input_models[router]=
 	  new DREndPointListModel(router,j_use_long_names,this);
@@ -494,7 +496,6 @@ void DRJParser::DispatchMessage(const QJsonDocument &jdoc)
 
 	//  j_gpi_states[router]=QMap<int,QString>();
 	//  j_gpo_states[router]=QMap<int,QString>();
-	//  j_gpio_supporteds[router]=false;
 
 	//  j_snapshot_names[router]=QStringList();
 	QVariantMap router_fields;

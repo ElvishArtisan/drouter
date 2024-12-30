@@ -1367,3 +1367,6 @@
 2024-12-30 Fred Gleason <fredg@paravelsystems.com>
 	* Fixed a regression in xpointpanel(1) that caused the Outputs list
 	to be drawn incorrectly.
+2024-12-30 Fred Gleason <fredg@paravelsystems.com>
+	* Fixed a regression in the ProtocolJ parser that failed to detect
+	GPIO support.
