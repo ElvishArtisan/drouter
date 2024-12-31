@@ -1551,32 +1551,16 @@
         {
             "number": <replaceable>router-num</replaceable>,
             "name": <replaceable>router-name</replaceable>,
-            "type": <replaceable>router-type</replaceable>
+            "type": <replaceable>router-type</replaceable>,
+            "matrixType": <replaceable>router-matrix-type</replaceable>
         } ...
     ]
 }
-<!--
-    "routernames": {
-        "router0": {
-            "number": <replaceable>router-num</replaceable>,
-            "name": <replaceable>router-name</replaceable>,
-            "type": <replaceable>router-type</replaceable>
-        }
-        }[,]
-    [...]
-        "router<replaceable>N</replaceable>": {
-            "number": <replaceable>router-num</replaceable>,
-            "name": <replaceable>router-name</replaceable>,
-            "type": <replaceable>router-type</replaceable>
-        }
-    }
-}
--->
       </literallayout>
       <table xml:id="table.commands.routernames.response.parameters" frame="all" pgwide="0">
 	<title>Response Parameters</title>
 	<tgroup cols="3" align="left" colstep="1" rowstep="1">
-	  <colspec colname="Parameter" colwidth="1.5*"/>
+	  <colspec colname="Parameter" colwidth="2.5*"/>
 	  <colspec colname="Value" colwidth="5.0*"/>
 	  <colspec colname="Type" colwidth="1.5*"/>
 	  <thead>
@@ -1622,6 +1606,20 @@
 	      <entry>
 		Type of the router. Can be &quot;Audio&quot; or
 		&quot;GPIO&quot;.
+	      </entry>
+	      <entry>
+		String
+	      </entry>
+	    </row>
+	    <row>
+	      <entry>
+		<replaceable>router-matrix-type</replaceable>
+	      </entry>
+	      <entry>
+		Type of driver being used by
+		<command>drouterd</command><manvolnum>8</manvolnum> to
+		communicate with the router. Can be &quot;LWRP&quot; or
+		&quot;GVG7000&quot;.
 	      </entry>
 	      <entry>
 		String

@@ -93,7 +93,7 @@ class DRouter : public QObject
   void SetSchemaVersion(int ver) const;
   bool StartStaticMatrices(QString *err_msg);
   bool StartLivewire(QString *err_msg);
-  Matrix *StartMatrix(Config::MatrixType type,unsigned id);
+  Matrix *StartMatrix(DREndPointMap::MatrixType type,unsigned id);
   void LockTables() const;
   void UnlockTables() const;
   void LoadMaps();

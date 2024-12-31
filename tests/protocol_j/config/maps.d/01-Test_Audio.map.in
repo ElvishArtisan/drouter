@@ -4,6 +4,7 @@
 RouterType=Audio
 RouterName=Test_Audio
 RouterNumber=1
+MatrixType=LWRP
 
 [Input1]
 HostAddress=@NODE_IP@

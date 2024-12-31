@@ -11,7 +11,7 @@
   </refmeta>
   <refnamediv>
     <refname>drouter.map</refname>
-    <refpurpose>Definition file for a Software Authority router</refpurpose>
+    <refpurpose>Definition file for virtual routers</refpurpose>
   </refnamediv>
   <info>
     <author>
@@ -30,10 +30,11 @@
   <refsect1 id='description'><title>Description</title>
   <para>
     <command>drouter.map</command><manvolnum>5</manvolnum> files define
-    routers to be made available by the 
+    virtual routers, made available by the 
     <command>drouterd</command><manvolnum>8</manvolnum> service via
-    Software Authority protocol, one file per router to be defined. Map
-    files must end with a <userinput>.map</userinput> extension and be
+    Protocol J and Software Authority protocols. Each virtual router is
+    defined in its own map file, which  
+    must end with a <userinput>.map</userinput> extension and be
     placed in the <userinput>/etc/drouter/maps.d/</userinput> subdirectory
     on the system running <command>drouterd</command><manvolnum>8</manvolnum>.
   </para>
@@ -71,6 +72,36 @@
       <variablelist>
 	<varlistentry>
 	  <term>
+	    <userinput>MatrixType=<replaceable>type</replaceable></userinput>
+	  </term>
+	  <listitem>
+	    <para>
+	      Where <replaceable>type</replaceable> is the type of driver
+	      that will be advertised as being used to communicate with
+	      this router's hardware. The following types are recognized:
+	    </para>
+	    <variablelist>
+	      <varlistentry>
+		<term>GVG7000</term>
+		<listitem>
+		  <para>
+		    Grass Valley Group series 7000 protocol.
+		  </para>
+		</listitem>
+	      </varlistentry>
+	      <varlistentry>
+		<term>LWRP</term>
+		<listitem>
+		  <para>
+		    Livewire Routing Protocol. This is the default.
+		  </para>
+		</listitem>
+	      </varlistentry>
+	    </variablelist>
+	  </listitem>
+	</varlistentry>
+	<varlistentry>
+	  <term>
 	    <userinput>RouterName=<replaceable>name</replaceable></userinput>
 	  </term>
 	  <listitem>
@@ -90,9 +121,8 @@
 	    <para>
 	      Where <replaceable>num</replaceable> is the router number
 	      that will be advertised for this router in the output of the
-	      <computeroutput>RouterNames</computeroutput> command.
-	      Each Software Authority router must have a
-	      number (positive integer) that is unique across the entire
+	      <computeroutput>RouterNames</computeroutput> command;
+	      a positive integer that is unique across the entire
 	      <command>drouterd</command><manvolnum>8</manvolnum> service.
 	    </para>
 	  </listitem>
@@ -146,8 +176,10 @@
 	  </term>
 	  <listitem>
 	    <para>
-	      Where <replaceable>slot-num</replaceable> is the offset position
-	      of the input on the host node, starting with <userinput>1</userinput>
+	      Where <replaceable>slot-num</replaceable> is the number of the
+	      input, relative to the device hosting the source. On LWRP
+	      (Livewire) devices, it is the offset position of the input on
+	      the host node, starting with <userinput>1</userinput>
 	      and counting upwards, as returned by the LWRP
 	      <userinput>SRC</userinput> or <userinput>GPI</userinput>
 	      commands.
@@ -168,7 +200,8 @@
 	      If present, the string <replaceable>str</replaceable> will
 	      be used as the name of the source in the output of the
 	      <computeroutput>SourceNames</computeroutput> command, in
-	      place of that derived from the source's LWRP definition.
+	      place of that derived from the source's underlying hardware
+	      configuration.
 	    </para>
 	  </listitem>
 	</varlistentry>
@@ -210,8 +243,10 @@
 	  </term>
 	  <listitem>
 	    <para>
-	      Where <replaceable>slot-num</replaceable> is the offset position
-	      of the output on the host node, starting with <userinput>1</userinput>
+	      Where <replaceable>slot-num</replaceable> is the number of the
+	      output, relative to the device hosting the destination. On LWRP
+	      (Livewire) devices, it is the offset position of the output on
+	      the host node, starting with <userinput>1</userinput>
 	      and counting upwards, as returned by the LWRP
 	      <userinput>DST</userinput> or <userinput>GPO</userinput>
 	      commands.
@@ -232,7 +267,8 @@
 	      If present, the string <replaceable>str</replaceable> will
 	      be used as the name of the destination in the output of the
 	      <computeroutput>DestNames</computeroutput> command, in
-	      place of that derived from the destination's LWRP definition.
+	      place of that derived from the destination's underlying
+	      hardware configuration.
 	    </para>
 	  </listitem>
 	</varlistentry>

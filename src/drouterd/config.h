@@ -28,6 +28,8 @@
 
 #include <sy5/sygpio_server.h>
 
+#include <drouter/drendpointmap.h>
+
 #define DROUTER_CONF_FILE "/etc/drouter/drouter.conf"
 #define DROUTER_NULL_STREAM_ADDRESS QString("239.192.0.0")
 #define DROUTER_DEFAULT_CLIP_THRESHOLD -20
@@ -55,7 +57,6 @@ class Config
 {
  public:
   enum TetherRole {This=0,That=1};
-  enum MatrixType {LwrpMatrix=0,Gvg7000Matrix=1,LastMatrix=2};
   Config();
   int clipAlarmThreshold() const;
   int clipAlarmTimeout() const;
@@ -77,7 +78,7 @@ class Config
   QStringList nodesStartupLwrp(const QHostAddress &addr) const;
 
   int matrixQuantity() const;
-  MatrixType matrixType(int n) const;
+  DREndPointMap::MatrixType matrixType(int n) const;
   QHostAddress matrixHostAddress(int n) const;
   uint16_t matrixPort(int n) const;
   bool livewireIsEnabled() const;
@@ -97,8 +98,6 @@ class Config
   static QHostAddress normalizedStreamAddress(const QHostAddress &addr);
   static QHostAddress normalizedStreamAddress(const QString &addr);
   static bool emailIsValid(const QString &addr);
-  static QString matrixTypeString(MatrixType type);
-  static MatrixType matrixType(const QString &str);
 
  private:
   QString conf_lwrp_password;
@@ -119,7 +118,7 @@ class Config
   int conf_max_heap_table_size;
   int conf_file_descriptor_limit;
   QMap<uint32_t,QStringList> conf_nodes_startup_lwrps;
-  QList<Config::MatrixType> conf_matrix_types;
+  QList<DREndPointMap::MatrixType> conf_matrix_types;
   QList<QHostAddress> conf_matrix_host_addresses;
   QList<uint16_t> conf_matrix_ports;
   bool conf_tether_is_activated;

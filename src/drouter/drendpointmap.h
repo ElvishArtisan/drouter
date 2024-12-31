@@ -54,9 +54,12 @@ class DRSnapshot
 class DREndPointMap
 {
  public:
+  enum MatrixType {LwrpMatrix=0,Gvg7000Matrix=1,LastMatrix=2};
   enum RouterType {AudioRouter=0,GpioRouter=1,LastRouter=2};
   enum Type {Input=0,Output=1,LastType=3};
   DREndPointMap();
+  MatrixType matrixType() const;
+  void setMatrixType(MatrixType type);
   RouterType routerType() const;
   void setRouterType(RouterType type);
   QString routerName() const;
@@ -88,8 +91,11 @@ class DREndPointMap
   static bool loadSet(QMap<int,DREndPointMap *> *maps,QStringList *msgs);
   static QString routerTypeString(RouterType type);
   static QString typeString(Type type);
+  static QString matrixTypeString(MatrixType type);
+  static MatrixType matrixType(const QString &str);
 
  private:
+  MatrixType map_matrix_type;
   QString map_router_name;
   int map_router_number;
   RouterType map_router_type;

@@ -24,7 +24,7 @@
 
 #include "matrix.h"
 
-Matrix *MatrixFactory(Config::MatrixType type,unsigned id,Config *conf,
+Matrix *MatrixFactory(DREndPointMap::MatrixType type,unsigned id,Config *conf,
 		      QObject *parent);
 
 

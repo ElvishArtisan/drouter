@@ -4,6 +4,7 @@
 RouterType=GPIO
 RouterName=Test_GPIO
 RouterNumber=2
+MatrixType=LWRP
 
 [Input1]
 HostAddress=@NODE_IP@

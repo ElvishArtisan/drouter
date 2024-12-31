@@ -24,21 +24,21 @@
 
 #include "matrix_factory.h"
 
-Matrix *MatrixFactory(Config::MatrixType type,unsigned id,Config *conf,
+Matrix *MatrixFactory(DREndPointMap::MatrixType type,unsigned id,Config *conf,
 		      QObject *parent)
 {
   Matrix *matrix=NULL;
 
   switch(type) {
-  case Config::LwrpMatrix:
+  case DREndPointMap::LwrpMatrix:
     matrix=new MatrixLwrp(id,conf,parent);
     break;
 
-  case Config::Gvg7000Matrix:
+  case DREndPointMap::Gvg7000Matrix:
     matrix=new MatrixGvg7000(id,conf,parent);
     break;
 
-  case Config::LastMatrix:
+  case DREndPointMap::LastMatrix:
     break;
   }
   return matrix;

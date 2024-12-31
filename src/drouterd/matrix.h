@@ -32,15 +32,17 @@
 
 #include <sy5/sylwrp_client.h>
 
+#include <drouter/drendpointmap.h>
+
 #include "config.h"
 
 class Matrix :public QObject
 {
   Q_OBJECT;
  public:
-  Matrix(Config::MatrixType type,unsigned id,Config *conf,QObject *parent=0);
+  Matrix(DREndPointMap::MatrixType type,unsigned id,Config *conf,QObject *parent=0);
   ~Matrix();
-  Config::MatrixType matrixType() const;
+  DREndPointMap::MatrixType matrixType() const;
   unsigned id() const;
   virtual bool isConnected() const=0;
   virtual QHostAddress hostAddress() const=0;
@@ -101,7 +103,7 @@ class Matrix :public QObject
   Config *config() const;
 
  private:
-  Config::MatrixType d_matrix_type;
+  DREndPointMap::MatrixType d_matrix_type;
   unsigned d_id;
   Config *d_config;
 };

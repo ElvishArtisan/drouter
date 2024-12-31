@@ -22,7 +22,7 @@
 #include "matrix_lwrp.h"
 
 MatrixLwrp::MatrixLwrp(unsigned id,Config *conf,QObject *parent)
-  : Matrix(Config::LwrpMatrix,id,conf,parent)
+  : Matrix(DREndPointMap::LwrpMatrix,id,conf,parent)
 {
   d_lwrp_client=new SyLwrpClient(id,this);
   connect(d_lwrp_client,SIGNAL(connected(unsigned,bool)),

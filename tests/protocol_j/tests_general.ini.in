@@ -4,5 +4,5 @@
 [Test1]
 Name=RouterNames
 Input={"routernames":null}
-Output={"routernames": [{"name": "Test_Audio","number": 1,"type": "Audio"},{"name": "Test_GPIO","number": 2,"type": "GPIO"},{"name": "Test_GVG7000_Audio","number": 3,"type": "Audio"}]}
+Output={"routernames": [{"matrixType": "LWRP","name": "Test_Audio","number": 1,"type": "Audio"},{"matrixType": "LWRP","name": "Test_GPIO","number": 2,"type": "GPIO"},{"matrixType": "GVG7000","name": "Test_GVG7000_Audio","number": 3,"type": "Audio"}]}
 

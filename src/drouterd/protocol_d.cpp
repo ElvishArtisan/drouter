@@ -162,7 +162,7 @@ void ProtocolD::nodeAdded(const QHostAddress &host_addr)
   if(proto_nodes_subscribed) {
     sql=NodeSqlFields()+"where "+
       "`NODES`.`HOST_ADDRESS`='"+host_addr.toString()+"' && "+
-      QString::asprintf("`NODES`.`MATRIX_TYPE`=%u",Config::LwrpMatrix);
+      QString::asprintf("`NODES`.`MATRIX_TYPE`=%u",DREndPointMap::LwrpMatrix);
     q=new DRSqlQuery(sql);
     while(q->next()) {
       proto_socket->write(NodeRecord("NODEADD",q).toUtf8());
@@ -172,7 +172,7 @@ void ProtocolD::nodeAdded(const QHostAddress &host_addr)
   if(proto_sources_subscribed) {
     sql=SourceSqlFields()+"where "+
       "`SOURCES`.`HOST_ADDRESS`='"+host_addr.toString()+"' && "+
-      QString::asprintf("`NODES`.`MATRIX_TYPE`=%u ",Config::LwrpMatrix)+
+      QString::asprintf("`NODES`.`MATRIX_TYPE`=%u ",DREndPointMap::LwrpMatrix)+
       "order by `SOURCES`.`HOST_ADDRESS`,`SOURCES`.`SLOT`";
     q=new DRSqlQuery(sql);
     while(q->next()) {
@@ -183,7 +183,7 @@ void ProtocolD::nodeAdded(const QHostAddress &host_addr)
   if(proto_destinations_subscribed) {
     sql=DestinationSqlFields()+"where "+
       "`DESTINATIONS`.`HOST_ADDRESS`='"+host_addr.toString()+"' && "+
-      QString::asprintf("`NODES`.`MATRIX_TYPE`=%u ",Config::LwrpMatrix)+
+      QString::asprintf("`NODES`.`MATRIX_TYPE`=%u ",DREndPointMap::LwrpMatrix)+
       "order by `DESTINATIONS`.`HOST_ADDRESS`,`DESTINATIONS`.`SLOT`";
     q=new DRSqlQuery(sql);
     while(q->next()) {
@@ -194,7 +194,7 @@ void ProtocolD::nodeAdded(const QHostAddress &host_addr)
   if(proto_gpis_subscribed) {
     sql=GpiSqlFields()+"where "+
       "`GPIS`.`HOST_ADDRESS`='"+host_addr.toString()+"' && "+
-      QString::asprintf("`NODES`.`MATRIX_TYPE`=%u ",Config::LwrpMatrix)+
+      QString::asprintf("`NODES`.`MATRIX_TYPE`=%u ",DREndPointMap::LwrpMatrix)+
       "order by `GPIS`.`HOST_ADDRESS`,`GPIS`.`SLOT`";
     q=new DRSqlQuery(sql);
     while(q->next()) {
@@ -205,7 +205,7 @@ void ProtocolD::nodeAdded(const QHostAddress &host_addr)
   if(proto_gpos_subscribed) {
     sql=GpoSqlFields()+"where "+
       "`GPOS`.`HOST_ADDRESS`='"+host_addr.toString()+"' && "+
-      QString::asprintf("`NODES`.`MATRIX_TYPE`=%u ",Config::LwrpMatrix)+
+      QString::asprintf("`NODES`.`MATRIX_TYPE`=%u ",DREndPointMap::LwrpMatrix)+
       "order by `GPOS`.`HOST_ADDRESS`,`GPOS`.`SLOT`";
     q=new DRSqlQuery(sql);
     while(q->next()) {
@@ -224,7 +224,7 @@ void ProtocolD::nodeRemoved(const QHostAddress &host_addr,
 
   sql=NodeSqlFields()+"where "+
     "`NODES`.`HOST_ADDRESS`='"+host_addr.toString()+"' && "+
-    QString::asprintf("`NODES`.`MATRIX_TYPE`=%u ",Config::LwrpMatrix);
+    QString::asprintf("`NODES`.`MATRIX_TYPE`=%u ",DREndPointMap::LwrpMatrix);
   q=new DRSqlQuery(sql);
   if(q->first()) {
     if(proto_gpos_subscribed) {
@@ -267,7 +267,7 @@ void ProtocolD::nodeChanged(const QHostAddress &host_addr)
   if(proto_nodes_subscribed) {
     sql=NodeSqlFields()+"where "+
       "`NODES`.`HOST_ADDRESS`='"+host_addr.toString()+"' && "+
-      QString::asprintf("`NODES`.`MATRIX_TYPE`=%u ",Config::LwrpMatrix);
+      QString::asprintf("`NODES`.`MATRIX_TYPE`=%u ",DREndPointMap::LwrpMatrix);
     q=new DRSqlQuery(sql);
     while(q->next()) {
       proto_socket->write(NodeRecord("NODE",q).toUtf8());
@@ -286,7 +286,7 @@ void ProtocolD::sourceChanged(const QHostAddress &host_addr,int slotnum)
     sql=SourceSqlFields()+"where "+
       "`SOURCES`.`HOST_ADDRESS`='"+host_addr.toString()+"' && "+
       "`SOURCES`.`SLOT`="+QString::asprintf("%d && ",slotnum)+
-      QString::asprintf("`NODES`.`MATRIX_TYPE`=%u ",Config::LwrpMatrix);
+      QString::asprintf("`NODES`.`MATRIX_TYPE`=%u ",DREndPointMap::LwrpMatrix);
     q=new DRSqlQuery(sql);
     while(q->next()) {
       proto_socket->write(SourceRecord("SRC",q).toUtf8());
@@ -305,7 +305,7 @@ void ProtocolD::destinationChanged(const QHostAddress &host_addr,int slotnum)
     sql=DestinationSqlFields()+"where "+
       "`DESTINATIONS`.`HOST_ADDRESS`='"+host_addr.toString()+"' && "+
       "`DESTINATIONS`.`SLOT`="+QString::asprintf("%d && ",slotnum)+
-      QString::asprintf("`NODES`.`MATRIX_TYPE`=%u ",Config::LwrpMatrix);
+      QString::asprintf("`NODES`.`MATRIX_TYPE`=%u ",DREndPointMap::LwrpMatrix);
     q=new DRSqlQuery(sql);
     while(q->next()) {
       proto_socket->write(DestinationRecord("DST",q).toUtf8());
@@ -324,7 +324,7 @@ void ProtocolD::gpiChanged(const QHostAddress &host_addr,int slotnum)
     sql=GpiSqlFields()+"where "+
       "`GPIS`.`HOST_ADDRESS`='"+host_addr.toString()+"' && "+
       "`GPIS`.`SLOT`="+QString::asprintf("%d && ",slotnum)+
-      QString::asprintf("`NODES`.`MATRIX_TYPE`=%u ",Config::LwrpMatrix);
+      QString::asprintf("`NODES`.`MATRIX_TYPE`=%u ",DREndPointMap::LwrpMatrix);
     q=new DRSqlQuery(sql);
     while(q->next()) {
       proto_socket->write(GpiRecord("GPI",q).toUtf8());
@@ -343,7 +343,7 @@ void ProtocolD::gpoChanged(const QHostAddress &host_addr,int slotnum)
     sql=GpoSqlFields()+"where "+
       "`GPOS`.`HOST_ADDRESS`='"+host_addr.toString()+"' && "+
       "`GPOS`.`SLOT`="+QString::asprintf("%d && ",slotnum)+
-      QString::asprintf("`NODES`.`MATRIX_TYPE`=%u ",Config::LwrpMatrix);
+      QString::asprintf("`NODES`.`MATRIX_TYPE`=%u ",DREndPointMap::LwrpMatrix);
     q=new DRSqlQuery(sql);
     while(q->next()) {
       proto_socket->write(GpoRecord("GPO",q).toUtf8());
@@ -416,7 +416,7 @@ void ProtocolD::ProcessCommand(const QString &cmd)
 
   if(keyword=="listdestinations") {
     sql=DestinationSqlFields()+"where "+
-      QString::asprintf("`NODES`.`MATRIX_TYPE`=%u ",Config::LwrpMatrix)+
+      QString::asprintf("`NODES`.`MATRIX_TYPE`=%u ",DREndPointMap::LwrpMatrix)+
       "order by `DESTINATIONS`.`HOST_ADDRESS`,`DESTINATIONS`.`SLOT`";
     q=new DRSqlQuery(sql);
     while(q->next()) {
@@ -430,7 +430,7 @@ void ProtocolD::ProcessCommand(const QString &cmd)
   if(keyword=="subscribedestinations") {
     proto_destinations_subscribed=true;
     sql=DestinationSqlFields()+"where "+
-      QString::asprintf("`NODES`.`MATRIX_TYPE`=%u ",Config::LwrpMatrix)+
+      QString::asprintf("`NODES`.`MATRIX_TYPE`=%u ",DREndPointMap::LwrpMatrix)+
       "order by `DESTINATIONS`.`HOST_ADDRESS`,`DESTINATIONS`.`SLOT`";
     q=new DRSqlQuery(sql);
     while(q->next()) {
@@ -443,7 +443,7 @@ void ProtocolD::ProcessCommand(const QString &cmd)
 
   if(keyword=="listgpis") {
     sql=GpiSqlFields()+"where "+
-      QString::asprintf("`NODES`.`MATRIX_TYPE`=%u ",Config::LwrpMatrix)+
+      QString::asprintf("`NODES`.`MATRIX_TYPE`=%u ",DREndPointMap::LwrpMatrix)+
       "order by `GPIS`.`HOST_ADDRESS`,`GPIS`.`SLOT`";
     q=new DRSqlQuery(sql);
     while(q->next()) {
@@ -457,7 +457,7 @@ void ProtocolD::ProcessCommand(const QString &cmd)
   if(keyword=="subscribegpis") {
     proto_gpis_subscribed=true;
     sql=GpiSqlFields()+"where "+
-      QString::asprintf("`NODES`.`MATRIX_TYPE`=%u ",Config::LwrpMatrix)+
+      QString::asprintf("`NODES`.`MATRIX_TYPE`=%u ",DREndPointMap::LwrpMatrix)+
       "order by `GPIS`.`HOST_ADDRESS`,`GPIS`.`SLOT`";
     q=new DRSqlQuery(sql);
     while(q->next()) {
@@ -470,7 +470,7 @@ void ProtocolD::ProcessCommand(const QString &cmd)
 
   if(keyword=="listgpos") {
     sql=GpoSqlFields()+"where "+
-      QString::asprintf("`NODES`.`MATRIX_TYPE`=%u ",Config::LwrpMatrix)+
+      QString::asprintf("`NODES`.`MATRIX_TYPE`=%u ",DREndPointMap::LwrpMatrix)+
       "order by `GPOS`.`HOST_ADDRESS`,`GPOS`.`SLOT`";
     q=new DRSqlQuery(sql);
     while(q->next()) {
@@ -484,7 +484,7 @@ void ProtocolD::ProcessCommand(const QString &cmd)
   if(keyword=="subscribegpos") {
     proto_gpos_subscribed=true;
     sql=GpoSqlFields()+"where "+
-      QString::asprintf("`NODES`.`MATRIX_TYPE`=%u ",Config::LwrpMatrix)+
+      QString::asprintf("`NODES`.`MATRIX_TYPE`=%u ",DREndPointMap::LwrpMatrix)+
       "order by `GPOS`.`HOST_ADDRESS`,`GPOS`.`SLOT`";
     q=new DRSqlQuery(sql);
     while(q->next()) {
@@ -497,7 +497,7 @@ void ProtocolD::ProcessCommand(const QString &cmd)
 
   if(keyword=="listnodes") {
     sql=NodeSqlFields()+"where "+
-      QString::asprintf("`NODES`.`MATRIX_TYPE`=%u ",Config::LwrpMatrix)+
+      QString::asprintf("`NODES`.`MATRIX_TYPE`=%u ",DREndPointMap::LwrpMatrix)+
       "order by `HOST_ADDRESS`";
     q=new DRSqlQuery(sql);
     while(q->next()) {
@@ -511,7 +511,7 @@ void ProtocolD::ProcessCommand(const QString &cmd)
   if(keyword=="subscribenodes") {
     proto_nodes_subscribed=true;
     sql=NodeSqlFields()+"where "+
-      QString::asprintf("`NODES`.`MATRIX_TYPE`=%u ",Config::LwrpMatrix)+
+      QString::asprintf("`NODES`.`MATRIX_TYPE`=%u ",DREndPointMap::LwrpMatrix)+
       "order by `NODES`.`HOST_ADDRESS`";
     q=new DRSqlQuery(sql);
     while(q->next()) {
@@ -524,7 +524,7 @@ void ProtocolD::ProcessCommand(const QString &cmd)
 
   if(keyword=="listsources") {
     sql=SourceSqlFields()+"where "+
-      QString::asprintf("`NODES`.`MATRIX_TYPE`=%u ",Config::LwrpMatrix)+
+      QString::asprintf("`NODES`.`MATRIX_TYPE`=%u ",DREndPointMap::LwrpMatrix)+
       "order by `SOURCES`.`HOST_ADDRESS`,`SOURCES`.`SLOT`";
     q=new DRSqlQuery(sql);
     while(q->next()) {
@@ -538,7 +538,7 @@ void ProtocolD::ProcessCommand(const QString &cmd)
   if(keyword=="subscribesources") {
     proto_sources_subscribed=true;
     sql=SourceSqlFields()+"where "+
-      QString::asprintf("`NODES`.`MATRIX_TYPE`=%u ",Config::LwrpMatrix)+
+      QString::asprintf("`NODES`.`MATRIX_TYPE`=%u ",DREndPointMap::LwrpMatrix)+
       "order by `SOURCES`.`HOST_ADDRESS`,`SOURCES`.`SLOT`";
     q=new DRSqlQuery(sql);
     while(q->next()) {
@@ -555,7 +555,7 @@ void ProtocolD::ProcessCommand(const QString &cmd)
 	"from `SOURCES` left join `NODES` "+
 	"on `SOURCES`.`HOST_ADDRESS`=`NODES`.`HOST_ADDRESS` "+
 	"where "+
-	QString::asprintf("`NODES`.`MATRIX_TYPE`=%u ",Config::LwrpMatrix)+
+	QString::asprintf("`NODES`.`MATRIX_TYPE`=%u ",DREndPointMap::LwrpMatrix)+
 	"order by `SOURCES`.`HOST_ADDRESS`,`SOURCES`.`SLOT`";
       q=new DRSqlQuery(sql);
       while(q->next()) {
@@ -569,7 +569,7 @@ void ProtocolD::ProcessCommand(const QString &cmd)
 	"from `DESTINATIONS` left join `NODES` "+
 	"on `DESTINATIONS`.`HOST_ADDRESS`=`NODES`.`HOST_ADDRESS` "+
 	"where "+
-	QString::asprintf("`NODES`.`MATRIX_TYPE`=%u ",Config::LwrpMatrix)+
+	QString::asprintf("`NODES`.`MATRIX_TYPE`=%u ",DREndPointMap::LwrpMatrix)+
 	"order by `DESTINATIONS`.`HOST_ADDRESS`,`DESTINATIONS`.`SLOT`";
       q=new DRSqlQuery(sql);
       while(q->next()) {
@@ -589,7 +589,7 @@ void ProtocolD::ProcessCommand(const QString &cmd)
 	"from `SOURCES` left join `NODES` "+
 	"on `SOURCES`.`HOST_ADDRESS`=`NODES`.`HOST_ADDRESS` "+
 	"where "+
-	QString::asprintf("`NODES`.`MATRIX_TYPE`=%u ",Config::LwrpMatrix)+
+	QString::asprintf("`NODES`.`MATRIX_TYPE`=%u ",DREndPointMap::LwrpMatrix)+
 	"order by `SOURCES`.`HOST_ADDRESS`,`SOURCES`.`SLOT`";
       q=new DRSqlQuery(sql);
       while(q->next()) {
@@ -603,7 +603,7 @@ void ProtocolD::ProcessCommand(const QString &cmd)
 	"from `DESTINATIONS` left join `NODES` "+
 	"on `DESTINATIONS`.`HOST_ADDRESS`=`NODES`.`HOST_ADDRESS` "+
 	"where "+
-	QString::asprintf("`NODES`.`MATRIX_TYPE`=%u ",Config::LwrpMatrix)+
+	QString::asprintf("`NODES`.`MATRIX_TYPE`=%u ",DREndPointMap::LwrpMatrix)+
 	"order by `DESTINATIONS`.`HOST_ADDRESS`,`DESTINATIONS`.`SLOT`";
       q=new DRSqlQuery(sql);
       while(q->next()) {
@@ -622,7 +622,7 @@ void ProtocolD::ProcessCommand(const QString &cmd)
 	"from `SOURCES` left join `NODES` "+
 	"on `SOURCES`.`HOST_ADDRESS`=`NODES`.`HOST_ADDRESS` "+
 	"where "+
-	QString::asprintf("`NODES`.`MATRIX_TYPE`=%u ",Config::LwrpMatrix)+
+	QString::asprintf("`NODES`.`MATRIX_TYPE`=%u ",DREndPointMap::LwrpMatrix)+
 	"order by `SOURCES`.`HOST_ADDRESS`,`SOURCES`.`SLOT`";
       q=new DRSqlQuery(sql);
       while(q->next()) {
@@ -636,7 +636,7 @@ void ProtocolD::ProcessCommand(const QString &cmd)
 	"from `DESTINATIONS` left join 'NODES' "+
 	"on `DESTINATIONS`.`HOST_ADDRESS`=`NODES`.`HOST_ADDRESS` "+
 	"where "+
-	QString::asprintf("`NODES`.`MATRIX_TYPE`=%u ",Config::LwrpMatrix)+
+	QString::asprintf("`NODES`.`MATRIX_TYPE`=%u ",DREndPointMap::LwrpMatrix)+
 	"order by `DESTINATIONS`.`HOST_ADDRESS`,`DESTINATIONS`.`SLOT`";
       q=new DRSqlQuery(sql);
       while(q->next()) {
@@ -656,7 +656,7 @@ void ProtocolD::ProcessCommand(const QString &cmd)
 	"from `SOURCES` left join `NODES` "+
 	"on `SOURCES`.`HOST_ADDRESS`=`NODES`.`HOST_ADDRESS` "+
 	"where "+
-	QString::asprintf("`NODES`.`MATRIX_TYPE`=%u ",Config::LwrpMatrix)+
+	QString::asprintf("`NODES`.`MATRIX_TYPE`=%u ",DREndPointMap::LwrpMatrix)+
 	"order by `SOURCES`.`HOST_ADDRESS`,`SOURCES`.`SLOT`";
       q=new DRSqlQuery(sql);
       while(q->next()) {
@@ -670,7 +670,7 @@ void ProtocolD::ProcessCommand(const QString &cmd)
 	"from `DESTINATIONS` left join `NODES` "+
 	"on `DESTINATIONS`.`HOST_ADDRESS`=`NODES`.`HOST_ADDRESS` "+
 	"where "+
-	QString::asprintf("`NODES`.`MATRIX_TYPE`=%u ",Config::LwrpMatrix)+
+	QString::asprintf("`NODES`.`MATRIX_TYPE`=%u ",DREndPointMap::LwrpMatrix)+
 	"order by `DESTINATIONS`.`HOST_ADDRESS`,`DESTINATIONS`.`SLOT`";
       q=new DRSqlQuery(sql);
       while(q->next()) {
@@ -1030,7 +1030,7 @@ bool ProtocolD::IsLivewire(const QHostAddress &host_addr1,
   bool ret;
   int size=1;
   QString sql=NodeSqlFields()+" where "+
-    QString::asprintf("`NODES`.`MATRIX_TYPE`=%u && (",Config::LwrpMatrix)+
+    QString::asprintf("`NODES`.`MATRIX_TYPE`=%u && (",DREndPointMap::LwrpMatrix)+
     "`NODES`.`HOST_ADDRESS`='"+host_addr1.toString()+"' ";
   if(!host_addr2.isNull()) {
     sql+="|| `NODES`.`HOST_ADDRESS`='"+host_addr2.toString()+"'";

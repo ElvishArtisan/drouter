@@ -2,6 +2,7 @@
 RouterType=Audio
 RouterName=Test_GVG7000_Audio
 RouterNumber=3
+MatrixType=GVG7000
 
 [Input1]
 HostAddress=@GVG7000_IP@

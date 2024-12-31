@@ -153,7 +153,7 @@ int Config::matrixQuantity() const
 }
 
 
-Config::MatrixType Config::matrixType(int n) const
+DREndPointMap::MatrixType Config::matrixType(int n) const
 {
   return conf_matrix_types.at(n);
 }
@@ -173,7 +173,7 @@ uint16_t Config::matrixPort(int n) const
 
 bool Config::livewireIsEnabled() const
 {
-  return conf_matrix_types.contains(Config::LwrpMatrix);
+  return conf_matrix_types.contains(DREndPointMap::LwrpMatrix);
 }
 
 
@@ -322,8 +322,8 @@ void Config::load()
   //
   n=0;
   QString section=QString::asprintf("Matrix%d",n+1);
-  Config::MatrixType mtype=
-    Config::matrixType(p->stringValue(section,"Type","",&ok));
+  DREndPointMap::MatrixType mtype=
+    DREndPointMap::matrixType(p->stringValue(section,"Type","",&ok));
   while(ok) {
     conf_matrix_types.push_back(mtype);
     conf_matrix_host_addresses.
@@ -331,7 +331,7 @@ void Config::load()
     conf_matrix_ports.push_back(p->intValue(section,"HostPort"));
     n++;
     section=QString::asprintf("Matrix%d",n+1);
-    mtype=Config::matrixType(p->stringValue(section,"Type","",&ok));
+    mtype=DREndPointMap::matrixType(p->stringValue(section,"Type","",&ok));
   }
 
   //
@@ -440,37 +440,4 @@ bool Config::emailIsValid(const QString &addr)
     return false;
   }
   return true;
-}
-
-
-QString Config::matrixTypeString(MatrixType type)
-{
-  QString ret="unknown";
-
-  switch(type) {
-  case Config::LwrpMatrix:
-    ret="LWRP";
-    break;
-
-  case Config::Gvg7000Matrix:
-    ret="GVG7000";
-    break;
-
-  case Config::LastMatrix:
-    break;
-  }
-
-  return ret;
-}
-
-
-Config::MatrixType Config::matrixType(const QString &str)
-{
-  for(int i=0;i<Config::LastMatrix;i++) {
-    if(str.toUpper()==Config::matrixTypeString((Config::MatrixType)i)) {
-      return (Config::MatrixType)i;
-    }
-  }
-
-  return Config::LastMatrix;
 }

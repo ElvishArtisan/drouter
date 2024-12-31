@@ -804,7 +804,7 @@ void DRouter::advtReadyReadData(int ifnum)
 
   while((n=drouter_advt_sockets.at(ifnum)->readDatagram(data,1500,&addr))>0) {
     if(node(addr)==NULL) {
-      Matrix *mtx=StartMatrix(Config::LwrpMatrix,addr.toIPv4Address());
+      Matrix *mtx=StartMatrix(DREndPointMap::LwrpMatrix,addr.toIPv4Address());
       if(mtx==NULL) {
 	syslog(LOG_WARNING,
 	       "failed to initialize matrix client for LWRP node at %s",
@@ -1552,7 +1552,7 @@ bool DRouter::StartLivewire(QString *err_msg)
 }
 
 
-Matrix *DRouter::StartMatrix(Config::MatrixType type,unsigned id)
+Matrix *DRouter::StartMatrix(DREndPointMap::MatrixType type,unsigned id)
 {
   Matrix *mtx=MatrixFactory(type,id,drouter_config,this);
   connect(mtx,SIGNAL(connected(unsigned,bool)),

@@ -21,7 +21,7 @@
 
 #include "matrix.h"
 
-Matrix::Matrix(Config::MatrixType matrix_type,unsigned id,Config *conf,
+Matrix::Matrix(DREndPointMap::MatrixType matrix_type,unsigned id,Config *conf,
 	       QObject *parent)
   : QObject(parent)
 {
@@ -42,7 +42,7 @@ Matrix::~Matrix()
 }
 
 
-Config::MatrixType Matrix::matrixType() const
+DREndPointMap::MatrixType Matrix::matrixType() const
 {
   return d_matrix_type;
 }

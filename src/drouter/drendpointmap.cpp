@@ -74,9 +74,22 @@ void DRSnapshot::addRoute(int output,int input)
 
 DREndPointMap::DREndPointMap()
 {
+  map_matrix_type=DREndPointMap::LwrpMatrix;
   map_router_type=DREndPointMap::AudioRouter;
   map_router_name="Livewire";
   map_router_number=0;
+}
+
+
+DREndPointMap::MatrixType DREndPointMap::matrixType() const
+{
+  return map_matrix_type;
+}
+
+
+void DREndPointMap::setMatrixType(DREndPointMap::MatrixType type)
+{
+  map_matrix_type=type;
 }
 
 
@@ -284,12 +297,15 @@ bool DREndPointMap::load(const QString &filename,QStringList *unused_lines)
 
     QString name=p->stringValue("Global","RouterType").toLower();
     map_router_type=DREndPointMap::AudioRouter;
+    map_matrix_type=DREndPointMap::LwrpMatrix;
     for(int i=0;i<DREndPointMap::LastRouter;i++) {
       DREndPointMap::RouterType rtype=(DREndPointMap::RouterType)i;
       if(DREndPointMap::routerTypeString(rtype).toLower()==name) {
 	map_router_type=rtype;
       }
     }
+    map_matrix_type=
+      DREndPointMap::matrixType(p->stringValue("Global","MatrixType"));
     map_router_name=p->stringValue("Global","RouterName","Livewire");
     map_router_number=p->intValue("Global","RouterNumber",1)-1;
 
@@ -526,4 +542,37 @@ QString DREndPointMap::typeString(Type type)
   }
 
   return ret;
+}
+
+
+QString DREndPointMap::matrixTypeString(MatrixType type)
+{
+  QString ret="unknown";
+
+  switch(type) {
+  case DREndPointMap::LwrpMatrix:
+    ret="LWRP";
+    break;
+
+  case DREndPointMap::Gvg7000Matrix:
+    ret="GVG7000";
+    break;
+
+  case DREndPointMap::LastMatrix:
+    break;
+  }
+
+  return ret;
+}
+
+
+DREndPointMap::MatrixType DREndPointMap::matrixType(const QString &str)
+{
+  for(int i=0;i<DREndPointMap::LastMatrix;i++) {
+    if(str.toUpper()==DREndPointMap::matrixTypeString((DREndPointMap::MatrixType)i)) {
+      return (DREndPointMap::MatrixType)i;
+    }
+  }
+
+  return DREndPointMap::LastMatrix;
 }
