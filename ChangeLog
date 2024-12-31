@@ -1384,3 +1384,7 @@
 	'DREndPointMap:: matrixType()'.
 	* Added a 'matrixType' parameter to the return to the 'routernames'
 	ProtocolJ command.
+2024-12-31 Fred Gleason <fredg@paravelsystems.com>
+	* Added a 'DRRouterListModel::matrixType()' method.
+	* Fixed a regression in xpointpanel(1) that caused inappropriate
+	options to be offered in the right-click menus.

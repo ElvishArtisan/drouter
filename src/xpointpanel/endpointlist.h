@@ -48,6 +48,7 @@ class EndpointList : public QWidget
   int router() const;
   void setRouter(int router);
   void setParser(DRJParser *psr);
+  void setMatrixType(DREndPointMap::MatrixType type);
   bool showGpio() const;
   void setShowGpio(bool state);
   int slot(int endpt) const;
@@ -88,6 +89,7 @@ class EndpointList : public QWidget
   int list_router;
   int list_position;
   DRJParser *list_parser;
+  DREndPointMap::MatrixType list_matrix_type;
   Qt::Orientation list_orientation;
   bool list_show_gpio;
   int list_output_width;

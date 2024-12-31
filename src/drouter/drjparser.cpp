@@ -491,7 +491,8 @@ void DRJParser::DispatchMessage(const QJsonDocument &jdoc)
 	 (j_router_filter.contains(jo1.value("number").toInt()))) {
 	j_router_model->addRouter(jo1.value("number").toInt(),
 				  jo1.value("name").toString(),
-				  jo1.value("type").toString());
+				  jo1.value("type").toString(),
+				  jo1.value("matrixType").toString());
 	int router=jo1.value("number").toInt();
 	j_gpio_supporteds[router]=
 	  jo1.value("type").toString().toLower()=="gpio";;

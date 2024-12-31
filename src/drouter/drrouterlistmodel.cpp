@@ -128,6 +128,12 @@ DREndPointMap::RouterType DRRouterListModel::routerType(int rownum) const
 }
 
 
+DREndPointMap::MatrixType DRRouterListModel::matrixType(int rownum) const
+{
+  return d_matrix_types.at(rownum);
+}
+
+
 int DRRouterListModel::rowNumber(int router) const
 {
   return d_numbers.indexOf(router);
@@ -135,52 +141,16 @@ int DRRouterListModel::rowNumber(int router) const
 
 
 void DRRouterListModel::addRouter(int number,const QString &name,
-				  const QString &rtype)
+				  const QString &router_type,
+				  const QString &matrix_type)
 {
   QVariantMap vmap;
 
   vmap["number"]=number;
   vmap["name"]=name;
-  vmap["type"]=rtype;
+  vmap["type"]=router_type;
+  vmap["matrixType"]=matrix_type;
   d_raw_metadatas[number]=vmap;
-  /*
-  int index=0;
-
-  //
-  // Find the insertion position
-  //
-  for(int i=0;i<d_numbers.size();i++) {
-    if(number>d_numbers.at(i)) {
-      index=i;
-      break;
-    }
-  }
-
-  //
-  // Insert It
-  //
-  beginInsertRows(QModelIndex(),index,index);
-  d_numbers.insert(index,number);
-  QList<QVariant> row;
-  row.push_back(QString::asprintf("%d - %s",number,name.toUtf8().constData()));
-  row.push_back(rtype);
-  d_texts.insert(index,row);
-  if(rtype.toLower()=="audio") {
-    d_router_types.insert(index,DREndPointMap::AudioRouter);
-    d_icons.insert(index,QPixmap(audio_16x16_xpm));
-  }
-  else {
-    if(rtype.toLower()=="gpio") {
-    d_router_types.insert(index,DREndPointMap::GpioRouter);
-      d_icons.insert(index,QPixmap(gpio_16x16_xpm));
-    }
-    else {
-      d_router_types.insert(index,DREndPointMap::LastRouter);
-      d_icons.insert(index,QVariant());
-    }
-  }
-  endInsertRows();
-  */
 }
 
 
@@ -208,6 +178,17 @@ void DRRouterListModel::finalize()
       else {
 	d_router_types.push_back(DREndPointMap::LastRouter);
 	d_icons.push_back(QVariant());
+      }
+    }
+    if(it.value().value("matrixType").toString().toLower()=="lwrp") {
+      d_matrix_types.push_back(DREndPointMap::LwrpMatrix);
+    }
+    else {
+      if(it.value().value("matrixType").toString().toLower()=="gvg7000") {
+	d_matrix_types.push_back(DREndPointMap::Gvg7000Matrix);
+      }
+      else {
+	d_matrix_types.push_back(DREndPointMap::LastMatrix);
       }
     }
   }

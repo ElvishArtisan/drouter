@@ -144,6 +144,12 @@ void EndpointList::setParser(DRJParser *psr)
 }
 
 
+void EndpointList::setMatrixType(DREndPointMap::MatrixType type)
+{
+  list_matrix_type=type;
+}
+
+
 bool EndpointList::showGpio() const
 {
   return list_show_gpio;
@@ -283,12 +289,20 @@ void EndpointList::aboutToShowMenuData()
 	      tr("via LWRP"));
     break;
   }
-  list_connect_via_http_action->setEnabled(true);
-  list_connect_via_lwrp_action->setEnabled(true);
-  list_copy_source_number_action->setEnabled(list_orientation==Qt::Horizontal);
-  list_copy_source_address_action->setEnabled(list_orientation==Qt::Horizontal);
-  list_copy_host_address_action->setEnabled(true);
-  list_copy_slot_number_action->setEnabled(true);
+  list_connect_via_http_action->
+    setEnabled(list_matrix_type==DREndPointMap::LwrpMatrix);
+  list_connect_via_lwrp_action->
+    setEnabled(list_matrix_type==DREndPointMap::LwrpMatrix);
+  list_copy_source_number_action->
+    setEnabled((list_matrix_type==DREndPointMap::LwrpMatrix)&&
+	       (list_orientation==Qt::Horizontal));
+  list_copy_source_address_action->
+    setEnabled((list_matrix_type==DREndPointMap::LwrpMatrix)&&
+	       (list_orientation==Qt::Horizontal));
+  list_copy_host_address_action->
+    setEnabled(list_matrix_type==DREndPointMap::LwrpMatrix);
+  list_copy_slot_number_action->
+    setEnabled(list_matrix_type==DREndPointMap::LwrpMatrix);
 }
 
 

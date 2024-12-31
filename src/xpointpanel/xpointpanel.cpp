@@ -263,6 +263,7 @@ void MainWidget::routerBoxActivatedData(int n)
 {
   QString name;
   int router=SelectedRouter();
+  DRRouterListModel *rmodel=panel_parser->routerModel();
   DREndPointListModel *imodel=panel_parser->inputModel(router);
   DREndPointListModel *omodel=panel_parser->outputModel(router);
   QMap<QString,QVariant> mdata;
@@ -277,7 +278,10 @@ void MainWidget::routerBoxActivatedData(int n)
   panel_output_list->clearEndpoints();
   panel_input_list->clearEndpoints();
   panel_input_list->setRouter(router);
+  panel_input_list->setMatrixType(rmodel->matrixType(n));
   panel_output_list->setRouter(router);
+  panel_output_list->setMatrixType(rmodel->matrixType(n));
+  printf("Setting matrixType: %s\n",DREndPointMap::matrixTypeString(rmodel->matrixType(n)).toUtf8().constData());
   
   //
   // Populate Inputs
