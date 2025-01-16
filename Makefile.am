@@ -54,7 +54,6 @@ EXTRA_DIST = autogen.sh\
              get_distro.pl\
              get_target.sh\
              GFDL-1.3\
-             link_common.sh\
              PACKAGE_VERSION
 
 CLEANFILES = *~\
