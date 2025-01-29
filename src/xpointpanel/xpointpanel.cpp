@@ -72,10 +72,11 @@ MainWidget::MainWidget(QWidget *parent)
   for(int i=0;i<cmd->keys();i++) {
     if(cmd->key(i)=="--initial-router") {
       panel_initial_router=cmd->value(i).toInt(&ok);
-      if(!ok) {
-	QMessageBox::warning(this,"XPointPanel - "+tr("Error"),
-			     tr("Invalid --initial-router value")+
-			     " \""+cmd->value(i)+"\".");
+      if((!ok)||(panel_initial_router<1)) {
+	QMessageBox::warning(this,"XPointPanel - "+tr("Warning"),
+			     QString::asprintf("--initial-router=%d\n",
+					       panel_initial_router)+
+				 tr("Invalid value!"));
 	exit(1);
       }
       cmd->setProcessed(i,true);
@@ -389,11 +390,22 @@ void MainWidget::connectedData(bool state,DRJParser::ConnectionState cstate)
     panel_router_label->setEnabled(true);
     panel_router_box->setEnabled(true);
     if(panel_initial_router>0) {
-      panel_router_box->setCurrentIndex(panel_parser->routerModel()->
-					rowNumber(panel_initial_router));
+      QMap<int,QString> routers=panel_parser->routers();
+      if(panel_parser->routers().contains(panel_initial_router)) {
+	panel_router_box->setCurrentIndex(panel_parser->routerModel()->
+					  rowNumber(panel_initial_router));
+      }
+      else {
+	QMessageBox::warning(this,"XPointPanel - "+tr("Warning"),
+				 QString::asprintf("--initial-router=%d\n",
+						   panel_initial_router)+
+				 tr("Requested router doesn't exist!"));
+	exit(1);
+      }
     }
     routerBoxActivatedData(panel_router_box->currentIndex());
     panel_initial_connected=true;
+    show();
   }
   else {
     if(cstate!=DRJParser::WatchdogActive) {
@@ -755,6 +767,6 @@ int main(int argc,char *argv[])
 {
   QApplication a(argc,argv);
   MainWidget *w=new MainWidget(NULL);
-  w->show();
+  //  w->show();
   return a.exec();
 }

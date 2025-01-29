@@ -489,6 +489,8 @@ void DRJParser::DispatchMessage(const QJsonDocument &jdoc)
       QJsonObject jo1=ja0.at(i).toObject();
       if((j_router_filter.size()==0)||
 	 (j_router_filter.contains(jo1.value("number").toInt()))) {
+	j_router_names[jo1.value("number").toInt()]=
+	  jo1.value("name").toString();
 	j_router_model->addRouter(jo1.value("number").toInt(),
 				  jo1.value("name").toString(),
 				  jo1.value("type").toString(),

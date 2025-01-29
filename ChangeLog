@@ -1394,3 +1394,6 @@
 	* Ported the codebase to Qt6.
 2025-01-28 Fred Gleason <fredg@paravelsystems.com>
 	* Re-enabled LWRP in the 'protocol_j' test suite.
+2025-01-28 Fred Gleason <fredg@paravelsystems.com>
+	* Fixed a regression in xpointpanel(1) that caused a segfault when
+	invoked with an '--initial-router=' value of a non-existent router.
