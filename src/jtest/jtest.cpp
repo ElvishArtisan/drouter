@@ -2,7 +2,7 @@
 //
 // jtest() Testing harness for ProtocolJ
 //
-//   (C) Copyright 2024 Fred Gleason <fredg@paravelsystems.com>
+//   (C) Copyright 2024-2025 Fred Gleason <fredg@paravelsystems.com>
 //
 //   This program is free software; you can redistribute it and/or modify
 //   it under the terms of the GNU General Public License version 2 as
@@ -26,11 +26,11 @@
 #include <QJsonObject>
 #include <QSignalMapper>
 
-#include <sy5/sycmdswitch.h>
-#include <sy5/syconfig.h>
-#include <sy5/syinterfaces.h>
-#include <sy5/symcastsocket.h>
-#include <sy5/syprofile.h>
+#include <sy6/sycmdswitch.h>
+#include <sy6/syconfig.h>
+#include <sy6/syinterfaces.h>
+#include <sy6/symcastsocket.h>
+#include <sy6/syprofile.h>
 
 #include "jtest.h"
 
@@ -152,8 +152,9 @@ MainObject::MainObject(QObject *parent)
 	    this,
 	    SLOT(prologueParseErrorData(const QByteArray &,
 					const QJsonParseError &)));
-    connect(d_prologue_socket,SIGNAL(error(QAbstractSocket::SocketError)),
-	    this,SLOT(prologueErrorData(QAbstractSocket::SocketError)));
+    //    connect(d_prologue_socket,
+    //	    SIGNAL(errorOccurred(QAbstractSocket::SocketError)),
+    //	    this,SLOT(prologueErrorData(QAbstractSocket::SocketError)));
     d_prologue_socket->connectToHost(hostname,portnum);
   }
   else {

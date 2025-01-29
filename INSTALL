@@ -3,12 +3,12 @@ This is the installation file for the drouter package.
 MANDATORY PREREQUISITES
 ---------------------------------------------------------------------------
 You will need the following installed and configured properly on your 
-system before building GlassCoder:
+system before building Drouter:
 
-The Switchyard5 Livewire library, v0.24.0 or better
+The Switchyard6 Livewire library, v0.24.0 or better
  (https://github.com/ElvishArtisan/Switchyard)
 
-Qt5 Toolkit, v5.9.7 or better (http://www.qt.io/).
+Qt6 Toolkit, v6.2.4 or better (http://www.qt.io/).
 
 Python 3.4 or better.
 
@@ -70,3 +70,21 @@ create and configure the DB correctly when invoked as follows:
 
 Where <admin-name> and <admin-pw> are the user username/password of
 a MySQL account with GRANT prvileges.
+
+Distro-Specific Notes
+---------------------
+1) Ubuntu 22.02 LTS
+
+Required build packages: libsndfile1-dev qt6-base-dev libqt6sql6-mysql docbook5-xml libxml2-utils docbook-xsl-ns xsltproc fop make g++ autoconf automake debhelper autoconf-archive gnupg pbuilder ubuntu-dev-tools apt-file python3
+
+Configure script invocation: ./configure --prefix=/usr
+
+Environmental variables:
+  DOCBOOK_STYLESHEETS=/usr/share/xml/docbook/stylesheet/docbook-xsl-ns
+  DEBUILD_MAKE_ARGS=<optional-gcc-flags>
+
+Due to a bug in the Ubuntu 'qt6-base-dev-tools', it may be necessary to
+define the following environmental variable to allow Qt's moc(1) utility
+to be found by the build system:
+
+  QT6_MOC=/usr/lib/qt6/libexec/moc

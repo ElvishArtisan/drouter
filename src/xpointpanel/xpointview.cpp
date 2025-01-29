@@ -76,8 +76,8 @@ void XPointView::setYSlotQuantity(int quan)
 
 void XPointView::mouseMoveEvent(QMouseEvent *e)
 {
-  int x_slot=(horizontalScrollBar()->value()+e->x()-1)/ENDPOINTLIST_ITEM_HEIGHT;
-  int y_slot=(verticalScrollBar()->value()+e->y()-1)/ENDPOINTLIST_ITEM_HEIGHT;
+  int x_slot=(horizontalScrollBar()->value()+e->position().x()-1)/ENDPOINTLIST_ITEM_HEIGHT;
+  int y_slot=(verticalScrollBar()->value()+e->position().y()-1)/ENDPOINTLIST_ITEM_HEIGHT;
 
   if((d_prev_hover_x!=x_slot)||(d_prev_hover_y!=y_slot)) {
     if((x_slot<=d_x_slot_quantity)&&(y_slot<=d_y_slot_quantity)) { 
@@ -138,9 +138,11 @@ void XPointView::leaveEvent(QEvent *e)
 
 void XPointView::mouseDoubleClickEvent(QMouseEvent *e)
 {
-  emit crosspointDoubleClicked((horizontalScrollBar()->value()+e->x()-1)/
+  emit crosspointDoubleClicked((horizontalScrollBar()->
+				value()+e->position().x()-1)/
 			       ENDPOINTLIST_ITEM_HEIGHT,
-			       (verticalScrollBar()->value()+e->y()-1)/
+			       (verticalScrollBar()->
+				value()+e->position().y()-1)/
 			       ENDPOINTLIST_ITEM_HEIGHT);
   QGraphicsView::mouseDoubleClickEvent(e);
 }

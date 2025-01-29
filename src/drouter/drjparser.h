@@ -104,7 +104,7 @@ class DRJParser : public QObject
   void startupData();
   void holdoffReconnectData();
   void readyReadData();
-  void errorData(QAbstractSocket::SocketError err);
+  void errorOccurredData(QAbstractSocket::SocketError err);
 
  private:
   void Clear();

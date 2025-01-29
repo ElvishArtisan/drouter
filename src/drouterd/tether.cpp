@@ -2,7 +2,7 @@
 //
 //  State Manager for twin Drouter instances
 //
-//   (C) Copyright 2019-2024 Fred Gleason <fredg@paravelsystems.com>
+//   (C) Copyright 2019-2025 Fred Gleason <fredg@paravelsystems.com>
 //
 //   This program is free software; you can redistribute it and/or modify
 //   it under the terms of the GNU Library General Public License 
@@ -23,7 +23,7 @@
 
 #include <QProcess>
 
-#include <sy5/syinterfaces.h>
+#include <sy6/syinterfaces.h>
 
 #include "config.h"
 #include "tether.h"

@@ -2,7 +2,7 @@
 //
 // Set state on a GPIO endpoint
 //
-//   (C) Copyright 2020-2024 Fred Gleason <fredg@paravelsystems.com>
+//   (C) Copyright 2020-2025 Fred Gleason <fredg@paravelsystems.com>
 //
 //   This program is free software; you can redistribute it and/or modify
 //   it under the terms of the GNU General Public License as
@@ -21,7 +21,7 @@
 
 #include <QFontMetrics>
 
-#include <sy5/syconfig.h>
+#include <sy6/syconfig.h>
 
 #include <drouter/drendpointmap.h>
 

@@ -2,7 +2,7 @@
 //
 // Test the email sending routines.
 //
-//   (C) Copyright 2021-2024 Fred Gleason <fredg@paravelsystems.com>
+//   (C) Copyright 2021-2025 Fred Gleason <fredg@paravelsystems.com>
 //
 //   This program is free software; you can redistribute it and/or modify
 //   it under the terms of the GNU General Public License version 2 as
@@ -18,9 +18,9 @@
 //   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
 //
 
-#include <QApplication>
+#include <QCoreApplication>
 
-#include <sy5/sycmdswitch.h>
+#include <sy6/sycmdswitch.h>
 
 #include "sendmail.h"
 #include "sendmailtest.h"
@@ -122,7 +122,7 @@ MainObject::MainObject(QObject *parent)
 
 int main(int argc,char *argv[])
 {
-  QApplication a(argc,argv,false);
+  QCoreApplication a(argc,argv);
   new MainObject();
   return a.exec();
 }

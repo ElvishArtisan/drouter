@@ -2,7 +2,7 @@
 //
 // Applet for controling a ProtocolJ output
 //
-//   (C) Copyright 2002-2024 Fred Gleason <fredg@paravelsystems.com>
+//   (C) Copyright 2002-2025 Fred Gleason <fredg@paravelsystems.com>
 //
 //   This program is free software; you can redistribute it and/or modify
 //   it under the terms of the GNU General Public License as
@@ -27,7 +27,7 @@
 #include <QTimer>
 #include <QSettings>
 
-#include <sy5/sycmdswitch.h>
+#include <sy6/sycmdswitch.h>
 
 #include "outputpanel.h"
 

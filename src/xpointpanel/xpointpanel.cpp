@@ -2,7 +2,7 @@
 //
 // Full graphical crosspoint panel for SA devices.
 //
-//   (C) Copyright 2017-2022 Fred Gleason <fredg@paravelsystems.com>
+//   (C) Copyright 2017-2025 Fred Gleason <fredg@paravelsystems.com>
 //
 //   This program is free software; you can redistribute it and/or modify
 //   it under the terms of the GNU General Public License as
@@ -22,7 +22,7 @@
 #include <stdlib.h>
 
 #include <QApplication>
-#include <QDesktopWidget>
+//#include <QDesktopWidget>
 #include <QGraphicsProxyWidget>
 #include <QGraphicsTextItem>
 #include <QIcon>
@@ -34,9 +34,9 @@
 #include <QScrollBar>
 #include <QSettings>
 
-#include <sy5/sycmdswitch.h>
-#include <sy5/symcastsocket.h>
-#include <sy5/synode.h>
+#include <sy6/sycmdswitch.h>
+#include <sy6/symcastsocket.h>
+#include <sy6/synode.h>
 
 #include <drouter/drendpointlistmodel.h>
 
@@ -340,7 +340,12 @@ void MainWidget::routerBoxActivatedData(int n)
 
   panel_view->setXSlotQuantity(omodel->rowCount());
   panel_view->setYSlotQuantity(imodel->rowCount());
-  QRect screen=QApplication::desktop()->availableGeometry(this);
+
+  //
+  // FIXME: Verify on multi-monitor setups
+  //
+  //  QRect screen=QApplication::desktop()->availableGeometry(this);
+  QRect screen=QApplication::screens().at(0)->availableGeometry();
   screen.setHeight(screen.height()-30); // Hack to compensate for window titlebar
 
   int info_width=15+panel_input_list->sizeHint().width();
@@ -749,6 +754,7 @@ int MainWidget::SelectedRouter() const
 int main(int argc,char *argv[])
 {
   QApplication a(argc,argv);
-  new MainWidget(NULL);
+  MainWidget *w=new MainWidget(NULL);
+  w->show();
   return a.exec();
 }

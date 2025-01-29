@@ -2,7 +2,7 @@
 //
 // Protocol dispatcher for drouterd(8)
 //
-//   (C) Copyright 2018-2022 Fred Gleason <fredg@paravelsystems.com>
+//   (C) Copyright 2018-2025 Fred Gleason <fredg@paravelsystems.com>
 //
 //   This program is free software; you can redistribute it and/or modify
 //   it under the terms of the GNU General Public License version 2 as
@@ -28,7 +28,7 @@
 
 #include <QCoreApplication>
 
-#include <sy5/sycmdswitch.h>
+#include <sy6/sycmdswitch.h>
 
 #include "dprotod.h"
 #include "protocol_d.h"

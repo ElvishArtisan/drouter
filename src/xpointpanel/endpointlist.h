@@ -97,7 +97,7 @@ class EndpointList : public QWidget
   QMenu *list_mouse_menu;
   int list_mouse_endpoint;
   int list_move_endpoint;
-  QPoint list_mouse_position;
+  QPointF list_mouse_position;
   QAction *list_state_dialog_action;
   QAction *list_connect_via_http_action;
   QAction *list_connect_via_lwrp_action;

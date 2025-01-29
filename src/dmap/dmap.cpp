@@ -2,7 +2,7 @@
 //
 // dmap(8) routing daemon
 //
-//   (C) Copyright 2017-2024 Fred Gleason <fredg@paravelsystems.com>
+//   (C) Copyright 2017-2025 Fred Gleason <fredg@paravelsystems.com>
 //
 //   This program is free software; you can redistribute it and/or modify
 //   it under the terms of the GNU General Public License version 2 as
@@ -25,10 +25,10 @@
 #include <QCoreApplication>
 #include <QSignalMapper>
 
-#include <sy5/sycmdswitch.h>
-#include <sy5/syconfig.h>
-#include <sy5/syinterfaces.h>
-#include <sy5/syprofile.h>
+#include <sy6/sycmdswitch.h>
+#include <sy6/syconfig.h>
+#include <sy6/syinterfaces.h>
+#include <sy6/syprofile.h>
 
 #include "dmap.h"
 

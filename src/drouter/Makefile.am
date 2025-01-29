@@ -2,7 +2,7 @@
 ##
 ## Makefile for 'src/drouter/'
 ##
-## (C) Copyright 2017-2024 Fred Gleason <fredg@paravelsystems.com>
+## (C) Copyright 2017-2025 Fred Gleason <fredg@paravelsystems.com>
 ##
 ##   This program is free software; you can redistribute it and/or modify
 ##   it under the terms of the GNU General Public License version 2 as
@@ -20,8 +20,8 @@
 ##
 ## Use automake to process this into a Makefile.in
 
-AM_CPPFLAGS = -Wall -DPREFIX=\"$(prefix)\" -Wno-strict-aliasing -I$(top_srcdir)/src -std=c++11 -fPIC @QT5GUI_CFLAGS@ @SWITCHYARD5_CFLAGS@
-MOC = @QT_MOC@
+AM_CPPFLAGS = -Wall -DPREFIX=\"$(prefix)\" -Wno-strict-aliasing -I$(top_srcdir)/src -std=c++17 -fPIC @QT6_CFLAGS@ @SWITCHYARD6_CFLAGS@
+MOC = @QT6_MOC@
 
 # The dependency for qt's Meta Object Compiler (moc)
 moc_%.cpp:	%.h

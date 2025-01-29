@@ -1,8 +1,8 @@
-## automake.am
+## Makefile.am
 ##
 ## Makefile for the drouterd(8) routing service
 ##
-## (C) Copyright 2017-2024 Fred Gleason <fredg@paravelsystems.com>
+## (C) Copyright 2017-2025 Fred Gleason <fredg@paravelsystems.com>
 ##
 ##   This program is free software; you can redistribute it and/or modify
 ##   it under the terms of the GNU General Public License version 2 as
@@ -20,9 +20,9 @@
 ##
 ## Use automake to process this into a Makefile.in
 
-AM_CPPFLAGS = -Wall -DPREFIX=\"$(prefix)\" -I$(top_srcdir)/src -Wno-strict-aliasing -std=c++11 -fPIC @QT5CLI_CFLAGS@ @SWITCHYARD5_CFLAGS@ @LIBSYSTEMD_CFLAGS@
+AM_CPPFLAGS = -Wall -DPREFIX=\"$(prefix)\" -I$(top_srcdir)/src -Wno-strict-aliasing -std=c++17 -fPIC @QT6_CFLAGS@ @SWITCHYARD6_CFLAGS@ @LIBSYSTEMD_CFLAGS@
 LIBS = -L$(top_srcdir)/src/drouter
-MOC = @QT_MOC@
+MOC = @QT6_MOC@
 
 # The dependency for qt's Meta Object Compiler (moc)
 moc_%.cpp:	%.h
@@ -73,7 +73,7 @@ nodist_drouterd_SOURCES = moc_drouter.cpp\
                           moc_ttydevice.cpp\
                           moc_watchdog.cpp
 
-drouterd_LDADD = -ldrouter @QT5CLI_LIBS@ @SWITCHYARD5_LIBS@ @LIBSYSTEMD_LIBS@
+drouterd_LDADD = -ldrouter @QT6_LIBS@ @SWITCHYARD6_LIBS@ @LIBSYSTEMD_LIBS@
 drouterd_LDFLAGS = -rdynamic
 
 dist_dprotod_SOURCES = config.cpp config.h\
@@ -92,7 +92,7 @@ nodist_dprotod_SOURCES = moc_dprotod.cpp\
                          moc_protocol_j.cpp\
                          moc_protocol_sa.cpp
 
-dprotod_LDADD = -ldrouter @QT5CLI_LIBS@ @SWITCHYARD5_LIBS@ @LIBSYSTEMD_LIBS@
+dprotod_LDADD = -ldrouter @QT6_LIBS@ @SWITCHYARD6_LIBS@ @LIBSYSTEMD_LIBS@
 dprotod_LDFLAGS = -rdynamic
 
 dist_tethertest_SOURCES = config.cpp config.h\
@@ -104,17 +104,16 @@ nodist_tethertest_SOURCES = moc_tether.cpp\
                             moc_tethertest.cpp\
                             moc_ttydevice.cpp
 
-tethertest_LDADD = -ldrouter @QT5CLI_LIBS@ @SWITCHYARD5_LIBS@ @LIBSYSTEMD_LIBS@
+tethertest_LDADD = -ldrouter @QT6_LIBS@ @SWITCHYARD6_LIBS@ @LIBSYSTEMD_LIBS@
 tethertest_LDFLAGS = -rdynamic
 
 dist_sendmailtest_SOURCES = config.cpp config.h\
                             sendmail.cpp sendmail.h\
                             sendmailtest.cpp sendmailtest.h
 
-nodist_sendmailtest_SOURCES = moc_sendmail.cpp\
-                              moc_sendmailtest.cpp
+nodist_sendmailtest_SOURCES = moc_sendmailtest.cpp
 
-sendmailtest_LDADD = -ldrouter @QT5CLI_LIBS@ @SWITCHYARD5_LIBS@ @LIBSYSTEMD_LIBS@
+sendmailtest_LDADD = -ldrouter @QT6_LIBS@ @SWITCHYARD6_LIBS@ @LIBSYSTEMD_LIBS@
 sendmailtest_LDFLAGS = -rdynamic
 
 CLEANFILES = *~\

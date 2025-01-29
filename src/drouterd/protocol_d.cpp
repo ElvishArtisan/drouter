@@ -128,7 +128,7 @@ void ProtocolD::readyReadData()
 	break;
 
       default:
-	proto_accum+=0xFF&data[i];
+	proto_accum+=QChar(0xFF&data[i]);
       }
     }
   }

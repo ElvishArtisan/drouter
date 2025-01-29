@@ -2,7 +2,7 @@
 //
 // Component for flashing GPIO devices via LWRP
 //
-//   (C) Copyright 2021-2024 Fred Gleason <fredg@paravelsystems.com>
+//   (C) Copyright 2021-2025 Fred Gleason <fredg@paravelsystems.com>
 //
 //   This program is free software; you can redistribute it and/or modify
 //   it under the terms of the GNU General Public License version 2 as
@@ -25,8 +25,8 @@
 #include <QString>
 #include <QTimer>
 
-#include <sy5/sygpio_server.h>
-#include <sy5/sylwrp_client.h>
+#include <sy6/sygpio_server.h>
+#include <sy6/sylwrp_client.h>
 
 #include "config.h"
 

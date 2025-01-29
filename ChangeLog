@@ -1390,3 +1390,5 @@
 	options to be offered in the right-click menus.
 2025-01-16 Fred Gleason <fredg@paravelsystems.com>
 	* Removed 'link_common.sh'.
+2025-01-28 Fred Gleason <fredg@paravelsystems.com>
+	* Ported the codebase to Qt6.

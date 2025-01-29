@@ -2,7 +2,7 @@
 ##
 ## Automake.am for Switchyard debian/source
 ##
-##   (C) Copyright 2021-2022 Fred Gleason <fredg@paravelsystems.com>
+##   (C) Copyright 2021-2025 Fred Gleason <fredg@paravelsystems.com>
 ##
 ##   This program is free software; you can redistribute it and/or modify
 ##   it under the terms of the GNU General Public License as
@@ -21,3 +21,5 @@
 ## Use automake to process this into a Makefile.in
 
 EXTRA_DIST = format
+
+MAINTAINERCLEANFILES = Makefile.in

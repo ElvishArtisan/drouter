@@ -2,7 +2,7 @@
 //
 // Base class for drouterd(8) protocols
 //
-//   (C) Copyright 2018-2024 Fred Gleason <fredg@paravelsystems.com>
+//   (C) Copyright 2018-2025 Fred Gleason <fredg@paravelsystems.com>
 //
 //   This program is free software; you can redistribute it and/or modify
 //   it under the terms of the GNU General Public License version 2 as
@@ -17,6 +17,8 @@
 //   License along with this program; if not, write to the Free Software
 //   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
 //
+
+#include <syslog.h>
 
 #include <errno.h>
 #include <fcntl.h>
@@ -33,7 +35,7 @@
 #include <QSqlError>
 #include <QStringList>
 
-#include <sy5/sylwrp_client.h>
+#include <sy6/sylwrp_client.h>
 
 #include "protocol.h"
 #include "protoipc.h"
@@ -72,32 +74,17 @@ Protocol::Protocol(QObject *parent)
 
 bool Protocol::startIpc(QString *err_msg)
 {
-  int sock;
-  struct sockaddr_un sa;
-
   //
-  // Connect to DRouter process
+  // Connect to Drouter process
   //
-  if((sock=socket(AF_UNIX,SOCK_SEQPACKET,0))<0) {
-    *err_msg=QString("unable to start protocol ipc [")+strerror(errno)+"]";
-    return false;
-  }
-  memset(&sa,0,sizeof(sa));
-  sa.sun_family=AF_UNIX;
-  strncpy(sa.sun_path,DROUTER_IPC_ADDRESS,UNIX_PATH_MAX-1);
-  if(::connect(sock,(struct sockaddr *)(&sa),sizeof(sa))<0) {
-    *err_msg=QString("unable to attach to drouter service [")+
-      strerror(errno)+"]";
-    return false;
-  }
-  proto_ipc_socket=new QTcpSocket(this);
-  proto_ipc_socket->setSocketDescriptor(sock,QAbstractSocket::ConnectedState);
+  proto_ipc_socket=new QLocalSocket(this);
   connect(proto_ipc_socket,SIGNAL(readyRead()),this,SLOT(ipcReadyReadData()));
+  proto_ipc_socket->connectToServer(DROUTER_IPC_ADDRESS);
 
   //
   // Connect to the Database
   //
-  QSqlDatabase db=QSqlDatabase::addDatabase("QMYSQL3");
+  QSqlDatabase db=QSqlDatabase::addDatabase("QMYSQL");
   db.setHostName("localhost");
   db.setDatabaseName("drouter");
   db.setUserName("drouter");
@@ -196,7 +183,7 @@ void Protocol::ipcReadyReadData()
 	break;
 
       default:
-	proto_ipc_accum+=0xFF&data[i];
+	proto_ipc_accum+=QChar(0xFF&data[i]);
 	break;
       }
     }

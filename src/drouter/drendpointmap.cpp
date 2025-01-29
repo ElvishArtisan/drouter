@@ -2,7 +2,7 @@
 //
 // Map integers to DRouter endpoints.
 //
-// (C) Copyright 2017-2022 Fred Gleason <fredg@paravelsystems.com>
+// (C) Copyright 2017-2025 Fred Gleason <fredg@paravelsystems.com>
 //
 //   This program is free software; you can redistribute it and/or modify
 //   it under the terms of the GNU General Public License version 2 as
@@ -18,12 +18,14 @@
 //   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
 //
 
+#include <syslog.h>
+
 #include <stdio.h>
 #include <unistd.h>
 
 #include <QDir>
 
-#include <sy5/syprofile.h>
+#include <sy6/syprofile.h>
 
 #include "drendpointmap.h"
 
@@ -348,7 +350,10 @@ bool DREndPointMap::load(const QString &filename,QStringList *unused_lines)
       output=
 	p->intValue(section,QString::asprintf("Route%dOutput",route+1),0,&ok);
     }
-
+    syslog(LOG_NOTICE,"Snapshot \"%s\":\"%s\" has %d routes",
+	   routerName().toUtf8().constData(),
+	   map_snapshots.back()->name().toUtf8().constData(),
+	   map_snapshots.back()->routeQuantity());
     snap++;
     section=QString::asprintf("Snapshot%d",snap+1);
     name=p->stringValue(section,"Name","",&ok);

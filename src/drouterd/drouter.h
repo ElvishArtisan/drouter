@@ -2,7 +2,7 @@
 //
 // Dynamic router database component for Drouter
 //
-//   (C) Copyright 2018-2024 Fred Gleason <fredg@paravelsystems.com>
+//   (C) Copyright 2018-2025 Fred Gleason <fredg@paravelsystems.com>
 //
 //   This program is free software; you can redistribute it and/or modify
 //   it under the terms of the GNU General Public License version 2 as
@@ -22,13 +22,15 @@
 #define DROUTER_H
 
 #include <QList>
+#include <QLocalServer>
+#include <QLocalSocket>
 #include <QMap>
 #include <QObject>
 #include <QSignalMapper>
-#include <QTcpServer>
+//#include <QTcpServer>
 #include <QTimer>
 
-#include <sy5/symcastsocket.h>
+#include <sy6/symcastsocket.h>
 
 #include <drouter/drendpointmap.h>
 
@@ -65,6 +67,7 @@ class DRouter : public QObject
 
  private slots:
   void nodeConnectedData(unsigned id,bool state);
+  void nodeConnectionErrorData(unsigned id,QAbstractSocket::SocketError err);
   void sourceChangedData(unsigned id,int slotnum,const SyNode &node,
 			 const SySource &src);
   void destinationChangedData(unsigned id,int slotnum,const SyNode &node,
@@ -78,7 +81,7 @@ class DRouter : public QObject
   void audioSilenceAlarmData(unsigned id,SyLwrpClient::MeterType type,
 			     unsigned slotnum,int chan,bool state);
   void advtReadyReadData(int ifnum);
-  void newIpcConnectionData(int listen_sock);
+  void newIpcConnectionData();
   void ipcReadyReadData(int sock);
   void purgeEventsData();
   void eventAddedData(int evt_id);
@@ -101,11 +104,11 @@ class DRouter : public QObject
   void Log(int prio,const QString &msg) const;
   QMap<unsigned,Matrix *> drouter_nodes;
   QList<SyMcastSocket *> drouter_advt_sockets;
-  QMap<int,QTcpSocket *> drouter_ipc_sockets;
+  QMap<int,QLocalSocket *> drouter_ipc_sockets;
   QMap<int,QString> drouter_ipc_accums;
   QMap<int,DREndPointMap *> drouter_maps;
   QSignalMapper *drouter_ipc_ready_mapper;
-  QTcpServer *drouter_ipc_server;
+  QLocalServer *drouter_ipc_server;
   int *drouter_proto_socks;
   bool drouter_writeable;
   GpioFlasher *drouter_flasher;

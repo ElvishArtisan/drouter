@@ -2,7 +2,7 @@
 //
 // Button container for a single output.
 //
-//   (C) Copyright 2002-2024 Fred Gleason <fredg@paravelsystems.com>
+//   (C) Copyright 2002-2025 Fred Gleason <fredg@paravelsystems.com>
 //
 //   This program is free software; you can redistribute it and/or modify
 //   it under the terms of the GNU General Public License as
@@ -69,7 +69,7 @@ ButtonWidget::ButtonWidget(int router,int output,int columns,DRJParser *parser,
 	  SIGNAL(outputCrosspointChanged(int,int,int)),
 	  this,SLOT(changeOutputCrosspoint(int,int,int)));
   panel_button_mapper=new QSignalMapper(this);
-  connect(panel_button_mapper,SIGNAL(mapped(int)),
+  connect(panel_button_mapper,SIGNAL(mappedInt(int)),
 	  this,SLOT(buttonClickedData(int)));
 }
 

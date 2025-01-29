@@ -2,7 +2,7 @@
 //
 // An applet for activating a snapshot
 //
-//   (C) Copyright 2017-2022 Fred Gleason <fredg@paravelsystems.com>
+//   (C) Copyright 2017-2025 Fred Gleason <fredg@paravelsystems.com>
 //
 //   This program is free software; you can redistribute it and/or modify
 //   it under the terms of the GNU General Public License as
@@ -29,8 +29,8 @@
 #include <QTimer>
 #include <QSettings>
 
-#include <sy5/sycmdswitch.h>
-#include <sy5/symcastsocket.h>
+#include <sy6/sycmdswitch.h>
+#include <sy6/symcastsocket.h>
 
 #include "shotpanel.h"
 
@@ -168,8 +168,8 @@ MainWidget::MainWidget(QWidget *parent)
   panel_parser=new DRJParser(false,this);
   connect(panel_parser,SIGNAL(connected(bool,DRJParser::ConnectionState)),
 	  this,SLOT(connectedData(bool,DRJParser::ConnectionState)));
-  connect(panel_parser,SIGNAL(error(QAbstractSocket::SocketError)),
-	  this,SLOT(errorData(QAbstractSocket::SocketError)));
+  connect(panel_parser,SIGNAL(errorOccurred(QAbstractSocket::SocketError)),
+	  this,SLOT(errorOccurredData(QAbstractSocket::SocketError)));
 
   setWindowTitle(QString("Drouter - ShotPanel [")+VERSION+"]");
 
@@ -238,7 +238,7 @@ void MainWidget::connectedData(bool state,DRJParser::ConnectionState cstate)
 }
 
 
-void MainWidget::errorData(QAbstractSocket::SocketError err)
+void MainWidget::errorOccurredData(QAbstractSocket::SocketError err)
 {
   if(!panel_initial_connected) {
     QMessageBox::warning(this,"ShotPanel - "+tr("Error"),

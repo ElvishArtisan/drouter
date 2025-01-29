@@ -2,7 +2,7 @@
 //
 // dparsertest(8) routing daemon
 //
-//   (C) Copyright 2017-2021 Fred Gleason <fredg@paravelsystems.com>
+//   (C) Copyright 2017-2025 Fred Gleason <fredg@paravelsystems.com>
 //
 //   This program is free software; you can redistribute it and/or modify
 //   it under the terms of the GNU General Public License version 2 as
@@ -25,10 +25,10 @@
 #include <QCoreApplication>
 #include <QSignalMapper>
 
-#include <sy5/sycmdswitch.h>
-#include <sy5/syconfig.h>
-#include <sy5/syinterfaces.h>
-#include <sy5/syprofile.h>
+#include <sy6/sycmdswitch.h>
+#include <sy6/syconfig.h>
+#include <sy6/syinterfaces.h>
+#include <sy6/syprofile.h>
 
 #include "dparsertest.h"
 
@@ -53,7 +53,7 @@ MainObject::MainObject(QObject *parent)
   test_parser=new DRDParser(this);
   connect(test_parser,SIGNAL(connected(bool)),this,SLOT(connectedData(bool)));
   connect(test_parser,
-	  SIGNAL(error(QAbstractSocket::SocketError,const QString &)),
+	  SIGNAL(errorOccurred(QAbstractSocket::SocketError,const QString &)),
 	  this,SLOT(errorData(QAbstractSocket::SocketError,const QString &)));
   connect(test_parser,SIGNAL(nodeAdded(const QHostAddress &)),
 	  this,SLOT(nodeAddedData(const QHostAddress &)));

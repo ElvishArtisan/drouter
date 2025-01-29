@@ -110,7 +110,7 @@ void JsonTest::runTest(int testnum,const QString &testname,
       new QWebSocket(QString(),QWebSocketProtocol::VersionLatest,this);
     connect(d_web_socket,SIGNAL(connected()),this,SLOT(connectedData()));
     connect(d_web_socket,SIGNAL(disconnected()),this,SLOT(disconnectedData()));
-    connect(d_web_socket,SIGNAL(error(QAbstractSocket::SocketError)),
+    connect(d_web_socket,SIGNAL(errorOccurred(QAbstractSocket::SocketError)),
 	    this,SLOT(errorOccurredData(QAbstractSocket::SocketError)));
     connect(d_web_socket,SIGNAL(binaryMessageReceived(const QByteArray &)),
 	    this,SLOT(binaryMessageReceivedData(const QByteArray &)));

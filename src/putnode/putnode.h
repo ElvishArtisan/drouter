@@ -37,7 +37,7 @@ class MainObject : public QObject
  private slots:
   void connectedData();
   void readyReadData();
-  void errorData(QAbstractSocket::SocketError err);
+  void errorOccurredData(QAbstractSocket::SocketError err);
   
  private:
   void SendCommand(const QString &msg);

@@ -2,7 +2,7 @@
 //
 // Software Authority protocol handler for DRouter.
 //
-//   (C) Copyright 2018-2021 Fred Gleason <fredg@paravelsystems.com>
+//   (C) Copyright 2018-2025 Fred Gleason <fredg@paravelsystems.com>
 //
 //   This program is free software; you can redistribute it and/or modify
 //   it under the terms of the GNU General Public License version 2 as
@@ -26,7 +26,7 @@
 #include <QHostInfo>
 #include <QTcpServer>
 
-#include <sy5/sylwrp_client.h>
+#include <sy6/sylwrp_client.h>
 
 #include <drouter/drendpointmap.h>
 #include <drouter/drsqlquery.h>

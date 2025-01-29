@@ -2,7 +2,7 @@
 //
 // Generate a Drouter map from a GVG7000 device
 //
-//   (C) Copyright 2024 Fred Gleason <fredg@paravelsystems.com>
+//   (C) Copyright 2024-2025 Fred Gleason <fredg@paravelsystems.com>
 //
 //   This program is free software; you can redistribute it and/or modify
 //   it under the terms of the GNU General Public License version 2 as
@@ -20,7 +20,7 @@
 
 #include <QDateTime>
 
-#include <sy5/symcastsocket.h>
+#include <sy6/symcastsocket.h>
 
 #include "gvg7000mapper.h"
 
@@ -43,8 +43,8 @@ Gvg7000Mapper::Gvg7000Mapper(DREndPointMap::RouterType type,const
   connect(d_socket,SIGNAL(connected()),this,SLOT(connectedData()));
   connect(d_socket,SIGNAL(disconnected()),this,SLOT(disconnectedData()));
   connect(d_socket,SIGNAL(readyRead()),this,SLOT(readyReadData()));
-  connect(d_socket,SIGNAL(error(QAbstractSocket::SocketError)),
-	  this,SLOT(errorData(QAbstractSocket::SocketError)));
+  connect(d_socket,SIGNAL(errorOccurred(QAbstractSocket::SocketError)),
+	  this,SLOT(errorOccurredData(QAbstractSocket::SocketError)));
 }
 
 
@@ -108,7 +108,7 @@ void Gvg7000Mapper::readyReadData()
 }
 
 
-void Gvg7000Mapper::errorData(QAbstractSocket::SocketError err)
+void Gvg7000Mapper::errorOccurredData(QAbstractSocket::SocketError err)
 {
   emit completed(false,SyMcastSocket::socketErrorText(err));
 }

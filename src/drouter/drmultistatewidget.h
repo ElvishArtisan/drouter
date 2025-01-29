@@ -24,7 +24,7 @@
 
 #include <QWidget>
 
-#include <sy5/syconfig.h>
+#include <sy6/syconfig.h>
 
 #define DRMULTISTATEWIDGET_SHORT_EDGE 10
 #define DRMULTISTATEWIDGET_LONG_EDGE 50

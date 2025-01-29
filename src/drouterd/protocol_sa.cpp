@@ -2,7 +2,7 @@
 //
 // Software Authority protocol handler for DRouter.
 //
-//   (C) Copyright 2018-2022 Fred Gleason <fredg@paravelsystems.com>
+//   (C) Copyright 2018-2025 Fred Gleason <fredg@paravelsystems.com>
 //
 //   This program is free software; you can redistribute it and/or modify
 //   it under the terms of the GNU General Public License version 2 as
@@ -26,7 +26,7 @@
 #include <QSqlError>
 #include <QStringList>
 
-#include <sy5/syrouting.h>
+#include <sy6/syrouting.h>
 
 #include "protocol_sa.h"
 
@@ -134,7 +134,7 @@ void ProtocolSa::readyReadData()
 	break;
 
       default:
-	proto_accum+=0xFF&data[i];
+	proto_accum+=QChar(0xFF&data[i]);
       }
     }
   }
@@ -822,7 +822,7 @@ void ProtocolSa::ProcessCommand(const QString &cmd)
       proto_socket->write((proto_help_strings[""]+"\r\n\r\n").toUtf8());
     }
     else {
-      if(proto_help_strings[cmds[1].toLower()]==NULL) {
+      if(proto_help_strings.value(cmds[1].toLower(),QString()).isEmpty()) {
 	proto_socket->write(QString("\r\n\r\n").toUtf8());
       }
       else {

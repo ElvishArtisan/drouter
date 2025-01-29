@@ -91,8 +91,8 @@ void DRDParser::connectToHost(const QString &hostname,uint16_t port)
   d_socket=new QTcpSocket(this);
   connect(d_socket,SIGNAL(connected()),this,SLOT(connectedData()));
   connect(d_socket,SIGNAL(readyRead()),this,SLOT(readyReadData()));
-  connect(d_socket,SIGNAL(error(QAbstractSocket::SocketError)),
-	  this,SLOT(errorData(QAbstractSocket::SocketError)));
+  connect(d_socket,SIGNAL(errorOccurred(QAbstractSocket::SocketError)),
+	  this,SLOT(errorOccurredData(QAbstractSocket::SocketError)));
   d_socket->connectToHost(d_hostname,d_port);
 }
 
@@ -123,7 +123,7 @@ void DRDParser::readyReadData()
 	break;
 
       default:
-	d_accum+=0xFF&data[i];
+	d_accum+=QChar(0xFF&data[i]);
 	break;
       }
     }
@@ -131,7 +131,7 @@ void DRDParser::readyReadData()
 }
 
 
-void DRDParser::errorData(QAbstractSocket::SocketError err)
+void DRDParser::errorOccurredData(QAbstractSocket::SocketError err)
 {
   QString err_msg=tr("Socket Error")+QString::asprintf(" %u",err);
 

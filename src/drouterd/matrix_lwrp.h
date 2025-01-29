@@ -2,7 +2,7 @@
 //
 // LWRP matrix implementation
 //
-// (C) 2023-2024 Fred Gleason <fredg@paravelsystems.com>
+// (C) 2023-2025 Fred Gleason <fredg@paravelsystems.com>
 //
 //    This program is free software; you can redistribute it and/or modify
 //    it under the terms of version 2.1 of the GNU Lesser General Public
@@ -22,7 +22,7 @@
 #ifndef MATRIX_LWRP_H
 #define MATRIX_LWRP_H
 
-#include <sy5/sylwrp_client.h>
+#include <sy6/sylwrp_client.h>
 
 #include "matrix.h"
 
@@ -71,6 +71,7 @@ class MatrixLwrp :public Matrix
 
  private slots:
   void nodeConnectedData(unsigned id,bool state);
+  void connectionErrorData(unsigned id,QAbstractSocket::SocketError err);
   void sourceChangedData(unsigned id,int slotnum,const SyNode &node,
 			 const SySource &src);
   void destinationChangedData(unsigned id,int slotnum,const SyNode &node,

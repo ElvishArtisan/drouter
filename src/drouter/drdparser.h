@@ -2,7 +2,7 @@
 //
 // Parser for Protocol D
 //
-// (C) Copyright 2017-2021 Fred Gleason <fredg@paravelsystems.com>
+// (C) Copyright 2017-2025 Fred Gleason <fredg@paravelsystems.com>
 //
 //   This program is free software; you can redistribute it and/or modify
 //   it under the terms of the GNU General Public License version 2 as
@@ -31,9 +31,9 @@
 #include <QTcpSocket>
 #include <QTimer>
 
-#include <sy5/sydestination.h>
-#include <sy5/synode.h>
-#include <sy5/sysource.h>
+#include <sy6/sydestination.h>
+#include <sy6/synode.h>
+#include <sy6/sysource.h>
 
 #define DRDPARSER_WATCHDOG_POLL_INTERVAL 1000
 #define DRDPARSER_WATCHDOG_TIMEOUT_INTERVAL 3000
@@ -68,7 +68,7 @@ class DRDParser : public QObject
  private slots:
   void connectedData();
   void readyReadData();
-  void errorData(QAbstractSocket::SocketError err);
+  void errorOccurredData(QAbstractSocket::SocketError err);
   void pollTimerData();
   void watchdogTimerData();
 

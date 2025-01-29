@@ -2,7 +2,7 @@
 //
 // Router matrix implementation for Broadcast Tools Universal 4.1 MLR>>Web
 //
-// (C) 2024 Fred Gleason <fredg@paravelsystems.com>
+// (C) 2024-2025 Fred Gleason <fredg@paravelsystems.com>
 //
 //    This program is free software; you can redistribute it and/or modify
 //    it under the terms of version 2.1 of the GNU Lesser General Public
@@ -23,7 +23,7 @@
 
 #include <QStringList>
 
-#include <sy5/symcastsocket.h>
+#include <sy6/symcastsocket.h>
 
 #include "matrix_gvg7000.h"
 
@@ -420,7 +420,6 @@ void MatrixGvg7000::ProcessGvgCommand(const QByteArray &msg)
 
 void MatrixGvg7000::SendGvgCommand(const QString &str)
 {
-  //  printf("SEND: %s\n",GvgPrettify(str.toUtf8()).toUtf8().constData());
   d_socket->write(ToGvgNative(str));
 }
 

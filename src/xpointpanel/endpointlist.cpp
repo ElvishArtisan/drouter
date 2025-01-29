@@ -455,8 +455,9 @@ void EndpointList::copySlotNumberData()
 void EndpointList::mousePressEvent(QMouseEvent *e)
 {
   if((list_mouse_endpoint=LocalEndpoint(e))>=0) {
-    list_mouse_position=e->globalPos();
-    list_mouse_menu->popup(e->globalPos());
+    list_mouse_position=e->globalPosition();
+    list_mouse_menu->
+      popup(QPoint(e->globalPosition().x(),e->globalPosition().y()));
   }
   QWidget::mousePressEvent(e);
 }
@@ -468,7 +469,8 @@ void EndpointList::mouseMoveEvent(QMouseEvent *e)
   // Get the Endpoint
   //
   int rownum=(e->pos().x()+list_position)/ENDPOINTLIST_ITEM_HEIGHT;
-  QPoint pos(e->globalPos().x(),e->globalPos().y()-ENDPOINTLIST_ITEM_HEIGHT-13);
+  QPoint pos(e->globalPosition().x(),
+	     e->globalPosition().y()-ENDPOINTLIST_ITEM_HEIGHT-13);
 
   if(list_orientation==Qt::Horizontal) {
     rownum=(e->pos().y()+list_position)/ENDPOINTLIST_ITEM_HEIGHT;

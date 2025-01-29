@@ -2,7 +2,7 @@
 //
 // Dynamic router database component for Drouter
 //
-//   (C) Copyright 2018-2024 Fred Gleason <fredg@paravelsystems.com>
+//   (C) Copyright 2018-2025 Fred Gleason <fredg@paravelsystems.com>
 //
 //   This program is free software; you can redistribute it and/or modify
 //   it under the terms of the GNU General Public License version 2 as
@@ -34,8 +34,8 @@
 #include <QSqlError>
 #include <QVariant>
 
-#include <sy5/syconfig.h>
-#include <sy5/syinterfaces.h>
+#include <sy6/syconfig.h>
+#include <sy6/syinterfaces.h>
 
 #include <drouter/drsqlquery.h>
 
@@ -241,8 +241,6 @@ bool DRouter::isWriteable() const
 
 void DRouter::setCrosspoint(int router,int output,int input)
 {
-  //  printf("DRouter::setCrosspoint(%d,%d,%d)\n",router,output,input);
-
   DREndPointMap *map=drouter_maps.value(router);
   if(map==NULL) {
     syslog(LOG_WARNING,"router: %d - no such router",1+router);
@@ -593,6 +591,15 @@ void DRouter::nodeConnectedData(unsigned id,bool state)
 }
 
 
+void DRouter::nodeConnectionErrorData(unsigned id,
+				      QAbstractSocket::SocketError err)
+{
+  syslog(LOG_WARNING,"connection error %s at device %s",
+	 SyMcastSocket::socketErrorText(err).toUtf8().constData(),
+	 QHostAddress(id).toString().toUtf8().constData());
+}
+
+
 void DRouter::sourceChangedData(unsigned id,int slotnum,const SyNode &node,
 				const SySource &src)
 {
@@ -819,23 +826,17 @@ void DRouter::advtReadyReadData(int ifnum)
 }
 
 
-void DRouter::newIpcConnectionData(int listen_sock)
+void DRouter::newIpcConnectionData()
 {
-  int sock;
-
-  if((sock=accept(listen_sock,NULL,NULL))<0) {
-    syslog(LOG_WARNING,"DRouter::newIpcConnectionData - accept failed [%s]",strerror(errno));
-    return;
-  }
-  drouter_ipc_sockets[sock]=new QTcpSocket(this);
-  drouter_ipc_accums[sock]=QString();
-  drouter_ipc_sockets[sock]->
-    setSocketDescriptor(sock,QAbstractSocket::ConnectedState);
-  connect(drouter_ipc_sockets[sock],SIGNAL(readyRead()),
+  QLocalSocket *sock=drouter_ipc_server->nextPendingConnection();
+  drouter_ipc_sockets[sock->socketDescriptor()]=sock;
+  drouter_ipc_accums[sock->socketDescriptor()]=QString();
+  connect(drouter_ipc_sockets[sock->socketDescriptor()],SIGNAL(readyRead()),
 	  drouter_ipc_ready_mapper,SLOT(map()));
   drouter_ipc_ready_mapper->
-    setMapping(drouter_ipc_sockets[sock],sock);
-  syslog(LOG_DEBUG,"opened new IPC connection %d", sock);
+    setMapping(drouter_ipc_sockets[sock->socketDescriptor()],
+	       sock->socketDescriptor());
+  syslog(LOG_DEBUG,"opened new IPC connection %lld", sock->socketDescriptor());
 }
 
 
@@ -845,6 +846,7 @@ void DRouter::ipcReadyReadData(int sock)
   int n;
 
   while((n=drouter_ipc_sockets[sock]->read(data,1500))>0) {
+    data[n]=0;
     for(int i=0;i<n;i++) {
       switch(0xFF&data[i]) {
       case 10:
@@ -858,7 +860,7 @@ void DRouter::ipcReadyReadData(int sock)
 	break;
 
       default:
-	drouter_ipc_accums[sock]+=0xFF&data[i];
+	drouter_ipc_accums[sock]+=QChar(0xFF&data[i]);
 	break;
       }
     }
@@ -898,7 +900,7 @@ void DRouter::dbKeepaliveData()
 void DRouter::NotifyProtocols(const QString &type,const QString &id,
 			      int srcs,int dsts,int gpis,int gpos)
 {
-  for(QMap<int,QTcpSocket *>::iterator it=drouter_ipc_sockets.begin();
+  for(QMap<int,QLocalSocket *>::iterator it=drouter_ipc_sockets.begin();
       it!=drouter_ipc_sockets.end();it++) {
     if(gpos<0) {
       it.value()->write((type+":"+id+"\r\n").toUtf8());
@@ -914,38 +916,17 @@ void DRouter::NotifyProtocols(const QString &type,const QString &id,
 
 bool DRouter::StartProtocolIpc(QString *err_msg)
 {
-  int sock;
-  struct sockaddr_un sa;
-
-  //
-  // UNIX Server
-  //
   unlink(DROUTER_IPC_ADDRESS);
-  if((sock=socket(AF_UNIX,SOCK_SEQPACKET,0))<0) {
-    *err_msg=tr("unable to start protocol ipc")+" ["+strerror(errno)+"]";
-    return false;
-  }
-  memset(&sa,0,sizeof(sa));
-  sa.sun_family=AF_UNIX;
-  strncpy(sa.sun_path,DROUTER_IPC_ADDRESS,UNIX_PATH_MAX-1);
-  if(bind(sock,(struct sockaddr *)(&sa),sizeof(sa))<0) {
-    *err_msg=tr("unable to bind protocol ipc")+" ["+strerror(errno)+"]";
-    return false;
-  }
-  if(listen(sock,3)<0) {
-    *err_msg=tr("unable to listen protocol ipc")+" ["+strerror(errno)+"]";
-    return false;
-  }
-  QSocketNotifier *socknotify=
-    new QSocketNotifier(sock,QSocketNotifier::Read,this);
-  connect(socknotify,SIGNAL(activated(int)),
-	  this,SLOT(newIpcConnectionData(int)));
+  drouter_ipc_server=new QLocalServer(this);
+  drouter_ipc_server->listen(DROUTER_IPC_ADDRESS);
+  connect(drouter_ipc_server,SIGNAL(newConnection()),
+	  this,SLOT(newIpcConnectionData()));
 
   //
   // Slot Mappers
   //
   drouter_ipc_ready_mapper=new QSignalMapper(this);
-  connect(drouter_ipc_ready_mapper,SIGNAL(mapped(int)),
+  connect(drouter_ipc_ready_mapper,SIGNAL(mappedInt(int)),
 	  this,SLOT(ipcReadyReadData(int)));
 
   return true;
@@ -1093,7 +1074,7 @@ bool DRouter::StartDb(QString *err_msg)
   //
   // Connect to Database
   //
-  QSqlDatabase db=QSqlDatabase::addDatabase("QMYSQL3");
+  QSqlDatabase db=QSqlDatabase::addDatabase("QMYSQL");
   db.setHostName("localhost");
   db.setDatabaseName("drouter");
   db.setUserName("drouter");
@@ -1521,7 +1502,7 @@ bool DRouter::StartLivewire(QString *err_msg)
     // Livewire Advertisement Sockets
     //
     QSignalMapper *mapper=new QSignalMapper(this);
-    connect(mapper,SIGNAL(mapped(int)),this,SLOT(advtReadyReadData(int)));
+    connect(mapper,SIGNAL(mappedInt(int)),this,SLOT(advtReadyReadData(int)));
     SyInterfaces *ifaces=new SyInterfaces();
     if(!ifaces->update()) {
       syslog(LOG_ERR,"unable to get network interface information, aborting");
@@ -1557,6 +1538,9 @@ Matrix *DRouter::StartMatrix(DREndPointMap::MatrixType type,unsigned id)
   Matrix *mtx=MatrixFactory(type,id,drouter_config,this);
   connect(mtx,SIGNAL(connected(unsigned,bool)),
 	  this,SLOT(nodeConnectedData(unsigned,bool)));
+  connect(mtx,SIGNAL(connectionError(unsigned,QAbstractSocket::SocketError)),
+	  this,
+	  SLOT(nodeConnectionErrorData(unsigned,QAbstractSocket::SocketError)));
   connect(mtx,
 	  SIGNAL(sourceChanged(unsigned,int,const SyNode,const SySource &)),
 	  this,SLOT(sourceChangedData(unsigned,int,const SyNode,
@@ -1617,13 +1601,14 @@ void DRouter::LoadMaps()
   //
   QStringList msgs;
   if(!DREndPointMap::loadSet(&drouter_maps,&msgs)) {
-    syslog(LOG_ERR,"SA map load error: %s\n",(const char *)msgs.join("\n").toUtf8());
+    syslog(LOG_ERR,"router map load error: %s\n",
+	   msgs.join("\n").toUtf8().constData());
     exit(1);
   }
   for(int i=0;i<msgs.size();i++) {
-    syslog(LOG_DEBUG,"%s",(const char *)msgs.at(i).toUtf8());
+    syslog(LOG_DEBUG,"%s",msgs.at(i).toUtf8().constData());
   }
-  syslog(LOG_INFO,"loaded %d SA map(s)",drouter_maps.size());
+  syslog(LOG_INFO,"loaded %lld router map(s)",drouter_maps.size());
 }
 
 

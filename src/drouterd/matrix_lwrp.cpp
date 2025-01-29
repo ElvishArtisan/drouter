@@ -2,7 +2,7 @@
 //
 // LWRP matrix implementation
 //
-// (C) 2023-2024 Fred Gleason <fredg@paravelsystems.com>
+// (C) 2023-2025 Fred Gleason <fredg@paravelsystems.com>
 //
 //    This program is free software; you can redistribute it and/or modify
 //    it under the terms of version 2.1 of the GNU Lesser General Public
@@ -52,6 +52,10 @@ MatrixLwrp::MatrixLwrp(unsigned id,Config *conf,QObject *parent)
 				   unsigned,int,bool)),
 	  this,SLOT(audioSilenceAlarmData(unsigned,SyLwrpClient::MeterType,
 					  unsigned,int,bool)));
+  connect(d_lwrp_client,
+	  SIGNAL(connectionError(unsigned,QAbstractSocket::SocketError)),
+	  this,
+	  SLOT(connectionErrorData(unsigned,QAbstractSocket::SocketError)));
 }
 
 
@@ -270,6 +274,13 @@ void MatrixLwrp::nodeConnectedData(unsigned id,bool state)
   d_description=SyNode::productName(deviceName(),gpis(),gpos());
 
   emit connected(id,state);
+}
+
+
+void MatrixLwrp::connectionErrorData(unsigned id,
+				     QAbstractSocket::SocketError err)
+{
+  emit connectionError(id,err);
 }
 
 

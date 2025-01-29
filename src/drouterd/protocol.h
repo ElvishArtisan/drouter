@@ -2,7 +2,7 @@
 //
 // Base class for drouterd(8) protocols
 //
-//   (C) Copyright 2018-2024 Fred Gleason <fredg@paravelsystems.com>
+//   (C) Copyright 2018-2025 Fred Gleason <fredg@paravelsystems.com>
 //
 //   This program is free software; you can redistribute it and/or modify
 //   it under the terms of the GNU General Public License version 2 as
@@ -23,10 +23,10 @@
 
 #include <QHostAddress>
 #include <QObject>
-#include <QTcpSocket>
+#include <QLocalSocket>
 #include <QTimer>
 
-#include <sy5/sylwrp_client.h>
+#include <sy6/sylwrp_client.h>
 
 #include "config.h"
 
@@ -80,7 +80,7 @@ class Protocol : public QObject
 
  private:
   void ProcessIpcCommand(const QString &cmd);
-  QTcpSocket *proto_ipc_socket;
+  QLocalSocket *proto_ipc_socket;
   QString proto_ipc_accum;
   QTimer *proto_shutdown_timer;
   Config *proto_config;

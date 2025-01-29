@@ -2,7 +2,7 @@
 //
 // Protocol J protocol handler for DRouter.
 //
-//   (C) Copyright 2018-2024 Fred Gleason <fredg@paravelsystems.com>
+//   (C) Copyright 2018-2025 Fred Gleason <fredg@paravelsystems.com>
 //
 //   This program is free software; you can redistribute it and/or modify
 //   it under the terms of the GNU General Public License version 2 as
@@ -29,7 +29,7 @@
 #include <QSqlError>
 #include <QStringList>
 
-#include <sy5/syrouting.h>
+#include <sy6/syrouting.h>
 
 #include "protocol_j.h"
 

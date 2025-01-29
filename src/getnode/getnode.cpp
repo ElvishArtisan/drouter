@@ -2,7 +2,7 @@
 //
 // getnode() LWRP dump utility
 //
-//   (C) Copyright 2024 Fred Gleason <fredg@paravelsystems.com>
+//   (C) Copyright 2024-2025 Fred Gleason <fredg@paravelsystems.com>
 //
 //   This program is free software; you can redistribute it and/or modify
 //   it under the terms of the GNU General Public License version 2 as
@@ -24,7 +24,8 @@
 #include <stdio.h>
 #include <stdlib.h>
 
-#include <sy5/sycmdswitch.h>
+#include <sy6/sycmdswitch.h>
+#include <sy6/symcastsocket.h>
 
 #include "getnode.h"
 
@@ -68,8 +69,8 @@ MainObject::MainObject(QObject *parent)
   d_socket=new QTcpSocket(this);
   connect(d_socket,SIGNAL(connected()),this,SLOT(connectedData()));
   connect(d_socket,SIGNAL(readyRead()),this,SLOT(readyReadData()));
-  connect(d_socket,SIGNAL(error(QAbstractSocket::SocketError)),
-	  this,SLOT(errorData(QAbstractSocket::SocketError)));
+  connect(d_socket,SIGNAL(errorOccurred(QAbstractSocket::SocketError)),
+	  this,SLOT(errorOccurredData(QAbstractSocket::SocketError)));
   d_socket->connectToHost(hostname,port);
 }
 
@@ -110,9 +111,10 @@ void MainObject::readyReadData()
 }
 
 
-void MainObject::errorData(QAbstractSocket::SocketError err)
+void MainObject::errorOccurredData(QAbstractSocket::SocketError err)
 {
-  fprintf(stderr,"getnode: received socket error %d\n",err);
+  fprintf(stderr,"getnode: %s\n",
+	  SyMcastSocket::socketErrorText(err).toUtf8().constData());
   exit(1);
 }
 

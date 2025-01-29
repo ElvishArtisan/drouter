@@ -157,11 +157,12 @@ FileDescriptorLimit=1024
 
 
 ; Livewire Support
-[Matrix1]
-Type=LWRP
+;[Matrix1]
+;Type=LWRP
 
 ; Other matrix types can be enabled here, see the drouter.conf(5) man page.
-[Matrix2]
+;[Matrix2]
+[Matrix1]
 Type=GVG7000
 HostAddress=@GVG7000_IP@
 HostPort=12345

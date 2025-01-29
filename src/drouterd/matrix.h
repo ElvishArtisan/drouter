@@ -2,7 +2,7 @@
 //
 // Abstract base class for router matrices
 //
-// (C) 2023-2024 Fred Gleason <fredg@paravelsystems.com>
+// (C) 2023-2025 Fred Gleason <fredg@paravelsystems.com>
 //
 //    This program is free software; you can redistribute it and/or modify
 //    it under the terms of version 2.1 of the GNU Lesser General Public
@@ -30,7 +30,7 @@
 #include <QTcpSocket>
 #include <QTimer>
 
-#include <sy5/sylwrp_client.h>
+#include <sy6/sylwrp_client.h>
 
 #include <drouter/drendpointmap.h>
 

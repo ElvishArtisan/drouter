@@ -458,7 +458,7 @@ void DRJParser::readyReadData()
 }
 
 
-void DRJParser::errorData(QAbstractSocket::SocketError err)
+void DRJParser::errorOccurredData(QAbstractSocket::SocketError err)
 {
   emit error(err);
   j_holdoff_timer->start(DRJPARSER_HOLDOFF_INTERVAL);
@@ -650,6 +650,6 @@ void DRJParser::MakeSocket()
   connect(j_socket,SIGNAL(disconnected()),
 	  this,SLOT(connectionClosedData()));
   connect(j_socket,SIGNAL(readyRead()),this,SLOT(readyReadData()));
-  connect(j_socket,SIGNAL(error(QAbstractSocket::SocketError)),
-	  this,SLOT(errorData(QAbstractSocket::SocketError)));
+  connect(j_socket,SIGNAL(errorOccurred(QAbstractSocket::SocketError)),
+	  this,SLOT(errorOccurredData(QAbstractSocket::SocketError)));
 }

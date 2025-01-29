@@ -2,7 +2,7 @@
 //
 // Dynamic router service for Livewire networks
 //
-//   (C) Copyright 2017-2024 Fred Gleason <fredg@paravelsystems.com>
+//   (C) Copyright 2017-2025 Fred Gleason <fredg@paravelsystems.com>
 //
 //   This program is free software; you can redistribute it and/or modify
 //   it under the terms of the GNU General Public License version 2 as
@@ -28,7 +28,7 @@
 
 #include <QCoreApplication>
 
-#include <sy5/sycmdswitch.h>
+#include <sy6/sycmdswitch.h>
 
 #ifdef LIBSYSTEMD
 #include <systemd/sd-daemon.h>

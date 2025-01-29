@@ -42,7 +42,7 @@ class Gvg7000Mapper : public QObject
   void connectedData();
   void disconnectedData();
   void readyReadData();
-  void errorData(QAbstractSocket::SocketError err);
+  void errorOccurredData(QAbstractSocket::SocketError err);
 
  private:
   void DispatchGvgCommand(const QByteArray &msg);

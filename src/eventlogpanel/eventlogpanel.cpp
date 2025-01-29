@@ -2,7 +2,7 @@
 //
 // Applet for reading the event log
 //
-//   (C) Copyright 2002-2022 Fred Gleason <fredg@paravelsystems.com>
+//   (C) Copyright 2002-2025 Fred Gleason <fredg@paravelsystems.com>
 //
 //   This program is free software; you can redistribute it and/or modify
 //   it under the terms of the GNU General Public License as
@@ -25,7 +25,7 @@
 #include <QSqlDatabase>
 #include <QSqlError>
 
-#include <sy5/sycmdswitch.h>
+#include <sy6/sycmdswitch.h>
 
 #include "eventlogpanel.h"
 #include "richtextdelegate.h"
@@ -102,7 +102,7 @@ MainWidget::MainWidget(QWidget *parent)
   //
   // Connect to Database
   //
-  QSqlDatabase db=QSqlDatabase::addDatabase("QMYSQL3");
+  QSqlDatabase db=QSqlDatabase::addDatabase("QMYSQL");
   db.setHostName(db_hostname);
   db.setDatabaseName(db_dbname);
   db.setUserName(db_username);

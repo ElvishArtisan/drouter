@@ -27,8 +27,8 @@
 #include <QObject>
 #include <QTimer>
 
-#include <sy5/symcastsocket.h>
-#include <sy5/sylwrp_client.h>
+#include <sy6/symcastsocket.h>
+#include <sy6/sylwrp_client.h>
 
 #include <drouter/drdparser.h>
 #include <drouter/drendpointmap.h>

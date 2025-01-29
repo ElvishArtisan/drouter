@@ -2,7 +2,7 @@
 //
 // Applet for activating a snapshot
 //
-//   (C) Copyright 2017-2024 Fred Gleason <fredg@paravelsystems.com>
+//   (C) Copyright 2017-2025 Fred Gleason <fredg@paravelsystems.com>
 //
 //   This program is free software; you can redistribute it and/or modify
 //   it under the terms of the GNU General Public License as
@@ -48,7 +48,7 @@ class MainWidget : public QWidget
   void routerBoxActivatedData(int n);
   void activateData();
   void connectedData(bool state,DRJParser::ConnectionState cstate);
-  void errorData(QAbstractSocket::SocketError err);
+  void errorOccurredData(QAbstractSocket::SocketError err);
 
  protected:
   void resizeEvent(QResizeEvent *e);

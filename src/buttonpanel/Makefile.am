@@ -1,8 +1,8 @@
-## automake.am
+## Makefile.am
 ##
 ## Makefile for the buttonpanel(1) applet
 ##
-## (C) Copyright 2016-2024 Fred Gleason <fredg@paravelsystems.com>
+## (C) Copyright 2016-2025 Fred Gleason <fredg@paravelsystems.com>
 ##
 ##   This program is free software; you can redistribute it and/or modify
 ##   it under the terms of the GNU General Public License as
@@ -20,9 +20,9 @@
 ##
 ## Use automake to process this into a Makefile.in
 
-AM_CPPFLAGS = -Wall -DPREFIX=\"$(prefix)\" -I$(top_srcdir)/src -Wno-strict-aliasing -std=c++11 -fPIC @QT5GUI_CFLAGS@ @SWITCHYARD5_CFLAGS@
+AM_CPPFLAGS = -Wall -DPREFIX=\"$(prefix)\" -I$(top_srcdir)/src -Wno-strict-aliasing -std=c++17 -fPIC @QT6_CFLAGS@ @SWITCHYARD6_CFLAGS@
 LIBS = -L$(top_srcdir)/src/drouter
-MOC = @QT_MOC@
+MOC = @QT6_MOC@
 
 # The dependency for qt's Meta Object Compiler (moc)
 moc_%.cpp:	%.h
@@ -52,7 +52,7 @@ nodist_buttonpanel_SOURCES = moc_autolabel.cpp\
                              moc_statebutton.cpp\
                              moc_statelight.cpp
 
-buttonpanel_LDADD = -ldrouter @QT5GUI_LIBS@ @SWITCHYARD5_LIBS@
+buttonpanel_LDADD = -ldrouter @QT6_LIBS@ @SWITCHYARD6_LIBS@
 buttonpanel_LDFLAGS = -rdynamic
 
 CLEANFILES = *~\

@@ -4,7 +4,7 @@ dnl Autoconf configuration
 dnl
 dnl Use autoconf to process this into a configure script
 dnl
-dnl   (C) Copyright 2014-2024 Fred Gleason <fredg@paravelsystems.com>
+dnl   (C) Copyright 2014-2025 Fred Gleason <fredg@paravelsystems.com>
 dnl
 dnl   This program is free software; you can redistribute it and/or modify
 dnl   it under the terms of the GNU General Public License version 2 as
@@ -100,15 +100,12 @@ AC_SUBST(GVG7000_IP,$DROUTER_TEST_GVG7000_IP)
 #
 # Check for Qt (Mandatory)
 #
-PKG_CHECK_MODULES(QT5CLI,Qt5Core Qt5Network Qt5Sql Qt5WebSockets,[],[AC_MSG_ERROR([*** Qt5 CLI components not found ***])])
-PKG_CHECK_MODULES(QT5GUI,Qt5Core Qt5Gui Qt5Widgets Qt5Network Qt5Sql Qt5WebSockets,[],[AC_MSG_ERROR([*** Qt5 GUI components not found ***])])
-AC_CHECK_PROG(MOC_NAME,moc-qt5,[moc-qt5],[moc])
-AC_SUBST(QT_MOC,$MOC_NAME)
+AQ_FIND_QT6(QT6,Core Gui Widgets Network Sql WebSockets,[],[AC_MSG_ERROR([*** Qt6 GUI components not found ***])])
 
 #
-# Check for Switchyard5 (Mandatory)
+# Check for Switchyard6 (Mandatory)
 #
-PKG_CHECK_MODULES(SWITCHYARD5,switchyard5,[],[AC_MSG_ERROR([*** Switchyard5 not found ***])])
+PKG_CHECK_MODULES(SWITCHYARD6,switchyard6,[],[AC_MSG_ERROR([*** Switchyard6 not found ***])])
 
 #
 # Determine Distro
@@ -123,16 +120,11 @@ case "$ar_distro_id" in
        DISTRO_FAMILY="|                       Distribution Family ... Debian    |"
        DISTRO_FAMILY="|                      Distribution Family ... Debian     |"
        DISTRO_NAME="|                         Distribution Name ... Debian    |"
-       AC_SUBST(APACHE_PKG,"apache2")
-       AC_SUBST(APACHE_CONFIG_DIR,"/etc/apache2/conf.d")
        AC_SUBST(USERMODE_PKG,"")
        AC_SUBST(MYSQL_PKG,"mariadb-client")
-       AC_SUBST(QT_MYSQL_PKG,"libqt5sql5-mysql")
-       AC_SUBST(DOC_PATH,"/usr/share/doc/rivendell")
+       AC_SUBST(QT_MYSQL_PKG,"libqt6sql6-mysql")
+       AC_SUBST(DOC_PATH,"/usr/share/doc/drouter")
        AC_SUBST(HAVE_USERMODE,"no")
-       AC_SUBST(RDALSACONFIG_DESKTOP_FILE,"rivendell-rdalsaconfig-sudo.desktop")
-       AC_SUBST(RDDBCONFIG_DESKTOP_FILE,"rivendell-rddbconfig-sudo.desktop")
-       AC_SUBST(PYPAD_DEPS,"python3 python3-pycurl python3-requests python3-pyserial python3-mysql python3-urllib3")
      ;;
 
      raspbian)
@@ -140,16 +132,11 @@ case "$ar_distro_id" in
          DISTRO_FAMILY="|                      Distribution Family ... Debian     |"
        DISTRO_IS_DEBIANISH=yes
        DISTRO_NAME="|                        Distribution Name ... Raspbian  |"
-       AC_SUBST(APACHE_PKG,"apache2")
-       AC_SUBST(APACHE_CONFIG_DIR,"/etc/apache2/conf.d")
        AC_SUBST(USERMODE_PKG,"")
        AC_SUBST(MYSQL_PKG,"mariadb-client")
-       AC_SUBST(QT_MYSQL_PKG,"libqt5sql5-mysql")
-       AC_SUBST(DOC_PATH,"/usr/share/doc/rivendell")
+       AC_SUBST(QT_MYSQL_PKG,"libqt6sql6-mysql")
+       AC_SUBST(DOC_PATH,"/usr/share/doc/drouter")
        AC_SUBST(HAVE_USERMODE,"no")
-       AC_SUBST(RDALSACONFIG_DESKTOP_FILE,"rivendell-rdalsaconfig-sudo.desktop")
-       AC_SUBST(RDDBCONFIG_DESKTOP_FILE,"rivendell-rddbconfig-sudo.desktop")
-       AC_SUBST(PYPAD_DEPS,"python3 python3-pycurl python3-requests python3-pyserial python3-mysql python3-urllib3")
      ;;
 
      linuxmint|ubuntu)
@@ -162,16 +149,11 @@ case "$ar_distro_id" in
          DISTRO_NAME="|                        Distribution Name ... Ubuntu    |"
        fi
        DISTRO_IS_DEBIANISH=yes
-       AC_SUBST(APACHE_PKG,"apache2")
-       AC_SUBST(APACHE_CONFIG_DIR,"/etc/apache2/conf.d")
        AC_SUBST(USERMODE_PKG,"")
        AC_SUBST(MYSQL_PKG,"mariadb-client")
-       AC_SUBST(QT_MYSQL_PKG,"libqt5sql5-mysql")
-       AC_SUBST(DOC_PATH,"/usr/share/doc/rivendell")
+       AC_SUBST(QT_MYSQL_PKG,"libqt6sql6-mysql")
+       AC_SUBST(DOC_PATH,"/usr/share/doc/drouter")
        AC_SUBST(HAVE_USERMODE,"no")
-       AC_SUBST(RDALSACONFIG_DESKTOP_FILE,"rivendell-rdalsaconfig-sudo.desktop")
-       AC_SUBST(RDDBCONFIG_DESKTOP_FILE,"rivendell-rddbconfig-sudo.desktop")
-       AC_SUBST(PYPAD_DEPS,"python3 python3-pycurl python3-requests python3-pyserial python3-mysql python3-urllib3")
      ;;
 
      centos|fedora|rhel|rocky)
@@ -189,31 +171,21 @@ case "$ar_distro_id" in
        if test $ar_distro_id = "rocky" ; then
          DISTRO_NAME="|                         Distribution Name ... Rocky     |"
        fi
-       AC_SUBST(APACHE_PKG,"httpd")
-       AC_SUBST(APACHE_CONFIG_DIR,"/etc/httpd/conf.d")
        AC_SUBST(USERMODE_PKG,"usermode usermode-gtk")
        AC_SUBST(MYSQL_PKG,"mariadb")
        AC_SUBST(QT_MYSQL_PKG,"qt5-qtbase-mysql")
-       AC_SUBST(DOC_PATH,"/usr/share/doc/rivendell-$PACKAGE_VERSION")
+       AC_SUBST(DOC_PATH,"/usr/share/doc/drouter-$PACKAGE_VERSION")
        AC_SUBST(HAVE_USERMODE,"yes")
-       AC_SUBST(RDALSACONFIG_DESKTOP_FILE,"rivendell-rdalsaconfig-root.desktop")
-       AC_SUBST(RDDBCONFIG_DESKTOP_FILE,"rivendell-rddbconfig-root.desktop")
-       AC_SUBST(PYPAD_DEPS,"python36 python36-pycurl python36-requests python36-pyserial python36-mysql python36-urllib3")
        ;;
 
      *)
        AC_MSG_NOTICE([Distro is unknown])
        DISTRO_FAMILY="|                       Distribution Family ... Unknown   |"
-       AC_SUBST(APACHE_PKG,"apache2")
-       AC_SUBST(APACHE_CONFIG_DIR,"/etc/apache2/conf.d")
        AC_SUBST(USERMODE_PKG,"")
        AC_SUBST(MYSQL_PKG,"mysql")
        AC_SUBST(QT_MYSQL_PKG,"qt-mysql")
-       AC_SUBST(DOC_PATH,"/usr/share/doc/rivendell")
+       AC_SUBST(DOC_PATH,"/usr/share/doc/drouter")
        AC_SUBST(HAVE_USERMODE,"no")
-       AC_SUBST(RDALSACONFIG_DESKTOP_FILE,"rivendell-rdalsaconfig.desktop")
-       AC_SUBST(RDDBCONFIG_DESKTOP_FILE,"rivendell-rddbconfig.desktop")
-       AC_SUBST(PYPAD_DEPS,"python3 python3-pycurl python3-requests python3-pyserial python3-mysql python3-urllib3")
      ;;
 esac
 
