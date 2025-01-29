@@ -1392,3 +1392,5 @@
 	* Removed 'link_common.sh'.
 2025-01-28 Fred Gleason <fredg@paravelsystems.com>
 	* Ported the codebase to Qt6.
+2025-01-28 Fred Gleason <fredg@paravelsystems.com>
+	* Re-enabled LWRP in the 'protocol_j' test suite.

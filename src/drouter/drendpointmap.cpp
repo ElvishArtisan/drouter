@@ -350,10 +350,6 @@ bool DREndPointMap::load(const QString &filename,QStringList *unused_lines)
       output=
 	p->intValue(section,QString::asprintf("Route%dOutput",route+1),0,&ok);
     }
-    syslog(LOG_NOTICE,"Snapshot \"%s\":\"%s\" has %d routes",
-	   routerName().toUtf8().constData(),
-	   map_snapshots.back()->name().toUtf8().constData(),
-	   map_snapshots.back()->routeQuantity());
     snap++;
     section=QString::asprintf("Snapshot%d",snap+1);
     name=p->stringValue(section,"Name","",&ok);
