@@ -2,7 +2,7 @@
 //
 // Parser for Protocol J Protocol
 //
-//   (C) Copyright 2016-2024 Fred Gleason <fredg@paravelsystems.com>
+//   (C) Copyright 2016-2025 Fred Gleason <fredg@paravelsystems.com>
 //
 //   This program is free software; you can redistribute it and/or modify
 //   it under the terms of the GNU General Public License as
@@ -511,8 +511,8 @@ void DRJParser::DispatchMessage(const QJsonDocument &jdoc)
 	j_snapshot_models[router]=new DRSnapshotListModel(router,this);
 	j_snapshot_models.value(router)->setFont(j_model_font);
 
-	//  j_gpi_states[router]=QMap<int,QString>();
-	//  j_gpo_states[router]=QMap<int,QString>();
+	j_gpi_states[router]=QMap<int,QString>();
+	j_gpo_states[router]=QMap<int,QString>();
 
 	//  j_snapshot_names[router]=QStringList();
 	QVariantMap router_fields;
@@ -521,10 +521,10 @@ void DRJParser::DispatchMessage(const QJsonDocument &jdoc)
 	SendCommand("sourcenames",router_fields);
 	SendCommand("destnames",router_fields);
 	SendCommand("snapshots",router_fields);
-
-	// SendCommand("gpistat",router_fields);
-	// SendCommand("gpostat",router_fields);
-
+	if(jo1.value("type").toString().toLower()=="gpio") {
+	  SendCommand("gpistat",router_fields);
+	  SendCommand("gpostat",router_fields);
+	}
 	SendCommand("routestat",router_fields);
 
 	router_fields["sendUpdates"]=true;
@@ -591,7 +591,6 @@ void DRJParser::DispatchMessage(const QJsonDocument &jdoc)
     int router=jo0.value("router").toInt();
     int input=jo0.value("source").toInt();
     QString code=jo0.value("code").toString();
-
     j_gpi_states[router][input]=code;
     if(j_connected) {
       emit gpiStateChanged(router,input,code);

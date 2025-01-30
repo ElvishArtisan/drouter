@@ -21,6 +21,8 @@
 
 #include <QMessageBox>
 
+#include <sy6/syconfig.h>
+
 #include "statelight.h"
 
 StateLight::StateLight(int router,int endpt,const QString &legend,
@@ -120,19 +122,33 @@ void StateLight::changeConnectionState(bool state,
 				       DRJParser::ConnectionState cstate)
 {
   setEnabled(state);
+  if(state) {
+    if(c_dir.toLower()=='i') {
+      setState(c_router,c_endpt,c_parser->gpiState(c_router,c_endpt));
+    }
+    else {
+      setState(c_router,c_endpt,c_parser->gpoState(c_router,c_endpt));
+    }
+  }
   updateGeometry();
 }
 
 
 void StateLight::setState(int router,int endpt,const QString &code)
 {
-  if((router==c_router)&&(endpt==c_endpt)) {
-    if(code.at(c_mask_bit)==c_mask.at(c_mask_bit)) {
-      setStyleSheet(c_on_stylesheet);
+  if(code.length()==SWITCHYARD_GPIO_BUNDLE_SIZE) {
+    if((router==c_router)&&(endpt==c_endpt)) {
+      if(code.at(c_mask_bit)==c_mask.at(c_mask_bit)) {
+	setStyleSheet(c_on_stylesheet);
+      }
+      else {
+	setStyleSheet(STATELIGHT_OFF_STYLESHEET);
+      }
     }
-    else {
-      setStyleSheet(STATELIGHT_OFF_STYLESHEET);
-    }
+  }
+  else {
+    fprintf(stderr,"invalid GPIO update \"%s\" received from endpoint %d:%d\n",
+	    code.toUtf8().constData(),router,endpt);
   }
 }
 
