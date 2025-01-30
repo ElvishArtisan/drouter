@@ -342,19 +342,18 @@ void MainWidget::routerBoxActivatedData(int n)
   panel_view->setYSlotQuantity(imodel->rowCount());
 
   //
-  // FIXME: Verify on multi-monitor setups
+  // Set a Comfortable Size
   //
-  //  QRect screen=QApplication::desktop()->availableGeometry(this);
-  QRect screen=QApplication::screens().at(0)->availableGeometry();
-  screen.setHeight(screen.height()-30); // Hack to compensate for window titlebar
+  QRect geo=geometry();
+  QRect frame_geo=frameGeometry();
+  QRect screen=QApplication::screenAt(QPoint(geo.x(),geo.y()))->
+    availableGeometry();
+  screen.setHeight(screen.height()-(frame_geo.height()-geo.height()));
 
   int info_width=15+panel_input_list->sizeHint().width();
   if(panel_output_list->sizeHint().width()>info_width) {
     info_width=15+panel_output_list->sizeHint().width();
   }
-  //  QSize panel(24+panel_output_list->sizeHint().height()+info_width,
-  //	      15+panel_view->sizeHint().height()+
-  //	      panel_output_list->sizeHint().width());
   QSize panel(24+panel_output_list->sizeHint().height()+info_width,
 	      15+panel_view->sizeHint().height()+
   	      panel_output_list->sizeHint().width());
@@ -765,7 +764,6 @@ int MainWidget::SelectedRouter() const
 int main(int argc,char *argv[])
 {
   QApplication a(argc,argv);
-  MainWidget *w=new MainWidget(NULL);
-  //  w->show();
+  new MainWidget(NULL);
   return a.exec();
 }
