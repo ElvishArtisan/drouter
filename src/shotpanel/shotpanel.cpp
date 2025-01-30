@@ -168,7 +168,7 @@ MainWidget::MainWidget(QWidget *parent)
   panel_parser=new DRJParser(false,this);
   connect(panel_parser,SIGNAL(connected(bool,DRJParser::ConnectionState)),
 	  this,SLOT(connectedData(bool,DRJParser::ConnectionState)));
-  connect(panel_parser,SIGNAL(errorOccurred(QAbstractSocket::SocketError)),
+  connect(panel_parser,SIGNAL(error(QAbstractSocket::SocketError)),
 	  this,SLOT(errorOccurredData(QAbstractSocket::SocketError)));
 
   setWindowTitle(QString("Drouter - ShotPanel [")+VERSION+"]");

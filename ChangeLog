@@ -1405,3 +1405,5 @@
 2025-01-30 Fred Gleason <fredg@paravelsystems.com>
 	* Fixed a regression in buttonpanel(1) that caused GPIO indicators
 	to fail to be initialized properly upon startup.
+2025-01-30 Fred Gleason <fredg@paravelsystems.com>
+	* Fixed a 'No such signal' error in shotpanel(1).
