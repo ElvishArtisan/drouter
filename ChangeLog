@@ -1400,3 +1400,5 @@
 2025-01-30 Fred Gleason <fredg@paravelsystems.com>
 	* Fixed a typo in the prototype of the '--output' option in the
 	buttonpanel(1) man page.
+2025-01-30 Fred Gleason <fredg@paravelsystems.com>
+	* Removed a debugging printf() from xpointpanel(1).

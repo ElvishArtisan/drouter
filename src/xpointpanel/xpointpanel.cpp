@@ -282,7 +282,6 @@ void MainWidget::routerBoxActivatedData(int n)
   panel_input_list->setMatrixType(rmodel->matrixType(n));
   panel_output_list->setRouter(router);
   panel_output_list->setMatrixType(rmodel->matrixType(n));
-  printf("Setting matrixType: %s\n",DREndPointMap::matrixTypeString(rmodel->matrixType(n)).toUtf8().constData());
   
   //
   // Populate Inputs
