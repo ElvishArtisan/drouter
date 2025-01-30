@@ -1397,3 +1397,6 @@
 2025-01-28 Fred Gleason <fredg@paravelsystems.com>
 	* Fixed a regression in xpointpanel(1) that caused a segfault when
 	invoked with an '--initial-router=' value of a non-existent router.
+2025-01-30 Fred Gleason <fredg@paravelsystems.com>
+	* Fixed a typo in the prototype of the '--output' option in the
+	buttonpanel(1) man page.
