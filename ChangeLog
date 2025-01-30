@@ -1410,3 +1410,6 @@
 2025-01-30 Fred Gleason <fredg@paravelsystems.com>
 	* Fixed the size-selection code in xpointpanel(1) to be properly
 	aware of multi-monitor setups.
+2025-01-30 Fred Gleason <fredg@paravelsystems.com>
+	* Updated the list of required build packages on Ubuntu 22.04 in
+	'INSTALL'.
