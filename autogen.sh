@@ -24,8 +24,8 @@
 # Generate Debian packaging metadata
 #
 DATESTAMP=`date +%a,\ %d\ %b\ %Y\ %T\ %z`
-sed s/@VERSION@/`cat PACKAGE_VERSION`/ < debian/control.src > debian/control
-sed s/@VERSION@/`cat PACKAGE_VERSION`/ < debian/changelog.src | sed "s/@DATESTAMP@/$DATESTAMP/" > debian/changelog
+sed s/@VERSION@/`cat PACKAGE_VERSION`/g < debian/control.src > debian/control
+sed s/@VERSION@/`cat PACKAGE_VERSION`/g < debian/changelog.src | sed "s/@DATESTAMP@/$DATESTAMP/" > debian/changelog
 
 libtoolize=libtoolize
 if which glibtoolize > /dev/null 2>&1; then

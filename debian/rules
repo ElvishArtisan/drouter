@@ -13,36 +13,59 @@ binary:
 	dh_installchangelogs ChangeLog
 
 #
-# drouter
+# Testing utilities
 #
-	mkdir -p debian/drouter/lib/systemd/system
-	mv debian/tmp/lib/systemd/system/* debian/drouter/lib/systemd/system/
-	mkdir -p debian/drouter/usr/bin
-	mv debian/tmp/usr/bin/dmap debian/drouter/usr/bin/
-	mv debian/tmp/usr/bin/drouter_init_db.sh debian/drouter/usr/bin/
-	mv debian/tmp/usr/bin/pf_import.py debian/drouter/usr/bin/
-	mkdir -p debian/drouter/usr/sbin
-	mv debian/tmp/usr/sbin/dprotod debian/drouter/usr/sbin/
-	mv debian/tmp/usr/sbin/drouterd debian/drouter/usr/sbin/
-	mkdir -p debian/drouter/usr/lib
+	rm -f debian/tmp/usr/bin/getnode
+	rm -f debian/tmp/usr/bin/putnode
+	rm -f debian/tmp/usr/bin/jtest
+
+#
+# drouter-common
+#
+	mkdir -p debian/drouter-common/usr/lib
 	rm -f debian/tmp/usr/lib/libdrouter.la
-	mv debian/tmp/usr/lib/libdrouter.so* debian/drouter/usr/lib/
-	mkdir -p debian/drouter/usr/share/man/man1
-	mv debian/tmp/usr/share/man/man1/dmap.1 debian/drouter/usr/share/man/man1/
-	mkdir -p debian/drouter/usr/share/man/man5
-	mv debian/tmp/usr/share/man/man5/drouter.conf.5 debian/drouter/usr/share/man/man5/
-	mv debian/tmp/usr/share/man/man5/drouter.map.5 debian/drouter/usr/share/man/man5/
-	mkdir -p debian/drouter/usr/share/man/man8
-	mv debian/tmp/usr/share/man/man8/drouterd.8 debian/drouter/usr/share/man/man8/
-	mkdir -p debian/drouter/usr/share/drouter
-	cp conf/drouter.conf-sample debian/drouter/usr/share/drouter/
-	mkdir -p debian/drouter/usr/share/doc/drouter
-	cp AUTHORS debian/drouter/usr/share/doc/drouter/
-	cp ChangeLog debian/drouter/usr/share/doc/drouter/
-	cp COPYING debian/drouter/usr/share/doc/drouter/
-	cp GFDL-1.3 debian/drouter/usr/share/doc/drouter/
-	cp NEWS debian/drouter/usr/share/doc/drouter/
-	cp README debian/drouter/usr/share/doc/drouter/
+	mv debian/tmp/usr/lib/libdrouter.so.*.*.* debian/drouter-common/usr/lib/
+	mv debian/tmp/usr/lib/libdrouter.so.* debian/drouter-common/usr/lib/
+	mkdir -p debian/drouter-common/usr/share/doc/drouter
+	cp AUTHORS debian/drouter-common/usr/share/doc/drouter/
+	cp ChangeLog debian/drouter-common/usr/share/doc/drouter/
+	cp COPYING debian/drouter-common/usr/share/doc/drouter/
+	cp GFDL-1.3 debian/drouter-common/usr/share/doc/drouter/
+	cp NEWS debian/drouter-common/usr/share/doc/drouter/
+	cp README debian/drouter-common/usr/share/doc/drouter/
+
+#
+# drouter-dev
+#
+	mkdir -p debian/drouter-dev/usr/include
+	mv debian/tmp/usr/include/drouter debian/drouter-dev/usr/include/
+	mkdir -p debian/drouter-dev/usr/lib
+	mv debian/tmp/usr/lib/libdrouter.so debian/drouter-dev/usr/lib/
+	mv debian/tmp/usr/lib/*.a debian/drouter-dev/usr/lib
+	mkdir -p debian/drouter-dev/usr/share
+	mv debian/tmp/usr/lib/pkgconfig debian/drouter-dev/usr/share/
+
+#
+# drouter-server
+#
+	mkdir -p debian/drouter-server/lib/systemd/system
+	mv debian/tmp/lib/systemd/system/* debian/drouter-server/lib/systemd/system/
+	mkdir -p debian/drouter-server/usr/bin
+	mv debian/tmp/usr/bin/dmap debian/drouter-server/usr/bin/
+	mv debian/tmp/usr/bin/drouter_init_db.sh debian/drouter-server/usr/bin/
+	mv debian/tmp/usr/bin/pf_import.py debian/drouter-server/usr/bin/
+	mkdir -p debian/drouter-server/usr/sbin
+	mv debian/tmp/usr/sbin/dprotod debian/drouter-server/usr/sbin/
+	mv debian/tmp/usr/sbin/drouterd debian/drouter-server/usr/sbin/
+	mkdir -p debian/drouter-server/usr/share/man/man1
+	mv debian/tmp/usr/share/man/man1/dmap.1 debian/drouter-server/usr/share/man/man1/
+	mkdir -p debian/drouter-server/usr/share/man/man5
+	mv debian/tmp/usr/share/man/man5/drouter.conf.5 debian/drouter-server/usr/share/man/man5/
+	mv debian/tmp/usr/share/man/man5/drouter.map.5 debian/drouter-server/usr/share/man/man5/
+	mkdir -p debian/drouter-server/usr/share/man/man8
+	mv debian/tmp/usr/share/man/man8/drouterd.8 debian/drouter-server/usr/share/man/man8/
+	mkdir -p debian/drouter-server/usr/share/drouter
+	cp conf/drouter.conf-sample debian/drouter-server/usr/share/drouter/
 
 #
 # drouter-python
@@ -81,16 +104,6 @@ binary:
 	mv debian/tmp/usr/share/man/man1/xypanel.1 debian/drouter-panels/usr/share/man/man1/
 	mkdir debian/drouter-panels/usr/share/icons/
 	mv debian/tmp/usr/share/icons/hicolor debian/drouter-panels/usr/share/icons/
-
-#
-# drouter-dev
-#
-	mkdir -p debian/drouter-dev/usr/include
-	mv debian/tmp/usr/include/drouter debian/drouter-dev/usr/include/
-	mkdir -p debian/drouter-dev/usr/lib
-	mv debian/tmp/usr/lib/*.a debian/drouter-dev/usr/lib
-	mkdir -p debian/drouter-dev/usr/share
-	mv debian/tmp/usr/lib/pkgconfig debian/drouter-dev/usr/share/
 
 	dh_strip_nondeterminism
 	dh_compress

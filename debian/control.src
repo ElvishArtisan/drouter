@@ -5,17 +5,21 @@ Maintainer: Fred Gleason <fredg@paravelsystems.com>
 Build-Depends: debhelper-compat (= 12), autotools-dev, qt6-base-dev, switchyard6-dev
 Standards-Version: 4.4.1
 
-Package: drouter
+Package: drouter-common
 Architecture: any
-Depends: ${shlibs:Depends}, ${misc:Depends}, drouter-python (= @VERSION@-1), mariadb-server, libqt6sql6-mysql
+Depends: ${shlibs:Depends}, ${misc:Depends}
 Description: Dynamic router framework for Livewire
- Drouter is a dynamic router framework for controling a Livewire audio network.
- In addition to its own native ProtocolD, it also provides support for
- legacy PathFinder control clients by means of Software Authority protocol.
+ Drouter is a dynamic router framework for controling a Livewire audio
+ network, as well as other crosspoint router devices.
+
+Package: drouter-server
+Architecture: any
+Depends: ${shlibs:Depends}, ${misc:Depends}, drouter-common (=@VERSION@-1), drouter-python (= @VERSION@-1), mariadb-server, libqt6sql6-mysql
+Description: Server components for the Drouter router framework.
 
 Package: drouter-panels
 Architecture: any
-Depends: ${misc:Depends}, firefox, lwmon
+Depends: ${shlibs:Depends}, ${misc:Depends}, drouter-common (=@VERSION@-1), firefox, lwmon
 Description: GUI control panels for Drouter
  GUI control panels for Drouter.
 
@@ -29,7 +33,7 @@ Description: Python API for using state scripts with Drouter
 
 Package: drouter-dev
 Architecture: any
-Depends: ${misc:Depends}
+Depends: ${misc:Depends}, drouter-common (=@VERSION@-1)
 Description: Development components for the Drouter router framework.
  These are the library components and headers required to develop application
  for the Drouter router framework.
