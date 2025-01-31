@@ -223,7 +223,7 @@ bool DRouter::start(QString *err_msg)
   drouter_logger_back=new LoggerBack(&drouter_maps,this);
   connect(drouter_logger_back,SIGNAL(eventAdded(int)),
 	  this,SLOT(eventAddedData(int)));
-
+  drouter_logger_back->setWriteable(true);
   drouter_logger_front->writeCommentEvent(tr("Started drouter service"));
 
   return true;

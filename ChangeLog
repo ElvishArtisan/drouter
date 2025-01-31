@@ -1420,3 +1420,5 @@
 	'--prompt' and '--username' options in the GUI panels.
 2025-01-31 Fred Gleason <fredg@paravelsystems.com>
 	* Removed tethering support.
+2025-01-31 Fred Gleason <fredg@paravelsystems.com>
+	* Fixed a regression in drouterd(8) that broke route event logging.
