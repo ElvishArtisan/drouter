@@ -79,8 +79,7 @@ class DRJParser : public QObject
   QString gpoState(int router,int output) const;
   void setGpoState(int router,int output,const QString &code,int msec=-1);
   void activateSnapshot(int router,const QString &snapshot);
-  void connectToHost(const QString &hostname,uint16_t port,
-		     const QString &username,const QString &passwd);
+  void connectToHost(const QString &hostname,uint16_t port);
   static QString connectionStateString(ConnectionState cstate);
   static QString errorString(ErrorType err);
   static QString eventTypeString(EventType type);
@@ -122,8 +121,6 @@ class DRJParser : public QObject
   QTcpSocket *j_socket;
   QString j_hostname;
   uint16_t j_port;
-  QString j_username;
-  QString j_password;
   bool j_use_long_names;
   bool j_connected;
   QByteArray j_accum;

@@ -31,7 +31,6 @@
 #include <QTimer>
 #include <QWidget>
 
-#include <drouter/drdparser.h>
 #include <drouter/drlogindialog.h>
 #include <drouter/drjparser.h>
 
@@ -71,8 +70,6 @@ class MainWidget : public QWidget
   QString OutputDescriptionTitle(int router,int output) const;
   DRLoginDialog *panel_login_dialog;
   QString panel_hostname;
-  QString panel_username;
-  QString panel_password;
   int panel_initial_router;
   QLabel *panel_router_label;
   QLabel *panel_inputs_label;
@@ -80,7 +77,6 @@ class MainWidget : public QWidget
   QComboBox *panel_router_box;
   QLabel *panel_description_name_label;
   QLabel *panel_description_text_label;
-  DRDParser *panel_dparser;
   DRJParser *panel_parser;
   bool panel_initial_connected;
   QGraphicsScene *panel_scene;

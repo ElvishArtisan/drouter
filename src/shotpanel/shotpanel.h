@@ -57,8 +57,6 @@ class MainWidget : public QWidget
   int SelectedRouter() const;
   DRLoginDialog *panel_login_dialog;
   QString panel_hostname;
-  QString panel_username;
-  QString panel_password;
   int panel_initial_router;
   QLabel *panel_router_label;
   QComboBox *panel_router_box;

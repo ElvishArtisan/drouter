@@ -1413,3 +1413,8 @@
 2025-01-30 Fred Gleason <fredg@paravelsystems.com>
 	* Updated the list of required build packages on Ubuntu 22.04 in
 	'INSTALL'.
+2025-01-31 Fred Gleason <fredg@paravelsystems.com>
+	* Removed the 'username' and 'password' parameters from the
+	'DRJparser::connectToHost()' method.
+	* Removed vestigial support for the '--no-creds', '--password='
+	'--prompt' and '--username' options in the GUI panels.

@@ -6,7 +6,7 @@
   <refmeta>
     <refentrytitle>buttonpanel</refentrytitle>
     <manvolnum>1</manvolnum>
-    <refmiscinfo class='source'>July 2023</refmiscinfo>
+    <refmiscinfo class='source'>January 2025</refmiscinfo>
     <refmiscinfo class='manual'>Linux Audio Manual</refmiscinfo>
   </refmeta>
   <refnamediv>
@@ -39,8 +39,7 @@
   <para>
     <command>buttonpanel</command><manvolnum>1</manvolnum> is a button-based
     control applet that can be used to control signal routing and GPIO devices
-    with systems using Software Authority control protocol (such as PathFinder
-    or Drouter).
+    via Drouter's ProtocolJ interface.
   </para>
   </refsect1>
 
@@ -167,18 +166,6 @@
 
   <varlistentry>
     <term>
-      <option>--no-creds</option>
-    </term>
-    <listitem>
-      <para>
-	This option does nothing, and exists solely for backwards
-	compatibility.
-      </para>
-    </listitem>
-  </varlistentry>
-
-  <varlistentry>
-    <term>
       <option>--no-max-size</option>
     </term>
     <listitem>
@@ -203,40 +190,6 @@
     </listitem>
   </varlistentry>
   
-  <varlistentry>
-    <term>
-      <option>--password=<arg choice="req"><replaceable>pwd</replaceable></arg></option>
-    </term>
-    <listitem>
-      <para>
-	Password to use when authenticating on the server.
-      </para>
-    </listitem>
-  </varlistentry>
-
-  <varlistentry>
-    <term>
-      <option>--prompt</option>
-    </term>
-    <listitem>
-      <para>
-	Prompt for Username and Password at startup.
-      </para>
-    </listitem>
-  </varlistentry>
-
-  <varlistentry>
-    <term>
-      <option>--username=<arg choice="req"><replaceable>user-name</replaceable></arg></option>
-    </term>
-    <listitem>
-      <para>
-	The username to use when authenticating on the server. Default
-	value is <userinput>Admin</userinput>.
-      </para>
-    </listitem>
-  </varlistentry>
-
   <variablelist remap='TP'>
     <varlistentry>
       <term>
@@ -248,6 +201,22 @@
 	</para>
       </listitem>
     </varlistentry>
+
+  <varlistentry>
+    <term>
+      <option>--no-creds</option>,
+      <option>--password=<replaceable>pwd</replaceable></option>,
+      <option>--prompt</option>,
+      <option>--username=<replaceable>user-name</replaceable></option>
+    </term>
+    <listitem>
+      <para>
+	These options do nothing, and exist solely for backwards
+	compatibility.
+      </para>
+    </listitem>
+  </varlistentry>
+
   </variablelist>
 
   </refsect1>

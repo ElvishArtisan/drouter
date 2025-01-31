@@ -235,14 +235,11 @@ void DRJParser::activateSnapshot(int router,const QString &snapshot)
 }
 
 
-void DRJParser::connectToHost(const QString &hostname,uint16_t port,
-			     const QString &username,const QString &passwd)
+void DRJParser::connectToHost(const QString &hostname,uint16_t port)
 {
   MakeSocket();
   j_hostname=hostname;
   j_port=port;
-  j_username=username;
-  j_password=passwd;
   j_socket->connectToHost(hostname,port);
 }
 

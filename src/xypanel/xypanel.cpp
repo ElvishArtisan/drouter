@@ -201,7 +201,7 @@ MainWidget::MainWidget(QWidget *parent)
   panel_router_box->setModel(panel_parser->routerModel());
   panel_router_box->setModelColumn(0);
 
-  panel_parser->connectToHost(panel_hostname,9600,"","");
+  panel_parser->connectToHost(panel_hostname,9600);
 }
 
 

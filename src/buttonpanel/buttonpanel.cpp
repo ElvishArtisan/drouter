@@ -39,11 +39,9 @@ MainWidget::MainWidget(QWidget *parent)
 {
   panel_columns=0;
   panel_hostname="";
-  panel_username="buttonpanel";
   panel_arm_button=false;
   panel_no_max_size=false;
 
-  bool prompt=false;
   bool ok=false;
   QString err_msg;
 
@@ -80,23 +78,20 @@ MainWidget::MainWidget(QWidget *parent)
       panel_hostname=cmd->value(i);
       cmd->setProcessed(i,true);
     }
-    if(cmd->key(i)=="--no-creds") {
+    if(cmd->key(i)=="--no-creds") {  // Backwards compatibility
       cmd->setProcessed(i,true);
     }
     if(cmd->key(i)=="--no-max-size") {
       panel_no_max_size=true;
       cmd->setProcessed(i,true);
     }
-    if(cmd->key(i)=="--prompt") {
-      prompt=true;
+    if(cmd->key(i)=="--prompt") {  // Backwards compatibility
       cmd->setProcessed(i,true);
     }
-    if(cmd->key(i)=="--username") {
-      panel_username=cmd->value(i);
+    if(cmd->key(i)=="--username") {  // Backwards compatibility
       cmd->setProcessed(i,true);
     }
-    if(cmd->key(i)=="--password") {
-      panel_password=cmd->value(i);
+    if(cmd->key(i)=="--password") {  // Backwards compatibility
       cmd->setProcessed(i,true);
     }
     if(cmd->key(i)=="--gpio") {
@@ -199,13 +194,7 @@ MainWidget::MainWidget(QWidget *parent)
   //
   // Fire up the Protocol J connection
   //
-  if(prompt) {
-    if(!panel_login_dialog->exec(&panel_username,&panel_password)) {
-      exit(1);
-    }
-  }
-  panel_parser->
-    connectToHost(panel_hostname,9600,panel_username,panel_password);
+  panel_parser->connectToHost(panel_hostname,9600);
 }
 
 

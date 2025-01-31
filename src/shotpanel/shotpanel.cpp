@@ -44,7 +44,6 @@ MainWidget::MainWidget(QWidget *parent)
   :QWidget(parent)
 {
   QString config_filename;
-  bool prompt=false;
   bool ok=false;
 
   panel_initial_connected=false;
@@ -54,8 +53,6 @@ MainWidget::MainWidget(QWidget *parent)
   // Initialize Variables
   //
   panel_hostname="";
-  panel_username="shotpanel";
-  panel_password="";
 
   //
   // Read Command Options
@@ -76,19 +73,16 @@ MainWidget::MainWidget(QWidget *parent)
       }
       cmd->setProcessed(i,true);
     }
-    if(cmd->key(i)=="--no-creds") {
+    if(cmd->key(i)=="--no-creds") {  // Backwards compatibility
       cmd->setProcessed(i,true);
     }
-    if(cmd->key(i)=="--prompt") {
-      prompt=true;
+    if(cmd->key(i)=="--prompt") {  // Backwards compatibility
       cmd->setProcessed(i,true);
     }
-    if(cmd->key(i)=="--username") {
-      panel_username=cmd->value(i);
+    if(cmd->key(i)=="--username") {  // Backwards compatibility
       cmd->setProcessed(i,true);
     }
-    if(cmd->key(i)=="--password") {
-      panel_password=cmd->value(i);
+    if(cmd->key(i)=="--password") {  // Backwards compatibility
       cmd->setProcessed(i,true);
     }
     if(!cmd->processed(i)) {
@@ -173,13 +167,7 @@ MainWidget::MainWidget(QWidget *parent)
 
   setWindowTitle(QString("Drouter - ShotPanel [")+VERSION+"]");
 
-  if(prompt) {
-    if(!panel_login_dialog->exec(&panel_username,&panel_password)) {
-      exit(1);
-    }
-  }
-  panel_parser->
-    connectToHost(panel_hostname,9600,panel_username,panel_password);
+  panel_parser->connectToHost(panel_hostname,9600);
 }
 
 
