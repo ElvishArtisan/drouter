@@ -45,18 +45,10 @@
 #define DROUTER_DEFAULT_NODE_LOG_PRIORITY 7
 #define DROUTER_DEFAULT_MAX_HEAP_TABLE_SIZE 33554432
 #define DROUTER_DEFAULT_FILE_DESCRIPTOR_LIMIT 1024
-#define DROUTER_TETHER_UDP_PORT 6245
-#define DROUTER_TETHER_TTY_SPEED 9600
-#define DROUTER_TETHER_TTY_PARITY TTYDevice::None
-#define DROUTER_TETHER_TTY_WORD_LENGTH 8
-#define DROUTER_TETHER_TTY_FLOW_CONTROL TTYDevice::FlowNone
-#define DROUTER_TETHER_BASE_INTERVAL 10000
-#define DROUTER_TETHER_WINDOW_INTERVAL 1000
 
 class Config
 {
  public:
-  enum TetherRole {This=0,That=1};
   Config();
   int clipAlarmThreshold() const;
   int clipAlarmTimeout() const;
@@ -83,17 +75,6 @@ class Config
   uint16_t matrixPort(int n) const;
   bool livewireIsEnabled() const;
 
-  bool tetherIsActivated() const;
-  QHostAddress tetherSharedIpAddress() const;
-  QString tetherHostId(TetherRole role) const;
-  QString tetherHostname(TetherRole role) const;
-  QHostAddress tetherIpAddress(TetherRole role) const;
-  QString tetherSerialDevice(TetherRole role) const;
-  QHostAddress tetherGpioIpAddress(TetherRole role) const;
-  int tetherGpioSlot(TetherRole role) const;
-  SyGpioBundleEvent::Type tetherGpioType(TetherRole role) const;
-  QString tetherGpioCode(TetherRole role) const;
-  bool tetherIsSane() const;
   void load();
   static QHostAddress normalizedStreamAddress(const QHostAddress &addr);
   static QHostAddress normalizedStreamAddress(const QString &addr);
@@ -121,17 +102,6 @@ class Config
   QList<DREndPointMap::MatrixType> conf_matrix_types;
   QList<QHostAddress> conf_matrix_host_addresses;
   QList<uint16_t> conf_matrix_ports;
-  bool conf_tether_is_activated;
-  QHostAddress conf_tether_shared_ip_address;
-  QString conf_tether_host_ids[2];
-  QString conf_tether_hostnames[2];
-  QHostAddress conf_tether_ip_addresses[2];
-  QString conf_tether_serial_devices[2];
-  QHostAddress conf_tether_gpio_ip_addresses[2];
-  int conf_tether_gpio_slots[2];
-  SyGpioBundleEvent::Type conf_tether_gpio_types[2];
-  QString conf_tether_gpio_codes[2];
-  bool conf_tether_is_sane;
 };
 
 

@@ -38,13 +38,11 @@ uninstall-local:
 sbin_PROGRAMS = dprotod\
                 drouterd
 
-noinst_PROGRAMS = sendmailtest\
-                  tethertest
+noinst_PROGRAMS = sendmailtest
 
 dist_drouterd_SOURCES = config.cpp config.h\
                         drouter.cpp drouter.h\
                         drouterd.cpp drouterd.h\
-                        gpioflasher.cpp gpioflasher.h\
                         logger_back.cpp logger_back.h\
                         logger_front.cpp logger_front.h\
                         matrix.cpp matrix.h\
@@ -54,21 +52,18 @@ dist_drouterd_SOURCES = config.cpp config.h\
                         protoipc.h\
                         scriptengine.cpp scriptengine.h\
                         sendmail.cpp sendmail.h\
-                        tether.cpp tether.h\
                         timeengine.cpp timeengine.h\
                         ttydevice.cpp ttydevice.h\
                         watchdog.cpp watchdog.h
 
 nodist_drouterd_SOURCES = moc_drouter.cpp\
                           moc_drouterd.cpp\
-                          moc_gpioflasher.cpp\
                           moc_logger_back.cpp\
                           moc_logger_front.cpp\
                           moc_matrix.cpp\
                           moc_matrix_gvg7000.cpp\
                           moc_matrix_lwrp.cpp\
                           moc_scriptengine.cpp\
-                          moc_tether.cpp\
                           moc_timeengine.cpp\
                           moc_ttydevice.cpp\
                           moc_watchdog.cpp
@@ -94,18 +89,6 @@ nodist_dprotod_SOURCES = moc_dprotod.cpp\
 
 dprotod_LDADD = -ldrouter @QT6_LIBS@ @SWITCHYARD6_LIBS@ @LIBSYSTEMD_LIBS@
 dprotod_LDFLAGS = -rdynamic
-
-dist_tethertest_SOURCES = config.cpp config.h\
-                          tether.cpp tether.h\
-                          tethertest.cpp tethertest.h\
-                          ttydevice.cpp ttydevice.h
-
-nodist_tethertest_SOURCES = moc_tether.cpp\
-                            moc_tethertest.cpp\
-                            moc_ttydevice.cpp
-
-tethertest_LDADD = -ldrouter @QT6_LIBS@ @SWITCHYARD6_LIBS@ @LIBSYSTEMD_LIBS@
-tethertest_LDFLAGS = -rdynamic
 
 dist_sendmailtest_SOURCES = config.cpp config.h\
                             sendmail.cpp sendmail.h\

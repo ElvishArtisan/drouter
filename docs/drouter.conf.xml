@@ -6,12 +6,12 @@
   <refmeta>
     <refentrytitle>drouter.conf</refentrytitle>
     <manvolnum>5</manvolnum>
-    <refmiscinfo class='source'>March 2019</refmiscinfo>
+    <refmiscinfo class='source'>January 2025</refmiscinfo>
     <refmiscinfo class='manual'>Linux Audio Manual</refmiscinfo>
   </refmeta>
   <refnamediv>
     <refname>drouter.conf</refname>
-    <refpurpose>Main configuraton file for DRouter</refpurpose>
+    <refpurpose>Main configuraton file for Drouter</refpurpose>
   </refnamediv>
   <info>
     <author>
@@ -31,7 +31,7 @@
   <para>
     The <command>drouter.conf</command><manvolnum>5</manvolnum> file
     (located at &quot;/etc/drouter/drouter.conf&quot;)
-    is the main configuration file for the DRouter system.
+    is the main configuration file for the Drouter system.
   </para>
   </refsect1>
 
@@ -204,7 +204,7 @@
 	    <para>
 	      Where <replaceable>prio</replaceable> is an integer indicating
 	      the priority to use when logging internal IPC messages
-	      between the DRouter core and protocol modules. Mostly useful
+	      between the Drouter core and protocol modules. Mostly useful
 	      for debugging purposes. Default value is
 	      <userinput>7</userinput> (&quot;Debug&quot;).
 	    </para>
@@ -497,160 +497,6 @@
 	      The port number to connect to on the switcher, in the range
 	      <userinput>1</userinput> through <userinput>65535</userinput>
 	      inclusive.
-	    </para>
-	  </listitem>
-	</varlistentry>
-      </variablelist>
-    </refsect2>
-
-    <refsect2 id='tether_section'>
-      <title>The [Tether] Section</title>
-      <para>
-	The <userinput>[Tether]</userinput> section configures operation of
-	a pair of Drouter instances operating in an auto-failover
-	configuration. It contains the following parameters:
-      </para>
-      <variablelist>
-	<varlistentry>
-	  <term>
-	    <userinput>IsActivated=Yes</userinput>|<userinput>No</userinput>
-	  </term>
-	  <listitem>
-	    <para>
-	      The &quot;master switch&quot; that turns the tethered redundant
-	      hosts feature on or off. If <userinput>No</userinput>
-	      (the default), the tethering features are completely deactivated,
-	      and none of the other parameters in this section have any effect.
-	    </para>
-	  </listitem>
-	</varlistentry>
-	<varlistentry>
-	  <term>
-	    <userinput>SharedIpAddress=<replaceable>ip-addr</replaceable></userinput>
-	  </term>
-	  <listitem>
-	    <para>
-	      The IPv4 address, in dotted quad format, to be used as the
-	      primary service address for the cluster.  This
-	      addresses should be on the same subnet as that specified in the
-	      <userinput>SystemAAddress=</userinput> and
-	      <userinput>SystemBAddress=</userinput>
-	      parameters (see below).
-	    </para>
-	    <para>
-	      This address will be
-	      automatically assigned to whichever cluster instance is active.
-	    </para>
-	  </listitem>
-	</varlistentry>
-	<varlistentry>
-	  <term>
-	    <userinput>SystemAHostname=<replaceable>host-name</replaceable></userinput>
-	  </term>
-	  <term>
-	      <userinput>SystemBHostname=<replaceable>host-name</replaceable></userinput>
-	  </term>
-	  <listitem>
-	    <para>
-	      The name of each of the hosts constituting the Drouter cluster.
-	    </para>
-	  </listitem>
-	</varlistentry>
-	<varlistentry>
-	  <term>
-	    <userinput>SystemAIpAddress=<replaceable>host-name</replaceable></userinput>
-	  </term>
-	  <term>
-	      <userinput>SystemBIpAddress=<replaceable>host-name</replaceable></userinput>
-	  </term>
-	  <listitem>
-	    <para>
-	      The dedicated IPv4 address, in dotted-quad format, for each of
-	      the hosts constituting the Drouter cluster. These
-	      addresses should be on the same subnet as that specified in the
-	      <userinput>SharedIpAddress=</userinput> parameter (see above).
-	    </para>
-	  </listitem>
-	</varlistentry>
-	<varlistentry>
-	  <term>
-	    <userinput>SystemASerialDevice<replaceable>dev-name</replaceable></userinput>
-	  </term>
-	  <term>
-	      <userinput>SystemBSerialDevice=<replaceable>dev-name</replaceable></userinput>
-	  </term>
-	  <listitem>
-	    <para>
-	      The name of the serial device --e.g.
-	      <userinput>/dev/ttyS0</userinput> -- to be used for the
-	      heartbeat connection to the opposite member of the cluster.
-	    </para>
-	  </listitem>
-	</varlistentry>
-	<varlistentry>
-	  <term>
-	    <userinput>SystemAGpioIpAddress=<replaceable>ip-addr</replaceable></userinput>
-	  </term>
-	  <term>
-	      <userinput>SystemBGpioIpAddress=<replaceable>dev-name</replaceable></userinput>
-	  </term>
-	  <listitem>
-	    <para>
-	      The IPv4 address, in dotted-quad notation, of the GPIO node(s)
-	      to send state changes to indicate the respective instance's
-	      active state. These state changes are sent by means of LWRP.
-	    </para>
-	  </listitem>
-	</varlistentry>
-	<varlistentry>
-	  <term>
-	    <userinput>SystemAGpioSlot=<replaceable>slot-num</replaceable></userinput>
-	  </term>
-	  <term>
-	      <userinput>SystemBGpioSlot=<replaceable>slot-num</replaceable></userinput>
-	  </term>
-	  <listitem>
-	    <para>
-	      The slot number on the GPIO node(s) indicated in the
-	      <userinput>SystemAIpAddress</userinput> or
-	      <userinput>SystemBIpAddress</userinput> to which to
-	      send state changes to indicate the respective instance's
-	      active state.
-	    </para>
-	  </listitem>
-	</varlistentry>
-	<varlistentry>
-	  <term>
-	    <userinput>SystemAGpioType=GPI</userinput>|<userinput>GPO</userinput>
-	  </term>
-	  <term>
-	    <userinput>SystemBGpioType=GPI</userinput>|<userinput>GPO</userinput>
-	  </term>
-	  <listitem>
-	    <para>
-	      The type of GPIO to use on the GPIO node(s) indicated in the
-	      <userinput>SystemAIpAddress</userinput> or
-	      <userinput>SystemBIpAddress</userinput> to which to
-	      send state changes to indicate the respective instance's
-	      active state.
-	    </para>
-	  </listitem>
-	</varlistentry>
-
-	<varlistentry>
-	  <term>
-	    <userinput>SystemAGpioCode=<replaceable>code-str</replaceable></userinput>
-	  </term>
-	  <term>
-	    <userinput>SystemBGpioCode=<replaceable>code-str</replaceable></userinput>
-	  </term>
-	  <listitem>
-	    <para>
-	      The code string to apply on the GPIO node(s) indicated in the
-	      <userinput>SystemAIpAddress</userinput> or
-	      <userinput>SystemBIpAddress</userinput> to which to
-	      send state changes to indicate the respective instance's
-	      active state.
 	    </para>
 	  </listitem>
 	</varlistentry>

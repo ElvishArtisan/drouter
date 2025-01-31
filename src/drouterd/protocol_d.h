@@ -43,7 +43,6 @@ class ProtocolD : public Protocol
   void disconnectedData();
 
  protected:
-  void tetherStateUpdated(bool state);
   void nodeAdded(const QHostAddress &host_addr);
   void nodeRemoved(const QHostAddress &host_addr,
 		   int srcs,int dsts,int gpis,int gpos);
@@ -80,7 +79,6 @@ class ProtocolD : public Protocol
   QTcpSocket *proto_socket;
   QTcpServer *proto_server;
   QString proto_accum;
-  bool proto_tether_subscribed;
   bool proto_destinations_subscribed;
   bool proto_gpis_subscribed;
   bool proto_gpos_subscribed;

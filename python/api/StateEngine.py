@@ -2,7 +2,7 @@
 #
 # Protocol D engine for executing state scripts.
 #
-#   (C) Copyright 2019 Fred Gleason <fredg@paravelsystems.com>
+#   (C) Copyright 2019-2025 Fred Gleason <fredg@paravelsystems.com>
 #
 #   This program is free software; you can redistribute it and/or modify
 #   it under the terms of the GNU General Public License version 2 as
@@ -43,7 +43,6 @@ class StateEngine(object):
         self.__delete_callback=None
         self.__change_callback=None
         self.__alarm_callback=None
-        self.__tether_callback=None
         self.__sock=socket.socket(socket.AF_INET)
         self.__nodes_loaded=False
         self.__sources_loaded=False
@@ -52,8 +51,6 @@ class StateEngine(object):
         self.__gpos_loaded=False
         self.__silences_loaded=False
         self.__clips_loaded=False
-        self.__tether_loaded=False
-        self.__tether_active=False
         self.__loaded=False
 
     def Destination(self,host_addr,slot):
@@ -133,12 +130,6 @@ class StateEngine(object):
            Return a list of all Gpo objects
         """
         return self.__gpos.values()
-
-    def isActive(self):
-        """
-           Return the tether state of the system.
-        """
-        return self.__tether_active
 
     def setPrivateObject(self,priv):
         """
@@ -234,20 +225,6 @@ class StateEngine(object):
               alarm: reference to an Alarm object
         """
         self.__alarm_callback=cb
-
-    def setTetherCallback(self,cb):
-        """
-        Set the 'tether' callback, called by StateEngine immediately after
-        reception of change of state in the Tether system.
-
-           def callback(self,engine,priv,state)
-
-        where:
-             engine: reference to the calling StateEngine
-
-              state: Boolean containing the Tether state
-        """
-        self.__tether_callback=cb
 
     def clearCrosspoint(self,out_host_addr,out_slot):
         """
@@ -503,12 +480,6 @@ class StateEngine(object):
                 self.__alarm_callback(self,self.__callback_priv,Drouter.Alarm.Alarm(cmds))
             return
 
-        if cmds[0]=="TETHER":
-            self.__tether_active=cmds[1]=='Y'
-            if (self.__tether_callback!=None) and self.__loaded:
-                self.__tether_callback(self,self.__callback_priv,cmds[1]=='Y')
-            return
-
         if cmds[0]=="ok":
             if not self.__nodes_loaded:
                 self.__nodes_loaded=True
@@ -540,16 +511,6 @@ class StateEngine(object):
                 self.__sock.send("SubscribeClips\r\n".encode('latin-1'))
                 return
 
-            if not self.__clips_loaded:
-                self.__clips_loaded=True
-                self.__sock.send("SubscribeTether\r\n".encode('latin-1'))
-                return
-
-            if not self.__tether_loaded:
-                self.__tether_loaded=True
-                self.__loaded=True
-                if self.__ready_callback!=None:
-                    self.__ready_callback(self,self.__callback_priv)
             return;
 
     def __bitStateCode(self,bit,state):

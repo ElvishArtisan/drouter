@@ -35,7 +35,6 @@
 #include <drouter/drendpointmap.h>
 
 #include "config.h"
-#include "gpioflasher.h"
 #include "logger_front.h"
 #include "logger_back.h"
 #include "matrix.h"
@@ -59,11 +58,9 @@ class DRouter : public QObject
   SyGpioBundle *gpi(const QHostAddress &hostaddr,int slot) const;
   SyGpo *gpo(const QHostAddress &hostaddr,int slot) const;
   bool start(QString *err_msg);
-  bool isWriteable() const;
 
  public slots:
   void setCrosspoint(int router,int output,int input);
-  void setWriteable(bool state);
 
  private slots:
   void nodeConnectedData(unsigned id,bool state);
@@ -110,8 +107,6 @@ class DRouter : public QObject
   QSignalMapper *drouter_ipc_ready_mapper;
   QLocalServer *drouter_ipc_server;
   int *drouter_proto_socks;
-  bool drouter_writeable;
-  GpioFlasher *drouter_flasher;
   QTimer *drouter_purge_events_timer;
   LoggerFront *drouter_logger_front;
   LoggerBack *drouter_logger_back;

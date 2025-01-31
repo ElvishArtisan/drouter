@@ -48,12 +48,9 @@ DRouter::DRouter(int *proto_socks,QObject *parent)
   : QObject(parent)
 {
   drouter_proto_socks=proto_socks;
-  drouter_writeable=false;
 
   drouter_config=new Config();
   drouter_config->load();
-
-  drouter_flasher=new GpioFlasher(this);
 
   drouter_purge_events_timer=new QTimer(this);
   connect(drouter_purge_events_timer,SIGNAL(timeout()),
@@ -233,12 +230,6 @@ bool DRouter::start(QString *err_msg)
 }
 
 
-bool DRouter::isWriteable() const
-{
-  return drouter_writeable;
-}
-
-
 void DRouter::setCrosspoint(int router,int output,int input)
 {
   DREndPointMap *map=drouter_maps.value(router);
@@ -274,38 +265,6 @@ void DRouter::setCrosspoint(int router,int output,int input)
 	}
       }
     }
-  }
-}
-
-
-void DRouter::setWriteable(bool state)
-{
-  QString sql;
-  QString comment;
-
-  if(drouter_writeable!=state) {
-    drouter_flasher->setActive(state);
-
-    //
-    // Update Protocols
-    //
-    QString letter;
-    if(state) {
-      letter="Y";
-      drouter_logger_back->setWriteable(true);
-      comment=tr("This instance is now active.");
-    }
-    else {
-      letter="N";
-      drouter_logger_back->setWriteable(false);
-      comment=tr("This instance is no longer active.");
-    }
-    sql=QString("update `TETHER` set `IS_ACTIVE`='"+letter+"'");
-    DRSqlQuery::apply(sql);
-    drouter_writeable=state;
-    NotifyProtocols("TETHER",letter);
-
-    drouter_logger_front->writeCommentEvent(comment);
   }
 }
 
@@ -504,18 +463,6 @@ void DRouter::nodeConnectedData(unsigned id,bool state)
 	    DRSqlQuery::apply(sql);
 	  }
 	}
-      }
-    }
-
-    for(int i=0;i<2;i++) {
-      Config::TetherRole role=(Config::TetherRole)i;
-      if(mtx->hostAddress()==drouter_config->tetherGpioIpAddress(role)) {
-	/*  FIXME!
-	drouter_flasher->
-	  addGpio(role,mtx,drouter_config->tetherGpioType(role),
-		  drouter_config->tetherGpioSlot(role),
-		  drouter_config->tetherGpioCode(role));
-	*/
       }
     }
 
@@ -969,14 +916,6 @@ bool DRouter::ProcessIpcCommand(int sock,const QString &cmd)
     drouter_ipc_accums.remove(sock);
     syslog(LOG_DEBUG,"closed IPC connection %d",sock);
     return false;
-  }
-
-  //
-  // All operations below here require that we be the active instance!
-  // (drouter_writeable==true)
-  //
-  if(!drouter_writeable) {
-    return true;
   }
 
   QStringList cmds=cmd.split(" ");
@@ -1445,13 +1384,6 @@ bool DRouter::StartDb(QString *err_msg)
     "`ACTION_ID` int not null,"+
     "index ROUTER_NUMBER_IDX(`ROUTER_NUMBER`)) "+
     "engine MEMORY character set utf8 collate utf8_general_ci";
-  DRSqlQuery::apply(sql);
-
-  sql=QString("create table if not exists `TETHER` (")+
-    "`IS_ACTIVE` enum('N','Y') not null default 'N') "+
-    "engine MEMORY character set utf8 collate utf8_general_ci";
-  DRSqlQuery::apply(sql);
-  sql=QString("insert into `TETHER` set `IS_ACTIVE`='N'");
   DRSqlQuery::apply(sql);
 
   dbKeepaliveData();

@@ -197,10 +197,8 @@ rm -rf $RPM_BUILD_ROOT
 %files python
 %defattr(-,root,root)
 %{_bindir}/dlist
-%{_bindir}/dstate
 %{_libdir}/python@PYTHON_VERSION@/site-packages/Drouter
 %{_datadir}/man/man1/dlist.1.gz
-%{_datadir}/man/man1/dstate.1.gz
 %{_datadir}/doc/drouter-%{version}/examples/*
 
 
@@ -213,6 +211,8 @@ rm -rf $RPM_BUILD_ROOT
 
 
 %changelog
+* Fri Jan 31 2025 Fred Gleason <fredg@paravelsystems.com>
+-- Removed 'dstate'.
 * Mon Mar 11 2024 Fred Gleason <fredg@paravelsystems.com>
 -- Add 'server' and 'devel' subpackages.
 * Wed Jan 24 2024 Fred Gleason <fredg@paravelsystems.com>

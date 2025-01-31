@@ -32,11 +32,9 @@ moc_%.cpp:	%.h
 bin_PROGRAMS = eventlogpanel
 
 dist_eventlogpanel_SOURCES = eventlogpanel.cpp eventlogpanel.h\
-                             instanceindicator.cpp instanceindicator.h\
                              richtextdelegate.cpp richtextdelegate.h
 
 nodist_eventlogpanel_SOURCES = moc_eventlogpanel.cpp\
-                               moc_instanceindicator.cpp\
                                moc_richtextdelegate.cpp
 
 eventlogpanel_LDADD = -ldrouter @QT6_LIBS@ @SWITCHYARD6_LIBS@

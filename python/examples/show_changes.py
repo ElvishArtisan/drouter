@@ -4,7 +4,7 @@
 #
 # Drouter state script to show changes in a Livewire network in realtime.
 #
-# (C) Copyright 2018-2019 Fred Gleason <fredg@paravelsystems.com>
+# (C) Copyright 2018-2025 Fred Gleason <fredg@paravelsystems.com>
 #
 #   This program is free software; you can redistribute it and/or modify
 #   it under the terms of the GNU General Public License version 2 as
@@ -130,13 +130,6 @@ def Alarm(engine,priv,alarm):
     print("ALARM")
     print(alarm) 
 
-#
-# Called whenever the tether state of the system changes.
-#
-def Tether(engine,priv,state):
-    print("New Tether State: "+str(state))
-    print()
-
 # ############################################################################
 #
 # Event Loop
@@ -153,7 +146,6 @@ engine.setAddCallback(ObjectAdded)
 engine.setDeleteCallback(ObjectDeleted)
 engine.setChangeCallback(ObjectChanged)
 engine.setAlarmCallback(Alarm)
-engine.setTetherCallback(Tether)
 
 #
 # Start the engine, giving the hostname/address of the Drouter service.

@@ -49,12 +49,10 @@ binary:
 #
 	mkdir -p debian/drouter-python/usr/bin
 	mv debian/tmp/usr/bin/dlist debian/drouter-python/usr/bin/
-	mv debian/tmp/usr/bin/dstate debian/drouter-python/usr/bin/
 	mkdir -p debian/drouter-python/usr/lib/python3/dist-packages
 	mv debian/tmp/usr/lib/python*/dist-packages/* debian/drouter-python/usr/lib/python3/dist-packages/
 	mkdir -p debian/drouter-python/usr/share/man/man1
 	mv debian/tmp/usr/share/man/man1/dlist.1 debian/drouter-python/usr/share/man/man1/
-	mv debian/tmp/usr/share/man/man1/dstate.1 debian/drouter-python/usr/share/man/man1/
 	mkdir -p debian/drouter-python/usr/share/doc/drouter/examples
 	scripts/install_python.sh python/examples/show_changes.py debian/drouter-python/usr/share/doc/drouter/examples/show_changes.py
 	scripts/install_python.sh python/examples/show_destinations.py debian/drouter-python/usr/share/doc/drouter/examples/show_destinations.py

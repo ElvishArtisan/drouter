@@ -38,20 +38,18 @@
   <refsect1 id='description'><title>Description</title>
   <para>
     <command>drouterd</command><manvolnum>8</manvolnum> is the primary
-    service daemon for the Drouter system. When started (typically by
-    Systemd at boot time), it listens for Livewire multicast advertisements
-    on UDP port <computeroutput>4001</computeroutput>, then enumerates
-    any devices found via LWRP. The resulting list of devices can then
-    be queried and commanded via the <computeroutput>Protocol D</computeroutput>
-    interface at TCP port <computeroutput>23883</computeroutput> and
-    (optionally) <computeroutput>Software Authority Protocol</computeroutput>
-    at TCP port <computeroutput>9500</computeroutput>.
+    service program for the Drouter system. When started (typically by
+    Systemd at boot time), it finds and enumerates crosspoint router devices.
+    The resulting list of devices can then be queried and commanded via the
+    <computeroutput>Protocol D</computeroutput> and 
+    <computeroutput>Protocol J</computeroutput>
+    control protocols.
   </para>
   <para>
     <command>drouterd</command><manvolnum>8</manvolnum> also includes a
     full-featured Python scripting engine, permitting the creation of
     &quot;state scripts&quot;, mini-programs that can monitor and react to
-    changes in configuration and state of objects on the Livewire network.
+    changes in configuration and state of objects in the routing system.
   </para>
   </refsect1>
 
@@ -91,22 +89,6 @@
       <listitem>
 	<para>
 	  Do not start any state scripts found in
-	  <userinput>/etc/drouter/scripts.d</userinput>. Mostly useful
-	  for debugging.
-	</para>
-      </listitem>
-    </varlistentry>
-  </variablelist>
-
-  <variablelist remap='TP'>
-    <varlistentry>
-      <term>
-	<option>--no-tether</option>
-      </term>
-      <listitem>
-	<para>
-	  Do not start any tethering configuration found in the
-	  <userinput>[Tether]</userinput> section of
 	  <userinput>/etc/drouter/scripts.d</userinput>. Mostly useful
 	  for debugging.
 	</para>
@@ -158,9 +140,9 @@
   </refsect2>
 
   <refsect2>
-    <title>Software Authority Routers</title>
+    <title>Router Maps</title>
     <para>
-      Maps for generating routers to be exported via Software Authority
+      Maps for generating routers to be exported via the Protocol J
       Protocol should be placed in <userinput>/etc/drouter/maps.d/</userinput>,
       with each map file named with a <userinput>.map</userinput> extension.
       See the <command>dmap</command><manvolnum>1</manvolnum> man page for

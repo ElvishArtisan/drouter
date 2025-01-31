@@ -42,7 +42,6 @@ MainObject::MainObject(QObject *parent)
   : QObject(parent)
 {
   main_no_scripts=false;
-  main_no_tether=false;
   main_protocol_socks[0]=-1;
   main_protocol_socks[1]=-1;
   main_protocol_socks[2]=-1;
@@ -60,10 +59,6 @@ MainObject::MainObject(QObject *parent)
     }
     if(cmd->key(i)=="--no-scripts") {
       main_no_scripts=true;
-      cmd->setProcessed(i,true);
-    }
-    if(cmd->key(i)=="--no-tether") {
-      main_no_tether=true;
       cmd->setProcessed(i,true);
     }
     if(cmd->key(i)=="--no-protocols") {
@@ -141,18 +136,9 @@ MainObject::MainObject(QObject *parent)
   connect(main_scripts_timer,SIGNAL(timeout()),this,SLOT(scriptsData()));
 
   //
-  // Tethering
-  //
-  main_tether=new Tether(this);
-  connect(main_tether,SIGNAL(instanceStateChanged(bool)),
-	  this,SLOT(instanceStateChangedData(bool)));
-
-  //
   // Start Router Process
   //
   main_drouter=new DRouter(main_protocol_socks,this);
-  connect(main_tether,SIGNAL(instanceStateChanged(bool)),
-	  main_drouter,SLOT(setWriteable(bool)));
   if(!main_drouter->start(&err_msg)) {
     syslog(LOG_ERR,"%s, aborting",err_msg.toUtf8().constData());
     exit(1);
@@ -255,18 +241,6 @@ void MainObject::protocolData()
   if(!main_no_scripts) {
     main_scripts_timer->start(5000);
   }
-  if(main_no_tether) {
-    main_drouter->setWriteable(true);
-    instanceStateChangedData(true);
-  }
-  else {
-    if(!main_tether->start(main_config,&err_msg)) {
-      fprintf(stderr,
-	      "drouterd: tethering system failed to start [%s], exiting...\n",
-	      err_msg.toUtf8().constData());
-      exit(1);
-    }
-  }
 }
 
 
@@ -276,35 +250,8 @@ void MainObject::scriptsData()
 }
 
 
-void MainObject::instanceStateChangedData(bool state)
-{
-  QString err_msg;
-  QString body;
-
-  if(state) {
-    syslog(LOG_INFO,"we are now the active instance");
-    body="Server "+main_config->tetherHostname(Config::This)+
-      " is now the active instance\r\n";
-  }
-  else {
-    syslog(LOG_INFO,"we are no longer the active instance");
-    body="Server "+main_config->tetherHostname(Config::This)+
-      " is no longer the active instance\r\n";
-  }
-  if((Config::emailIsValid(main_config->alertAddress()))&&
-     (Config::emailIsValid(main_config->fromAddress()))) {
-    SendMail(&err_msg,tr("Drouter Server Alert"),body,
-	     main_config->fromAddress(),main_config->alertAddress());
-  }
-}
-
-
 void MainObject::exitData(int signum)
 {
-  if(!main_no_tether) {
-    main_tether->cleanup();  // Remove shared address
-  }
-  main_drouter->setWriteable(false);
   qApp->processEvents();
   main_drouter->disconnect();
   delete main_drouter;

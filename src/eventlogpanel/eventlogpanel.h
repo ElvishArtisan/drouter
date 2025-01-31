@@ -31,8 +31,6 @@
 
 #include <drouter/dreventlogmodel.h>
 
-#include "instanceindicator.h"
-
 #define EVENTLOGPANEL_USAGE "[options]\n"
 
 class MainWidget : public QWidget
@@ -56,7 +54,6 @@ private:
   QLabel *d_show_attributes_label;
   QComboBox *d_show_attributes_box;
   QPushButton *d_scroll_button;
-  InstanceIndicator *d_instance_indicator;
   QTableView *d_table_view;
   DREventLogModel *d_log_model;
   bool d_scrolling;

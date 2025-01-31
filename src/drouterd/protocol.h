@@ -53,7 +53,6 @@ class Protocol : public QObject
   void shutdownTimerData();
 
  protected:
-  virtual void tetherStateUpdated(bool state);
   virtual void nodeAdded(const QHostAddress &host_addr);
   virtual void nodeRemoved(const QHostAddress &host_addr,
 			   int srcs,int dsts,int gpis,int gpos);

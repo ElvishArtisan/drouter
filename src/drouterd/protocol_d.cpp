@@ -2,7 +2,7 @@
 //
 // Protocol D handler for DRouter.
 //
-//   (C) Copyright 2018-2024 Fred Gleason <fredg@paravelsystems.com>
+//   (C) Copyright 2018-2025 Fred Gleason <fredg@paravelsystems.com>
 //
 //   This program is free software; you can redistribute it and/or modify
 //   it under the terms of the GNU General Public License version 2 as
@@ -35,7 +35,6 @@ ProtocolD::ProtocolD(int sock,QObject *parent)
   int flags;
 
   proto_socket=NULL;
-  proto_tether_subscribed=false;
   proto_destinations_subscribed=false;
   proto_gpis_subscribed=false;
   proto_gpos_subscribed=false;
@@ -138,19 +137,6 @@ void ProtocolD::readyReadData()
 void ProtocolD::disconnectedData()
 {
   quit();
-}
-
-
-void ProtocolD::tetherStateUpdated(bool state)
-{
-  if(proto_tether_subscribed) {
-    if(state) {
-      proto_socket->write("TETHER\tY\r\n");
-    }
-    else {
-      proto_socket->write("TETHER\tN\r\n");
-    }
-  }
 }
 
 
@@ -679,31 +665,6 @@ void ProtocolD::ProcessCommand(const QString &cmd)
       }
       delete q;
     }
-    proto_socket->write("ok\r\n");
-    return;
-  }
-
-  if(keyword=="listtether") {
-    sql=QString("select `TETHER`.`IS_ACTIVE` from `TETHER`");
-    q=new DRSqlQuery(sql);
-    if(q->first()) {
-      proto_socket->
-	write((QString("TETHER\t")+q->value(0).toString()+"\r\n").toUtf8());
-    }
-    delete q;
-    proto_socket->write("ok\r\n");
-    return;
-  }
-
-  if(keyword=="subscribetether") {
-    proto_tether_subscribed=true;
-    sql=QString("select `TETHER`.`IS_ACTIVE` from `TETHER`");
-    q=new DRSqlQuery(sql);
-    if(q->first()) {
-      proto_socket->
-	write((QString("TETHER\t")+q->value(0).toString()+"\r\n").toUtf8());
-    }
-    delete q;
     proto_socket->write("ok\r\n");
     return;
   }
