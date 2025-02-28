@@ -108,6 +108,16 @@ AQ_FIND_QT6(QT6,Core Gui Widgets Network Sql WebSockets,[],[AC_MSG_ERROR([*** Qt
 PKG_CHECK_MODULES(SWITCHYARD6,switchyard6,[],[AC_MSG_ERROR([*** Switchyard6 not found ***])])
 
 #
+# Check for libsndfile
+#
+PKG_CHECK_MODULES(SNDFILE,sndfile,[],[AC_MSG_ERROR([*** libsndfile not found ***])])
+
+#
+# Check for PortAudio
+#
+PKG_CHECK_MODULES(PORTAUDIO,portaudio-2.0,[],[AC_MSG_ERROR([*** PortAudio not found ***])])
+
+#
 # Determine Distro
 #
 AR_GET_DISTRO()

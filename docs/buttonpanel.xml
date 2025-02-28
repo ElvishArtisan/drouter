@@ -164,6 +164,19 @@
     </varlistentry>
   </variablelist>
 
+  <variablelist remap='TP'>
+    <varlistentry>
+      <term>
+	<option>--list-sound-devices</option>
+      </term>
+      <listitem>
+	<para>
+	  Display an enumerated list of available sound output devices. 
+	</para>
+      </listitem>
+    </varlistentry>
+  </variablelist>
+
   <varlistentry>
     <term>
       <option>--no-max-size</option>
@@ -190,6 +203,34 @@
     </listitem>
   </varlistentry>
   
+  <variablelist remap='TP'>
+    <varlistentry>
+      <term>
+	<option>--play-file=<replaceable>file-name</replaceable></option>
+      </term>
+      <listitem>
+	<para>
+	  Play the specified audio file, then exit.
+	</para>
+      </listitem>
+    </varlistentry>
+  </variablelist>
+
+  <variablelist remap='TP'>
+    <varlistentry>
+      <term>
+	<option>--sound-device=<replaceable>dev-num</replaceable></option>
+      </term>
+      <listitem>
+	<para>
+	  Use the specified sound device for playing audio. (Use the
+	  <option>--list-sound-devices</option> for generating a list of
+	  available devices).
+	</para>
+      </listitem>
+    </varlistentry>
+  </variablelist>
+
   <variablelist remap='TP'>
     <varlistentry>
       <term>

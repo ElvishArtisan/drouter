@@ -37,6 +37,7 @@
 #include "autopushbutton.h"
 #include "buttonwidget.h"
 #include "gpioparser.h"
+#include "soundplayer.h"
 
 #define BUTTONPANEL_USAGE "[options]\n"
 #define LWPANELBUTTON_ACTIVE_STYLESHEET "color: #FFFFFF; background-color: #0000FF;"
@@ -50,6 +51,8 @@ class MainWidget : public QWidget
   QSize sizeHint() const;
 
  private slots:
+  void playerStartedData();
+  void playerStoppedData();
   void processError(const QString err_msg);
   void parserErrorData(DRJParser::ErrorType err,const QString &remarks);
   void changeConnectionState(bool state,DRJParser::ConnectionState cstate);
@@ -58,12 +61,16 @@ class MainWidget : public QWidget
  protected:
   void resizeEvent(QResizeEvent *e);
   void paintEvent(QPaintEvent *e);
-
+  void closeEvent(QCloseEvent *e);
+  
  private:
+  void PlayFile(const QString &filename);
   int panel_columns;
   QString panel_hostname;
   bool panel_arm_button;
   bool panel_no_max_size;
+  QString panel_play_file;
+  SoundPlayer *panel_sound_player;
   QPixmap *panel_saspanels_map;
   DRJParser *panel_parser;
   QSignalMapper *panel_button_mapper;

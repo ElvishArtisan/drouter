@@ -42,6 +42,8 @@ MainWidget::MainWidget(QWidget *parent)
   panel_arm_button=false;
   panel_no_max_size=false;
 
+  bool list_sound_devices=false;
+  int sound_device=-1;
   bool ok=false;
   QString err_msg;
 
@@ -78,6 +80,14 @@ MainWidget::MainWidget(QWidget *parent)
       panel_hostname=cmd->value(i);
       cmd->setProcessed(i,true);
     }
+    if(cmd->key(i)=="--list-sound-devices") {
+      list_sound_devices=true;
+      cmd->setProcessed(i,true);
+    }
+    if(cmd->key(i)=="--play-file") {
+      panel_play_file=cmd->value(i);
+      cmd->setProcessed(i,true);
+    }
     if(cmd->key(i)=="--no-creds") {  // Backwards compatibility
       cmd->setProcessed(i,true);
     }
@@ -92,6 +102,10 @@ MainWidget::MainWidget(QWidget *parent)
       cmd->setProcessed(i,true);
     }
     if(cmd->key(i)=="--password") {  // Backwards compatibility
+      cmd->setProcessed(i,true);
+    }
+    if(cmd->key(i)=="--sound-device") {
+      sound_device=cmd->value(i).toInt(&ok);
       cmd->setProcessed(i,true);
     }
     if(cmd->key(i)=="--gpio") {
@@ -131,7 +145,8 @@ MainWidget::MainWidget(QWidget *parent)
   //
   // Sanity Checks
   //
-  if(panel_arg_types.size()==0) {
+  if((panel_arg_types.size()==0)&&(panel_play_file.isEmpty())&&
+     (!list_sound_devices)) {
     processError(tr("At least one --output or --gpio argment must be specified."));
   }
 
@@ -147,6 +162,40 @@ MainWidget::MainWidget(QWidget *parent)
     }
   }
 
+  //
+  // Audio Player
+  //
+  int pa_err=0;
+  if((pa_err=Pa_Initialize())!=paNoError) {
+    QMessageBox::critical(this,"Drouter - ButtonPanel - "+tr("Error"),
+			  tr("PortAudio Error")+":"+Pa_GetErrorText(pa_err));
+    exit(1);
+  }
+  if(sound_device<0) {
+    sound_device=Pa_GetDefaultOutputDevice();
+  }
+  if(sound_device>=Pa_GetDeviceCount()) {
+    processError(tr("No such sound device."));
+  }
+  if(list_sound_devices) {
+    QString defcol("  ");
+    QString devlist;
+    for(int i=0;i<Pa_GetDeviceCount();i++) {
+      if(i==Pa_GetDefaultOutputDevice()) {
+	defcol="* ";
+      }
+      devlist+=QString::asprintf("%s%2d: %s\n",defcol.toUtf8().constData(),
+				 i,Pa_GetDeviceInfo(i)->name);
+    }
+    QMessageBox::information(this,"Drouter - ButtonPanel - "+
+			     tr("Available Audio Devices"),devlist);
+    Pa_Terminate();
+    exit(0);
+  }
+  panel_sound_player=new SoundPlayer(sound_device,this);
+  connect(panel_sound_player,SIGNAL(started()),this,SLOT(playerStartedData()));
+  connect(panel_sound_player,SIGNAL(stopped()),this,SLOT(playerStoppedData()));
+  
   //
   // The Protocol J Connection
   //
@@ -191,10 +240,21 @@ MainWidget::MainWidget(QWidget *parent)
   panel_connecting_label->
     setFont(QFont(font().family(),font().pixelSize(),QFont::Bold));
 
-  //
-  // Fire up the Protocol J connection
-  //
-  panel_parser->connectToHost(panel_hostname,9600);
+  if(panel_play_file.isEmpty()) {
+    //
+    // Fire up the Protocol J connection
+    //
+    panel_parser->connectToHost(panel_hostname,9600);
+  }
+  else {
+    if(!panel_sound_player->play(panel_play_file,false,&err_msg)) {
+      QMessageBox::warning(this,"Drouter - ButtonPanel - "+tr("Error"),
+			   tr("Audio play-out failed!")+"\n"+
+			   "["+err_msg+"]");
+      Pa_Terminate();
+      exit(1);
+    }
+  }
 }
 
 
@@ -225,9 +285,24 @@ QSize MainWidget::sizeHint() const
 }
 
 
+void MainWidget::playerStartedData()
+{
+}
+
+
+void MainWidget::playerStoppedData()
+{
+  if(!panel_play_file.isEmpty()) {
+    Pa_Terminate();
+    exit(0);
+  }
+}
+
+
 void MainWidget::processError(const QString err_msg)
 {
   QMessageBox::warning(this,"ButtonPanel - "+tr("Error"),err_msg);
+  Pa_Terminate();
   exit(1);
 }
 
@@ -304,6 +379,18 @@ void MainWidget::paintEvent(QPaintEvent *e)
 
     delete p;
   }
+}
+
+
+void MainWidget::closeEvent(QCloseEvent *e)
+{
+  Pa_Terminate();
+  exit(0);
+}
+
+
+void MainWidget::PlayFile(const QString &filename)
+{
 }
 
 

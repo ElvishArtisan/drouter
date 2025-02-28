@@ -20,7 +20,7 @@
 ##
 ## Use automake to process this into a Makefile.in
 
-AM_CPPFLAGS = -Wall -DPREFIX=\"$(prefix)\" -I$(top_srcdir)/src -Wno-strict-aliasing -std=c++17 -fPIC @QT6_CFLAGS@ @SWITCHYARD6_CFLAGS@
+AM_CPPFLAGS = -Wall -DPREFIX=\"$(prefix)\" -I$(top_srcdir)/src -Wno-strict-aliasing -std=c++17 -fPIC @QT6_CFLAGS@ @SWITCHYARD6_CFLAGS@ @SNDFILE_CFLAGS@ @PORTAUDIO_CFLAGS@
 LIBS = -L$(top_srcdir)/src/drouter
 MOC = @QT6_MOC@
 
@@ -39,6 +39,7 @@ dist_buttonpanel_SOURCES = autolabel.cpp autolabel.h\
                            gpiowidget.cpp gpiowidget.h\
                            multistatelabel.cpp multistatelabel.h\
                            separator.cpp separator.h\
+                           soundplayer.cpp soundplayer.h\
                            statebutton.cpp statebutton.h\
                            statelight.cpp statelight.h
 
@@ -49,10 +50,11 @@ nodist_buttonpanel_SOURCES = moc_autolabel.cpp\
                              moc_gpiowidget.cpp\
                              moc_multistatelabel.cpp\
                              moc_separator.cpp\
+                             moc_soundplayer.cpp\
                              moc_statebutton.cpp\
                              moc_statelight.cpp
 
-buttonpanel_LDADD = -ldrouter @QT6_LIBS@ @SWITCHYARD6_LIBS@
+buttonpanel_LDADD = -ldrouter @QT6_LIBS@ @SWITCHYARD6_LIBS@ @SNDFILE_LIBS@ @PORTAUDIO_LIBS@
 buttonpanel_LDFLAGS = -rdynamic
 
 CLEANFILES = *~\

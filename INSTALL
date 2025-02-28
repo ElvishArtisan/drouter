@@ -5,14 +5,21 @@ MANDATORY PREREQUISITES
 You will need the following installed and configured properly on your 
 system before building Drouter:
 
-The Switchyard6 Livewire library, v0.24.0 or better
- (https://github.com/ElvishArtisan/Switchyard)
+LibSndFile
+An audio file support library, written by Erik de Castro Lopo. Available at
+http://www.mega-nerd.com/libsndfile/.
+
+The Switchyard6 Livewire library, v0.24.0 or better. Available at
+https://github.com/ElvishArtisan/Switchyard)
 
 Qt6 Toolkit, v6.2.4 or better (http://www.qt.io/).
 
 Python 3.4 or better.
 
 MySQL or MariaDB RDBMS.
+
+PortAudio cross-platform audio i/o library, v19.x. Available at 
+https://www.portaudio.com/.
 
 
 OPTIONAL PREQUISITES
