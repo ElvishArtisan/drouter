@@ -2,7 +2,7 @@
 //
 // Parser for Protocol J Protocol
 //
-//   (C) Copyright 2016-2024 Fred Gleason <fredg@paravelsystems.com>
+//   (C) Copyright 2016-2025 Fred Gleason <fredg@paravelsystems.com>
 //
 //   This program is free software; you can redistribute it and/or modify
 //   it under the terms of the GNU General Public License as
@@ -75,9 +75,9 @@ class DRJParser : public QObject
   int outputCrosspoint(int router,int output) const;
   void setOutputCrosspoint(int router,int output,int input);
   QString gpiState(int router,int input) const;
-  void setGpiState(int router,int input,const QString &code,int msec=-1);
+  void setGpiState(int router,int input,const QString &code,int msec=0);
   QString gpoState(int router,int output) const;
-  void setGpoState(int router,int output,const QString &code,int msec=-1);
+  void setGpoState(int router,int output,const QString &code,int msec=0);
   void activateSnapshot(int router,const QString &snapshot);
   void connectToHost(const QString &hostname,uint16_t port);
   static QString connectionStateString(ConnectionState cstate);
