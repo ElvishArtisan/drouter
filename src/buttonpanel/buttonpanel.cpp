@@ -213,7 +213,8 @@ MainWidget::MainWidget(QWidget *parent)
     }
     if(panel_arg_types[i]==DREndPointMap::GpioRouter) {
       GpioWidget *w=NULL;
-      w=new GpioWidget(panel_gpio_parsers.at(gpionum),panel_parser,this);
+      w=new GpioWidget(panel_gpio_parsers.at(gpionum),panel_sound_player,
+		       panel_parser,this);
       panel_widgets.push_back(w);
       gpionum++;
     }

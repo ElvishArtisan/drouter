@@ -26,10 +26,13 @@
 #include <QList>
 #include <QStringList>
 
+#define GPIOPARSER_SOUNDS_DIRECTORY "/etc/drouter/sounds"
+
 class GpioParser
 {
  public:
-  enum Type {Lamp=0,Button=1,Separator=2,Label=3,MultiState=4,LastType=5};
+  enum Type {Lamp=0,Button=1,Separator=2,Label=3,MultiState=4,Alert=5,
+    LastType=6};
   QString title() const;
   int widgetQuantity() const;
   Type type(int n) const;
@@ -39,6 +42,7 @@ class GpioParser
   int endPoint(int n) const;
   QString legend(int n) const;
   QString mask(int n) const;
+  QString sound(int n) const;
   static GpioParser *fromString(const QString &str,QString *err_msg);
   static QString typeString(Type type);
 
@@ -46,7 +50,8 @@ class GpioParser
   GpioParser(const QString &title,const QList<Type> &types,
 	     const QStringList &colors,const QList<QChar> &dirs,
 	     const QList<int> &routers,const QList<int> &endpts,
-	     const QStringList &legends,const QStringList &masks);
+	     const QStringList &legends,const QStringList &masks,
+	     const QStringList &sounds);
   static bool TypeFromString(const QString &str,Type *type);
   static int ArgQuantityFromType(Type type);
   QString c_title;
@@ -57,6 +62,7 @@ class GpioParser
   QList<int> c_end_points;
   QStringList c_legends;
   QStringList c_masks;
+  QStringList c_sounds;
 };
 
 

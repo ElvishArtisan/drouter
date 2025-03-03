@@ -7,6 +7,7 @@ case "$1" in
 	    mkdir -p /etc/drouter
 	    mkdir -p /etc/drouter/maps.d
 	    mkdir -p /etc/drouter/scripts.d
+	    mkdir -p /etc/drouter/sounds
 	    cp /usr/share/drouter/drouter.conf-sample /etc/drouter/drouter.conf
 	    mkdir -p /var/cache/drouter
 	    chown root:root /var/cache/drouter

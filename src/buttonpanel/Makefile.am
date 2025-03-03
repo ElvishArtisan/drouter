@@ -31,7 +31,8 @@ moc_%.cpp:	%.h
 
 bin_PROGRAMS = buttonpanel
 
-dist_buttonpanel_SOURCES = autolabel.cpp autolabel.h\
+dist_buttonpanel_SOURCES = alertbutton.cpp alertbutton.h\
+                           autolabel.cpp autolabel.h\
                            autopushbutton.cpp autopushbutton.h\
                            buttonpanel.cpp buttonpanel.h\
                            buttonwidget.cpp buttonwidget.h\
@@ -43,7 +44,8 @@ dist_buttonpanel_SOURCES = autolabel.cpp autolabel.h\
                            statebutton.cpp statebutton.h\
                            statelight.cpp statelight.h
 
-nodist_buttonpanel_SOURCES = moc_autolabel.cpp\
+nodist_buttonpanel_SOURCES = moc_alertbutton.cpp\
+                             moc_autolabel.cpp\
                              moc_autopushbutton.cpp\
                              moc_buttonpanel.cpp\
                              moc_buttonwidget.cpp\

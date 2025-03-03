@@ -29,6 +29,7 @@
 #include <drouter/drjparser.h>
 
 #include "gpioparser.h"
+#include "soundplayer.h"
 
 #define GPIOWIDGET_CELL_WIDTH 90
 #define GPIOWIDGET_CELL_HEIGHT 60
@@ -37,7 +38,8 @@ class GpioWidget : public QWidget
 {
   Q_OBJECT
  public:
-  GpioWidget(GpioParser *gpio_parser,DRJParser *parser,QWidget *parent=0);
+  GpioWidget(GpioParser *gpio_parser,SoundPlayer *player,DRJParser *parser,
+	     QWidget *parent=0);
   ~GpioWidget();
   QSize sizeHint() const;
   QString title() const;
@@ -52,6 +54,7 @@ class GpioWidget : public QWidget
 
  private:
   int c_router;
+  SoundPlayer *c_sound_player;
   DRJParser *c_parser;
   QLabel *c_title_label;
   QList<QWidget *> c_widgets;

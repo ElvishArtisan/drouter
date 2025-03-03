@@ -85,6 +85,15 @@
       </para>
       <variablelist>
 	<varlistentry>
+	  <term><userinput>alert</userinput></term>
+	  <listitem>
+	    <para>
+	      A widget that provides an audio/visual alert in response to a
+	      GPIO state.
+	    </para>
+	  </listitem>
+	</varlistentry>
+	<varlistentry>
 	  <term><userinput>button</userinput></term>
 	  <listitem>
 	    <para>
@@ -264,6 +273,104 @@
 
   <refsect1 id='widget_specifications'>
     <title>Widget Specifications</title>
+<!-- ************************* -->
+    <refsect2 id='widget_specifications.alert'>
+      <title>Alerts</title>
+      <para>
+	An alert widget provides an audio/visual alert in response to a
+	GPIO state. It includes a push button that provides both a visual
+	indication for the alerted state as well as the ability to
+	acknowledge (silence) the associated audio alarm indication.
+      </para>
+      <para>
+	Alert widgets use a <replaceable>widget-spec</replaceable>
+	as follows:
+      </para>
+      <para>
+	/<userinput>alert:</userinput><replaceable>color</replaceable><userinput>:</userinput><replaceable>direction</replaceable><userinput>:</userinput><replaceable>router</replaceable><userinput>:</userinput><replaceable>endpoint</replaceable><userinput>:</userinput><replaceable>legend</replaceable><userinput>:</userinput><replaceable>mask</replaceable><userinput>:</userinput><replaceable>sound</replaceable>
+      </para>
+
+      <para>
+	<replaceable>color</replaceable> specifies the color of the
+	acknowledgment button. The following colors are recognized:
+      </para>
+      <para>
+	<simplelist type="vert">
+	  <member><userinput>black</userinput></member>
+	  <member><userinput>blue</userinput></member>
+	  <member><userinput>cyan</userinput></member>
+	  <member><userinput>green</userinput></member>
+	  <member><userinput>magenta</userinput></member>
+	  <member><userinput>red</userinput></member>
+	  <member><userinput>yellow</userinput></member>
+	</simplelist>
+      </para>
+      <para>
+	<replaceable>direction</replaceable> specifies the direction of the
+	specified signal, with <userinput>i</userinput> for GPI and
+	<userinput>o</userinput> for GPO.
+      </para>
+      <para>
+	<replaceable>router</replaceable> is the number of the Software
+	Authority router containing the specified GPIO, as given in the
+	<userinput>RouterNumbers</userinput> command.
+      </para>
+      <para>
+	<replaceable>endpoint</replaceable> is the Software Authority
+	input (for GPIs) or output (for GPOs) number of the specified GPIO,
+	as given by the	<userinput>SourceNames</userinput> or
+	<userinput>DestNames</userinput> command respectively.
+      </para>
+      <para>
+	<replaceable>legend</replaceable> is the text to be associated with
+	the acknowledgment button.
+      </para>
+      <para>
+	<replaceable>mask</replaceable> is a five letter specifier that
+	indicates which line(s) of the specified GPIO are used to determine
+	if the alert is in an active (alarming)	state. The following
+	characters can be used:
+	<variablelist>
+	  <varlistentry>
+	    <term><userinput>h</userinput></term>
+	    <listitem>
+	      <para>
+		The specified line, in <computeroutput>HIGH</computeroutput>
+		state.
+	      </para>
+	    </listitem>
+	  </varlistentry>
+	  <varlistentry>
+	    <term><userinput>l</userinput></term>
+	    <listitem>
+	      <para>
+		The specified line, in <computeroutput>LOW</computeroutput>
+		state.
+	      </para>
+	    </listitem>
+	  </varlistentry>
+	  <varlistentry>
+	    <term><userinput>x</userinput></term>
+	    <listitem>
+	      <para>
+		The specified line has no effect with the alert.
+	      </para>
+	    </listitem>
+	  </varlistentry>
+	</variablelist>
+      </para>
+      <para>
+	<replaceable>sound</replaceable> is the name of an audio file whose
+	contents will be looped (played) on the audio device specified by
+	the <option>--sound-device</option> on the command line when
+	the alert becomes active until either the acknowledgment button has
+	been clicked or the alert has become inactive. The specified audio
+	sample must reside in the <userinput>/etc/drouter/sounds</userinput>
+	subdirectory, and be of type <userinput>WAV</userinput> or
+	<userinput>AIFF</userinput>.
+      </para>
+    </refsect2>
+<!-- ************************* -->
 
     <refsect2 id='widget_specifications.buttons_and_lamps'>
       <title>Buttons and Lamps</title>

@@ -1437,3 +1437,5 @@
 	* Fixed typos in the 'DRJParser::setGpiState()' and
 	'DRJParser::setGpoState()' that caused them to generate ProtocolJ
 	syntax errors.
+2025-03-03 Fred Gleason <fredg@paravelsystems.com>
+	* Implemented an 'Alert' GPIO widget in buttonpanel(1).

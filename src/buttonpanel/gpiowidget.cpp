@@ -21,16 +21,18 @@
 
 #include <QMessageBox>
 
+#include "alertbutton.h"
 #include "gpiowidget.h"
 #include "multistatelabel.h"
 #include "separator.h"
 #include "statebutton.h"
 #include "statelight.h"
 
-GpioWidget::GpioWidget(GpioParser *gpio_parser,DRJParser *parser,
-		       QWidget *parent)
+GpioWidget::GpioWidget(GpioParser *gpio_parser,SoundPlayer *player,
+		       DRJParser *parser,QWidget *parent)
   : QWidget(parent)
 {
+  c_sound_player=player;
   c_parser=parser;
   c_hint_width=0;
   c_hint_height=0;
@@ -53,6 +55,37 @@ GpioWidget::GpioWidget(GpioParser *gpio_parser,DRJParser *parser,
   // Create Widgets
   //
   for(int i=0;i<gpio_parser->widgetQuantity();i++) {
+    if(gpio_parser->type(i)==GpioParser::Alert) {
+      AlertButton *w=NULL;
+      w=new AlertButton(gpio_parser->router(i),gpio_parser->endPoint(i),
+			gpio_parser->legend(i),gpio_parser->mask(i),
+			gpio_parser->direction(i),gpio_parser->sound(i),
+			c_parser,player,this);
+      c_widgets.push_back(w);
+      QString colorstr=gpio_parser->color(i);
+      if(colorstr=="black") {
+	w->setActiveColors("#FFFFFF","#000000");
+      }
+      if(colorstr=="blue") {
+	w->setActiveColors("#FFFFFF","#0000FF");
+      }
+      if(colorstr=="cyan") {
+	w->setActiveColors("#000000","#008888");
+      }
+      if(colorstr=="green") {
+	w->setActiveColors("#FFFFFF","#008800");
+      }
+      if(colorstr=="magenta") {
+	w->setActiveColors("#FFFFFF","#880088");
+      }
+      if(colorstr=="red") {
+	w->setActiveColors("#FFFFFF","#CC0000");
+      }
+      if(colorstr=="yellow") {
+	w->setActiveColors("#000000","#FFFF00");
+      }
+    }
+
     if(gpio_parser->type(i)==GpioParser::Lamp) {
       StateLight *w=NULL;
       w=new StateLight(gpio_parser->router(i),gpio_parser->endPoint(i),
@@ -156,6 +189,7 @@ GpioWidget::GpioWidget(GpioParser *gpio_parser,DRJParser *parser,
     }
     c_widgets.back()->hide();
   }
+
   c_hint_width-=5;    // Remove unused space after last widget
   if((c_title_label->sizeHint().width()+20)>c_hint_width) {
     c_hint_width=c_title_label->sizeHint().width()+20;
@@ -168,6 +202,7 @@ GpioWidget::GpioWidget(GpioParser *gpio_parser,DRJParser *parser,
 	  this,SLOT(changeConnectionState(bool,DRJParser::ConnectionState)));
 
   show();
+  printf("END\n");
 }
 
 
