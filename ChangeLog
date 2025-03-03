@@ -1429,3 +1429,11 @@
 	* Added 'libsndfile' and 'PortAudio' dependencies.
 	* Added '--list-sound-devices', '--play-file' and '--sound-device'
 	switches to buttonpanel(1).
+2025-03-03 Fred Gleason <fredg@paravelsystems.com>
+	* Changed the default value for the 'msec' parameter from '-1' to
+	'0' in the 'DRJParser::setGpiState()' 'DRJParser::setGpoState()'
+	methods.
+2025-03-03 Fred Gleason <fredg@paravelsystems.com>
+	* Fixed typos in the 'DRJParser::setGpiState()' and
+	'DRJParser::setGpoState()' that caused them to generate ProtocolJ
+	syntax errors.

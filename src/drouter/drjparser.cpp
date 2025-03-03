@@ -197,7 +197,7 @@ void DRJParser::setGpiState(int router,int input,const QString &code,int msec)
   QVariantMap fields;
 
   fields["router"]=router;
-  fields["source"]=input;
+  fields["number"]=input;
   fields["code"]=code;
   fields["duration"]=msec;
 
@@ -216,7 +216,7 @@ void DRJParser::setGpoState(int router,int output,const QString &code,int msec)
   QVariantMap fields;
 
   fields["router"]=router;
-  fields["destination"]=output;
+  fields["number"]=output;
   fields["code"]=code;
   fields["duration"]=msec;
 
