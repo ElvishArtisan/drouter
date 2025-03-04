@@ -44,12 +44,14 @@ int __SoundPlayer__PaStreamCallback(const void *input,void *output,
 }
 
 
-SoundPlayer::SoundPlayer(int snd_dev,QObject *parent)
+SoundPlayer::SoundPlayer(int snd_dev,const QStringList &file_paths,
+			 QObject *parent)
   : QObject(parent)
 {
   d_sf_sndfile=NULL;
   d_sf_info.format=0;
   d_sound_device=snd_dev;
+  d_file_paths=file_paths;
   d_pa_stream=NULL;
   d_loop=false;
 
@@ -72,6 +74,12 @@ int SoundPlayer::soundDevice() const
 }
 
 
+QStringList SoundPlayer::filePaths() const
+{
+  return d_file_paths;
+}
+
+
 QString SoundPlayer::playingFilename() const
 {
   return d_playing_filename;
@@ -88,6 +96,7 @@ bool SoundPlayer::play(const QString &filename,bool loop,QString *err_msg)
 {
   PaError pa_err=0;
   PaStreamParameters params;
+  QStringList sound_dirs;
   d_loop=loop;
 
   //
@@ -100,10 +109,17 @@ bool SoundPlayer::play(const QString &filename,bool loop,QString *err_msg)
   //
   // Open Sound File
   //
-  if((d_sf_sndfile=sf_open(filename.toUtf8(),SFM_READ,&d_sf_info))==NULL) {
+  for(int i=0;i<d_file_paths.size();i++) {
+    QString pathname=d_file_paths.at(i)+"/"+filename;
+    if((d_sf_sndfile=sf_open(pathname.toUtf8(),SFM_READ,&d_sf_info))!=NULL) {
+      d_playing_filename=pathname;
+      break;
+    }
+  }
+  if(d_sf_sndfile==NULL) {
     *err_msg=sf_strerror(NULL);
     return false;
-  }    
+  }
 
   //
   // Open Sound Device

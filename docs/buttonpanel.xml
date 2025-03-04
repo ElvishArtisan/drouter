@@ -365,8 +365,10 @@
 	the <option>--sound-device</option> on the command line when
 	the alert becomes active until either the acknowledgment button has
 	been clicked or the alert has become inactive. The specified audio
-	sample must reside in the <userinput>/etc/drouter/sounds</userinput>
-	subdirectory, and be of type <userinput>WAV</userinput> or
+	will be looked for in
+	<userinput>/etc/drouter/sounds/</userinput>, followed by
+	<userinput>/usr/share/drouter/sounds/</userinput> and
+	must be of type <userinput>WAV</userinput> or
 	<userinput>AIFF</userinput>.
       </para>
     </refsect2>

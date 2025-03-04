@@ -19,6 +19,7 @@
 //   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
 //
 
+#include <QFile>
 #include <QMessageBox>
 
 #include <sy6/syconfig.h>
@@ -39,6 +40,21 @@ AlertButton::AlertButton(int router,int endpt,const QString &legend,
   c_sound_player=player;
   c_parser=parser;
 
+  //
+  // Verify The Sound File
+  //
+  QStringList paths=player->filePaths();
+  bool found=false;
+  for(int i=0;i<paths.size();i++) {
+    if(QFile::exists(paths.at(i)+"/"+snd_filename)) {
+      found=true;
+    }
+  }
+  if(!found) {
+    QMessageBox::warning(this,"ButtonPanel - "+tr("Warning"),
+			 tr("Audio file")+" \""+snd_filename+"\" "+
+			 tr("not found."));
+  }
   if(c_mask.count("x")<4) {
     processError(tr("gpio mask is not unique")+" ["+c_mask+"]");
   }

@@ -1,8 +1,8 @@
-## automake.am
+## Makefile.am
 ##
-## Automake.am for tests/protocol_j/config
+## Makefile.am for sounds/
 ##
-##   (C) Copyright 2024 Fred Gleason <fredg@paravelsystems.com>
+##   (C) Copyright 2025 Fred Gleason <fredg@paravelsystems.com>
 ##
 ##   This program is free software; you can redistribute it and/or modify
 ##   it under the terms of the GNU General Public License as
@@ -20,12 +20,14 @@
 ##
 ## Use automake to process this into a Makefile.in
 
-SUBDIRS = maps.d \
-          scripts.d\
-          sounds
+install-exec-local:	
+	mkdir -p $(DESTDIR)/usr/share/drouter/sounds
+	cp beeboop.wav $(DESTDIR)/usr/share/drouter/sounds/
 
-EXTRA_DIST = drouter.conf.in\
-             livewire_node.lwrp
+uninstall-local:	
+	rm -f $(DESTDIR)/usr/share/drouter/sounds/beeboop.wav
+
+EXTRA_DIST = beeboop.wav
 
 CLEANFILES = *~\
              *.idb\

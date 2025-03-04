@@ -305,6 +305,7 @@ AC_CONFIG_FILES([ \
     python/Makefile \
     scripts/install_python.sh \
     scripts/Makefile \
+    sounds/Makefile \
     src/drouter/Makefile \
     src/drouter/paths.h\
     src/buttonpanel/Makefile \
@@ -335,6 +336,7 @@ AC_CONFIG_FILES([ \
     tests/protocol_j/config/maps.d/03-Test_GVG7000_Audio.map \
     tests/protocol_j/config/maps.d/Makefile \
     tests/protocol_j/config/scripts.d/Makefile \
+    tests/protocol_j/config/sounds/Makefile \
     drouter.pc\
     drouter.spec \
     build_debs.sh \

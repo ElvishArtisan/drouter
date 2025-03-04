@@ -4,7 +4,7 @@
 
 // Install-Dependent Path Values
 //
-//   (C) Copyright 2022 Fred Gleason <fredg@paravelsystems.com>
+//   (C) Copyright 2022-2025 Fred Gleason <fredg@paravelsystems.com>
 //
 //   This program is free software; you can redistribute it and/or modify
 //   it under the terms of the GNU General Public License version 2 as
@@ -29,6 +29,7 @@
 #define PATH_PREFIX "@prefix@"
 #define PATH_BIN "@prefix@/bin"
 #define PATH_SBIN "@prefix@/sbin"
+#define PATH_DATA "@prefix@/share/drouter"
 
 
 #endif  // RDPATHS_H

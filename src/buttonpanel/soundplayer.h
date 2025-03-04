@@ -34,9 +34,10 @@ class SoundPlayer : public QObject
 {
   Q_OBJECT
  public:
-  SoundPlayer(int snd_dev,QObject *parent);
+  SoundPlayer(int snd_dev,const QStringList &file_paths,QObject *parent);
   ~SoundPlayer();
   int soundDevice() const;
+  QStringList filePaths() const;
   QString playingFilename() const;
   bool isPlaying() const;
   bool play(const QString &filename,bool loop,QString *err_msg);
@@ -52,6 +53,7 @@ class SoundPlayer : public QObject
  private:
   QString d_playing_filename;
   PaDeviceIndex d_sound_device;
+  QStringList d_file_paths;
   PaStream *d_pa_stream;
   SNDFILE *d_sf_sndfile;
   SF_INFO d_sf_info;

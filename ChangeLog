@@ -1439,3 +1439,6 @@
 	syntax errors.
 2025-03-03 Fred Gleason <fredg@paravelsystems.com>
 	* Implemented an 'Alert' GPIO widget in buttonpanel(1).
+2025-03-04 Fred Gleason <fredg@paravelsystems.com>
+	Refactored the audio player so as to search for audio files in the
+	'/etc/drouter/sounds/' and '/usr/share/drouter/sounds/' directories.

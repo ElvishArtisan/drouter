@@ -26,6 +26,8 @@
 #include <sy6/sycmdswitch.h>
 #include <sy6/symcastsocket.h>
 
+#include "drouter/paths.h"
+
 #include "buttonpanel.h"
 #include "gpiowidget.h"
 
@@ -192,7 +194,10 @@ MainWidget::MainWidget(QWidget *parent)
     Pa_Terminate();
     exit(0);
   }
-  panel_sound_player=new SoundPlayer(sound_device,this);
+  QStringList paths;
+  paths.push_back("/etc/drouter/sounds");
+  paths.push_back(QString(PATH_DATA)+"/drouter/sounds");
+  panel_sound_player=new SoundPlayer(sound_device,paths,this);
   connect(panel_sound_player,SIGNAL(started()),this,SLOT(playerStartedData()));
   connect(panel_sound_player,SIGNAL(stopped()),this,SLOT(playerStoppedData()));
   

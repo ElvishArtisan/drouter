@@ -201,7 +201,7 @@ GpioParser *GpioParser::fromString(const QString &str,QString *err_msg)
       //
       // Sound/
       //
-      sound=QString(GPIOPARSER_SOUNDS_DIRECTORY)+"/"+f1.at(7).trimmed();
+      sound=f1.at(7).trimmed();
     }
     //
     // Lamp or Button widget
