@@ -1,6 +1,6 @@
 // buttonpanel.h
 //
-// Button applet for controlling an SA output.
+// Button applet for controlling a Drouter output.
 //
 //   (C) Copyright 2002-2025 Fred Gleason <fredg@paravelsystems.com>
 //
@@ -51,6 +51,8 @@ class MainWidget : public QWidget
   QSize sizeHint() const;
 
  private slots:
+  void summaryAlarmStateChangedData(int id,bool state);
+  void acknowledgedData();
   void playerStartedData();
   void playerStoppedData();
   void processError(const QString err_msg);
@@ -69,15 +71,19 @@ class MainWidget : public QWidget
   QString panel_hostname;
   bool panel_arm_button;
   bool panel_no_max_size;
-  QString panel_play_file;
+  QString panel_sound_test_file;
+  QString panel_sound_alert_file;
   SoundPlayer *panel_sound_player;
   QPixmap *panel_saspanels_map;
   DRJParser *panel_parser;
+  bool panel_summary_alarm_state;
+  //  bool panel_alarm_acknowledged;
   QSignalMapper *panel_button_mapper;
   QLabel *panel_connecting_label;
   DRLoginDialog *panel_login_dialog;
   QTimer *panel_resize_timer;
   QList<QWidget *> panel_widgets;
+  QList<bool> panel_alarm_states;
   QList<DREndPointMap::RouterType> panel_arg_types;
   QList<int> panel_arg_audio_routers;
   QList<int> panel_arg_audio_outputs;

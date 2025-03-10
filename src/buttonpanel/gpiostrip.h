@@ -1,8 +1,8 @@
-// gpiowidget.h
+// gpiostrip.h
 //
 // Strip container for GPIO controls.
 //
-//   (C) Copyright 2020-2024 Fred Gleason <fredg@paravelsystems.com>
+//   (C) Copyright 2020-2025 Fred Gleason <fredg@paravelsystems.com>
 //
 //   This program is free software; you can redistribute it and/or modify
 //   it under the terms of the GNU General Public License as
@@ -19,8 +19,8 @@
 //   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
 //
 
-#ifndef GPIOWIDGET_H
-#define GPIOWIDGET_H
+#ifndef GPIOSTRIP_H
+#define GPIOSTRIP_H
 
 #include <QLabel>
 #include <QList>
@@ -28,39 +28,49 @@
 
 #include <drouter/drjparser.h>
 
+#include "alertbutton.h"
 #include "gpioparser.h"
-#include "soundplayer.h"
 
-#define GPIOWIDGET_CELL_WIDTH 90
-#define GPIOWIDGET_CELL_HEIGHT 60
+#define GPIOSTRIP_CELL_WIDTH 90
+#define GPIOSTRIP_CELL_HEIGHT 60
 
-class GpioWidget : public QWidget
+class GpioStrip : public QWidget
 {
   Q_OBJECT
  public:
-  GpioWidget(GpioParser *gpio_parser,SoundPlayer *player,DRJParser *parser,
-	     QWidget *parent=0);
-  ~GpioWidget();
+  GpioStrip(int id,GpioParser *gpio_parser,DRJParser *parser,QWidget *parent=0);
+  ~GpioStrip();
   QSize sizeHint() const;
   QString title() const;
   void setTitle(const QString &str);
+  bool summaryAlarmState() const;
+  
+ signals:
+  void summaryAlarmStateChanged(int id,bool state);
+  void acknowledgeRequested();
+
+ public slots:
+  void acknowledge();
+
+ private slots:
+  void alarmStateChangedData(int id,bool state);
+  void changeConnectionState(bool state,DRJParser::ConnectionState cstate);
 
  protected:
   void processError(const QString &err_msg);
   void resizeEvent(QResizeEvent *e);
 
- private slots:
-  void changeConnectionState(bool state,DRJParser::ConnectionState cstate);
-
  private:
   int c_router;
-  SoundPlayer *c_sound_player;
+  int c_id;
   DRJParser *c_parser;
+  bool c_summary_alarm_state;
   QLabel *c_title_label;
   QList<QWidget *> c_widgets;
+  QList<bool> c_alarm_states;
   int c_hint_width;
   int c_hint_height;
 };
 
 
-#endif  // GPIOWIDGET_H
+#endif  // GPIOSTRIP_H

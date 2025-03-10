@@ -1442,3 +1442,6 @@
 2025-03-04 Fred Gleason <fredg@paravelsystems.com>
 	Refactored the audio player so as to search for audio files in the
 	'/etc/drouter/sounds/' and '/usr/share/drouter/sounds/' directories.
+2025-03-10 Fred Gleason <fredg@paravelsystems.com>
+	* Refactored audio alarms in buttonpanel(1) to use a single sound
+	file specified by the '--sound-alert-file' option.

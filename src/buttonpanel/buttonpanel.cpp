@@ -1,6 +1,6 @@
 // buttonpanel.cpp
 //
-// Button applet for controlling an lwpath output.
+// Button applet for controlling a Drouter output.
 //
 //   (C) Copyright 2002-2025 Fred Gleason <fredg@paravelsystems.com>
 //
@@ -20,6 +20,7 @@
 //
 
 #include <QApplication>
+#include <QFile>
 #include <QMessageBox>
 #include <QPainter>
 
@@ -29,7 +30,7 @@
 #include "drouter/paths.h"
 
 #include "buttonpanel.h"
-#include "gpiowidget.h"
+#include "gpiostrip.h"
 
 //
 // Icons
@@ -43,6 +44,8 @@ MainWidget::MainWidget(QWidget *parent)
   panel_hostname="";
   panel_arm_button=false;
   panel_no_max_size=false;
+  panel_summary_alarm_state=false;
+  //  panel_alarm_acknowledged=false;
 
   bool list_sound_devices=false;
   int sound_device=-1;
@@ -86,10 +89,6 @@ MainWidget::MainWidget(QWidget *parent)
       list_sound_devices=true;
       cmd->setProcessed(i,true);
     }
-    if(cmd->key(i)=="--play-file") {
-      panel_play_file=cmd->value(i);
-      cmd->setProcessed(i,true);
-    }
     if(cmd->key(i)=="--no-creds") {  // Backwards compatibility
       cmd->setProcessed(i,true);
     }
@@ -108,6 +107,14 @@ MainWidget::MainWidget(QWidget *parent)
     }
     if(cmd->key(i)=="--sound-device") {
       sound_device=cmd->value(i).toInt(&ok);
+      cmd->setProcessed(i,true);
+    }
+    if(cmd->key(i)=="--sound-test-file") {
+      panel_sound_test_file=cmd->value(i);
+      cmd->setProcessed(i,true);
+    }
+    if(cmd->key(i)=="--sound-alert-file") {
+      panel_sound_alert_file=cmd->value(i);
       cmd->setProcessed(i,true);
     }
     if(cmd->key(i)=="--gpio") {
@@ -147,9 +154,26 @@ MainWidget::MainWidget(QWidget *parent)
   //
   // Sanity Checks
   //
-  if((panel_arg_types.size()==0)&&(panel_play_file.isEmpty())&&
+  if((panel_arg_types.size()==0)&&(panel_sound_test_file.isEmpty())&&
      (!list_sound_devices)) {
     processError(tr("At least one --output or --gpio argment must be specified."));
+  }
+  //
+  // Verify The Sound File
+  //
+  QStringList paths;
+  paths.push_back("/etc/drouter/sounds");
+  paths.push_back(QString(PATH_DATA)+"/drouter/sounds");
+  bool found=false;
+  for(int i=0;i<paths.size();i++) {
+    if(QFile::exists(paths.at(i)+"/"+panel_sound_alert_file)) {
+      found=true;
+    }
+  }
+  if(!found) {
+    QMessageBox::warning(this,"ButtonPanel - "+tr("Warning"),
+			 tr("Audio file")+" \""+panel_sound_alert_file+"\" "+
+			 tr("not found."));
   }
 
   //
@@ -194,9 +218,6 @@ MainWidget::MainWidget(QWidget *parent)
     Pa_Terminate();
     exit(0);
   }
-  QStringList paths;
-  paths.push_back("/etc/drouter/sounds");
-  paths.push_back(QString(PATH_DATA)+"/drouter/sounds");
   panel_sound_player=new SoundPlayer(sound_device,paths,this);
   connect(panel_sound_player,SIGNAL(started()),this,SLOT(playerStartedData()));
   connect(panel_sound_player,SIGNAL(stopped()),this,SLOT(playerStoppedData()));
@@ -217,10 +238,14 @@ MainWidget::MainWidget(QWidget *parent)
       audionum++;
     }
     if(panel_arg_types[i]==DREndPointMap::GpioRouter) {
-      GpioWidget *w=NULL;
-      w=new GpioWidget(panel_gpio_parsers.at(gpionum),panel_sound_player,
-		       panel_parser,this);
+      GpioStrip *w=NULL;
+      w=new GpioStrip(panel_widgets.size(),panel_gpio_parsers.at(gpionum),
+		      panel_parser,this);
+      connect(w,SIGNAL(summaryAlarmStateChanged(int,bool)),
+	      this,SLOT(summaryAlarmStateChangedData(int,bool)));
+      connect(w,SIGNAL(acknowledgeRequested()),this,SLOT(acknowledgedData()));
       panel_widgets.push_back(w);
+      panel_alarm_states.push_back(false);
       gpionum++;
     }
   }
@@ -246,14 +271,14 @@ MainWidget::MainWidget(QWidget *parent)
   panel_connecting_label->
     setFont(QFont(font().family(),font().pixelSize(),QFont::Bold));
 
-  if(panel_play_file.isEmpty()) {
+  if(panel_sound_test_file.isEmpty()) {
     //
     // Fire up the Protocol J connection
     //
     panel_parser->connectToHost(panel_hostname,9600);
   }
   else {
-    if(!panel_sound_player->play(panel_play_file,false,&err_msg)) {
+    if(!panel_sound_player->play(panel_sound_test_file,false,&err_msg)) {
       QMessageBox::warning(this,"Drouter - ButtonPanel - "+tr("Error"),
 			   tr("Audio play-out failed!")+"\n"+
 			   "["+err_msg+"]");
@@ -291,6 +316,70 @@ QSize MainWidget::sizeHint() const
 }
 
 
+void MainWidget::summaryAlarmStateChangedData(int id,bool state)
+{
+  printf("summaryAlarmStateChangedData(%d,%d)\n",id,state);
+  QString err_msg;
+
+  panel_alarm_states[id]=state;
+
+  if(state) {  // New Alarm
+    panel_summary_alarm_state=true;
+    if((!panel_sound_player->isPlaying())&&
+       (!panel_sound_alert_file.isEmpty())) {
+      if(!panel_sound_player->play(panel_sound_alert_file,true,&err_msg)) {
+	fprintf(stderr,"audio error: %s\n",err_msg.toUtf8().constData());
+      }
+    }
+  }
+  else {
+    for(int i=0;i<panel_alarm_states.size();i++) {
+      if(panel_alarm_states.at(i)) {
+	panel_summary_alarm_state=true;
+	return;
+      }
+    }
+    panel_summary_alarm_state=false;
+    if(panel_sound_player->isPlaying()) {
+      panel_sound_player->stop();
+    }
+  }
+
+  //  if(state=DRJParser::Active) {
+  /*
+  panel_alert_states[id]=state;
+
+  DRJParser::AlertState alert_state=DRJParser::Idle;
+  for(int i=0;i<panel_alert_states.size();i++) {
+    if(panel_alert_states.at(i)>alert_state) {
+      alert_state=panel_alert_states.at(i);
+    }
+  }
+  if(alert_state!=panel_summary_alert_state) {
+    //printf("NEW SUMMARY STATE: %d\n",alert_state);
+    if(alert_state==DRJParser::Active) {
+      panel_sound_player->play(panel_sound_alert_file,true,&err_msg);
+    }
+    else {
+      if(panel_summary_alert_state==DRJParser::Active) {
+	panel_sound_player->stop();
+      }
+    }
+    panel_summary_alert_state=alert_state;
+  }
+  */
+}
+
+
+void MainWidget::acknowledgedData()
+{
+  printf("acknowledgedData()\n");
+  if(panel_sound_player->isPlaying()) {
+    panel_sound_player->stop();
+  }
+}
+
+
 void MainWidget::playerStartedData()
 {
 }
@@ -298,7 +387,7 @@ void MainWidget::playerStartedData()
 
 void MainWidget::playerStoppedData()
 {
-  if(!panel_play_file.isEmpty()) {
+  if(!panel_sound_test_file.isEmpty()) {
     Pa_Terminate();
     exit(0);
   }

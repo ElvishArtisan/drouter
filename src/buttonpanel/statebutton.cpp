@@ -107,10 +107,10 @@ void StateButton::pressedData()
 {
   if(c_dir==QChar('i')) {
     c_parser->setGpiState(c_router,c_endpt,c_mask);
-    printf("setGpiState(%d,%d,%s)\n",c_router,c_endpt,c_mask.toUtf8().constData());
+    //    printf("setGpiState(%d,%d,%s)\n",c_router,c_endpt,c_mask.toUtf8().constData());
   }
   else {
-    printf("setGpoState(%d,%d,%s)\n",c_router,c_endpt,c_mask.toUtf8().constData());
+    //    printf("setGpoState(%d,%d,%s)\n",c_router,c_endpt,c_mask.toUtf8().constData());
     c_parser->setGpoState(c_router,c_endpt,c_mask);
   }
 }

@@ -77,12 +77,6 @@ QString GpioParser::mask(int n) const
 }
 
 
-QString GpioParser::sound(int n) const
-{
-  return c_sounds.at(n);
-}
-
-
 GpioParser *GpioParser::fromString(const QString &str,QString *err_msg)
 {
   QList<GpioParser::Type> types;
@@ -197,11 +191,6 @@ GpioParser *GpioParser::fromString(const QString &str,QString *err_msg)
 	  QObject::tr("invalid --gpio argument mask")+" \""+f1.at(6)+"\".";
 	return NULL;
       }
-
-      //
-      // Sound/
-      //
-      sound=f1.at(7).trimmed();
     }
     //
     // Lamp or Button widget
@@ -396,7 +385,6 @@ GpioParser::GpioParser(const QString &title,
   c_end_points=endpts;
   c_legends=legends;
   c_masks=masks;
-  c_sounds=sounds;
 }
 
 
@@ -419,9 +407,6 @@ int GpioParser::ArgQuantityFromType(GpioParser::Type type)
 
   switch(type) {
   case GpioParser::Alert:
-    ret=8;
-    break;
-
   case GpioParser::Lamp:
   case GpioParser::Button:
     ret=7;

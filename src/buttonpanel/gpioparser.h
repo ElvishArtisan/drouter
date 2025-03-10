@@ -2,7 +2,7 @@
 //
 // Parse GPIO widget arguments
 //
-//   (C) Copyright 2020 Fred Gleason <fredg@paravelsystems.com>
+//   (C) Copyright 2020-2025 Fred Gleason <fredg@paravelsystems.com>
 //
 //   This program is free software; you can redistribute it and/or modify
 //   it under the terms of the GNU General Public License as
@@ -42,7 +42,6 @@ class GpioParser
   int endPoint(int n) const;
   QString legend(int n) const;
   QString mask(int n) const;
-  QString sound(int n) const;
   static GpioParser *fromString(const QString &str,QString *err_msg);
   static QString typeString(Type type);
 
@@ -62,7 +61,6 @@ class GpioParser
   QList<int> c_end_points;
   QStringList c_legends;
   QStringList c_masks;
-  QStringList c_sounds;
 };
 
 

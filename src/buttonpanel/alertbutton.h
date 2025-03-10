@@ -27,31 +27,35 @@
 #include "autopushbutton.h"
 #include "soundplayer.h"
 
-//#define ALERTBUTTON_OFF_STYLESHEET "color: #444444; background-color: #111111;"
 #define ALERTBUTTON_OFF_STYLESHEET ""
 
 class AlertButton : public AutoPushButton
 {
   Q_OBJECT
  public:
-  AlertButton(int router,int endpt,const QString &legend,const QString &mask,
-	      const QChar &dir,const QString &snd_filename,
-	      DRJParser *parser,SoundPlayer *player,QWidget *parent=0);
+  AlertButton(int id,int router,int endpt,const QString &legend,
+	      const QString &mask,const QChar &dir,DRJParser *parser,
+	      QWidget *parent=0);
   QSize sizeHint() const;
   QSizePolicy sizePolicy() const;
   QColor activeColor() const;
   void setActiveColors(const QColor &text,const QColor &backgnd);
+  bool alarmIsActive();
+
+ signals:
+  void alarmStateChanged(int id,bool state);
 
  private slots:
   void changeConnectionState(bool state,DRJParser::ConnectionState cstate);
   void setState(int router,int endpt,const QString &code);
-  void clickedData();
+  void setAlarmState(bool state);
   void flashData();
   
  protected:
   void processError(const QString &err_msg);
 
  private:
+  int c_id;
   int c_router;
   int c_endpt;
   QString c_mask;
@@ -60,11 +64,10 @@ class AlertButton : public AutoPushButton
   QChar c_dir;
   DRJParser *c_parser;
   QColor c_text_color;
-  QString c_sound_filename;
   QColor c_active_color;
   QString c_stylesheets[2];
-  SoundPlayer *c_sound_player;
   QTimer *c_flash_timer;
+  bool c_alarm_state;
 };
 
 

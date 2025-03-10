@@ -37,7 +37,7 @@ dist_buttonpanel_SOURCES = alertbutton.cpp alertbutton.h\
                            buttonpanel.cpp buttonpanel.h\
                            buttonwidget.cpp buttonwidget.h\
                            gpioparser.cpp gpioparser.h\
-                           gpiowidget.cpp gpiowidget.h\
+                           gpiostrip.cpp gpiostrip.h\
                            multistatelabel.cpp multistatelabel.h\
                            separator.cpp separator.h\
                            soundplayer.cpp soundplayer.h\
@@ -49,7 +49,7 @@ nodist_buttonpanel_SOURCES = moc_alertbutton.cpp\
                              moc_autopushbutton.cpp\
                              moc_buttonpanel.cpp\
                              moc_buttonwidget.cpp\
-                             moc_gpiowidget.cpp\
+                             moc_gpiostrip.cpp\
                              moc_multistatelabel.cpp\
                              moc_separator.cpp\
                              moc_soundplayer.cpp\

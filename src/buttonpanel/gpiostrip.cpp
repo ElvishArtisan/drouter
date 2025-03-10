@@ -1,8 +1,8 @@
-// gpiowidget.cpp
+// gpiostrip.cpp
 //
 // Strip container for GPIO controls.
 //
-//   (C) Copyright 2020 Fred Gleason <fredg@paravelsystems.com>
+//   (C) Copyright 2020-2025 Fred Gleason <fredg@paravelsystems.com>
 //
 //   This program is free software; you can redistribute it and/or modify
 //   it under the terms of the GNU General Public License as
@@ -22,20 +22,21 @@
 #include <QMessageBox>
 
 #include "alertbutton.h"
-#include "gpiowidget.h"
+#include "gpiostrip.h"
 #include "multistatelabel.h"
 #include "separator.h"
 #include "statebutton.h"
 #include "statelight.h"
 
-GpioWidget::GpioWidget(GpioParser *gpio_parser,SoundPlayer *player,
-		       DRJParser *parser,QWidget *parent)
+GpioStrip::GpioStrip(int id,GpioParser *gpio_parser,DRJParser *parser,
+		     QWidget *parent)
   : QWidget(parent)
 {
-  c_sound_player=player;
+  c_id=id;
   c_parser=parser;
   c_hint_width=0;
   c_hint_height=0;
+  c_summary_alarm_state=false;
 
   //
   // Fonts
@@ -57,11 +58,15 @@ GpioWidget::GpioWidget(GpioParser *gpio_parser,SoundPlayer *player,
   for(int i=0;i<gpio_parser->widgetQuantity();i++) {
     if(gpio_parser->type(i)==GpioParser::Alert) {
       AlertButton *w=NULL;
-      w=new AlertButton(gpio_parser->router(i),gpio_parser->endPoint(i),
-			gpio_parser->legend(i),gpio_parser->mask(i),
-			gpio_parser->direction(i),gpio_parser->sound(i),
-			c_parser,player,this);
+      w=new AlertButton(c_widgets.size(),gpio_parser->router(i),
+			gpio_parser->endPoint(i),gpio_parser->legend(i),
+			gpio_parser->mask(i),gpio_parser->direction(i),
+			c_parser,this);
+      connect(w,SIGNAL(alarmStateChanged(int,bool)),
+	      this,SLOT(alarmStateChangedData(int,bool)));
+      connect(w,SIGNAL(clicked()),this,SIGNAL(acknowledgeRequested()));
       c_widgets.push_back(w);
+      c_alarm_states.push_back(false);
       QString colorstr=gpio_parser->color(i);
       if(colorstr=="black") {
 	w->setActiveColors("#FFFFFF","#000000");
@@ -92,6 +97,7 @@ GpioWidget::GpioWidget(GpioParser *gpio_parser,SoundPlayer *player,
 		       gpio_parser->legend(i),gpio_parser->mask(i),
 		       gpio_parser->direction(i),c_parser,this);
       c_widgets.push_back(w);
+      c_alarm_states.push_back(false);
       QString colorstr=gpio_parser->color(i);
       if(colorstr=="black") {
 	w->setTextColor("#000000");
@@ -129,6 +135,7 @@ GpioWidget::GpioWidget(GpioParser *gpio_parser,SoundPlayer *player,
 			gpio_parser->legend(i),gpio_parser->mask(i),
 			gpio_parser->direction(i),c_parser,this);
       c_widgets.push_back(w);
+      c_alarm_states.push_back(false);
       QString colorstr=gpio_parser->color(i);
 
       if(colorstr=="black") {
@@ -158,6 +165,7 @@ GpioWidget::GpioWidget(GpioParser *gpio_parser,SoundPlayer *player,
       Separator *w=NULL;
       w=new Separator(this);
       c_widgets.push_back(w);
+      c_alarm_states.push_back(false);
     }
 
     if(gpio_parser->type(i)==GpioParser::Label) {
@@ -166,6 +174,7 @@ GpioWidget::GpioWidget(GpioParser *gpio_parser,SoundPlayer *player,
       w->setAlignment(Qt::AlignCenter);
       w->setFont(QFont(font().family(),font().pointSize(),QFont::Bold));
       c_widgets.push_back(w);
+      c_alarm_states.push_back(false);
     }
 
     if(gpio_parser->type(i)==GpioParser::MultiState) {
@@ -181,6 +190,7 @@ GpioWidget::GpioWidget(GpioParser *gpio_parser,SoundPlayer *player,
 		w,SLOT(setState(int,int,const QString &)));
       }
       c_widgets.push_back(w);
+      c_alarm_states.push_back(false);
     }
 
     c_hint_width+=5+c_widgets.back()->sizeHint().width();
@@ -206,7 +216,7 @@ GpioWidget::GpioWidget(GpioParser *gpio_parser,SoundPlayer *player,
 }
 
 
-GpioWidget::~GpioWidget()
+GpioStrip::~GpioStrip()
 {
   for(int i=0;i<c_widgets.size();i++) {
     delete c_widgets.at(i);
@@ -216,7 +226,7 @@ GpioWidget::~GpioWidget()
 }
 
 
-QSize GpioWidget::sizeHint() const
+QSize GpioStrip::sizeHint() const
 {
   int height=c_hint_height;
   if(!c_title_label->text().isEmpty()) {
@@ -227,26 +237,71 @@ QSize GpioWidget::sizeHint() const
 }
 
 
-QString GpioWidget::title() const
+QString GpioStrip::title() const
 {
   return c_title_label->text();
 }
 
 
-void GpioWidget::setTitle(const QString &str)
+void GpioStrip::setTitle(const QString &str)
 {
   c_title_label->setText(str);
 }
 
 
-void GpioWidget::processError(const QString &err_msg)
+bool GpioStrip::summaryAlarmState() const
+{
+  return c_summary_alarm_state;
+}
+
+
+void GpioStrip::changeConnectionState(bool state,
+				      DRJParser::ConnectionState cstate)
+{
+  c_title_label->setVisible(state);
+  for(int i=0;i<c_widgets.size();i++) {
+    c_widgets.at(i)->setVisible(state);
+  }
+}
+
+
+void GpioStrip::acknowledge()
+{
+}
+
+
+void GpioStrip::alarmStateChangedData(int id,bool state)
+{
+  printf("GpioStrip::alarmStateChangedData(%d,%d)\n",id,state);
+  bool summary=false;
+  
+  c_alarm_states[id]=state;
+  if(state) {
+    summary=true;
+  }
+  else {
+    for(int i=0;i<c_alarm_states.size();i++) {
+      if(c_alarm_states.at(i)) {
+	summary=true;
+	break;
+      }
+    }
+  }
+  if(summary||(summary!=c_summary_alarm_state)) {
+    c_summary_alarm_state=summary;
+    emit summaryAlarmStateChanged(c_id,summary);
+  }
+}
+
+
+void GpioStrip::processError(const QString &err_msg)
 {
   QMessageBox::warning(this,"ButtonPanel - "+tr("Error"),err_msg);;
   exit(1);
 }
 
 
-void GpioWidget::resizeEvent(QResizeEvent *e)
+void GpioStrip::resizeEvent(QResizeEvent *e)
 {
   int label_height=22;
 
@@ -261,15 +316,5 @@ void GpioWidget::resizeEvent(QResizeEvent *e)
     w->setGeometry(xpos,label_height,
 		   w->sizeHint().width(),40);
     xpos+=w->sizeHint().width()+5;
-  }
-}
-
-
-void GpioWidget::changeConnectionState(bool state,
-				       DRJParser::ConnectionState cstate)
-{
-  c_title_label->setVisible(state);
-  for(int i=0;i<c_widgets.size();i++) {
-    c_widgets.at(i)->setVisible(state);
   }
 }

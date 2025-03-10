@@ -26,35 +26,22 @@
 
 #include "alertbutton.h"
 
-AlertButton::AlertButton(int router,int endpt,const QString &legend,
+AlertButton::AlertButton(int id,int router,int endpt,const QString &legend,
 			 const QString &mask,const QChar &dir,
-			 const QString &snd_filename,DRJParser *parser,
-			 SoundPlayer *player,QWidget *parent)
+			 DRJParser *parser,QWidget *parent)
   : AutoPushButton(parent)
 {
+  c_id=id;
   c_router=router;
   c_endpt=endpt;
   c_mask=mask;
   c_dir=dir;
-  c_sound_filename=snd_filename;
-  c_sound_player=player;
   c_parser=parser;
-
+  c_alarm_state=false;
+  
   //
-  // Verify The Sound File
+  // Sanity Check the GPIO Mask
   //
-  QStringList paths=player->filePaths();
-  bool found=false;
-  for(int i=0;i<paths.size();i++) {
-    if(QFile::exists(paths.at(i)+"/"+snd_filename)) {
-      found=true;
-    }
-  }
-  if(!found) {
-    QMessageBox::warning(this,"ButtonPanel - "+tr("Warning"),
-			 tr("Audio file")+" \""+snd_filename+"\" "+
-			 tr("not found."));
-  }
   if(c_mask.count("x")<4) {
     processError(tr("gpio mask is not unique")+" ["+c_mask+"]");
   }
@@ -78,8 +65,6 @@ AlertButton::AlertButton(int router,int endpt,const QString &legend,
 
   setText(legend);
   setFocusPolicy(Qt::NoFocus);
-
-  connect(this,SIGNAL(clicked()),this,SLOT(clickedData()));
 
   c_flash_timer=new QTimer(this);
   connect(c_flash_timer,SIGNAL(timeout()),this,SLOT(flashData()));
@@ -129,6 +114,12 @@ void AlertButton::setActiveColors(const QColor &text,const QColor &backgnd)
 }
 
 
+bool AlertButton::alarmIsActive()
+{
+  return c_alarm_state;
+}
+
+
 void AlertButton::changeConnectionState(bool state,
 					DRJParser::ConnectionState cstate)
 {
@@ -143,17 +134,17 @@ void AlertButton::setState(int router,int endpt,const QString &code)
   if(code.length()==SWITCHYARD_GPIO_BUNDLE_SIZE) {
     if((router==c_router)&&(endpt==c_endpt)) {
       if(code.at(c_mask_bit)==c_mask.at(c_mask_bit)) {
-	setStyleSheet(c_stylesheets[true]);
-	c_flash_timer->start(400);
-	if(!c_sound_filename.isEmpty()) {
-	  c_sound_player->play(c_sound_filename,true,&err_msg);
+	if(!c_flash_timer->isActive()) {
+	  setStyleSheet(c_stylesheets[true]);
+	  c_flash_timer->start(400);
+	  setAlarmState(true);
 	}
       }
       else {
-	setStyleSheet(c_stylesheets[false]);
-	c_flash_timer->stop();
-	if(!c_sound_filename.isEmpty()) {
-	  c_sound_player->stop();
+	if(c_flash_timer->isActive()) {
+	  setStyleSheet(c_stylesheets[false]);
+	  c_flash_timer->stop();
+	  setAlarmState(false);
 	}
       }
     }
@@ -161,14 +152,6 @@ void AlertButton::setState(int router,int endpt,const QString &code)
   else {
     fprintf(stderr,"invalid GPIO update \"%s\" received from endpoint %d:%d\n",
 	    code.toUtf8().constData(),router,endpt);
-  }
-}
-
-
-void AlertButton::clickedData()
-{
-  if(!c_sound_filename.isEmpty()) {
-    c_sound_player->stop();
   }
 }
 
@@ -189,3 +172,13 @@ void AlertButton::processError(const QString &err_msg)
   QMessageBox::warning(this,"ButtonPanel - "+tr("Error"),err_msg);;
   exit(1);
 }
+
+
+void AlertButton::setAlarmState(bool state)
+{
+  if(state!=c_alarm_state) {
+    c_alarm_state=state;
+    emit alarmStateChanged(c_id,c_alarm_state);
+  }
+}
+

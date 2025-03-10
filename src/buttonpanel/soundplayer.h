@@ -42,7 +42,8 @@ class SoundPlayer : public QObject
   bool isPlaying() const;
   bool play(const QString &filename,bool loop,QString *err_msg);
   void stop();
-
+  int playCount() const;
+  
  signals:
   void started();
   void stopped();
@@ -65,6 +66,7 @@ class SoundPlayer : public QObject
 					     void *user_data);
   bool d_cb_playing;
   QTimer *d_stop_timer;
+  int d_play_count;
 };
 
 

@@ -54,7 +54,8 @@ SoundPlayer::SoundPlayer(int snd_dev,const QStringList &file_paths,
   d_file_paths=file_paths;
   d_pa_stream=NULL;
   d_loop=false;
-
+  d_play_count=0;
+  
   d_stop_timer=new QTimer(this);
   connect(d_stop_timer,SIGNAL(timeout()),this,SLOT(stopTimeoutData()));
 }
@@ -100,10 +101,11 @@ bool SoundPlayer::play(const QString &filename,bool loop,QString *err_msg)
   d_loop=loop;
 
   //
-  // Stop Existing Play-Out
+  // Ref Count
   //
+  d_play_count++;
   if(isPlaying()) {
-    stop();
+    return true;
   }
 
   //
@@ -153,6 +155,9 @@ bool SoundPlayer::play(const QString &filename,bool loop,QString *err_msg)
 
 void SoundPlayer::stop()
 {
+  if(--d_play_count>0) {
+    return;
+  }
   if(d_pa_stream!=NULL) {
     Pa_StopStream(d_pa_stream);
     Pa_CloseStream(d_pa_stream);
@@ -164,6 +169,13 @@ void SoundPlayer::stop()
     d_sf_info.format=0;
     emit stopped();
   }
+  d_play_count=0;
+}
+
+
+int SoundPlayer::playCount() const
+{
+  return d_play_count;
 }
 
 
