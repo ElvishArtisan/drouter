@@ -1445,3 +1445,6 @@
 2025-03-10 Fred Gleason <fredg@paravelsystems.com>
 	* Refactored audio alarms in buttonpanel(1) to use a single sound
 	file specified by the '--sound-alert-file' option.
+2025-03-11 Fred Gleason <fredg@paravelsystems.com>
+	* Changed the width of the indicator button in the GPIO alert width
+	to match that of button widgets.

@@ -219,8 +219,16 @@
       </term>
       <listitem>
 	<para>
-	  Play the audio file <replaceable>file-name</replaceable> whenever
-	  one or more alerts are active.
+	  Where <replaceable>file-name</replaceable> is the name of an audio
+	  file whose contents will be looped (played) on the audio device
+	  specified by the <option>--sound-device</option> option when
+	  an alert becomes active until either the acknowledgment button has
+	  been clicked or the alert has become inactive. The specified audio
+	  will be looked for in
+	  <userinput>/etc/drouter/sounds/</userinput>, followed by
+	  <userinput>/usr/share/drouter/sounds/</userinput> and
+	  must be of type <userinput>WAV</userinput> or
+	  <userinput>AIFF</userinput>.
 	</para>
       </listitem>
     </varlistentry>
@@ -303,21 +311,10 @@
       <para>
 	/<userinput>alert:</userinput><replaceable>color</replaceable><userinput>:</userinput><replaceable>direction</replaceable><userinput>:</userinput><replaceable>router</replaceable><userinput>:</userinput><replaceable>endpoint</replaceable><userinput>:</userinput><replaceable>legend</replaceable><userinput>:</userinput><replaceable>mask</replaceable>
       </para>
-
       <para>
 	<replaceable>color</replaceable> specifies the color of the
-	acknowledgment button. The following colors are recognized:
-      </para>
-      <para>
-	<simplelist type="vert">
-	  <member><userinput>black</userinput></member>
-	  <member><userinput>blue</userinput></member>
-	  <member><userinput>cyan</userinput></member>
-	  <member><userinput>green</userinput></member>
-	  <member><userinput>magenta</userinput></member>
-	  <member><userinput>red</userinput></member>
-	  <member><userinput>yellow</userinput></member>
-	</simplelist>
+	alert indicator. See the <userinput>Specifying Color</userinput>
+	section below for details.
       </para>
       <para>
 	<replaceable>direction</replaceable> specifies the direction of the
@@ -373,18 +370,6 @@
 	  </varlistentry>
 	</variablelist>
       </para>
-      <para>
-	<replaceable>sound</replaceable> is the name of an audio file whose
-	contents will be looped (played) on the audio device specified by
-	the <option>--sound-device</option> on the command line when
-	the alert becomes active until either the acknowledgment button has
-	been clicked or the alert has become inactive. The specified audio
-	will be looked for in
-	<userinput>/etc/drouter/sounds/</userinput>, followed by
-	<userinput>/usr/share/drouter/sounds/</userinput> and
-	must be of type <userinput>WAV</userinput> or
-	<userinput>AIFF</userinput>.
-      </para>
     </refsect2>
 <!-- ************************* -->
 
@@ -398,21 +383,10 @@
 	/<userinput>button:</userinput><replaceable>color</replaceable><userinput>:</userinput><replaceable>direction</replaceable><userinput>:</userinput><replaceable>router</replaceable><userinput>:</userinput><replaceable>endpoint</replaceable><userinput>:</userinput><replaceable>legend</replaceable><userinput>:</userinput><replaceable>mask</replaceable>
 	/<userinput>lamp:</userinput><replaceable>color</replaceable><userinput>:</userinput><replaceable>direction</replaceable><userinput>:</userinput><replaceable>router</replaceable><userinput>:</userinput><replaceable>endpoint</replaceable><userinput>:</userinput><replaceable>legend</replaceable><userinput>:</userinput><replaceable>mask</replaceable>
       </para>
-
       <para>
 	<replaceable>color</replaceable> specifies the color of the
-	button or lamp. The following colors are recognized:
-      </para>
-      <para>
-	<simplelist type="vert">
-	  <member><userinput>black</userinput></member>
-	  <member><userinput>blue</userinput></member>
-	  <member><userinput>cyan</userinput></member>
-	  <member><userinput>green</userinput></member>
-	  <member><userinput>magenta</userinput></member>
-	  <member><userinput>red</userinput></member>
-	  <member><userinput>yellow</userinput></member>
-	</simplelist>
+	button or lamp. See the <userinput>Specifying Color</userinput>
+	section below for details.
       </para>
       <para>
 	<replaceable>direction</replaceable> specifies the direction of the
@@ -528,6 +502,24 @@
       </para>
     </refsect2>
 
+    <refsect2 id='widget_specifications.specifying_color'>
+      <title>Specifying Color</title>
+      <para>
+	A <replaceable>color</replaceable> value specifies the color of a
+	specified widget element. The following colors are recognized:
+      </para>
+      <para>
+	<simplelist type="vert">
+	  <member><userinput>black</userinput></member>
+	  <member><userinput>blue</userinput></member>
+	  <member><userinput>cyan</userinput></member>
+	  <member><userinput>green</userinput></member>
+	  <member><userinput>magenta</userinput></member>
+	  <member><userinput>red</userinput></member>
+	  <member><userinput>yellow</userinput></member>
+	</simplelist>
+      </para>
+    </refsect2>
   </refsect1>
 
   <refsect1 id='environmental_variables'>

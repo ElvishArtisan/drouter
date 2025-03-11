@@ -25,6 +25,7 @@
 #include <sy6/syconfig.h>
 
 #include "alertbutton.h"
+#include "buttonwidget.h"
 
 AlertButton::AlertButton(int id,int router,int endpt,const QString &legend,
 			 const QString &mask,const QChar &dir,
@@ -87,7 +88,7 @@ AlertButton::AlertButton(int id,int router,int endpt,const QString &legend,
 
 QSize AlertButton::sizeHint() const
 {
-  return QSize(80,40);
+  return QSize(BUTTONWIDGET_CELL_WIDTH-5,40);
 }
 
 
