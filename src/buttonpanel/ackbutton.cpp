@@ -1,6 +1,6 @@
-// alertbutton.cpp
+// ackbutton.cpp
 //
-// Pushbutton for the alert widget
+// Acknowledge an alert.
 //
 //   (C) Copyright 2025 Fred Gleason <fredg@paravelsystems.com>
 //
@@ -19,28 +19,22 @@
 //   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
 //
 
-#include <QFile>
 #include <QMessageBox>
 
 #include <sy6/syconfig.h>
 
-#include "alertbutton.h"
-#include "buttonwidget.h"
+#include "ackbutton.h"
 
-AlertButton::AlertButton(int id,int router,int endpt,const QString &legend,
-			 const QString &mask,DRJParser *parser,QWidget *parent)
+AckButton::AckButton(int router,int endpt,const QString &legend,
+		     const QString &mask,const QChar &dir,DRJParser *parser,
+		     QWidget *parent)
   : AutoPushButton(parent)
 {
-  c_id=id;
   c_router=router;
   c_endpt=endpt;
   c_mask=mask;
   c_parser=parser;
-  c_alarm_state=false;
-  
-  //
-  // Sanity Check the GPIO Mask
-  //
+
   if(c_mask.count("x")<4) {
     processError(tr("gpio mask is not unique")+" ["+c_mask+"]");
   }
@@ -62,31 +56,32 @@ AlertButton::AlertButton(int id,int router,int endpt,const QString &legend,
     c_inverted_mask.replace("h","l");
   }
 
-  connect(this,SIGNAL(clicked()),this,SLOT(clickedData()));
-  
   setText(legend);
   setFocusPolicy(Qt::NoFocus);
-
-  c_flash_timer=new QTimer(this);
-  connect(c_flash_timer,SIGNAL(timeout()),this,SLOT(flashData()));
 
   //
   // The ProtocolJ Connection
   //
   connect(c_parser,SIGNAL(connected(bool,DRJParser::ConnectionState)),
 	  this,SLOT(changeConnectionState(bool,DRJParser::ConnectionState)));
-  connect(c_parser,SIGNAL(gpiStateChanged(int,int,const QString &)),
-	  this,SLOT(setState(int,int,const QString &)));
+  if(dir==QChar('i')) {
+    connect(c_parser,SIGNAL(gpiStateChanged(int,int,const QString &)),
+	    this,SLOT(setState(int,int,const QString &)));
+  }
+  else {
+    connect(c_parser,SIGNAL(gpoStateChanged(int,int,const QString &)),
+	    this,SLOT(setState(int,int,const QString &)));
+  }
 }
 
 
-QSize AlertButton::sizeHint() const
+QSize AckButton::sizeHint() const
 {
-  return QSize(BUTTONWIDGET_CELL_WIDTH-5,40);
+  return QSize(80,40);
 }
 
 
-QSizePolicy AlertButton::sizePolicy() const
+QSizePolicy AckButton::sizePolicy() const
 {
   QSizePolicy pol(QSizePolicy::Fixed,QSizePolicy::Fixed);
   pol.setHeightForWidth(true);
@@ -94,59 +89,32 @@ QSizePolicy AlertButton::sizePolicy() const
 }
 
 
-QColor AlertButton::activeColor() const
+QColor AckButton::textColor() const
 {
-  return c_active_color;
+  return c_text_color;
 }
 
 
-void AlertButton::setActiveColors(const QColor &text,const QColor &backgnd)
+void AckButton::setTextColor(const QColor &color)
 {
-  c_stylesheets[false]="color: "+backgnd.name()+";";
-  c_stylesheets[true]=
-    "color: "+text.name()+";background-color: "+backgnd.name()+";";
-  setStyleSheet(c_stylesheets[false]);
+  c_text_color=color;
+  setStyleSheet("color: "+color.name()+";");
 }
 
 
-bool AlertButton::alarmIsActive()
-{
-  return c_alarm_state;
-}
-
-
-void AlertButton::clickedData()
-{
-  c_parser->setGpoState(c_router,c_endpt,c_mask,300);
-}
-
-
-void AlertButton::changeConnectionState(bool state,
-					DRJParser::ConnectionState cstate)
+void AckButton::changeConnectionState(bool state,
+				      DRJParser::ConnectionState cstate)
 {
   setEnabled(state);
 }
 
 
-void AlertButton::setState(int router,int endpt,const QString &code)
+void AckButton::setState(int router,int endpt,const QString &code)
 {
-  QString err_msg;
-
   if(code.length()==SWITCHYARD_GPIO_BUNDLE_SIZE) {
     if((router==c_router)&&(endpt==c_endpt)) {
       if(code.at(c_mask_bit)==c_mask.at(c_mask_bit)) {
-	if(!c_flash_timer->isActive()) {
-	  setStyleSheet(c_stylesheets[true]);
-	  c_flash_timer->start(400);
-	  setAlarmState(true);
-	}
-      }
-      else {
-	if(c_flash_timer->isActive()) {
-	  setStyleSheet(c_stylesheets[false]);
-	  c_flash_timer->stop();
-	  setAlarmState(false);
-	}
+	emit clicked();
       }
     }
   }
@@ -157,29 +125,8 @@ void AlertButton::setState(int router,int endpt,const QString &code)
 }
 
 
-void AlertButton::flashData()
-{
-  if(styleSheet()==c_stylesheets[false]) {
-    setStyleSheet(c_stylesheets[true]);
-  }
-  else {
-    setStyleSheet(c_stylesheets[false]);
-  }
-}
-
-
-void AlertButton::processError(const QString &err_msg)
+void AckButton::processError(const QString &err_msg)
 {
   QMessageBox::warning(this,"ButtonPanel - "+tr("Error"),err_msg);;
   exit(1);
 }
-
-
-void AlertButton::setAlarmState(bool state)
-{
-  if(state!=c_alarm_state) {
-    c_alarm_state=state;
-    emit alarmStateChanged(c_id,c_alarm_state);
-  }
-}
-

@@ -31,8 +31,8 @@
 class GpioParser
 {
  public:
-  enum Type {Lamp=0,Button=1,Separator=2,Label=3,MultiState=4,Alert=5,
-    LastType=6};
+  enum Type {Lamp=0,Button=1,Separator=2,Label=3,MultiState=4,Alert=5,Ack=6,
+    LastType=7};
   QString title() const;
   int widgetQuantity() const;
   Type type(int n) const;
@@ -49,8 +49,7 @@ class GpioParser
   GpioParser(const QString &title,const QList<Type> &types,
 	     const QStringList &colors,const QList<QChar> &dirs,
 	     const QList<int> &routers,const QList<int> &endpts,
-	     const QStringList &legends,const QStringList &masks,
-	     const QStringList &sounds);
+	     const QStringList &legends,const QStringList &masks);
   static bool TypeFromString(const QString &str,Type *type);
   static int ArgQuantityFromType(Type type);
   QString c_title;

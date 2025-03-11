@@ -46,7 +46,7 @@ class GpioStrip : public QWidget
   bool summaryAlarmState() const;
   
  signals:
-  void summaryAlarmStateChanged(int id,bool state);
+  void summaryAlarmStateChanged(int id,bool state,bool new_alert);
   void acknowledgeRequested();
 
  public slots:
@@ -61,6 +61,7 @@ class GpioStrip : public QWidget
   void resizeEvent(QResizeEvent *e);
 
  private:
+  void LoadColorMaps();
   int c_router;
   int c_id;
   DRJParser *c_parser;
@@ -70,6 +71,8 @@ class GpioStrip : public QWidget
   QList<bool> c_alarm_states;
   int c_hint_width;
   int c_hint_height;
+  QMap<QString,QString> c_text_colors;
+  QMap<QString,QString> c_background_colors;
 };
 
 

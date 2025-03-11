@@ -1,8 +1,8 @@
-// alertbutton.h
+// ackbutton.h
 //
-// Pushbutton for the alert widget
+// Acknowledge an alert.
 //
-//   (C) Copyright 2020-2025 Fred Gleason <fredg@paravelsystems.com>
+//   (C) Copyright 2025 Fred Gleason <fredg@paravelsystems.com>
 //
 //   This program is free software; you can redistribute it and/or modify
 //   it under the terms of the GNU General Public License as
@@ -19,43 +19,32 @@
 //   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
 //
 
-#ifndef ALERTBUTTON_H
-#define ALERTBUTTON_H
+#ifndef ACKBUTTON_H
+#define ACKBUTTON_H
 
 #include <drouter/drjparser.h>
 
 #include "autopushbutton.h"
-#include "soundplayer.h"
 
-#define ALERTBUTTON_OFF_STYLESHEET ""
-
-class AlertButton : public AutoPushButton
+class AckButton : public AutoPushButton
 {
   Q_OBJECT
  public:
-  AlertButton(int id,int router,int endpt,const QString &legend,
-	      const QString &mask,DRJParser *parser,QWidget *parent=0);
+  AckButton(int router,int endpt,const QString &legend,const QString &mask,
+	    const QChar &dir,DRJParser *parser,QWidget *parent=0);
   QSize sizeHint() const;
   QSizePolicy sizePolicy() const;
-  QColor activeColor() const;
-  void setActiveColors(const QColor &text,const QColor &backgnd);
-  bool alarmIsActive();
-
- signals:
-  void alarmStateChanged(int id,bool state);
+  QColor textColor() const;
+  void setTextColor(const QColor &color);
 
  private slots:
-  void clickedData();
   void changeConnectionState(bool state,DRJParser::ConnectionState cstate);
   void setState(int router,int endpt,const QString &code);
-  void setAlarmState(bool state);
-  void flashData();
-  
+
  protected:
   void processError(const QString &err_msg);
 
  private:
-  int c_id;
   int c_router;
   int c_endpt;
   QString c_mask;
@@ -63,11 +52,7 @@ class AlertButton : public AutoPushButton
   int c_mask_bit;
   DRJParser *c_parser;
   QColor c_text_color;
-  QColor c_active_color;
-  QString c_stylesheets[2];
-  QTimer *c_flash_timer;
-  bool c_alarm_state;
 };
 
 
-#endif  // ALERTBUTTON_H
+#endif  // ACKBUTTON_H

@@ -21,6 +21,7 @@
 
 #include <QMessageBox>
 
+#include "ackbutton.h"
 #include "alertbutton.h"
 #include "gpiostrip.h"
 #include "multistatelabel.h"
@@ -44,6 +45,11 @@ GpioStrip::GpioStrip(int id,GpioParser *gpio_parser,DRJParser *parser,
   QFont title_font(font().family(),14,QFont::Bold);
 
   //
+  // Color Maps
+  //
+  LoadColorMaps();
+
+  //
   // Title
   //
   c_title_label=new QLabel(this);
@@ -56,39 +62,32 @@ GpioStrip::GpioStrip(int id,GpioParser *gpio_parser,DRJParser *parser,
   // Create Widgets
   //
   for(int i=0;i<gpio_parser->widgetQuantity();i++) {
+    if(gpio_parser->type(i)==GpioParser::Ack) {
+      AckButton *w=NULL;
+      w=new AckButton(gpio_parser->router(i),gpio_parser->endPoint(i),
+		      gpio_parser->legend(i),gpio_parser->mask(i),
+		      gpio_parser->direction(i),c_parser,this);
+      w->setText(gpio_parser->legend(i));
+      connect(w,SIGNAL(clicked()),this,SIGNAL(acknowledgeRequested()));
+      c_widgets.push_back(w);
+      c_alarm_states.push_back(false);
+      QString colorstr=gpio_parser->color(i);
+      w->setTextColor(c_background_colors.value(colorstr));
+    }
+
     if(gpio_parser->type(i)==GpioParser::Alert) {
       AlertButton *w=NULL;
       w=new AlertButton(c_widgets.size(),gpio_parser->router(i),
 			gpio_parser->endPoint(i),gpio_parser->legend(i),
-			gpio_parser->mask(i),gpio_parser->direction(i),
-			c_parser,this);
+			gpio_parser->mask(i),c_parser,this);
       connect(w,SIGNAL(alarmStateChanged(int,bool)),
 	      this,SLOT(alarmStateChangedData(int,bool)));
       connect(w,SIGNAL(clicked()),this,SIGNAL(acknowledgeRequested()));
       c_widgets.push_back(w);
       c_alarm_states.push_back(false);
       QString colorstr=gpio_parser->color(i);
-      if(colorstr=="black") {
-	w->setActiveColors("#FFFFFF","#000000");
-      }
-      if(colorstr=="blue") {
-	w->setActiveColors("#FFFFFF","#0000FF");
-      }
-      if(colorstr=="cyan") {
-	w->setActiveColors("#000000","#008888");
-      }
-      if(colorstr=="green") {
-	w->setActiveColors("#FFFFFF","#008800");
-      }
-      if(colorstr=="magenta") {
-	w->setActiveColors("#FFFFFF","#880088");
-      }
-      if(colorstr=="red") {
-	w->setActiveColors("#FFFFFF","#CC0000");
-      }
-      if(colorstr=="yellow") {
-	w->setActiveColors("#000000","#FFFF00");
-      }
+      w->setActiveColors(c_text_colors.value(colorstr),
+			 c_background_colors.value(colorstr));
     }
 
     if(gpio_parser->type(i)==GpioParser::Lamp) {
@@ -99,34 +98,8 @@ GpioStrip::GpioStrip(int id,GpioParser *gpio_parser,DRJParser *parser,
       c_widgets.push_back(w);
       c_alarm_states.push_back(false);
       QString colorstr=gpio_parser->color(i);
-      if(colorstr=="black") {
-	w->setTextColor("#000000");
-	w->setBackgroundColor("#FFFFFF");
-      }
-      if(colorstr=="blue") {
-	w->setTextColor("#FFFFFF");
-	w->setBackgroundColor("#0000FF");
-      }
-      if(colorstr=="cyan") {
-	w->setTextColor("#FFFFFF");
-	w->setBackgroundColor("#008888");
-      }
-      if(colorstr=="green") {
-	w->setTextColor("#FFFFFF");
-	w->setBackgroundColor("#008800");
-      }
-      if(colorstr=="magenta") {
-	w->setTextColor("#FFFFFF");
-	w->setBackgroundColor("#880088");
-      }
-      if(colorstr=="red") {
-	w->setTextColor("#FFFFFF");
-	w->setBackgroundColor("#CC0000");
-      }
-      if(colorstr=="yellow") {
-	w->setTextColor("#000000");
-	w->setBackgroundColor("#FFFF00");
-      }
+      w->setTextColor(c_text_colors.value(colorstr));
+      w->setBackgroundColor(c_background_colors.value(colorstr));
     }
 
     if(gpio_parser->type(i)==GpioParser::Button) {
@@ -137,28 +110,7 @@ GpioStrip::GpioStrip(int id,GpioParser *gpio_parser,DRJParser *parser,
       c_widgets.push_back(w);
       c_alarm_states.push_back(false);
       QString colorstr=gpio_parser->color(i);
-
-      if(colorstr=="black") {
-	w->setTextColor("#000000");
-      }
-      if(colorstr=="blue") {
-	w->setTextColor("#0000FF");
-      }
-      if(colorstr=="cyan") {
-	w->setTextColor("#008888");
-      }
-      if(colorstr=="green") {
-	w->setTextColor("#008800");
-      }
-      if(colorstr=="magenta") {
-	w->setTextColor("#880088");
-      }
-      if(colorstr=="red") {
-	w->setTextColor("#CC0000");
-      }
-      if(colorstr=="yellow") {
-	w->setTextColor("#FFFF00");
-      }
+      w->setTextColor(c_background_colors.value(colorstr));
     }
 
     if(gpio_parser->type(i)==GpioParser::Separator) {
@@ -195,7 +147,7 @@ GpioStrip::GpioStrip(int id,GpioParser *gpio_parser,DRJParser *parser,
 
     c_hint_width+=5+c_widgets.back()->sizeHint().width();
     if(c_widgets.back()->sizeHint().height()>c_hint_height) {
-      c_hint_height=c_widgets.back()->sizeHint().height();
+      c_hint_height=5+c_widgets.back()->sizeHint().height();
     }
     c_widgets.back()->hide();
   }
@@ -212,7 +164,6 @@ GpioStrip::GpioStrip(int id,GpioParser *gpio_parser,DRJParser *parser,
 	  this,SLOT(changeConnectionState(bool,DRJParser::ConnectionState)));
 
   show();
-  printf("END\n");
 }
 
 
@@ -289,7 +240,7 @@ void GpioStrip::alarmStateChangedData(int id,bool state)
   }
   if(summary||(summary!=c_summary_alarm_state)) {
     c_summary_alarm_state=summary;
-    emit summaryAlarmStateChanged(c_id,summary);
+    emit summaryAlarmStateChanged(c_id,summary,state);
   }
 }
 
@@ -317,4 +268,29 @@ void GpioStrip::resizeEvent(QResizeEvent *e)
 		   w->sizeHint().width(),40);
     xpos+=w->sizeHint().width()+5;
   }
+}
+
+
+void GpioStrip::LoadColorMaps()
+{
+  c_text_colors["black"]="#FFFFFF";
+  c_background_colors["black"]="#000000";
+
+  c_text_colors["blue"]="#FFFFFF";
+  c_background_colors["blue"]="#0000FF";
+
+  c_text_colors["cyan"]="#000000";
+  c_background_colors["cyan"]="#008888";
+
+  c_text_colors["green"]="#FFFFFF";
+  c_background_colors["green"]="#008800";
+
+  c_text_colors["magenta"]="#FFFFFF";
+  c_background_colors["magenta"]="#880088";
+
+  c_text_colors["red"]="#FFFFFF";
+  c_background_colors["red"]="#CC0000";
+
+  c_text_colors["yellow"]="#FFFFFF";
+  c_background_colors["yellow"]="#FFFF00";
 }

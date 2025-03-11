@@ -1448,3 +1448,7 @@
 2025-03-11 Fred Gleason <fredg@paravelsystems.com>
 	* Changed the width of the indicator button in the GPIO alert width
 	to match that of button widgets.
+2025-03-11 Fred Gleason <fredg@paravelsystems.com>
+	* Added an 'Acknowledgment' widget to buttonpanel(1).
+	* Modified the 'Alert' widget in buttonpanel(1) to send return GPO
+	events when clicking the alert button.

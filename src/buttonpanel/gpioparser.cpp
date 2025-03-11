@@ -86,7 +86,6 @@ GpioParser *GpioParser::fromString(const QString &str,QString *err_msg)
   QList<int> endpts;
   QStringList legends;
   QStringList masks;
-  QStringList sounds;
 
   GpioParser::Type type=GpioParser::LastType;
   QString color;
@@ -95,10 +94,21 @@ GpioParser *GpioParser::fromString(const QString &str,QString *err_msg)
   int endpt=-1;
   QString legend;
   QString mask;
-  QString sound;
 
   bool ok=false;
   
+  //
+  // Color Name Table
+  //
+  QStringList colornames;
+  colornames.push_back("black");
+  colornames.push_back("blue");
+  colornames.push_back("cyan");
+  colornames.push_back("green");
+  colornames.push_back("magenta");
+  colornames.push_back("red");
+  colornames.push_back("yellow");
+
   QStringList f0=str.split("/",Qt::KeepEmptyParts);
   if(f0.size()<2) {
     *err_msg=QObject::tr("invalid --gpio argument");
@@ -126,20 +136,12 @@ GpioParser *GpioParser::fromString(const QString &str,QString *err_msg)
     }
     
     //
-    // Alert widget
+    // Acknowledgment widget
     //
-    if(type==GpioParser::Alert) {
+    if(type==GpioParser::Ack) {
       //
       // Color
       //
-      QStringList colornames;
-      colornames.push_back("black");
-      colornames.push_back("blue");
-      colornames.push_back("cyan");
-      colornames.push_back("green");
-      colornames.push_back("magenta");
-      colornames.push_back("red");
-      colornames.push_back("yellow");
       color=f1.at(1).toLower().trimmed();
       if(!colornames.contains(f1.at(1).toLower())) {
 	*err_msg=QObject::tr("invalid --gpio argument, unrecognized color")+
@@ -192,6 +194,55 @@ GpioParser *GpioParser::fromString(const QString &str,QString *err_msg)
 	return NULL;
       }
     }
+
+    //
+    // Alert widget
+    //
+    if(type==GpioParser::Alert) {
+      //
+      // Color
+      //
+      color=f1.at(1).toLower().trimmed();
+      if(!colornames.contains(f1.at(1).toLower())) {
+	*err_msg=QObject::tr("invalid --gpio argument, unrecognized color")+
+	  " \""+f1.at(1)+"\"";
+	return NULL;
+      }
+
+      //
+      // Router
+      //
+      router=f1.at(2).toInt(&ok);
+      if((!ok)||(router<=0)) {
+	*err_msg=QObject::tr("invalid --gpio argument router");
+	return NULL;
+      }
+
+      //
+      // Endpoint
+      //
+      endpt=f1.at(3).toInt(&ok);
+      if((!ok)||(endpt<=0)) {
+	*err_msg=QObject::tr("invalid --gpio argument endpoint");
+	return NULL;
+      }
+
+      //
+      // Legend
+      //
+      legend=f1.at(4).trimmed();
+
+      //
+      // GPIO Mask
+      //
+      mask=f1.at(5).toLower().trimmed();
+      if(mask.length()!=5) {
+	*err_msg=
+	  QObject::tr("invalid --gpio argument mask")+" \""+f1.at(6)+"\".";
+	return NULL;
+      }
+    }
+
     //
     // Lamp or Button widget
     //
@@ -200,14 +251,6 @@ GpioParser *GpioParser::fromString(const QString &str,QString *err_msg)
       //
       // Color
       //
-      QStringList colornames;
-      colornames.push_back("black");
-      colornames.push_back("blue");
-      colornames.push_back("cyan");
-      colornames.push_back("green");
-      colornames.push_back("magenta");
-      colornames.push_back("red");
-      colornames.push_back("yellow");
       color=f1.at(1).toLower().trimmed();
       if(!colornames.contains(f1.at(1).toLower())) {
 	*err_msg=QObject::tr("invalid --gpio argument, unrecognized color")+
@@ -326,11 +369,10 @@ GpioParser *GpioParser::fromString(const QString &str,QString *err_msg)
     endpts.push_back(endpt);
     legends.push_back(legend);
     masks.push_back(mask);
-    sounds.push_back(sound);
   }
 
   return
-    new GpioParser(title,types,colors,dirs,routers,endpts,legends,masks,sounds);
+    new GpioParser(title,types,colors,dirs,routers,endpts,legends,masks);
 }
 
 
@@ -339,6 +381,10 @@ QString GpioParser::typeString(GpioParser::Type type)
   QString ret="unknown";
 
   switch(type) {
+  case GpioParser::Ack:
+    ret="ack";
+    break;
+
   case GpioParser::Alert:
     ret="alert";
     break;
@@ -374,8 +420,7 @@ GpioParser::GpioParser(const QString &title,
 		       const QList<GpioParser::Type> &types,
 		       const QStringList &colors,const QList<QChar> &dirs,
 		       const QList<int> &routers,const QList<int> &endpts,
-		       const QStringList &legends,const QStringList &masks,
-		       const QStringList &sounds)
+		       const QStringList &legends,const QStringList &masks)
 {
   c_title=title;
   c_types=types;
@@ -406,10 +451,14 @@ int GpioParser::ArgQuantityFromType(GpioParser::Type type)
   int ret=0;
 
   switch(type) {
-  case GpioParser::Alert:
+  case GpioParser::Ack:
   case GpioParser::Lamp:
   case GpioParser::Button:
     ret=7;
+    break;
+
+  case GpioParser::Alert:
+    ret=6;
     break;
 
   case GpioParser::Separator:

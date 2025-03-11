@@ -45,7 +45,6 @@ MainWidget::MainWidget(QWidget *parent)
   panel_arm_button=false;
   panel_no_max_size=false;
   panel_summary_alarm_state=false;
-  //  panel_alarm_acknowledged=false;
 
   bool list_sound_devices=false;
   int sound_device=-1;
@@ -241,8 +240,8 @@ MainWidget::MainWidget(QWidget *parent)
       GpioStrip *w=NULL;
       w=new GpioStrip(panel_widgets.size(),panel_gpio_parsers.at(gpionum),
 		      panel_parser,this);
-      connect(w,SIGNAL(summaryAlarmStateChanged(int,bool)),
-	      this,SLOT(summaryAlarmStateChangedData(int,bool)));
+      connect(w,SIGNAL(summaryAlarmStateChanged(int,bool,bool)),
+	      this,SLOT(summaryAlarmStateChangedData(int,bool,bool)));
       connect(w,SIGNAL(acknowledgeRequested()),this,SLOT(acknowledgedData()));
       panel_widgets.push_back(w);
       panel_alarm_states.push_back(false);
@@ -316,16 +315,16 @@ QSize MainWidget::sizeHint() const
 }
 
 
-void MainWidget::summaryAlarmStateChangedData(int id,bool state)
+void MainWidget::summaryAlarmStateChangedData(int id,bool state,bool new_alarm)
 {
-  printf("summaryAlarmStateChangedData(%d,%d)\n",id,state);
+  //  printf("summaryAlarmStateChangedData(%d,%d)\n",id,state);
   QString err_msg;
 
   panel_alarm_states[id]=state;
 
   if(state) {  // New Alarm
     panel_summary_alarm_state=true;
-    if((!panel_sound_player->isPlaying())&&
+    if(new_alarm&&(!panel_sound_player->isPlaying())&&
        (!panel_sound_alert_file.isEmpty())) {
       if(!panel_sound_player->play(panel_sound_alert_file,true,&err_msg)) {
 	fprintf(stderr,"audio error: %s\n",err_msg.toUtf8().constData());
@@ -344,36 +343,12 @@ void MainWidget::summaryAlarmStateChangedData(int id,bool state)
       panel_sound_player->stop();
     }
   }
-
-  //  if(state=DRJParser::Active) {
-  /*
-  panel_alert_states[id]=state;
-
-  DRJParser::AlertState alert_state=DRJParser::Idle;
-  for(int i=0;i<panel_alert_states.size();i++) {
-    if(panel_alert_states.at(i)>alert_state) {
-      alert_state=panel_alert_states.at(i);
-    }
-  }
-  if(alert_state!=panel_summary_alert_state) {
-    //printf("NEW SUMMARY STATE: %d\n",alert_state);
-    if(alert_state==DRJParser::Active) {
-      panel_sound_player->play(panel_sound_alert_file,true,&err_msg);
-    }
-    else {
-      if(panel_summary_alert_state==DRJParser::Active) {
-	panel_sound_player->stop();
-      }
-    }
-    panel_summary_alert_state=alert_state;
-  }
-  */
 }
 
 
 void MainWidget::acknowledgedData()
 {
-  printf("acknowledgedData()\n");
+  //  printf("acknowledgedData()\n");
   if(panel_sound_player->isPlaying()) {
     panel_sound_player->stop();
   }
@@ -481,11 +456,6 @@ void MainWidget::closeEvent(QCloseEvent *e)
 {
   Pa_Terminate();
   exit(0);
-}
-
-
-void MainWidget::PlayFile(const QString &filename)
-{
 }
 
 

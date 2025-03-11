@@ -51,7 +51,7 @@ class MainWidget : public QWidget
   QSize sizeHint() const;
 
  private slots:
-  void summaryAlarmStateChangedData(int id,bool state);
+  void summaryAlarmStateChangedData(int id,bool state,bool new_alert);
   void acknowledgedData();
   void playerStartedData();
   void playerStoppedData();
@@ -66,7 +66,6 @@ class MainWidget : public QWidget
   void closeEvent(QCloseEvent *e);
   
  private:
-  void PlayFile(const QString &filename);
   int panel_columns;
   QString panel_hostname;
   bool panel_arm_button;
@@ -77,7 +76,6 @@ class MainWidget : public QWidget
   QPixmap *panel_saspanels_map;
   DRJParser *panel_parser;
   bool panel_summary_alarm_state;
-  //  bool panel_alarm_acknowledged;
   QSignalMapper *panel_button_mapper;
   QLabel *panel_connecting_label;
   DRLoginDialog *panel_login_dialog;
