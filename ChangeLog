@@ -1452,3 +1452,5 @@
 	* Added an 'Acknowledgment' widget to buttonpanel(1).
 	* Modified the 'Alert' widget in buttonpanel(1) to send return GPO
 	events when clicking the alert button.
+2025-03-13 Fred Gleason <fredg@paravelsystems.com>
+	* Incremented the package version to v2.0.0rc0.

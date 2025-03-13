@@ -1,6 +1,18 @@
 This is the NEWS file for the drouter package.
 
 -------------------------------------------------------------------------------
+v2.0.0rc0 - 13 March 2025
+
+Changes:
+   Dependency Changes. Updated the entire package to use Qt6 and Switchyard6.
+   See the 'INSTALL' file for details.
+
+   ProtocolJ. Added support for a new front-side protocol that utilizes
+   a RESTful style API. See the 'docs/protocol_j.pdf' document in for
+   details and rationale.
+
+   Added an automated self-test suite in 'tests/'.
+-------------------------------------------------------------------------------
 v1.0.0rc4int12 - 20 March 2023
 
 Changes:
