@@ -1454,3 +1454,6 @@
 	events when clicking the alert button.
 2025-03-13 Fred Gleason <fredg@paravelsystems.com>
 	* Incremented the package version to v2.0.0rc0.
+2025-03-13 Fred Gleason <fredg@paravelsystems.com>
+	* Corrected a typo in the '[Drouterd]' section of the drouter.conf(5)
+	man page.

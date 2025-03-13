@@ -61,7 +61,7 @@
     <refsect2 id='drouterd_section'>
       <title>The [Drouterd] Section</title>
       <para>
-	The <userinput>[Drouter]</userinput> section configures operation of
+	The <userinput>[Drouterd]</userinput> section configures operation of
 	the <command>drouterd</command><manvolnum>8</manvolnum> service
 	daemon. It contains the following parameters:
       </para>
