@@ -117,7 +117,6 @@ GpioParser *GpioParser::fromString(const QString &str,QString *err_msg)
   QString title=f0.at(1).trimmed();
 
   for(int i=2;i<f0.size();i++) {
-    printf("[%d]: %s\n",i,f0.at(i).toUtf8().constData());
     //
     // Get the type
     //

@@ -49,9 +49,6 @@ class GpioStrip : public QWidget
   void summaryAlarmStateChanged(int id,bool state,bool new_alert);
   void acknowledgeRequested();
 
- public slots:
-  void acknowledge();
-
  private slots:
   void alarmStateChangedData(int id,bool state);
   void changeConnectionState(bool state,DRJParser::ConnectionState cstate);

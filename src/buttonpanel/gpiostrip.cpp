@@ -216,14 +216,8 @@ void GpioStrip::changeConnectionState(bool state,
 }
 
 
-void GpioStrip::acknowledge()
-{
-}
-
-
 void GpioStrip::alarmStateChangedData(int id,bool state)
 {
-  printf("GpioStrip::alarmStateChangedData(%d,%d)\n",id,state);
   bool summary=false;
   
   c_alarm_states[id]=state;
