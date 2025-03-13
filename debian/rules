@@ -33,6 +33,8 @@ binary:
 	cp GFDL-1.3 debian/drouter-common/usr/share/doc/drouter/
 	cp NEWS debian/drouter-common/usr/share/doc/drouter/
 	cp README debian/drouter-common/usr/share/doc/drouter/
+	mkdir -p debian/drouter-common/usr/share/drouter/sounds
+	cp sounds/*.wav debian/drouter-common/usr/share/drouter/sounds/
 
 #
 # drouter-dev
