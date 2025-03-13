@@ -1457,3 +1457,7 @@
 2025-03-13 Fred Gleason <fredg@paravelsystems.com>
 	* Corrected a typo in the '[Drouterd]' section of the drouter.conf(5)
 	man page.
+2025-03-13 Fred Gleason <fredg@paravelsystems.com>
+	* Fixed a bug in buttonpanel(1) that caused a spurious 'Audio file
+	not found' warning to be generated when no '--sound-alert-file'
+	option was given.
