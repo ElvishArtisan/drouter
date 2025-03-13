@@ -162,7 +162,7 @@ MainWidget::MainWidget(QWidget *parent)
   //
   QStringList paths;
   paths.push_back("/etc/drouter/sounds");
-  paths.push_back(QString(PATH_DATA)+"/drouter/sounds");
+  paths.push_back(QString(PATH_DATA)+"/sounds");
   if(!panel_sound_alert_file.isEmpty()) {
     bool found=false;
     for(int i=0;i<paths.size();i++) {
