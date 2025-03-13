@@ -1467,3 +1467,5 @@
 	file path.
 2025-03-13 Fred Gleason <fredg@paravelsystems.com>
 	* Removed debugging printf() calls.
+2025-03-13 Fred Gleason <fredg@paravelsystems.com>
+	* Incremented the package version to v2.0.0rc1.
