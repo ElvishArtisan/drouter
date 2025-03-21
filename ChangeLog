@@ -1475,3 +1475,5 @@
 2025-03-13 Fred Gleason <fredg@paravelsystems.com>
 	* Fixed bugs in the 'postinst' and 'prerm' scripts in the DEB
 	packages that could render the 'debian-common' package unremoveable.
+2025-03-21 Fred Gleason <fredg@paravelsystems.com>
+	* Incremented the package version to v2.0.0rc2.
