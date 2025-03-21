@@ -1480,3 +1480,5 @@
 2025-03-21 Fred Gleason <fredg@paravelsystems.com>
 	* Added 'portaudio19-dev' to the set of required build packages
 	for Ubuntu 22.02 LTS in 'INSTALL'.
+2025-03-21 Fred Gleason <fredg@paravelsystems.com>
+	* Increased the peak level of 'sounds/beeboop.wav' to -1 dBFS,
