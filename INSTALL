@@ -82,7 +82,7 @@ Distro-Specific Notes
 ---------------------
 1) Ubuntu 22.02 LTS
 
-Required build packages: libsndfile1-dev qt6-base-dev libqt6sql6-mysql libqt6websockets6-dev docbook5-xml libxml2-utils docbook-xsl-ns xsltproc fop make g++ autoconf automake debhelper autoconf-archive gnupg pbuilder ubuntu-dev-tools apt-file python3
+Required build packages: libsndfile1-dev qt6-base-dev libqt6sql6-mysql libqt6websockets6-dev docbook5-xml libxml2-utils docbook-xsl-ns xsltproc fop make g++ autoconf automake debhelper autoconf-archive gnupg pbuilder ubuntu-dev-tools apt-file python3 portaudio19-dev
 
 Configure script invocation: ./configure --prefix=/usr
 

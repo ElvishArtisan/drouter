@@ -1477,3 +1477,6 @@
 	packages that could render the 'debian-common' package unremoveable.
 2025-03-21 Fred Gleason <fredg@paravelsystems.com>
 	* Incremented the package version to v2.0.0rc2.
+2025-03-21 Fred Gleason <fredg@paravelsystems.com>
+	* Added 'portaudio19-dev' to the set of required build packages
+	for Ubuntu 22.02 LTS in 'INSTALL'.
