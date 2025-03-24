@@ -57,13 +57,6 @@ DRJParser::DRJParser(bool use_long_names,QObject *parent)
   j_router_model=new DRRouterListModel(this);
 
   //
-  // Startup Timer
-  //
-  j_startup_timer=new QTimer(this);
-  j_startup_timer->setSingleShot(true);
-  connect(j_startup_timer,SIGNAL(timeout()),this,SLOT(startupData()));
-
-  //
   // Watchdog Timers
   //
   j_holdoff_timer=new QTimer(this);
@@ -394,13 +387,6 @@ void DRJParser::connectionClosedData()
   Clear();
   emit connected(false,DRJParser::WatchdogActive);
   j_holdoff_timer->start(DRJPARSER_HOLDOFF_INTERVAL);
-}
-
-
-void DRJParser::startupData()
-{
-  j_connected=true;
-  emit connected(true,DRJParser::Ok);
 }
 
 

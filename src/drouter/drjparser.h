@@ -100,7 +100,6 @@ class DRJParser : public QObject
  private slots:
   void connectedData();
   void connectionClosedData();
-  void startupData();
   void holdoffReconnectData();
   void readyReadData();
   void errorOccurredData(QAbstractSocket::SocketError err);
@@ -142,7 +141,6 @@ class DRJParser : public QObject
   QMap<int,QMap<int,QString> > j_gpi_states;
   QMap<int,QMap<int,QString> > j_gpo_states;
   QMap<int,bool> j_gpio_supporteds;
-  QTimer *j_startup_timer;
   QTimer *j_holdoff_timer;
 };
 
