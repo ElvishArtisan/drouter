@@ -392,6 +392,9 @@ void MainWidget::parserErrorData(DRJParser::ErrorType err,const QString &remarks
 void MainWidget::changeConnectionState(bool state,
 				       DRJParser::ConnectionState cstate)
 {
+  //  printf("MainWidget::changeConnectionState(%d,%d)\n",
+  //	 state,cstate);
+
   if(state) {
     panel_resize_timer->start(0);  // So the widgets can create buttons first
     panel_connecting_label->hide();

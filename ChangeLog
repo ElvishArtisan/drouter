@@ -1484,3 +1484,6 @@
 	* Increased the peak level of 'sounds/beeboop.wav' to -1 dBFS,
 2025-03-24 Fred Gleason <fredg@paravelsystems.com>
 	* Removed dead code from 'DRJParser'.
+2025-03-24 Fred Gleason <fredg@paravelsystems.com>
+	* Fixed a regression in 'DRJParser' that broke the connection
+	watchdog.

@@ -100,10 +100,13 @@ class DRJParser : public QObject
  private slots:
   void connectedData();
   void connectionClosedData();
+  void watchdogIntervalData();
+  void watchdogWaitData();
   void holdoffReconnectData();
   void readyReadData();
   void errorOccurredData(QAbstractSocket::SocketError err);
 
+  
  private:
   void Clear();
   void DispatchMessage(const QJsonDocument &jdoc);
@@ -141,6 +144,10 @@ class DRJParser : public QObject
   QMap<int,QMap<int,QString> > j_gpi_states;
   QMap<int,QMap<int,QString> > j_gpo_states;
   QMap<int,bool> j_gpio_supporteds;
+
+  QTimer *j_wd_interval_timer;
+  QTimer *j_wd_wait_timer;
+  
   QTimer *j_holdoff_timer;
 };
 

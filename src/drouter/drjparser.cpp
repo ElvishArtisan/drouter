@@ -59,6 +59,16 @@ DRJParser::DRJParser(bool use_long_names,QObject *parent)
   //
   // Watchdog Timers
   //
+  j_wd_interval_timer=new QTimer(this);
+  j_wd_interval_timer->setSingleShot(true);
+  connect(j_wd_interval_timer,SIGNAL(timeout()),
+	  this,SLOT(watchdogIntervalData()));
+
+  j_wd_wait_timer=new QTimer(this);
+  j_wd_wait_timer->setSingleShot(true);
+  connect(j_wd_wait_timer,SIGNAL(timeout()),
+	  this,SLOT(watchdogWaitData()));
+  
   j_holdoff_timer=new QTimer(this);
   j_holdoff_timer->setSingleShot(true);
   connect(j_holdoff_timer,SIGNAL(timeout()),
@@ -383,6 +393,8 @@ void DRJParser::connectedData()
 
 void DRJParser::connectionClosedData()
 {
+  //  printf("connectionClosedData()\n");
+  
   j_connected=false;
   Clear();
   emit connected(false,DRJParser::WatchdogActive);
@@ -390,8 +402,29 @@ void DRJParser::connectionClosedData()
 }
 
 
+void DRJParser::watchdogIntervalData()
+{
+  //  printf("watchdogIntervalData()\n");
+
+  j_wd_wait_timer->stop();
+  SendCommand("ping",QVariantMap());
+  j_wd_wait_timer->start(10000);
+}
+
+
+void DRJParser::watchdogWaitData()
+{
+  //  printf("watchdogWaitData()\n");
+
+  j_socket->close();
+  connectionClosedData();
+}
+
+
 void DRJParser::holdoffReconnectData()
 {
+  //  printf("holdoffReconnectData()\n");
+
   MakeSocket();
   j_socket->connectToHost(j_hostname,j_port);
 }
@@ -605,8 +638,11 @@ void DRJParser::DispatchMessage(const QJsonDocument &jdoc)
   }
 
   if(jdoc.object().contains("pong")) {
-    j_connected=true;
-    emit connected(true,DRJParser::Ok);
+    if(!j_connected) {
+      j_connected=true;
+      emit connected(true,DRJParser::Ok);
+    }
+    j_wd_interval_timer->start(5000);
   }
 }
 
