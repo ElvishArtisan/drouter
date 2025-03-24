@@ -1,7 +1,7 @@
 This is the NEWS file for the drouter package.
 
 -------------------------------------------------------------------------------
-v2.0.0rc2 - 21 March 2025
+v2.0.0rc3 - 24 March 2025
 
 Changes:
    Dependency Changes. Updated the entire package to use Qt6 and Switchyard6.
