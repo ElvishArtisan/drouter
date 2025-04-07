@@ -77,7 +77,6 @@ class MainWidget : public QWidget
   QComboBox *panel_router_box;
   QLabel *panel_description_name_label;
   QLabel *panel_description_text_label;
-  DRJParser *panel_parser;
   bool panel_initial_connected;
   QGraphicsScene *panel_scene;
   XPointView *panel_view;

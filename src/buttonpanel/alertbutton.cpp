@@ -28,14 +28,13 @@
 #include "buttonwidget.h"
 
 AlertButton::AlertButton(int id,int router,int endpt,const QString &legend,
-			 const QString &mask,DRJParser *parser,QWidget *parent)
+			 const QString &mask,QWidget *parent)
   : AutoPushButton(parent)
 {
   c_id=id;
   c_router=router;
   c_endpt=endpt;
   c_mask=mask;
-  c_parser=parser;
   c_alarm_state=false;
   
   //
@@ -73,9 +72,9 @@ AlertButton::AlertButton(int id,int router,int endpt,const QString &legend,
   //
   // The ProtocolJ Connection
   //
-  connect(c_parser,SIGNAL(connected(bool,DRJParser::ConnectionState)),
+  connect(jparser,SIGNAL(connected(bool,DRJParser::ConnectionState)),
 	  this,SLOT(changeConnectionState(bool,DRJParser::ConnectionState)));
-  connect(c_parser,SIGNAL(gpiStateChanged(int,int,const QString &)),
+  connect(jparser,SIGNAL(gpiStateChanged(int,int,const QString &)),
 	  this,SLOT(setState(int,int,const QString &)));
 }
 
@@ -117,7 +116,7 @@ bool AlertButton::alarmIsActive()
 
 void AlertButton::clickedData()
 {
-  c_parser->setGpoState(c_router,c_endpt,c_mask,300);
+  jparser->setGpoState(c_router,c_endpt,c_mask,300);
 }
 
 

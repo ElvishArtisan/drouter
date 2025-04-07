@@ -23,6 +23,7 @@
 #define DRJPARSER_H
 
 #include <stdint.h>
+#include <syslog.h>
 
 #include <map>
 #include <vector>
@@ -55,6 +56,8 @@ class DRJParser : public QObject
 		  DatabaseError=10,LastError=11};
   DRJParser(bool use_long_names,QObject *parent);
   ~DRJParser();
+  QString syslogString() const;
+  void setSyslogString(const QString &str);
   void setModelFont(const QFont &font);
   QString timeFormat() const;
   QString dateFormat() const;
@@ -80,6 +83,7 @@ class DRJParser : public QObject
   void setGpoState(int router,int output,const QString &code,int msec=0);
   void activateSnapshot(int router,const QString &snapshot);
   void connectToHost(const QString &hostname,uint16_t port);
+  void syslog(int priority,const char *fmt,...) const;
   static QString connectionStateString(ConnectionState cstate);
   static QString errorString(ErrorType err);
   static QString eventTypeString(EventType type);
@@ -112,6 +116,7 @@ class DRJParser : public QObject
   void DispatchMessage(const QJsonDocument &jdoc);
   void SendCommand(const QString &verb,const QVariantMap &args);
   void MakeSocket();
+  QString j_syslog_string;
   QList<int> j_router_filter;
   DRRouterListModel *j_router_model;
   QMap<int,DREndPointListModel *> j_output_models;
@@ -150,6 +155,8 @@ class DRJParser : public QObject
   
   QTimer *j_holdoff_timer;
 };
+
+extern DRJParser *jparser;
 
 
 #endif  // DRJPARSER_H

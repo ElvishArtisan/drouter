@@ -226,7 +226,7 @@ MainWidget::MainWidget(QWidget *parent)
   //
   // The Protocol J Connection
   //
-  panel_parser=new DRJParser(false,this);
+  jparser=new DRJParser(false,this);
   int audionum=0;
   int gpionum=0;
   for(int i=0;i<panel_arg_types.size();i++) {
@@ -234,14 +234,13 @@ MainWidget::MainWidget(QWidget *parent)
       panel_widgets.
 	push_back(new ButtonWidget(panel_arg_audio_routers.at(audionum),
 				   panel_arg_audio_outputs.at(audionum),
-				   panel_columns,panel_parser,
-				   panel_arm_button,this));
+				   panel_columns,panel_arm_button,this));
       audionum++;
     }
     if(panel_arg_types[i]==DREndPointMap::GpioRouter) {
       GpioStrip *w=NULL;
       w=new GpioStrip(panel_widgets.size(),panel_gpio_parsers.at(gpionum),
-		      panel_parser,this);
+		      this);
       connect(w,SIGNAL(summaryAlarmStateChanged(int,bool,bool)),
 	      this,SLOT(summaryAlarmStateChangedData(int,bool,bool)));
       connect(w,SIGNAL(acknowledgeRequested()),this,SLOT(acknowledgedData()));
@@ -250,9 +249,9 @@ MainWidget::MainWidget(QWidget *parent)
       gpionum++;
     }
   }
-  connect(panel_parser,SIGNAL(connected(bool,DRJParser::ConnectionState)),
+  connect(jparser,SIGNAL(connected(bool,DRJParser::ConnectionState)),
 	  this,SLOT(changeConnectionState(bool,DRJParser::ConnectionState)));
-  connect(panel_parser,SIGNAL(parserError(DRJParser::ErrorType,const QString &)),
+  connect(jparser,SIGNAL(parserError(DRJParser::ErrorType,const QString &)),
 	  this,SLOT(parserErrorData(DRJParser::ErrorType,const QString &)));
 
   panel_resize_timer=new QTimer(this);
@@ -276,7 +275,7 @@ MainWidget::MainWidget(QWidget *parent)
     //
     // Fire up the Protocol J connection
     //
-    panel_parser->connectToHost(panel_hostname,9600);
+    jparser->connectToHost(panel_hostname,9600);
   }
   else {
     if(!panel_sound_player->play(panel_sound_test_file,false,&err_msg)) {
@@ -297,7 +296,7 @@ MainWidget::~MainWidget()
 
 QSize MainWidget::sizeHint() const
 {
-  if((panel_parser!=NULL)&&panel_parser->isConnected()) {
+  if((jparser!=NULL)&&jparser->isConnected()) {
     int width=0;
     int height=0;
 
@@ -440,7 +439,7 @@ void MainWidget::paintEvent(QPaintEvent *e)
 {
   int ypos=0;
 
-  if(panel_parser->isConnected()) {
+  if(jparser->isConnected()) {
     QPainter *p=new QPainter(this);
 
     p->setPen(Qt::black);

@@ -34,8 +34,7 @@ class StateDialog : public QDialog
 {
  Q_OBJECT
  public:
- StateDialog(int router,int endpoint,DREndPointMap::Type type,DRJParser *parser,
-	     QWidget *parent=0);
+ StateDialog(int router,int endpoint,DREndPointMap::Type type,QWidget *parent);
   QSize sizeHint() const;
 
  protected:
@@ -57,7 +56,6 @@ class StateDialog : public QDialog
   int d_router;
   int d_endpoint;
   DREndPointMap::Type d_type;
-  DRJParser *d_parser;
   int d_width;
 };
 

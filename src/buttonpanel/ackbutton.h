@@ -31,7 +31,7 @@ class AckButton : public AutoPushButton
   Q_OBJECT
  public:
   AckButton(int router,int endpt,const QString &legend,const QString &mask,
-	    const QChar &dir,DRJParser *parser,QWidget *parent=0);
+	    const QChar &dir,QWidget *parent=0);
   QSize sizeHint() const;
   QSizePolicy sizePolicy() const;
   QColor textColor() const;
@@ -50,7 +50,6 @@ class AckButton : public AutoPushButton
   QString c_mask;
   QString c_inverted_mask;
   int c_mask_bit;
-  DRJParser *c_parser;
   QColor c_text_color;
 };
 

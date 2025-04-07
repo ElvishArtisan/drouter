@@ -30,13 +30,12 @@
 #define STATEDIALOG_CONTROL_WIDTH 185
 
 StateDialog::StateDialog(int router,int endpt,DREndPointMap::Type gpio_type,
-			 DRJParser *parser,QWidget *parent)
+			 QWidget *parent)
   : QDialog(parent,Qt::Tool)
 {
   d_router=router;
   d_endpoint=endpt+1;
   d_type=gpio_type;
-  d_parser=parser;
 
   QFont bold_font(font().family(),font().pointSize(),QFont::Bold);
 
@@ -62,8 +61,8 @@ StateDialog::StateDialog(int router,int endpt,DREndPointMap::Type gpio_type,
   QMap<QString,QVariant> mdata;
   switch(d_type) {
   case DREndPointMap::Input:
-    mdata=d_parser->inputModel(d_router)->rowMetadata(endpt);
-    connect(d_parser,SIGNAL(gpiStateChanged(int,int,const QString &)),
+    mdata=jparser->inputModel(d_router)->rowMetadata(endpt);
+    connect(jparser,SIGNAL(gpiStateChanged(int,int,const QString &)),
 	    this,SLOT(gpioStateChangedData(int,int,const QString &)));
     d_name_label->setText(QString::asprintf("%d - ",endpt+1)+
 			  mdata.value("name").toString());
@@ -71,8 +70,8 @@ StateDialog::StateDialog(int router,int endpt,DREndPointMap::Type gpio_type,
     break;
 
   case DREndPointMap::Output:
-    mdata=d_parser->outputModel(d_router)->rowMetadata(endpt);
-    connect(d_parser,SIGNAL(gpoStateChanged(int,int,const QString &)),
+    mdata=jparser->outputModel(d_router)->rowMetadata(endpt);
+    connect(jparser,SIGNAL(gpoStateChanged(int,int,const QString &)),
 	    this,SLOT(gpioStateChangedData(int,int,const QString &)));
     d_name_label->setText(QString::asprintf("%d - ",endpt+1)+
 			  mdata.value("name").toString());
@@ -144,13 +143,13 @@ void StateDialog::stateTextChangedData(const QString &str)
   }
   switch(d_type) {
   case DREndPointMap::Input:
-    d_set_button->setDisabled(str==d_parser->gpiState(d_router,d_endpoint));
-    d_reset_button->setDisabled(str==d_parser->gpiState(d_router,d_endpoint));
+    d_set_button->setDisabled(str==jparser->gpiState(d_router,d_endpoint));
+    d_reset_button->setDisabled(str==jparser->gpiState(d_router,d_endpoint));
     break;
 
   case DREndPointMap::Output:
-    d_set_button->setDisabled(str==d_parser->gpoState(d_router,d_endpoint));
-    d_reset_button->setDisabled(str==d_parser->gpoState(d_router,d_endpoint));
+    d_set_button->setDisabled(str==jparser->gpoState(d_router,d_endpoint));
+    d_reset_button->setDisabled(str==jparser->gpoState(d_router,d_endpoint));
     break;
 
   case DREndPointMap::LastType:
@@ -180,11 +179,11 @@ void StateDialog::setData()
 {
   switch(d_type) {
   case DREndPointMap::Input:
-    d_parser->setGpiState(d_router,d_endpoint,d_state_edit->text());
+    jparser->setGpiState(d_router,d_endpoint,d_state_edit->text());
     break;
 
   case DREndPointMap::Output:
-    d_parser->setGpoState(d_router,d_endpoint,d_state_edit->text());
+    jparser->setGpoState(d_router,d_endpoint,d_state_edit->text());
     break;
 
   case DREndPointMap::LastType:
@@ -197,11 +196,11 @@ void StateDialog::resetData()
 {
   switch(d_type) {
   case DREndPointMap::Input:
-    d_state_edit->setText(d_parser->gpiState(d_router,d_endpoint));
+    d_state_edit->setText(jparser->gpiState(d_router,d_endpoint));
     break;
 
   case DREndPointMap::Output:
-    d_state_edit->setText(d_parser->gpoState(d_router,d_endpoint));
+    d_state_edit->setText(jparser->gpoState(d_router,d_endpoint));
     break;
 
   case DREndPointMap::LastType:

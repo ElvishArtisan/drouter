@@ -2,7 +2,7 @@
 //
 // Input/Output labels for xpointpanel(1)
 //
-//   (C) Copyright 2017-2024 Fred Gleason <fredg@paravelsystems.com>
+//   (C) Copyright 2017-2025 Fred Gleason <fredg@paravelsystems.com>
 //
 //   This program is free software; you can redistribute it and/or modify
 //   it under the terms of the GNU General Public License as
@@ -47,7 +47,6 @@ class EndpointList : public QWidget
   void setMinimumOutputWidth(int pixels);
   int router() const;
   void setRouter(int router);
-  void setParser(DRJParser *psr);
   void setMatrixType(DREndPointMap::MatrixType type);
   bool showGpio() const;
   void setShowGpio(bool state);
@@ -88,7 +87,6 @@ class EndpointList : public QWidget
   DREndPointMap::Type list_gpio_type;
   int list_router;
   int list_position;
-  DRJParser *list_parser;
   DREndPointMap::MatrixType list_matrix_type;
   Qt::Orientation list_orientation;
   bool list_show_gpio;

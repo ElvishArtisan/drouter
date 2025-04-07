@@ -33,7 +33,7 @@ class StateLight : public AutoLabel
   Q_OBJECT
  public:
   StateLight(int router,int endpt,const QString &legend,const QString &mask,
-	     const QChar &dir,DRJParser *parser,QWidget *parent=0);
+	     const QChar &dir,QWidget *parent=0);
   ~StateLight();
   QSize sizeHint() const;
   QSizePolicy sizePolicy() const;
@@ -59,7 +59,6 @@ class StateLight : public AutoLabel
   QColor c_text_color;
   QColor c_background_color;
   QString c_on_stylesheet;
-  DRJParser *c_parser;
 };
 
 

@@ -2,7 +2,7 @@
 //
 // Show state of a single GPIO bit.
 //
-//   (C) Copyright 2020 Fred Gleason <fredg@paravelsystems.com>
+//   (C) Copyright 2020-2025 Fred Gleason <fredg@paravelsystems.com>
 //
 //   This program is free software; you can redistribute it and/or modify
 //   it under the terms of the GNU General Public License as
@@ -26,14 +26,12 @@
 #include "statelight.h"
 
 StateLight::StateLight(int router,int endpt,const QString &legend,
-		       const QString &mask,const QChar &dir,DRJParser *parser,
-		       QWidget *parent)
+		       const QString &mask,const QChar &dir,QWidget *parent)
   : AutoLabel(parent)
 {
   c_router=router;
   c_endpt=endpt;
   c_dir=dir;
-  c_parser=parser;
   c_mask=mask;
   c_on_stylesheet="";
 
@@ -57,14 +55,14 @@ StateLight::StateLight(int router,int endpt,const QString &legend,
   //
   // The Protocol J Connection
   //
-  connect(c_parser,SIGNAL(connected(bool,DRJParser::ConnectionState)),
+  connect(jparser,SIGNAL(connected(bool,DRJParser::ConnectionState)),
 	  this,SLOT(changeConnectionState(bool,DRJParser::ConnectionState)));
   if(c_dir==QChar('i')) {
-    connect(c_parser,SIGNAL(gpiStateChanged(int,int,const QString &)),
+    connect(jparser,SIGNAL(gpiStateChanged(int,int,const QString &)),
 	    this,SLOT(setState(int,int,const QString &)));
   }
   else {
-    connect(c_parser,SIGNAL(gpoStateChanged(int,int,const QString &)),
+    connect(jparser,SIGNAL(gpoStateChanged(int,int,const QString &)),
 	    this,SLOT(setState(int,int,const QString &)));
   }
   setStyleSheet(STATELIGHT_OFF_STYLESHEET);
@@ -124,10 +122,10 @@ void StateLight::changeConnectionState(bool state,
   setEnabled(state);
   if(state) {
     if(c_dir.toLower()=='i') {
-      setState(c_router,c_endpt,c_parser->gpiState(c_router,c_endpt));
+      setState(c_router,c_endpt,jparser->gpiState(c_router,c_endpt));
     }
     else {
-      setState(c_router,c_endpt,c_parser->gpoState(c_router,c_endpt));
+      setState(c_router,c_endpt,jparser->gpoState(c_router,c_endpt));
     }
   }
   updateGeometry();

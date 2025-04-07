@@ -74,7 +74,6 @@ class MainWidget : public QWidget
   QString panel_sound_alert_file;
   SoundPlayer *panel_sound_player;
   QPixmap *panel_saspanels_map;
-  DRJParser *panel_parser;
   bool panel_summary_alarm_state;
   QSignalMapper *panel_button_mapper;
   QLabel *panel_connecting_label;

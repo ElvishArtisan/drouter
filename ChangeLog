@@ -1489,3 +1489,12 @@
 	watchdog.
 2025-03-24 Fred Gleason <fredg@paravelsystems.com>
 	* Incremented the package version to v2.0.0rc3.
+2025-04-07 Fred Gleason <fredg@paravelsystems.com>
+	* Added 'DRJParser::syslogString()', 'DRJParser::setSyslogString()'
+	methods.
+	* Added a 'jparser' global definition to 'src/drouter/drjparser.h'.
+	* Refactored buttonpanel(1) to use overhead calling for DRJParser.
+	* Refactored outputpanel(1) to use overhead calling for DRJParser.
+	* Refactored shotpanel(1) to use overhead calling for DRJParser.
+	* Refactored xpointpanel(1) to use overhead calling for DRJParser.
+	* Refactored xypanel(1) to use overhead calling for DRJParser.

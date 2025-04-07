@@ -2,7 +2,7 @@
 //
 // Output panel widget for OutputPanel
 //
-//   (C) Copyright 2016-2024 Fred Gleason <fredg@paravelsystems.com>
+//   (C) Copyright 2016-2025 Fred Gleason <fredg@paravelsystems.com>
 //
 //   This program is free software; you can redistribute it and/or modify
 //   it under the terms of the GNU General Public License as
@@ -53,7 +53,7 @@ bool PanelInput::operator<(const PanelInput &other) const
 
 
 
-PanelWidget::PanelWidget(DRJParser *parser,int router,int output,QWidget *parent)
+PanelWidget::PanelWidget(int router,int output,QWidget *parent)
   : QWidget(parent)
 {
   QFont label_font("helvetica",16,QFont::Bold);
@@ -73,7 +73,6 @@ PanelWidget::PanelWidget(DRJParser *parser,int router,int output,QWidget *parent
   widget_red_palette.setColor(QPalette::WindowText,Qt::white);
   widget_red_stylesheet=QString("color:white;background-color:red;");
   
-  widget_parser=parser;
   widget_router=router;
   widget_output=output;
   widget_input=1;
@@ -128,8 +127,8 @@ void PanelWidget::changeConnectionState(bool state,
 					DRJParser::ConnectionState cstate)
 {
   if(state) {
-    DREndPointListModel *omodel=widget_parser->outputModel(widget_router);
-    DREndPointListModel *imodel=widget_parser->inputModel(widget_router);
+    DREndPointListModel *omodel=jparser->outputModel(widget_router);
+    DREndPointListModel *imodel=jparser->inputModel(widget_router);
     if(omodel==NULL) {
       QMessageBox::warning(this,"OutputPanel - "+tr("Error"),
 	  tr("Router")+QString::asprintf(" %u ",widget_router)+
@@ -152,7 +151,7 @@ void PanelWidget::changeConnectionState(bool state,
     widget_input_box->setEnabled(widget_xpoint_synced);
 
     changeOutputCrosspoint(widget_router,widget_output,
-	   widget_parser->outputCrosspoint(widget_router,widget_output));
+		     jparser->outputCrosspoint(widget_router,widget_output));
   }
   else {
     widget_input_box->setModel(NULL);
@@ -164,8 +163,7 @@ void PanelWidget::tickClock(bool state)
 {
   if(widget_input!=SelectedInput()) {
     if(state) {
-      widget_take_button->
-	setStyleSheet(widget_red_stylesheet);
+      widget_take_button->setStyleSheet(widget_red_stylesheet);
       widget_take_button->setPalette(widget_red_palette);
       widget_cancel_button->setStyleSheet("");
       widget_cancel_button->setPalette(palette());
@@ -173,8 +171,7 @@ void PanelWidget::tickClock(bool state)
     else {
       widget_take_button->setStyleSheet("");
       widget_take_button->setPalette(palette());
-      widget_cancel_button->
-	setStyleSheet(widget_blue_stylesheet);
+      widget_cancel_button->setStyleSheet(widget_blue_stylesheet);
       widget_cancel_button->setPalette(widget_blue_palette);
     }
   }
@@ -186,8 +183,8 @@ void PanelWidget::changeOutputCrosspoint(int router,int output,int input)
   if(router==widget_router) {
     if(output==widget_output) {
 
-      widget_input_box->setCurrentIndex(widget_parser->
-			inputModel(widget_router)->rowNumber(input));
+      widget_input_box->
+	setCurrentIndex(jparser->inputModel(widget_router)->rowNumber(input));
       widget_input=input;
       widget_xpoint_synced=true;
       SetArmedState(false);
@@ -205,14 +202,13 @@ void PanelWidget::inputBoxActivatedData(int index)
 
 void PanelWidget::takeButtonClickedData()
 {
-  widget_parser->
-    setOutputCrosspoint(widget_router,widget_output,SelectedInput());
+  jparser->setOutputCrosspoint(widget_router,widget_output,SelectedInput());
 }
 
 
 void PanelWidget::cancelButtonClickedData()
 {
-  widget_input_box->setCurrentIndex(widget_parser->
+  widget_input_box->setCurrentIndex(jparser->
 		       inputModel(widget_router)->rowNumber(widget_input));
   SetArmedState(false);
 }
@@ -229,7 +225,7 @@ void PanelWidget::resizeEvent(QResizeEvent *e)
 
 int PanelWidget::SelectedInput() const
 {
-  return widget_parser->inputModel(widget_router)->
+  return jparser->inputModel(widget_router)->
     endPointNumber(widget_input_box->currentIndex());
 }
 

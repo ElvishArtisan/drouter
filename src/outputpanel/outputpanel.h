@@ -26,7 +26,6 @@
 #include <QPixmap>
 #include <QWidget>
 
-#include <drouter/drjparser.h>
 #include <drouter/drlogindialog.h>
 
 #include "panelwidget.h"
@@ -58,7 +57,6 @@ class MainWidget : public QWidget
   unsigned panel_rows;
   bool clock_state;
   QPixmap *panel_saspanels_map;
-  DRJParser *panel_parser;
   DRLoginDialog *panel_login_dialog;
   QList<PanelWidget *> panel_widgets;
 };

@@ -2,7 +2,7 @@
 //
 // Set state of a single GPIO bit.
 //
-//   (C) Copyright 2020-2024 Fred Gleason <fredg@paravelsystems.com>
+//   (C) Copyright 2020-2025 Fred Gleason <fredg@paravelsystems.com>
 //
 //   This program is free software; you can redistribute it and/or modify
 //   it under the terms of the GNU General Public License as
@@ -31,7 +31,7 @@ class StateButton : public AutoPushButton
   Q_OBJECT
  public:
   StateButton(int router,int endpt,const QString &legend,const QString &mask,
-	     const QChar &dir,DRJParser *parser,QWidget *parent=0);
+	     const QChar &dir,QWidget *parent=0);
   QSize sizeHint() const;
   QSizePolicy sizePolicy() const;
   QColor textColor() const;
@@ -52,7 +52,6 @@ class StateButton : public AutoPushButton
   QString c_inverted_mask;
   int c_mask_bit;
   QChar c_dir;
-  DRJParser *c_parser;
   QColor c_text_color;
 };
 

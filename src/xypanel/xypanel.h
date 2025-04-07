@@ -2,7 +2,7 @@
 //
 // X-Y controller applet for DRouter
 //
-//   (C) Copyright 2002-2024 Fred Gleason <fredg@paravelsystems.com>
+//   (C) Copyright 2002-2025 Fred Gleason <fredg@paravelsystems.com>
 //
 //   This program is free software; you can redistribute it and/or modify
 //   it under the terms of the GNU General Public License as
@@ -74,7 +74,6 @@ class MainWidget : public QWidget
   QPushButton *panel_take_button;
   QPushButton *panel_cancel_button;
   QComboBox *panel_output_box;
-  DRJParser *panel_parser;
   QTimer *panel_clock_timer;
   bool panel_clock_state;
   bool panel_initial_connected;

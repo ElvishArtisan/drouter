@@ -34,7 +34,7 @@ class AlertButton : public AutoPushButton
   Q_OBJECT
  public:
   AlertButton(int id,int router,int endpt,const QString &legend,
-	      const QString &mask,DRJParser *parser,QWidget *parent=0);
+	      const QString &mask,QWidget *parent=0);
   QSize sizeHint() const;
   QSizePolicy sizePolicy() const;
   QColor activeColor() const;
@@ -61,7 +61,6 @@ class AlertButton : public AutoPushButton
   QString c_mask;
   QString c_inverted_mask;
   int c_mask_bit;
-  DRJParser *c_parser;
   QColor c_text_color;
   QColor c_active_color;
   QString c_stylesheets[2];

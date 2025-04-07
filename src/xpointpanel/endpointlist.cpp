@@ -127,20 +127,14 @@ void EndpointList::setRouter(int router)
     list_router=router;
     switch(list_orientation) {
     case Qt::Horizontal:
-      list_model=list_parser->inputModel(list_router);
+      list_model=jparser->inputModel(list_router);
       break;
 
     case Qt::Vertical:
-      list_model=list_parser->outputModel(list_router);
+      list_model=jparser->outputModel(list_router);
       break;
     }
   }
-}
-
-
-void EndpointList::setParser(DRJParser *psr)
-{
-  list_parser=psr;
 }
 
 
@@ -264,7 +258,7 @@ void EndpointList::aboutToShowMenuData()
   list_state_dialog_action->setEnabled(list_show_gpio);
   switch(list_orientation) {
   case Qt::Horizontal:
-    mdata=list_parser->inputModel(list_router)->
+    mdata=jparser->inputModel(list_router)->
       rowMetadata(list_mouse_endpoint);
     list_connect_via_http_action->
       setText(tr("Connect to")+" "+
@@ -277,7 +271,7 @@ void EndpointList::aboutToShowMenuData()
     break;
 
   case Qt::Vertical:
-    mdata=list_parser->outputModel(list_router)->
+    mdata=jparser->outputModel(list_router)->
       rowMetadata(list_mouse_endpoint);
     list_connect_via_http_action->
       setText(tr("Connect to")+" "+
@@ -312,8 +306,7 @@ void EndpointList::showStateDialogData()
 
   if(list_state_dialogs.value(list_mouse_endpoint)==NULL) {
     list_state_dialogs[list_mouse_endpoint]=
-      new StateDialog(list_router,list_mouse_endpoint,list_gpio_type,
-		      list_parser,this);
+      new StateDialog(list_router,list_mouse_endpoint,list_gpio_type,this);
     geo=QRect(list_mouse_position.x(),list_mouse_position.y(),
 	   list_state_dialogs.value(list_mouse_endpoint)->sizeHint().width(),
 	   list_state_dialogs.value(list_mouse_endpoint)->sizeHint().height());
@@ -335,7 +328,7 @@ void EndpointList::connectViaHttpData()
 
   switch(list_orientation) {
   case Qt::Horizontal:
-    mdata=list_parser->inputModel(list_router)->
+    mdata=jparser->inputModel(list_router)->
       rowMetadata(list_mouse_endpoint);
     strncpy(c_str,mdata.value("hostAddress").toString().toUtf8().constData(),
 	    255);
@@ -346,7 +339,7 @@ void EndpointList::connectViaHttpData()
     break;
 
   case Qt::Vertical:
-    mdata=list_parser->outputModel(list_router)->
+    mdata=jparser->outputModel(list_router)->
       rowMetadata(list_mouse_endpoint);
     strncpy(c_str,mdata.value("hostAddress").toString().toUtf8().constData(),
 	    255);
@@ -366,7 +359,7 @@ void EndpointList::connectViaLwrpData()
 
   switch(list_orientation) {
   case Qt::Horizontal:
-    mdata=list_parser->inputModel(list_router)->
+    mdata=jparser->inputModel(list_router)->
       rowMetadata(list_mouse_endpoint);
     strncpy(c_str,mdata.value("hostAddress").toString().toUtf8().constData(),
 	    255);
@@ -377,7 +370,7 @@ void EndpointList::connectViaLwrpData()
     break;
 
   case Qt::Vertical:
-    mdata=list_parser->outputModel(list_router)->
+    mdata=jparser->outputModel(list_router)->
       rowMetadata(list_mouse_endpoint);
     strncpy(c_str,mdata.value("hostAddress").toString().toUtf8().constData(),
 	    255);
@@ -393,7 +386,7 @@ void EndpointList::connectViaLwrpData()
 void EndpointList::copySourceNumberData()
 {
   QClipboard *cb=QApplication::clipboard();
-  QMap<QString,QVariant> mdata=list_parser->inputModel(list_router)->
+  QMap<QString,QVariant> mdata=jparser->inputModel(list_router)->
     rowMetadata(list_mouse_endpoint);
 
   cb->setText(QString::asprintf("%d",mdata.value("sourceNumber").toInt()));
@@ -403,7 +396,7 @@ void EndpointList::copySourceNumberData()
 void EndpointList::copySourceStreamAddressData()
 {
   QClipboard *cb=QApplication::clipboard();
-  QMap<QString,QVariant> mdata=list_parser->inputModel(list_router)->
+  QMap<QString,QVariant> mdata=jparser->inputModel(list_router)->
     rowMetadata(list_mouse_endpoint);
 
   cb->setText(mdata.value("streamAddress").toString());
@@ -417,13 +410,13 @@ void EndpointList::copyNodeAddressData()
 
   switch(list_orientation) {
   case Qt::Horizontal:
-    mdata=list_parser->inputModel(list_router)->
+    mdata=jparser->inputModel(list_router)->
       rowMetadata(list_mouse_endpoint);
     cb->setText(mdata.value("hostAddress").toString());
     break;
 
   case Qt::Vertical:
-    mdata=list_parser->outputModel(list_router)->
+    mdata=jparser->outputModel(list_router)->
       rowMetadata(list_mouse_endpoint);
     cb->setText(mdata.value("hostAddress").toString());
     break;
@@ -438,13 +431,13 @@ void EndpointList::copySlotNumberData()
 
   switch(list_orientation) {
   case Qt::Horizontal:
-    mdata=list_parser->inputModel(list_router)->
+    mdata=jparser->inputModel(list_router)->
       rowMetadata(list_mouse_endpoint);
     cb->setText(QString::asprintf("%d",mdata.value("slot").toInt()));
     break;
 
   case Qt::Vertical:
-    mdata=list_parser->outputModel(list_router)->
+    mdata=jparser->outputModel(list_router)->
       rowMetadata(list_mouse_endpoint);
     cb->setText(QString::asprintf("%d",mdata.value("slot").toInt()));
     break;

@@ -26,14 +26,12 @@
 #include "ackbutton.h"
 
 AckButton::AckButton(int router,int endpt,const QString &legend,
-		     const QString &mask,const QChar &dir,DRJParser *parser,
-		     QWidget *parent)
+		     const QString &mask,const QChar &dir,QWidget *parent)
   : AutoPushButton(parent)
 {
   c_router=router;
   c_endpt=endpt;
   c_mask=mask;
-  c_parser=parser;
 
   if(c_mask.count("x")<4) {
     processError(tr("gpio mask is not unique")+" ["+c_mask+"]");
@@ -62,14 +60,14 @@ AckButton::AckButton(int router,int endpt,const QString &legend,
   //
   // The ProtocolJ Connection
   //
-  connect(c_parser,SIGNAL(connected(bool,DRJParser::ConnectionState)),
+  connect(jparser,SIGNAL(connected(bool,DRJParser::ConnectionState)),
 	  this,SLOT(changeConnectionState(bool,DRJParser::ConnectionState)));
   if(dir==QChar('i')) {
-    connect(c_parser,SIGNAL(gpiStateChanged(int,int,const QString &)),
+    connect(jparser,SIGNAL(gpiStateChanged(int,int,const QString &)),
 	    this,SLOT(setState(int,int,const QString &)));
   }
   else {
-    connect(c_parser,SIGNAL(gpoStateChanged(int,int,const QString &)),
+    connect(jparser,SIGNAL(gpoStateChanged(int,int,const QString &)),
 	    this,SLOT(setState(int,int,const QString &)));
   }
 }

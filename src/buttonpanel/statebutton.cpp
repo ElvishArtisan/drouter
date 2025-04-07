@@ -2,7 +2,7 @@
 //
 // Set state of a single GPIO bit.
 //
-//   (C) Copyright 2020 Fred Gleason <fredg@paravelsystems.com>
+//   (C) Copyright 2020-2025 Fred Gleason <fredg@paravelsystems.com>
 //
 //   This program is free software; you can redistribute it and/or modify
 //   it under the terms of the GNU General Public License as
@@ -24,15 +24,13 @@
 #include "statebutton.h"
 
 StateButton::StateButton(int router,int endpt,const QString &legend,
-			 const QString &mask,const QChar &dir,DRJParser *parser,
-			 QWidget *parent)
+			 const QString &mask,const QChar &dir,QWidget *parent)
   : AutoPushButton(parent)
 {
   c_router=router;
   c_endpt=endpt;
   c_mask=mask;
   c_dir=dir;
-  c_parser=parser;
 
   if(c_mask.count("x")<4) {
     processError(tr("gpio mask is not unique")+" ["+c_mask+"]");
@@ -64,7 +62,7 @@ StateButton::StateButton(int router,int endpt,const QString &legend,
   //
   // The SA Connection
   //
-  connect(c_parser,SIGNAL(connected(bool,DRJParser::ConnectionState)),
+  connect(jparser,SIGNAL(connected(bool,DRJParser::ConnectionState)),
 	  this,SLOT(changeConnectionState(bool,DRJParser::ConnectionState)));
 }
 
@@ -106,12 +104,12 @@ void StateButton::changeConnectionState(bool state,
 void StateButton::pressedData()
 {
   if(c_dir==QChar('i')) {
-    c_parser->setGpiState(c_router,c_endpt,c_mask);
+    jparser->setGpiState(c_router,c_endpt,c_mask);
     //    printf("setGpiState(%d,%d,%s)\n",c_router,c_endpt,c_mask.toUtf8().constData());
   }
   else {
     //    printf("setGpoState(%d,%d,%s)\n",c_router,c_endpt,c_mask.toUtf8().constData());
-    c_parser->setGpoState(c_router,c_endpt,c_mask);
+    jparser->setGpoState(c_router,c_endpt,c_mask);
   }
 }
 
@@ -119,12 +117,10 @@ void StateButton::pressedData()
 void StateButton::releasedData()
 {
   if(c_dir==QChar('i')) {
-    c_parser->setGpiState(c_router,c_endpt,c_inverted_mask);
-    //    printf("setGpiState(%d,%d,%s)\n",c_router,c_endpt,c_inverted_mask.toUtf8().constData());
+    jparser->setGpiState(c_router,c_endpt,c_inverted_mask);
   }
   else {
-    c_parser->setGpoState(c_router,c_endpt,c_inverted_mask);
-    //    printf("setGpoState(%d,%d,%s)\n",c_router,c_endpt,c_inverted_mask.toUtf8().constData());
+    jparser->setGpoState(c_router,c_endpt,c_inverted_mask);
   }
 }
 

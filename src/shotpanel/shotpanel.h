@@ -63,7 +63,6 @@ class MainWidget : public QWidget
   QLabel *panel_snapshot_label;
   QPushButton *panel_activate_button;
   QComboBox *panel_snapshot_box;
-  DRJParser *panel_parser;
   bool panel_initial_connected;
 };
 

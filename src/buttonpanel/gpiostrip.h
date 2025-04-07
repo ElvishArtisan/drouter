@@ -38,7 +38,7 @@ class GpioStrip : public QWidget
 {
   Q_OBJECT
  public:
-  GpioStrip(int id,GpioParser *gpio_parser,DRJParser *parser,QWidget *parent=0);
+  GpioStrip(int id,GpioParser *gpio_parser,QWidget *parent=0);
   ~GpioStrip();
   QSize sizeHint() const;
   QString title() const;
@@ -61,7 +61,6 @@ class GpioStrip : public QWidget
   void LoadColorMaps();
   int c_router;
   int c_id;
-  DRJParser *c_parser;
   bool c_summary_alarm_state;
   QLabel *c_title_label;
   QList<QWidget *> c_widgets;

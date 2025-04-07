@@ -23,15 +23,14 @@
 
 #include "buttonwidget.h"
 
-ButtonWidget::ButtonWidget(int router,int output,int columns,DRJParser *parser,
-			   bool arm_button,QWidget *parent)
+ButtonWidget::ButtonWidget(int router,int output,int columns,bool arm_button,
+			   QWidget *parent)
   : QWidget(parent)
 {
   panel_columns=columns;
   panel_output=output;
   panel_rows=1;
   panel_router=router;
-  panel_parser=parser;
   panel_armed=false;
 
   //
@@ -63,10 +62,9 @@ ButtonWidget::ButtonWidget(int router,int output,int columns,DRJParser *parser,
   //
   // The Protocol J Connection
   //
-  connect(panel_parser,SIGNAL(connected(bool,DRJParser::ConnectionState)),
+  connect(jparser,SIGNAL(connected(bool,DRJParser::ConnectionState)),
 	  this,SLOT(changeConnectionState(bool,DRJParser::ConnectionState)));
-  connect(panel_parser,
-	  SIGNAL(outputCrosspointChanged(int,int,int)),
+  connect(jparser,SIGNAL(outputCrosspointChanged(int,int,int)),
 	  this,SLOT(changeOutputCrosspoint(int,int,int)));
   panel_button_mapper=new QSignalMapper(this);
   connect(panel_button_mapper,SIGNAL(mappedInt(int)),
@@ -97,8 +95,9 @@ QSize ButtonWidget::sizeHint() const
 void ButtonWidget::buttonClickedData(int n)
 {
   if(panel_armed) {
-    panel_parser->setOutputCrosspoint(panel_router,panel_output,
-		  panel_parser->inputModel(panel_router)->endPointNumber(n));
+    jparser->
+      setOutputCrosspoint(panel_router,panel_output,
+			  jparser->inputModel(panel_router)->endPointNumber(n));
     if(panel_arm_button!=NULL) {
       panel_arm_button->setStyleSheet("");
       panel_armed=false;
@@ -129,8 +128,8 @@ void ButtonWidget::changeConnectionState(bool state,
     //
     // Sanity Check Models
     //
-    DREndPointListModel *omodel=panel_parser->outputModel(panel_router);
-    DREndPointListModel *imodel=panel_parser->inputModel(panel_router);
+    DREndPointListModel *omodel=jparser->outputModel(panel_router);
+    DREndPointListModel *imodel=jparser->inputModel(panel_router);
     if(omodel==NULL) {
       QMessageBox::warning(this,"ButtonPanel - "+tr("Error"),
 	  tr("Router")+QString::asprintf(" %u ",panel_router)+
@@ -169,7 +168,7 @@ void ButtonWidget::changeConnectionState(bool state,
       connect(panel_buttons.value(i),SIGNAL(clicked()),
 	      panel_button_mapper,SLOT(map()));
       panel_button_mapper->setMapping(panel_buttons.value(i),i);
-      if(panel_parser->outputCrosspoint(panel_router,panel_output)==(i)) {
+      if(jparser->outputCrosspoint(panel_router,panel_output)==(i)) {
 	panel_buttons.value(i)->setStyleSheet(BUTTONWIDGET_ACTIVE_STYLESHEET);
       }
     }
@@ -178,7 +177,7 @@ void ButtonWidget::changeConnectionState(bool state,
     // Initialize Crosspoint Indication
     //
     changeOutputCrosspoint(panel_router,panel_output,
-		 panel_parser->outputCrosspoint(panel_router,panel_output));
+		 jparser->outputCrosspoint(panel_router,panel_output));
 
     show();
   }
@@ -215,7 +214,7 @@ void ButtonWidget::changeOutputCrosspoint(int router,int output,int input)
   if((router==panel_router)&&((output)==(panel_output))) {
     for(QMap<int,AutoPushButton *>::const_iterator it=panel_buttons.begin();
 	it!=panel_buttons.end();it++) {
-      if((input)==panel_parser->inputModel(panel_router)->endPointNumber(it.key())) {
+      if((input)==jparser->inputModel(panel_router)->endPointNumber(it.key())) {
 	it.value()->setStyleSheet(BUTTONWIDGET_ACTIVE_STYLESHEET);
       }
       else {

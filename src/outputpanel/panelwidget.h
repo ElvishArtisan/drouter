@@ -2,7 +2,7 @@
 //
 // Output panel widget for OutputPanel
 //
-//   (C) Copyright 2016-2024 Fred Gleason <fredg@paravelsystems.com>
+//   (C) Copyright 2016-2025 Fred Gleason <fredg@paravelsystems.com>
 //
 //   This program is free software; you can redistribute it and/or modify
 //   it under the terms of the GNU General Public License as
@@ -53,7 +53,7 @@ class PanelWidget : public QWidget
 {
   Q_OBJECT
  public:
-  PanelWidget(DRJParser *parser,int router,int output,QWidget *parent=0);
+  PanelWidget(int router,int output,QWidget *parent=0);
   ~PanelWidget();
   QSize sizeHint() const;
   QSizePolicy sizePolicy() const;
@@ -78,7 +78,6 @@ class PanelWidget : public QWidget
   QComboBox *widget_input_box;
   QPushButton *widget_take_button;
   QPushButton *widget_cancel_button;
-  DRJParser *widget_parser;
   int widget_router;
   int widget_output;
   int widget_input;

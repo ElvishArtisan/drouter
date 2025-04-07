@@ -187,21 +187,21 @@ MainWidget::MainWidget(QWidget *parent)
   //
   // The Protocol J Connection
   //
-  panel_parser=new DRJParser(true,this);
-  panel_parser->setRouterFilter(router_filter);
-  connect(panel_parser,SIGNAL(connected(bool,DRJParser::ConnectionState)),
+  jparser=new DRJParser(true,this);
+  jparser->setRouterFilter(router_filter);
+  connect(jparser,SIGNAL(connected(bool,DRJParser::ConnectionState)),
 	  this,SLOT(connectedData(bool,DRJParser::ConnectionState)));
-  connect(panel_parser,SIGNAL(error(QAbstractSocket::SocketError)),
+  connect(jparser,SIGNAL(error(QAbstractSocket::SocketError)),
 	  this,SLOT(errorData(QAbstractSocket::SocketError)));
-  connect(panel_parser,SIGNAL(outputCrosspointChanged(int,int,int)),
+  connect(jparser,SIGNAL(outputCrosspointChanged(int,int,int)),
 	  this,SLOT(outputCrosspointChangedData(int,int,int)));
 
   setWindowTitle(QString("Drouter - XYPanel [")+VERSION+"]");
 
-  panel_router_box->setModel(panel_parser->routerModel());
+  panel_router_box->setModel(jparser->routerModel());
   panel_router_box->setModelColumn(0);
 
-  panel_parser->connectToHost(panel_hostname,9600);
+  jparser->connectToHost(panel_hostname,9600);
 }
 
 
@@ -225,9 +225,9 @@ QSizePolicy MainWidget::sizePolicy() const
 void MainWidget::routerBoxActivatedData(int n)
 {
   if(n>=0) {
-    int router=panel_parser->routerModel()->routerNumber(n);
+    int router=jparser->routerModel()->routerNumber(n);
 
-    panel_output_box->setModel(panel_parser->outputModel(router));
+    panel_output_box->setModel(jparser->outputModel(router));
     panel_output_box->setCurrentIndex(0);
     outputBoxActivatedData(0);
 
@@ -242,9 +242,9 @@ void MainWidget::outputBoxActivatedData(int n)
   int router=SelectedRouter();
   int output=SelectedOutput();
 
-  panel_input_box->setModel(panel_parser->inputModel(router));
-  panel_input_box->setCurrentIndex(panel_parser->inputModel(router)->
-		rowNumber(panel_parser->outputCrosspoint(router,output)));
+  panel_input_box->setModel(jparser->inputModel(router));
+  panel_input_box->setCurrentIndex(jparser->inputModel(router)->
+		rowNumber(jparser->outputCrosspoint(router,output)));
   panel_current_input_index=panel_input_box->currentIndex();
 }
 
@@ -261,7 +261,7 @@ void MainWidget::inputBoxActivatedData(int n)
 
 void MainWidget::takeData()
 {
-  panel_parser->
+  jparser->
     setOutputCrosspoint(SelectedRouter(),SelectedOutput(),SelectedInput());
 }
 
@@ -277,13 +277,13 @@ void MainWidget::connectedData(bool state,DRJParser::ConnectionState cstate)
 {
   if(state) {
     if(panel_initial_router>0) {
-      if(panel_parser->routerModel()->rowNumber(panel_initial_router)<0) {
+      if(jparser->routerModel()->rowNumber(panel_initial_router)<0) {
 	QMessageBox::warning(this,"XYPanel - "+tr("Error"),tr("Output")+
 			     QString::asprintf(" %d ",panel_initial_router)+
 			     tr("does not exist."));
 	exit(1);
       }
-      panel_router_box->setCurrentIndex(panel_parser->routerModel()->
+      panel_router_box->setCurrentIndex(jparser->routerModel()->
 					rowNumber(panel_initial_router));
     }
     else {
@@ -333,7 +333,7 @@ void MainWidget::outputCrosspointChangedData(int router,int output,int input)
   if(router==SelectedRouter()) {
     if(output==SelectedOutput()) {
       panel_input_box->
-	setCurrentIndex(panel_parser->inputModel(router)->rowNumber(input));
+	setCurrentIndex(jparser->inputModel(router)->rowNumber(input));
 
       panel_current_input_index=panel_input_box->currentIndex();
       SetArmedState(false);
@@ -395,21 +395,21 @@ void MainWidget::SetArmedState(bool state)
 
 int MainWidget::SelectedRouter() const
 {
-  return panel_parser->
+  return jparser->
     routerModel()->routerNumber(panel_router_box->currentIndex());
 }
 
 
 int MainWidget::SelectedOutput() const
 {
-  return panel_parser->outputModel(SelectedRouter())->
+  return jparser->outputModel(SelectedRouter())->
     endPointNumber(panel_output_box->currentIndex());
 }
 
 
 int MainWidget::SelectedInput() const
 {
-  return panel_parser->inputModel(SelectedRouter())->
+  return jparser->inputModel(SelectedRouter())->
     endPointNumber(panel_input_box->currentIndex());
 }
 

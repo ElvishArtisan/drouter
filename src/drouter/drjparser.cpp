@@ -19,12 +19,16 @@
 //   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
 //
 
+#include <stdarg.h>
+
 #include <QJsonArray>
 #include <QJsonDocument>
 #include <QJsonObject>
 #include <QStringList>
 
 #include "drjparser.h"
+
+DRJParser *jparser=NULL;
 
 DRJParser::DRJParser(bool use_long_names,QObject *parent)
   : QObject(parent)
@@ -79,6 +83,18 @@ DRJParser::DRJParser(bool use_long_names,QObject *parent)
 DRJParser::~DRJParser()
 {
   delete j_router_model;
+}
+
+
+QString DRJParser::syslogString() const
+{
+  return j_syslog_string;
+}
+
+
+void DRJParser::setSyslogString(const QString &str)
+{
+  j_syslog_string=str;
 }
 
 
@@ -244,6 +260,22 @@ void DRJParser::connectToHost(const QString &hostname,uint16_t port)
   j_hostname=hostname;
   j_port=port;
   j_socket->connectToHost(hostname,port);
+}
+
+
+void DRJParser::syslog(int priority,const char *fmt,...) const
+{
+  va_list args;
+
+  QString message(fmt);
+  if(!j_syslog_string.isEmpty()) {
+    message="["+j_syslog_string+"] "+message;
+  }
+  const char *format=message.toUtf8().constData();
+
+  va_start(args,fmt);
+  vsyslog(priority,format,args);
+  va_end(args);
 }
 
 

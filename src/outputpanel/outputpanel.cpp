@@ -29,6 +29,8 @@
 
 #include <sy6/sycmdswitch.h>
 
+#include <drouter/drjparser.h>
+
 #include "outputpanel.h"
 
 //
@@ -110,7 +112,7 @@ MainWidget::MainWidget(QWidget *parent)
   //
   // The Protocol J Connection
   //
-  panel_parser=new DRJParser(false,this);
+  jparser=new DRJParser(false,this);
 
   //
   // Dialogs
@@ -152,12 +154,11 @@ MainWidget::MainWidget(QWidget *parent)
 			     tr("Invalid output specified!"));
 	exit(1);
       }      
-      PanelWidget *widget=
-	new PanelWidget(panel_parser,router,output,this);
-      connect(panel_parser,SIGNAL(connected(bool,DRJParser::ConnectionState)),
+      PanelWidget *widget=new PanelWidget(router,output,this);
+      connect(jparser,SIGNAL(connected(bool,DRJParser::ConnectionState)),
 	      widget,
 	      SLOT(changeConnectionState(bool,DRJParser::ConnectionState)));
-      connect(panel_parser,
+      connect(jparser,
 	      SIGNAL(outputCrosspointChanged(int,int,int)),
 	      widget,SLOT(changeOutputCrosspoint(int,int,int)));
       connect(this,SIGNAL(clockTicked(bool)),
@@ -203,7 +204,7 @@ MainWidget::MainWidget(QWidget *parent)
   //
   // Fire up the connection
   //
-  panel_parser->connectToHost(panel_hostname,9600);
+  jparser->connectToHost(panel_hostname,9600);
 }
 
 

@@ -22,7 +22,6 @@
 #include <stdlib.h>
 
 #include <QApplication>
-//#include <QDesktopWidget>
 #include <QGraphicsProxyWidget>
 #include <QGraphicsTextItem>
 #include <QIcon>
@@ -205,21 +204,21 @@ MainWidget::MainWidget(QWidget *parent)
   //
   // The Protocol J Connection
   //
-  panel_parser=new DRJParser(true,this);
-  connect(panel_parser,SIGNAL(connected(bool,DRJParser::ConnectionState)),
+  jparser=new DRJParser(true,this);
+  connect(jparser,SIGNAL(connected(bool,DRJParser::ConnectionState)),
 	  this,SLOT(connectedData(bool,DRJParser::ConnectionState)));
-  connect(panel_parser,SIGNAL(error(QAbstractSocket::SocketError)),
+  connect(jparser,SIGNAL(error(QAbstractSocket::SocketError)),
 	  this,SLOT(errorData(QAbstractSocket::SocketError)));
-  connect(panel_parser,SIGNAL(outputCrosspointChanged(int,int,int)),
+  connect(jparser,SIGNAL(outputCrosspointChanged(int,int,int)),
 	  this,SLOT(outputCrosspointChangedData(int,int,int)));
-  connect(panel_parser,SIGNAL(gpiStateChanged(int,int,const QString &)),
+  connect(jparser,SIGNAL(gpiStateChanged(int,int,const QString &)),
 	  panel_input_list,SLOT(setGpioState(int,int,const QString &)));
-  connect(panel_parser,SIGNAL(gpoStateChanged(int,int,const QString &)),
+  connect(jparser,SIGNAL(gpoStateChanged(int,int,const QString &)),
 	  panel_output_list,SLOT(setGpioState(int,int,const QString &)));
 
   setWindowTitle(QString("Drouter - XPointPanel [")+VERSION+"]");
 
-  panel_parser->connectToHost(panel_hostname,9600);
+  jparser->connectToHost(panel_hostname,9600);
 }
 
 
@@ -244,9 +243,9 @@ void MainWidget::routerBoxActivatedData(int n)
 {
   QString name;
   int router=SelectedRouter();
-  DRRouterListModel *rmodel=panel_parser->routerModel();
-  DREndPointListModel *imodel=panel_parser->inputModel(router);
-  DREndPointListModel *omodel=panel_parser->outputModel(router);
+  DRRouterListModel *rmodel=jparser->routerModel();
+  DREndPointListModel *imodel=jparser->inputModel(router);
+  DREndPointListModel *omodel=jparser->outputModel(router);
   QMap<QString,QVariant> mdata;
 
   //
@@ -267,7 +266,7 @@ void MainWidget::routerBoxActivatedData(int n)
   // Populate Inputs
   //
   QStringList inames;
-  panel_input_list->setShowGpio(panel_parser->gpioSupported(router));
+  panel_input_list->setShowGpio(jparser->gpioSupported(router));
   for(int i=0;i<imodel->rowCount();i++) {
     mdata=imodel->rowMetadata(i);
     inames.
@@ -275,14 +274,14 @@ void MainWidget::routerBoxActivatedData(int n)
   }
   panel_input_list->addEndpoints(router,inames);
   for(int i=0;i<imodel->rowCount();i++) {
-    panel_input_list->setGpioState(router,i,panel_parser->gpiState(router,i));
+    panel_input_list->setGpioState(router,i,jparser->gpiState(router,i));
   }
 
   //
   // Populate Outputs
   //
   QStringList onames;
-  panel_output_list->setShowGpio(panel_parser->gpioSupported(router));
+  panel_output_list->setShowGpio(jparser->gpioSupported(router));
   for(int i=0;i<omodel->rowCount();i++) {
     mdata=omodel->rowMetadata(i);
     onames.
@@ -290,7 +289,7 @@ void MainWidget::routerBoxActivatedData(int n)
   }
   panel_output_list->addEndpoints(router,onames);
   for(int i=0;i<omodel->rowCount();i++) {
-    panel_output_list->setGpioState(router,i,panel_parser->gpoState(router,i));
+    panel_output_list->setGpioState(router,i,jparser->gpoState(router,i));
   }
   
   //
@@ -309,7 +308,7 @@ void MainWidget::routerBoxActivatedData(int n)
   }
   for(int i=0;i<imodel->rowCount();i++) {
     for(int j=0;j<omodel->rowCount();j++) {
-      if(panel_parser->outputCrosspoint(SelectedRouter(),
+      if(jparser->outputCrosspoint(SelectedRouter(),
 					omodel->endPointNumber(j))==
 	 imodel->endPointNumber(i)) {
 	QGraphicsPixmapItem *item=panel_scene->addPixmap(*panel_greenx_map);
@@ -362,15 +361,13 @@ void MainWidget::routerBoxActivatedData(int n)
 void MainWidget::connectedData(bool state,DRJParser::ConnectionState cstate)
 {
   if(state) {
-    panel_router_box->setModel(panel_parser->routerModel());
-    panel_input_list->setParser(panel_parser);
-    panel_output_list->setParser(panel_parser);
+    panel_router_box->setModel(jparser->routerModel());
     panel_router_label->setEnabled(true);
     panel_router_box->setEnabled(true);
     if(panel_initial_router>0) {
-      QMap<int,QString> routers=panel_parser->routers();
-      if(panel_parser->routers().contains(panel_initial_router)) {
-	panel_router_box->setCurrentIndex(panel_parser->routerModel()->
+      QMap<int,QString> routers=jparser->routers();
+      if(jparser->routers().contains(panel_initial_router)) {
+	panel_router_box->setCurrentIndex(jparser->routerModel()->
 					  rowNumber(panel_initial_router));
       }
       else {
@@ -450,16 +447,16 @@ void MainWidget::outputCrosspointChangedData(int router,int output,int input)
 
 void MainWidget::xpointDoubleClickedData(int x_slot,int y_slot)
 {
-  DREndPointListModel *imodel=panel_parser->inputModel(SelectedRouter());
-  DREndPointListModel *omodel=panel_parser->outputModel(SelectedRouter());
+  DREndPointListModel *imodel=jparser->inputModel(SelectedRouter());
+  DREndPointListModel *omodel=jparser->outputModel(SelectedRouter());
 
   int input=imodel->endPointNumber(y_slot);
   int output=omodel->endPointNumber(x_slot);
-  if(panel_parser->outputCrosspoint(SelectedRouter(),output)==input) {  // Mute
-    panel_parser->setOutputCrosspoint(SelectedRouter(),output,0);
+  if(jparser->outputCrosspoint(SelectedRouter(),output)==input) {  // Mute
+    jparser->setOutputCrosspoint(SelectedRouter(),output,0);
   }
   else {
-    panel_parser->setOutputCrosspoint(SelectedRouter(),output,input);
+    jparser->setOutputCrosspoint(SelectedRouter(),output,input);
   }
 }
 
@@ -467,8 +464,8 @@ void MainWidget::xpointDoubleClickedData(int x_slot,int y_slot)
 void MainWidget::inputHoveredEndpointChangedData(int router,int rownum)
 {
   QString tt;
-  DRRouterListModel *rmodel=panel_parser->routerModel();
-  DREndPointListModel *imodel=panel_parser->inputModel(router);
+  DRRouterListModel *rmodel=jparser->routerModel();
+  DREndPointListModel *imodel=jparser->inputModel(router);
   QMap<QString,QVariant> mdata;
 
   if(rownum<0) {
@@ -526,7 +523,7 @@ void MainWidget::inputHoveredEndpointChangedData(int router,int rownum)
 void MainWidget::outputHoveredEndpointChangedData(int router,int rownum)
 {
   QString tt;
-  DREndPointListModel *omodel=panel_parser->outputModel(router);
+  DREndPointListModel *omodel=jparser->outputModel(router);
   QMap<QString,QVariant> mdata;
 
   if(rownum<0) {
@@ -560,8 +557,8 @@ void MainWidget::outputHoveredEndpointChangedData(int router,int rownum)
 
 void MainWidget::crosspointSelectedData(int slot_x,int slot_y)
 {
-  DREndPointListModel *imodel=panel_parser->inputModel(SelectedRouter());
-  DREndPointListModel *omodel=panel_parser->outputModel(SelectedRouter());
+  DREndPointListModel *imodel=jparser->inputModel(SelectedRouter());
+  DREndPointListModel *omodel=jparser->outputModel(SelectedRouter());
 
   if((slot_x<0)||(slot_x>=omodel->rowCount())||
      (slot_y<0)||(slot_y>=imodel->rowCount())) {
@@ -710,7 +707,7 @@ void MainWidget::paintEvent(QPaintEvent *e)
 
 QString MainWidget::InputDescriptionTitle(int router,int rownum) const
 {
-  DREndPointListModel *imodel=panel_parser->inputModel(router);
+  DREndPointListModel *imodel=jparser->inputModel(router);
   QMap<QString,QVariant> mdata=imodel->rowMetadata(rownum);
 
   QString ret="";
@@ -723,7 +720,7 @@ QString MainWidget::InputDescriptionTitle(int router,int rownum) const
 
 QString MainWidget::OutputDescriptionTitle(int router,int rownum) const
 {
-  DREndPointListModel *omodel=panel_parser->outputModel(router);
+  DREndPointListModel *omodel=jparser->outputModel(router);
   QMap<QString,QVariant> mdata=omodel->rowMetadata(rownum);
 
   QString ret="";
@@ -736,8 +733,7 @@ QString MainWidget::OutputDescriptionTitle(int router,int rownum) const
 
 int MainWidget::SelectedRouter() const
 {
-  return panel_parser->
-    routerModel()->routerNumber(panel_router_box->currentIndex());
+  return jparser->routerModel()->routerNumber(panel_router_box->currentIndex());
 }
 
 

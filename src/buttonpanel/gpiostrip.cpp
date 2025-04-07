@@ -29,12 +29,10 @@
 #include "statebutton.h"
 #include "statelight.h"
 
-GpioStrip::GpioStrip(int id,GpioParser *gpio_parser,DRJParser *parser,
-		     QWidget *parent)
+GpioStrip::GpioStrip(int id,GpioParser *gpio_parser,QWidget *parent)
   : QWidget(parent)
 {
   c_id=id;
-  c_parser=parser;
   c_hint_width=0;
   c_hint_height=0;
   c_summary_alarm_state=false;
@@ -66,7 +64,7 @@ GpioStrip::GpioStrip(int id,GpioParser *gpio_parser,DRJParser *parser,
       AckButton *w=NULL;
       w=new AckButton(gpio_parser->router(i),gpio_parser->endPoint(i),
 		      gpio_parser->legend(i),gpio_parser->mask(i),
-		      gpio_parser->direction(i),c_parser,this);
+		      gpio_parser->direction(i),this);
       w->setText(gpio_parser->legend(i));
       connect(w,SIGNAL(clicked()),this,SIGNAL(acknowledgeRequested()));
       c_widgets.push_back(w);
@@ -79,7 +77,7 @@ GpioStrip::GpioStrip(int id,GpioParser *gpio_parser,DRJParser *parser,
       AlertButton *w=NULL;
       w=new AlertButton(c_widgets.size(),gpio_parser->router(i),
 			gpio_parser->endPoint(i),gpio_parser->legend(i),
-			gpio_parser->mask(i),c_parser,this);
+			gpio_parser->mask(i),this);
       connect(w,SIGNAL(alarmStateChanged(int,bool)),
 	      this,SLOT(alarmStateChangedData(int,bool)));
       connect(w,SIGNAL(clicked()),this,SIGNAL(acknowledgeRequested()));
@@ -94,7 +92,7 @@ GpioStrip::GpioStrip(int id,GpioParser *gpio_parser,DRJParser *parser,
       StateLight *w=NULL;
       w=new StateLight(gpio_parser->router(i),gpio_parser->endPoint(i),
 		       gpio_parser->legend(i),gpio_parser->mask(i),
-		       gpio_parser->direction(i),c_parser,this);
+		       gpio_parser->direction(i),this);
       c_widgets.push_back(w);
       c_alarm_states.push_back(false);
       QString colorstr=gpio_parser->color(i);
@@ -106,7 +104,7 @@ GpioStrip::GpioStrip(int id,GpioParser *gpio_parser,DRJParser *parser,
       StateButton *w=NULL;
       w=new StateButton(gpio_parser->router(i),gpio_parser->endPoint(i),
 			gpio_parser->legend(i),gpio_parser->mask(i),
-			gpio_parser->direction(i),c_parser,this);
+			gpio_parser->direction(i),this);
       c_widgets.push_back(w);
       c_alarm_states.push_back(false);
       QString colorstr=gpio_parser->color(i);
@@ -134,11 +132,11 @@ GpioStrip::GpioStrip(int id,GpioParser *gpio_parser,DRJParser *parser,
       w=new MultiStateLabel(gpio_parser->router(i),gpio_parser->endPoint(i)-1,
 			    gpio_parser->legend(i),this);
       if(gpio_parser->direction(i)==QChar('i')) {
-	connect(parser,SIGNAL(gpiStateChanged(int,int,const QString &)),
+	connect(jparser,SIGNAL(gpiStateChanged(int,int,const QString &)),
 		w,SLOT(setState(int,int,const QString &)));
       }
       else {
-	connect(parser,SIGNAL(gpoStateChanged(int,int,const QString &)),
+	connect(jparser,SIGNAL(gpoStateChanged(int,int,const QString &)),
 		w,SLOT(setState(int,int,const QString &)));
       }
       c_widgets.push_back(w);
@@ -160,7 +158,7 @@ GpioStrip::GpioStrip(int id,GpioParser *gpio_parser,DRJParser *parser,
   //
   // The Protocol J Connection
   //
-  connect(c_parser,SIGNAL(connected(bool,DRJParser::ConnectionState)),
+  connect(jparser,SIGNAL(connected(bool,DRJParser::ConnectionState)),
 	  this,SLOT(changeConnectionState(bool,DRJParser::ConnectionState)));
 
   show();

@@ -159,15 +159,15 @@ MainWidget::MainWidget(QWidget *parent)
   //
   // The SA Connection
   //
-  panel_parser=new DRJParser(false,this);
-  connect(panel_parser,SIGNAL(connected(bool,DRJParser::ConnectionState)),
+  jparser=new DRJParser(false,this);
+  connect(jparser,SIGNAL(connected(bool,DRJParser::ConnectionState)),
 	  this,SLOT(connectedData(bool,DRJParser::ConnectionState)));
-  connect(panel_parser,SIGNAL(error(QAbstractSocket::SocketError)),
+  connect(jparser,SIGNAL(error(QAbstractSocket::SocketError)),
 	  this,SLOT(errorOccurredData(QAbstractSocket::SocketError)));
 
   setWindowTitle(QString("Drouter - ShotPanel [")+VERSION+"]");
 
-  panel_parser->connectToHost(panel_hostname,9600);
+  jparser->connectToHost(panel_hostname,9600);
 }
 
 
@@ -191,7 +191,7 @@ QSizePolicy MainWidget::sizePolicy() const
 void MainWidget::routerBoxActivatedData(int n)
 {
   int router=SelectedRouter();
-  DRSnapshotListModel *smodel=panel_parser->snapshotModel(router);
+  DRSnapshotListModel *smodel=jparser->snapshotModel(router);
   panel_snapshot_box->setModel(smodel);
   panel_snapshot_label->setEnabled(smodel->rowCount()>0);
   panel_snapshot_box->setEnabled(smodel->rowCount()>0);
@@ -201,13 +201,13 @@ void MainWidget::routerBoxActivatedData(int n)
 void MainWidget::activateData()
 {
   int router=SelectedRouter();
-  panel_parser->activateSnapshot(router,panel_snapshot_box->currentText());
+  jparser->activateSnapshot(router,panel_snapshot_box->currentText());
 }
 
 void MainWidget::connectedData(bool state,DRJParser::ConnectionState cstate)
 {
   if(state) {
-    panel_router_box->setModel(panel_parser->routerModel());
+    panel_router_box->setModel(jparser->routerModel());
     routerBoxActivatedData(panel_router_box->currentIndex());
     panel_initial_connected=true;
   }
@@ -251,8 +251,7 @@ void MainWidget::resizeEvent(QResizeEvent *e)
 
 int MainWidget::SelectedRouter() const
 {
-  return panel_parser->routerModel()->
-    routerNumber(panel_router_box->currentIndex());
+  return jparser->routerModel()->routerNumber(panel_router_box->currentIndex());
 }
 
 
