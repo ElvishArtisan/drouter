@@ -1498,3 +1498,5 @@
 	* Refactored shotpanel(1) to use overhead calling for DRJParser.
 	* Refactored xpointpanel(1) to use overhead calling for DRJParser.
 	* Refactored xypanel(1) to use overhead calling for DRJParser.
+2025-05-14 Fred Gleason <fredg@paravelsystems.com>
+	* Fixed a bug that broke the 'make deb' target on Debian.
