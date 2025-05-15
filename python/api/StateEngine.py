@@ -511,6 +511,9 @@ class StateEngine(object):
                 self.__sock.send("SubscribeClips\r\n".encode('latin-1'))
                 return
 
+            self.__loaded=True;
+            if(self.__ready_callback!=None):
+                self.__ready_callback(self,self.__callback_priv)
             return;
 
     def __bitStateCode(self,bit,state):
