@@ -1505,3 +1505,5 @@
 	proper callback operation.
 2025-05-15 Fred Gleason <fredg@paravelsystems.com>
 	* Tweaked formatting of build configuration reporting.
+2025-05-15 Fred Gleason <fredg@paravelsystems.com>
+	* Incremented the package version to v2.0.0rc4.
