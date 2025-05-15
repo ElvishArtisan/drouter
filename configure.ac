@@ -156,7 +156,7 @@ case "$ar_distro_id" in
          DISTRO_NAME="|                        Distribution Name ... Linux Mint |"
        fi
        if test $ar_distro_id = "ubuntu" ; then
-         DISTRO_NAME="|                        Distribution Name ... Ubuntu    |"
+         DISTRO_NAME="|                        Distribution Name ... Ubuntu     |"
        fi
        DISTRO_IS_DEBIANISH=yes
        AC_SUBST(USERMODE_PKG,"")

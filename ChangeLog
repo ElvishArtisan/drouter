@@ -1503,3 +1503,5 @@
 2025-05-15 Fred Gleason <fredg@paravelsystems.com>
 	* Fixed a regression in the Python 'StateEngine' class that broke
 	proper callback operation.
+2025-05-15 Fred Gleason <fredg@paravelsystems.com>
+	* Tweaked formatting of build configuration reporting.
