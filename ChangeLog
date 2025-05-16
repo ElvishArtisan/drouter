@@ -1509,3 +1509,5 @@
 	* Incremented the package version to v2.0.0rc4.
 2025-05-16 Fred Gleason <fredg@paravelsystems.com>
 	* Removed the 'drouter.socket' Systemd unit.
+2025-05-16 Fred Gleason <fredg@paravelsystems.com>
+	* Incremented the package version to v2.0.0rc5.
