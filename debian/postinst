@@ -1,5 +1,5 @@
 #!/bin/sh
-# postinst script for drouter
+# postinst script for Drouter
 
 case "$1" in
     configure)
@@ -16,10 +16,6 @@ case "$1" in
 	mkdir -p /var/cache/drouter
 	if [ -x /bin/systemctl ] ; then
 	    /bin/systemctl daemon-reload
-	    if [ -f /usr/lib/systemd/system/drouter.socket ] ; then
-		/bin/systemctl start drouter.socket
-		/bin/systemctl enable drouter.socket
-	    fi
 	    if [ -f /usr/lib/systemd/system/drouter.service ] ; then
 		/bin/systemctl start drouter.service
 		/bin/systemctl enable drouter.service

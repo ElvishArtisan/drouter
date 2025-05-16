@@ -52,8 +52,13 @@ QString DRMultiStateWidget::state() const
 
 void DRMultiStateWidget::setState(int router,int linenum,const QString &code)
 {
+  printf("DRMultiStateWidget::setState(%d,%d,%s)\n",router,linenum,code.toUtf8().constData());
+  printf("  comparing to: %d,%d,%s\n",state_router,state_linenum,
+	 state_state.toUtf8().constData());
+  
   if((router==state_router)&&(linenum==state_linenum)&&
      (code.toLower()!=state_state)) {
+    printf("    MATCH\n");
     state_state=code.toLower();
     update();
   }

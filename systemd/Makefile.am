@@ -21,17 +21,14 @@
 install-exec-local:	
 	mkdir -p $(DESTDIR)/lib/systemd/system
 	cp drouter.service $(DESTDIR)/lib/systemd/system/drouter.service
-	cp drouter.socket $(DESTDIR)/lib/systemd/system/drouter.socket
 	./daemon-reload.sh
 
 uninstall-local:	
 	rm -f $(DESTDIR)/lib/systemd/system/drouter.service
-	rm -f $(DESTDIR)/lib/systemd/system/drouter.socket
 	./daemon-reload.sh
 
 EXTRA_DIST = daemon-reload.sh\
-             drouter.service.in\
-             drouter.socket
+             drouter.service.in
 
 CLEANFILES = *~
 

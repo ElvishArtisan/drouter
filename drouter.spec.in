@@ -2,7 +2,7 @@
 ##
 ##    Dynamic router framework for Livewire
 ##
-##    Copyright (C) 2017-2021 Fred Gleason <fredg@paravelsystems.com>
+##    Copyright (C) 2017-2025 Fred Gleason <fredg@paravelsystems.com>
 ##
 ##    This program is free software; you can redistribute it and/or modify
 ##    it under the terms of version 2 of the GNU General Public License as
@@ -104,8 +104,6 @@ scripts/install_python.sh python/examples/silence_alarm.py $RPM_BUILD_ROOT/%{_da
 %post
 if [ -x %{_bindir}/systemctl ] ; then
     /bin/systemctl daemon-reload
-    /bin/systemctl start drouter.socket
-    /bin/systemctl enable drouter.socket
     /bin/systemctl start drouter.service
     /bin/systemctl enable drouter.service
 fi
@@ -128,8 +126,6 @@ fi
 
 %preun
 if [ -x %{_bindir}/systemctl ] ; then
-    /bin/systemctl stop drouter.socket
-    /bin/systemctl disable drouter.socket
     /bin/systemctl stop drouter.service
     /bin/systemctl disable drouter.service
 fi
@@ -188,7 +184,6 @@ rm -rf $RPM_BUILD_ROOT
 %{_datadir}/man/man8/drouterd.8.gz
 %dir /var/cache/drouter
 /lib/systemd/system/drouter.service
-/lib/systemd/system/drouter.socket
 %dir /etc/drouter/maps.d
 %dir /etc/drouter/scripts.d
 %{_datadir}/doc/drouter-%{version}/drouter.conf-sample

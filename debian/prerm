@@ -1,5 +1,5 @@
 #!/bin/sh
-# prerm script for Rivendell
+# prerm script for Drouter
 #
 # see: dh_installdeb(1)
 
@@ -20,10 +20,6 @@ set -e
 case "$1" in
     remove|upgrade|deconfigure)
 	if [ -x /bin/systemctl ] ; then
-	    if [ -f /usr/lib/systemd/system/drouter.socket ] ; then
-		/bin/systemctl stop drouter.socket
-		/bin/systemctl disable drouter.socket
-	    fi
 	    if [ -f /usr/lib/systemd/system/drouter.service ] ; then
 		/bin/systemctl stop drouter.service
 		/bin/systemctl disable drouter.service
